@@ -22,8 +22,9 @@ export default {
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        login: resolve(__dirname, 'menu/index.html'),
+        menu: resolve(__dirname, 'menu/index.html'),
       },
     },
+    sourcemap: true,
   },
 };
