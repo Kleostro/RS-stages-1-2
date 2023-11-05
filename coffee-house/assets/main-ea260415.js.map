@@ -1,1 +1,0 @@
-{"version":3,"file":"main-ea260415.js","sources":["../../main.js"],"sourcesContent":["import './src/scss/style.scss';\n\nconsole.log('120');\n\nconst sum = (first, second) => first + second;\n\nconsole.log(sum(5, 10));\n"],"names":["sum","first","second"],"mappings":"6CAEA,QAAQ,IAAI,KAAK,EAEjB,MAAMA,EAAM,CAACC,EAAOC,IAAWD,EAAQC,EAEvC,QAAQ,IAAIF,EAAI,EAAG,EAAE,CAAC"}
