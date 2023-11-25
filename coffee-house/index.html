@@ -8,9 +8,9 @@
     <link rel="preload" href="./assets/Inter-Regular-413a527c.woff2" as="font" crossorigin>
     <link rel="preload" href="./assets/Inter-SemiBold-07d60945.woff2" as="font" crossorigin>
     
-    <script type="module" crossorigin src="./assets/main-58b64abd.js"></script>
+    <script type="module" crossorigin src="./assets/main-3d076472.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-3cfb730f.js">
-    <link rel="stylesheet" href="./assets/index-968f3f3b.css">
+    <link rel="stylesheet" href="./assets/index-3cf689e7.css">
   </head>
   <body>
     <div class="site-container">
@@ -98,9 +98,9 @@
                 loop
                 playsinline
                 poster="./img/webp/hero.webp"
+                loading="lazy"
               >
                 <source src="./resources/hero-video.webm" type="video/webm" />
-                <source src="./resources/hero-video.mp4" type="video/mp4" />
               </video>
               <div class="hero__text">
                 <h1 class="hero__title">
@@ -200,6 +200,7 @@
                   <div class="favorite__slider-slide slider-slide">
                     <img
                       src="./img/png/coffee-slider-1.png"
+
                       alt="S’mores Frappuccino"
                     />
                     <h3 class="favorite__slider-slide-title">
@@ -214,6 +215,7 @@
                   <div class="favorite__slider-slide slider-slide">
                     <img
                       src="./img/png/coffee-slider-2.png"
+
                       alt="Caramel Macchiato"
                     />
                     <h3 class="favorite__slider-slide-title">
@@ -226,7 +228,8 @@
                     <span class="favorite__slider-slide-price">$5.00</span>
                   </div>
                   <div class="favorite__slider-slide slider-slide">
-                    <img src="./img/png/coffee-slider-3.png" alt="Ice coffee" />
+                    <img src="./img/png/coffee-slider-3.png"
+                     alt="Ice coffee" />
                     <h3 class="favorite__slider-slide-title">Ice coffee</h3>
                     <p class="favorite__slider-slide-descr">
                       A popular summer drink that tones and invigorates.
@@ -265,26 +268,32 @@
                   <picture>
                     <source
                       srcset="./img/webp/about-1-380.webp"
+                      loading="lazy"
                       media="(max-width: 710px)"
                     />
-                    <img src="./img/webp/about-1.webp" alt="first image" />
+                    <img src="./img/webp/about-1.webp"
+                    loading="lazy" alt="first image" />
                   </picture>
                 </div>
                 <div class="about__gallery-img about__gallery-img-2">
-                  <img src="./img/webp/about-2.webp" alt="second image" />
+                  <img src="./img/webp/about-2.webp"
+                  loading="lazy" alt="second image" />
                 </div>
               </div>
               <div class="about__gallery-right">
                 <div class="about__gallery-img about__gallery-img-3">
-                  <img src="./img/webp/about-3.webp" alt="third image" />
+                  <img src="./img/webp/about-3.webp"
+                  loading="lazy" alt="third image" />
                 </div>
                 <div class="about__gallery-img about__gallery-img-4">
                   <picture>
                     <source
                       srcset="./img/webp/about-2-380.webp"
+                      loading="lazy"
                       media="(max-width: 710px)"
                     />
-                    <img src="./img/webp/about-4.webp" alt="fourth image" />
+                    <img src="./img/webp/about-4.webp"
+                    loading="lazy" alt="fourth image" />
                   </picture>
                 </div>
               </div>
@@ -351,7 +360,7 @@
                 </a>
               </div>
             </div>
-              <img src="./img/png/mobile-app.png" alt="mobile-screens" />
+              <img src="./img/png/mobile-app.png" alt="mobile-screens" loading="lazy" />
           </div>
         </section>
       </main>
