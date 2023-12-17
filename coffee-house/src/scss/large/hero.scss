@@ -1,0 +1,127 @@
+.hero {
+  margin-bottom: 101px;
+
+  &__video {
+    position: absolute;
+    border-radius: 40px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__bg {
+    position: relative;
+  }
+
+  &__text {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 100px;
+    max-width: 769px;
+    gap: 42px;
+
+    @include small-tablet {
+      padding: 100px 60px;
+    }
+
+    @include mobile {
+      padding: 60px 16px;
+      gap: 40px;
+    }
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 72px;
+    line-height: 105%;
+    color: var(--text-light);
+
+    &-accent {
+      font-style: italic;
+      color: var(--text-accent);
+    }
+
+    @include mobile {
+      font-size: 42px;
+      line-height: 115%;
+    }
+  }
+
+  &__descr {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 150%;
+    color: var(--text-light);
+  }
+
+  &__btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 100px;
+    padding: 20px 78px;
+    max-width: max-content;
+    font-weight: 600;
+    background-color: var(--bg-body);
+    transition: background-color 0.3s ease-out;
+    gap: 8px;
+
+    &-text {
+      transition:
+        transform 0.3s ease-out,
+        color 0.3s ease-out;
+    }
+
+    svg {
+      position: absolute;
+      right: 30%;
+      stroke: var(--text-dark);
+      opacity: 0;
+      transition:
+        opacity 0.3s ease-out,
+        stroke 0.3s ease-out;
+    }
+
+    &:active {
+      background-color: var(--text-dark);
+
+      .hero__btn-text {
+        color: var(--text-light);
+        transform: translateX(-14px);
+      }
+
+      svg {
+        stroke: var(--text-light);
+        opacity: 1;
+      }
+    }
+
+    @include small-tablet {
+      .hero__btn-text {
+        transform: translateX(-14px);
+      }
+
+      svg {
+        opacity: 1;
+      }
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        .hero__btn-text {
+          transform: translateX(-14px);
+        }
+
+        svg {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  @include mobile {
+    margin-bottom: 103px;
+  }
+}
