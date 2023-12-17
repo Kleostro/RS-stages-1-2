@@ -1,0 +1,22 @@
+.favorite {
+  margin-bottom: 100px;
+
+  &__title {
+    margin-bottom: 40px;
+    font-weight: 600;
+    font-size: 60px;
+    line-height: 125%;
+    text-align: center;
+    color: var(--text-dark);
+
+    &-accent {
+      font-style: italic;
+      color: var(--text-accent);
+    }
+
+    @include mobile {
+      font-size: 32px;
+      line-height: 125%;
+    }
+  }
+}
