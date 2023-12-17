@@ -1,0 +1,144 @@
+.app {
+  margin-bottom: 100px;
+
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 100px;
+
+    @include tablet {
+      flex-direction: column;
+      gap: 98px;
+    }
+
+    @include mobile {
+      gap: 35px;
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 60px;
+    line-height: 125%;
+    color: var(--text-dark);
+
+    &-accent {
+      font-style: italic;
+      color: var(--text-accent);
+    }
+
+    @include tablet {
+      text-align: center;
+    }
+
+    @include small-tablet {
+      text-align: left;
+    }
+
+    @include mobile {
+      font-size: 32px;
+    }
+  }
+
+  &__descr {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 150%;
+    color: var(--text-dark);
+
+    @include tablet {
+      text-align: center;
+    }
+
+    @include small-tablet {
+      text-align: left;
+    }
+  }
+
+  &__wrapper-links {
+    display: flex;
+    gap: 20px;
+
+    @include tablet {
+      justify-content: center;
+    }
+
+    @include small-tablet {
+      justify-content: start;
+    }
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-dark);
+    border-radius: 100px;
+    padding: 12px 20px;
+    width: 200px;
+    transition:
+      background-color 0.3s ease-out,
+      opacity 0.3s ease-out;
+    gap: 8px;
+
+    &-text-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    &-text-accent {
+      font-weight: 600;
+      font-size: 10px;
+      line-height: 140%;
+      color: var(--text-dark);
+      transition: color 0.3s ease-out;
+    }
+
+    &-text-name {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 150%;
+      color: var(--text-dark);
+      transition: color 0.3s ease-out;
+    }
+
+    svg {
+      fill: var(--text-dark);
+      transition: fill 0.3s ease-out;
+    }
+
+    &:active {
+      opacity: 0.5;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--bg-container);
+
+        svg {
+          fill: var(--text-light);
+        }
+
+        .app__link-text-accent,
+        .app__link-text-name {
+          color: var(--text-light);
+        }
+      }
+    }
+  }
+
+  @include mobile {
+    margin-bottom: 103px;
+  }
+}

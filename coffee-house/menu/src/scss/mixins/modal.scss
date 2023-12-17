@@ -1,0 +1,58 @@
+.modal {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease-out,
+    visibility 0.3s ease-out;
+
+  &__overlay {
+    position: fixed;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    background-color: #403f3dcc;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease-out,
+      visibility 0.3s ease-out;
+    cursor: pointer;
+    inset: 0;
+
+    &--visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &__content {
+    position: relative;
+    border-radius: 0;
+    width: 100%;
+    background-color: #fff;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+    cursor: auto;
+
+    &--visible {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity 0.3s ease-out,
+        visibility 0.3s ease-out,
+        transform 0.3s ease-out;
+    }
+  }
+
+  &--visible {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+  }
+}
