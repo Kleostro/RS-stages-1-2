@@ -1,0 +1,20 @@
+// базовые стили
+@import "fonts";
+@import "normalize";
+@import "reset";
+@import "variables";
+
+// миксины
+@import "mixins/breakpoint";
+@import "mixins/burger";
+
+// базовые стили
+@import "common";
+@import "global";
+
+// большие куски стилей
+// @import "large/header";
+
+
+// малые куски стилей
+// @import "small/nav";
