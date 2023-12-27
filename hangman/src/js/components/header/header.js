@@ -1,4 +1,4 @@
-import BaseCreateElement from '../../Classes/BaseCreateElement';
+import BaseCreateElement from '../../BaseCreateElement';
 import logo from './components/logo/logo';
 import resultBtnElem from './components/resultsGame/resultsGame';
 import title from './components/title/title';

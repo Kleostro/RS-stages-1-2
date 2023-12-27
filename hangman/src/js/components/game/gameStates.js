@@ -1,12 +1,15 @@
 import data from '../../../data/data.json';
 import BaseCreateElement from '../../BaseCreateElement';
+import { showModal, defeatModal, winModal } from '../modal/modalFunctions';
 
+const MAX_ATTEMPTS = 6;
 let currentAnswer = '';
 let guessedLettersArr = [];
 let wrongGuessCount = 0;
 
 const restartGame = () => {
   const quizAnswerBox = document.querySelector('.quiz__answer');
+  quizAnswerBox.innerHTML = '';
   guessedLettersArr = [];
   wrongGuessCount = 0;
 
@@ -24,10 +27,18 @@ const restartGame = () => {
 };
 
 export const startGame = () => {
+  showModal();
   const { question, answer } = data[Math.floor(Math.random() * data.length)];
   document.querySelector('.quiz__question').textContent = question;
   currentAnswer = answer;
   restartGame();
+};
+
+const endGame = (outcome) => {
+  setTimeout(() => {
+    if (outcome === 'win') winModal(currentAnswer);
+    else defeatModal(currentAnswer);
+  }, 500);
 };
 
 export const checkLetter = (currentBtn, btnLetter) => {
@@ -44,4 +55,7 @@ export const checkLetter = (currentBtn, btnLetter) => {
     document.querySelectorAll('.man-part')[wrongGuessCount].classList.remove('hidden');
     wrongGuessCount += 1;
   }
+
+  if (wrongGuessCount === MAX_ATTEMPTS) endGame('defeat');
+  if (guessedLettersArr.length === currentAnswer.length) endGame('win');
 };

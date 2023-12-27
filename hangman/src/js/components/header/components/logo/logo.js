@@ -1,5 +1,5 @@
 import logoSrc from '../../../../../img/svg/logo.svg';
-import BaseCreateElement from '../../../../Classes/BaseCreateElement';
+import BaseCreateElement from '../../../../BaseCreateElement';
 
 const logo = new BaseCreateElement('a', ['logo']);
 const logoElem = logo.elem;
