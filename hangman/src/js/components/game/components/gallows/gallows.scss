@@ -1,0 +1,18 @@
+.gallows {
+  position: relative;
+  height: 237px;
+  min-width: 200px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.man-part {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 237px;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity 0.3s ease-out;
+}
