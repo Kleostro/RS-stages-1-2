@@ -11,3 +11,12 @@
 // базовые стили
 @import "./src/scss/common";
 @import "./src/scss/global";
+
+// хедер
+@import "./src/js/components/header/header";
+@import "./src/js/components/header/components/title/title";
+@import "./src/js/components/header/components/logo/logo";
+@import "./src/js/components/header/components/resultsGame/resultsGame";
+
+// игра
+@import "./src/js/components/game/game";
