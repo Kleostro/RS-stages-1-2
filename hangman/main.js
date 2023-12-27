@@ -8,6 +8,4 @@ const app = document.createElement('div');
 app.classList.add('site-container');
 app.append(headerElem, gameSectionElem, modalElem);
 document.body.append(app);
-
-// document.querySelector('.bts').addEventListener('click', () => startGame());
 startGame();

@@ -19,7 +19,10 @@ const restartGame = () => {
     quizAnswerBox.append(letterFieldElem);
   }
 
-  document.querySelectorAll('.man-part').forEach((item) => item.classList.add('hidden'));
+  document.querySelectorAll('.man-part').forEach((item) => {
+    const currentItem = item;
+    currentItem.style.opacity = 0;
+  });
   document.querySelector('.keyboard').querySelectorAll('.keyboard__btn').forEach((btn) => {
     const currentBtn = btn;
     currentBtn.disabled = false;
@@ -52,7 +55,7 @@ export const checkLetter = (currentBtn, btnLetter) => {
       }
     });
   } else {
-    document.querySelectorAll('.man-part')[wrongGuessCount].classList.remove('hidden');
+    document.querySelectorAll('.man-part')[wrongGuessCount].style.opacity = 1;
     wrongGuessCount += 1;
   }
 
