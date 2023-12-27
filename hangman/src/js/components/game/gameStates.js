@@ -33,6 +33,7 @@ export const startGame = () => {
   showModal();
   const { question, answer } = data[Math.floor(Math.random() * data.length)];
   document.querySelector('.quiz__question').textContent = question;
+  document.querySelector('.quiz__wrong').innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
   currentAnswer = answer;
   restartGame();
 };
@@ -57,6 +58,7 @@ export const checkLetter = (currentBtn, btnLetter) => {
   } else {
     document.querySelectorAll('.man-part')[wrongGuessCount].style.opacity = 1;
     wrongGuessCount += 1;
+    document.querySelector('.quiz__wrong').innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">${wrongGuessCount} / ${MAX_ATTEMPTS}</span>`;
   }
 
   if (wrongGuessCount === MAX_ATTEMPTS) {

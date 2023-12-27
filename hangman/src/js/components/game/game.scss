@@ -28,13 +28,27 @@
 }
 
 .quiz {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
   max-width: 260px;
+  gap: 10px;
 
   &__question {
-    margin-bottom: 10px;
     font-size: 20px;
     line-height: 125%;
     color: #4e1d04;
+  }
+
+  &__wrong {
+    font-size: 16px;
+    line-height: 125%;
+    color: #745d5d;
+
+    &-accent {
+      font-style: italic;
+      color: #7f2121;
+    }
   }
 
   &__answer {
