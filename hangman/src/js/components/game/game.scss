@@ -5,13 +5,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 20px 40px;
+    gap: 20px;
   }
 }
 
 .gallows {
   position: relative;
-  width: 200px;
   height: 237px;
+  min-width: 200px;
   background-position: center;
   background-repeat: no-repeat;
 }

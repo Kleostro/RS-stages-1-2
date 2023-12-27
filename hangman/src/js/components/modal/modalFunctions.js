@@ -7,7 +7,7 @@ export const showModal = () => {
     modal.classList.remove('visible');
     modalOverlay.classList.remove('visible');
     modalContent.classList.remove('visible');
-    document.body.classList.add('stop-scroll');
+    document.body.classList.remove('stop-scroll');
   } else {
     modal.classList.add('visible');
     modalOverlay.classList.add('visible');

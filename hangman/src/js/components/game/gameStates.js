@@ -29,15 +29,6 @@ const restartGame = () => {
   });
 };
 
-export const startGame = () => {
-  showModal();
-  const { question, answer } = data[Math.floor(Math.random() * data.length)];
-  document.querySelector('.quiz__question').textContent = question;
-  document.querySelector('.quiz__wrong').innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
-  currentAnswer = answer;
-  restartGame();
-};
-
 const endGame = (outcome) => {
   setTimeout(() => {
     if (outcome === 'win') winModal(currentAnswer);
@@ -51,8 +42,10 @@ export const checkLetter = (currentBtn, btnLetter) => {
   if (currentAnswer.includes(btnLetter)) {
     [...currentAnswer].forEach((currentLetter, index) => {
       if (currentLetter === btnLetter) {
+        const currentLetterElem = document.querySelectorAll('.quiz__answer-letter')[index];
+        currentLetterElem.textContent = currentLetter;
+        currentLetterElem.style.borderBottom = 'none';
         guessedLettersArr.push(currentLetter);
-        document.querySelectorAll('.quiz__answer-letter')[index].textContent = currentLetter;
       }
     });
   } else {
@@ -70,4 +63,28 @@ export const checkLetter = (currentBtn, btnLetter) => {
   }
 
   if (guessedLettersArr.length === currentAnswer.length) endGame('win');
+};
+
+const mouseCheckBtn = (e) => {
+  if (/^[A-Z]/.test(e.key.toUpperCase()) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    const keyboardBtns = document.querySelectorAll('.keyboard__btn');
+    let currBtn;
+    keyboardBtns.forEach((btn) => {
+      if (btn.textContent === e.key.toUpperCase()) currBtn = btn;
+    });
+    if (!currBtn.disabled) checkLetter(currBtn, e.key.toUpperCase());
+  }
+};
+
+const mouseCheckWrapper = (e) => mouseCheckBtn(e);
+
+export const startGame = () => {
+  showModal();
+  const { question, answer } = data[Math.floor(Math.random() * data.length)];
+  document.querySelector('.quiz__question').textContent = question;
+  document.querySelector('.quiz__wrong').innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
+  currentAnswer = answer;
+  restartGame();
+  document.removeEventListener('keydown', mouseCheckWrapper);
+  document.addEventListener('keydown', mouseCheckWrapper);
 };
