@@ -31,6 +31,32 @@
   }
 }
 
+.quiz {
+  max-width: 260px;
+
+  &__question {
+    margin-bottom: 10px;
+    font-size: 20px;
+    line-height: 125%;
+    color: #4e1d04;
+  }
+
+  &__answer {
+    display: flex;
+    gap: 5px;
+
+    &-letter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #a52a2a;
+      width: 20px;
+      height: 20px;
+      color: #054e0b;
+    }
+  }
+}
+
 .keyboard {
   display: flex;
   flex-wrap: wrap;
