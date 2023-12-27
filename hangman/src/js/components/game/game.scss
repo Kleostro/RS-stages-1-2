@@ -7,6 +7,12 @@
     justify-content: space-between;
     padding: 20px 40px;
     gap: 20px;
+
+    @include tablet {
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
   }
 }
 
@@ -40,6 +46,10 @@
     font-size: 20px;
     line-height: 125%;
     color: #4e1d04;
+
+    @include mobile {
+      font-size: 16px;
+    }
   }
 
   &__wrong {
@@ -50,6 +60,10 @@
     &-accent {
       font-style: italic;
       color: #7f2121;
+    }
+
+    @include mobile {
+      font-size: 12px;
     }
   }
 
@@ -65,7 +79,17 @@
       width: 20px;
       height: 20px;
       color: #054e0b;
+
+      @include mobile {
+        width: 15px;
+        height: 15px;
+        font-size: 12px;
+      }
     }
+  }
+
+  @include mobile {
+    padding: 10px 0;
   }
 }
 
@@ -101,6 +125,10 @@
     /* stylelint-disable-next-line order/order */
     &:active {
       background-color: #7da240;
+    }
+
+    @include mobile {
+      padding: 7px;
     }
   }
 }

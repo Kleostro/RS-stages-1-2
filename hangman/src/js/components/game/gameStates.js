@@ -65,7 +65,7 @@ export const checkLetter = (currentBtn, btnLetter) => {
   if (guessedLettersArr.length === currentAnswer.length) endGame('win');
 };
 
-const mouseCheckBtn = (e) => {
+const mouseCheckLetter = (e) => {
   if (/^[A-Z]/.test(e.key.toUpperCase()) && !e.ctrlKey && !e.metaKey && !e.altKey) {
     const keyboardBtns = document.querySelectorAll('.keyboard__btn');
     let currBtn;
@@ -76,7 +76,7 @@ const mouseCheckBtn = (e) => {
   }
 };
 
-const mouseCheckWrapper = (e) => mouseCheckBtn(e);
+const mouseCheckWrapper = (e) => mouseCheckLetter(e);
 
 export const startGame = () => {
   showModal();

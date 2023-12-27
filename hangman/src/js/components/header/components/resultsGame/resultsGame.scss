@@ -7,6 +7,15 @@
   color: #e6d4c1;
   transition: background-color 0.3s ease-out, outline-offset 0.3s ease-out, transform 0.3s ease-out;
 
+  @include tablet {
+    padding: 8px 16px;
+  }
+
+  @include mobile {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
   @media (hover: hover) {
     &:hover {
       outline-offset: 5px;
