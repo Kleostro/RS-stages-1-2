@@ -2,19 +2,32 @@ import data from '../../../data/data.json';
 import BaseCreateElement from '../../BaseCreateElement';
 
 let currentAnswer = '';
-const guessedLettersArr = [];
+let guessedLettersArr = [];
 let wrongGuessCount = 0;
 
-export const startGame = () => {
-  const { question, answer } = data[Math.floor(Math.random() * data.length)];
+const restartGame = () => {
   const quizAnswerBox = document.querySelector('.quiz__answer');
-  currentAnswer = answer;
+  guessedLettersArr = [];
+  wrongGuessCount = 0;
+
   for (let i = 0; i < currentAnswer.length; i += 1) {
     const letterField = new BaseCreateElement('span', ['quiz__answer-letter']);
     const letterFieldElem = letterField.elem;
     quizAnswerBox.append(letterFieldElem);
   }
+
+  document.querySelectorAll('.man-part').forEach((item) => item.classList.add('hidden'));
+  document.querySelector('.keyboard').querySelectorAll('.keyboard__btn').forEach((btn) => {
+    const currentBtn = btn;
+    currentBtn.disabled = false;
+  });
+};
+
+export const startGame = () => {
+  const { question, answer } = data[Math.floor(Math.random() * data.length)];
   document.querySelector('.quiz__question').textContent = question;
+  currentAnswer = answer;
+  restartGame();
 };
 
 export const checkLetter = (currentBtn, btnLetter) => {
