@@ -5,7 +5,8 @@ import thirdPart from '../../../img/png/thirdPart.png';
 import fourthPart from '../../../img/png/fourthPart.png';
 import fifthPart from '../../../img/png/fifthPart.png';
 import sixthPart from '../../../img/png/sixthPart.png';
-import BaseCreateElement from '../../Classes/BaseCreateElement';
+import BaseCreateElement from '../../BaseCreateElement';
+import { checkLetter } from './gameStates';
 
 const gameSection = new BaseCreateElement('section', ['game']);
 const gameSectionElem = gameSection.elem;
@@ -44,10 +45,21 @@ sixthPartOfManElem.style.backgroundImage = `url(${sixthPart})`;
 const keyboardBox = new BaseCreateElement('div', ['keyboard']);
 const keyboardBoxElem = keyboardBox.elem;
 
+const quizBox = new BaseCreateElement('div', ['quiz']);
+const quizBoxElem = quizBox.elem;
+
+const questionTitle = new BaseCreateElement('h2', ['quiz__question']);
+const questionTitleElem = questionTitle.elem;
+
+const answerBox = new BaseCreateElement('div', ['quiz__answer']);
+const answerBoxElem = answerBox.elem;
+
 for (let i = 65; i <= 90; i += 1) {
   const keyboardBtn = new BaseCreateElement('button', ['btn-reset', 'keyboard__btn']);
   const keyboardBtnElem = keyboardBtn.elem;
-  keyboardBtnElem.textContent = String.fromCharCode(i);
+  const btnLetter = String.fromCharCode(i);
+  keyboardBtnElem.textContent = btnLetter;
+  keyboardBtnElem.addEventListener('click', (e) => checkLetter(e.target, btnLetter));
   keyboardBoxElem.append(keyboardBtnElem);
 }
 
@@ -59,6 +71,7 @@ gallowsElem.append(
   fifthPartOfManElem,
   sixthPartOfManElem,
 );
-gameContainerElem.append(gallowsElem, keyboardBoxElem);
+quizBoxElem.append(questionTitleElem, answerBoxElem);
+gameContainerElem.append(gallowsElem, quizBoxElem, keyboardBoxElem);
 gameSectionElem.append(gameContainerElem);
 export default gameSectionElem;
