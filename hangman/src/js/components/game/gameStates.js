@@ -59,6 +59,13 @@ export const checkLetter = (currentBtn, btnLetter) => {
     wrongGuessCount += 1;
   }
 
-  if (wrongGuessCount === MAX_ATTEMPTS) endGame('defeat');
+  if (wrongGuessCount === MAX_ATTEMPTS) {
+    endGame('defeat');
+    document.querySelector('.keyboard').querySelectorAll('.keyboard__btn').forEach((btn) => {
+      const currBtn = btn;
+      currBtn.disabled = true;
+    });
+  }
+
   if (guessedLettersArr.length === currentAnswer.length) endGame('win');
 };

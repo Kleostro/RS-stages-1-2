@@ -81,5 +81,10 @@
         background-color: #d5eab0;
       }
     }
+
+    /* stylelint-disable-next-line order/order */
+    &:active {
+      background-color: #7da240;
+    }
   }
 }

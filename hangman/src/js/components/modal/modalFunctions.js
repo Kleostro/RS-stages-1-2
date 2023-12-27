@@ -28,7 +28,7 @@ export const winModal = (answer) => {
 
 export const defeatModal = (answer) => {
   const modalTitle = document.querySelector('.modal__content-title');
-  modalTitle.textContent = 'DEFEAT!!';
+  modalTitle.textContent = 'DEFEAT!';
 
   const modalSubtitle = document.querySelector('.modal__content-subtitle');
   modalSubtitle.innerHTML = `The target word was: <span class="modal__content-accent">${answer}</span>`;
