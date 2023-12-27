@@ -1,7 +1,7 @@
-import gameSectionElem from './src/js/components/game/game';
-import { startGame } from './src/js/components/game/gameStates';
-import modalElem from './src/js/components/modal/modal';
-import headerElem from './src/js/components/header/header';
+import gameSectionElem from './src/js/game/game';
+import { startGame } from './src/js/game/gameStates';
+import modalElem from './src/js/modal/modal';
+import headerElem from './src/js/header/header';
 import './style.scss';
 
 const app = document.createElement('div');

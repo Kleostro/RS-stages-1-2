@@ -1,4 +1,4 @@
-import BaseCreateElement from '../../../../BaseCreateElement';
+import BaseCreateElement from '../../../BaseCreateElement';
 
 const resultBtn = new BaseCreateElement('button', ['btn-reset', 'result']);
 const resultBtnElem = resultBtn.elem;

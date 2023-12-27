@@ -1,4 +1,4 @@
-import BaseCreateElement from '../../../../BaseCreateElement';
+import BaseCreateElement from '../../../BaseCreateElement';
 import { checkLetter } from '../../gameStates';
 
 const keyboardBox = new BaseCreateElement('div', ['keyboard']);

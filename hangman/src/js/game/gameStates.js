@@ -1,5 +1,5 @@
-import data from '../../../data/data.json';
-import BaseCreateElement from '../../BaseCreateElement';
+import data from '../../data/data.json';
+import BaseCreateElement from '../BaseCreateElement';
 import { showModal, defeatModal, winModal } from '../modal/modalFunctions';
 
 const MAX_ATTEMPTS = 6;

@@ -1,11 +1,11 @@
-import gallowsSrc from '../../../../../img/png/gallows.png';
-import firstPart from '../../../../../img/png/firstPart.png';
-import secondPart from '../../../../../img/png/secondPart.png';
-import thirdPart from '../../../../../img/png/thirdPart.png';
-import fourthPart from '../../../../../img/png/fourthPart.png';
-import fifthPart from '../../../../../img/png/fifthPart.png';
-import sixthPart from '../../../../../img/png/sixthPart.png';
-import BaseCreateElement from '../../../../BaseCreateElement';
+import gallowsSrc from '../../../../img/png/gallows.png';
+import firstPart from '../../../../img/png/firstPart.png';
+import secondPart from '../../../../img/png/secondPart.png';
+import thirdPart from '../../../../img/png/thirdPart.png';
+import fourthPart from '../../../../img/png/fourthPart.png';
+import fifthPart from '../../../../img/png/fifthPart.png';
+import sixthPart from '../../../../img/png/sixthPart.png';
+import BaseCreateElement from '../../../BaseCreateElement';
 
 const gallows = new BaseCreateElement('div', ['gallows']);
 const gallowsElem = gallows.elem;

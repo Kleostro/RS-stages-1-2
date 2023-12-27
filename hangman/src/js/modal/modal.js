@@ -1,4 +1,4 @@
-import BaseCreateElement from '../../BaseCreateElement';
+import BaseCreateElement from '../BaseCreateElement';
 import { startGame } from '../game/gameStates';
 
 const modal = new BaseCreateElement('div', ['modal', 'visible']);

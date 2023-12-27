@@ -1,4 +1,4 @@
-import BaseCreateElement from '../../../../BaseCreateElement';
+import BaseCreateElement from '../../../BaseCreateElement';
 
 const quizBox = new BaseCreateElement('div', ['quiz']);
 const quizBoxElem = quizBox.elem;

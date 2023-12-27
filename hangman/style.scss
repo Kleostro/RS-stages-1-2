@@ -13,18 +13,18 @@
 @import "./src/scss/global";
 
 // хедер
-@import "./src/js/components/header/header";
-@import "./src/js/components/header/components/title/title";
-@import "./src/js/components/header/components/logo/logo";
-@import "./src/js/components/header/components/resultsGame/resultsGame";
+@import "./src/js/header/header";
+@import "./src/js/header/components/title/title";
+@import "./src/js/header/components/logo/logo";
+@import "./src/js/header/components/resultsGame/resultsGame";
 
 // игра
-@import "./src/js/components/game/game";
+@import "./src/js/game/game";
 
-// игра
-@import "./src/js/components/game/components/gallows/gallows";
-@import "./src/js/components/game/components/quiz/quiz";
-@import "./src/js/components/game/components/keyboard/keyboard";
+// компоненты игры
+@import "./src/js/game/components/gallows/gallows";
+@import "./src/js/game/components/quiz/quiz";
+@import "./src/js/game/components/keyboard/keyboard";
 
 // модальное окно
-@import "./src/js/components/modal/modal";
+@import "./src/js/modal/modal";
