@@ -1,7 +1,8 @@
-import BaseCreateElement from '../BaseCreateElement';
-import logo from './components/logo/logo';
-import resultBtnElem from './components/resultsGame/resultsGame';
-import title from './components/title/title';
+import BaseCreateElement from '../../BaseCreateElement';
+import logo from '../logo/logo';
+import resultBtnElem from '../resultsGame/resultsGame';
+import title from '../title/title';
+import './header.scss';
 
 const header = new BaseCreateElement('header', ['header']);
 const headerElem = header.elem;

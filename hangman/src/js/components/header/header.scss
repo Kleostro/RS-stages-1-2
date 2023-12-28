@@ -1,17 +1,16 @@
-.game {
-  background-color: #f5deb3;
+@import "../../../scss/mixins/breakpoint";
 
+.header {
   &__container {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 200px;
     padding: 20px 40px;
-    gap: 20px;
 
     @include tablet {
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 20px;
+      margin-bottom: 0;
+      padding: 10px 20px;
     }
   }
 }

@@ -11,20 +11,3 @@
 // базовые стили
 @import "./src/scss/common";
 @import "./src/scss/global";
-
-// хедер
-@import "./src/js/header/header";
-@import "./src/js/header/components/title/title";
-@import "./src/js/header/components/logo/logo";
-@import "./src/js/header/components/resultsGame/resultsGame";
-
-// игра
-@import "./src/js/game/game";
-
-// компоненты игры
-@import "./src/js/game/components/gallows/gallows";
-@import "./src/js/game/components/quiz/quiz";
-@import "./src/js/game/components/keyboard/keyboard";
-
-// модальное окно
-@import "./src/js/modal/modal";

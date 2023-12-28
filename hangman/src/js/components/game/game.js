@@ -1,7 +1,8 @@
-import BaseCreateElement from '../BaseCreateElement';
-import gallowsElem from './components/gallows/gallows';
-import keyboardBoxElem from './components/keyboard/keyboard';
-import quizBoxElem from './components/quiz/quiz';
+import BaseCreateElement from '../../BaseCreateElement';
+import gallowsElem from '../gallows/gallows';
+import keyboardBoxElem from '../keyboard/keyboard';
+import quizBoxElem from '../quiz/quiz';
+import './game.scss';
 
 const gameSection = new BaseCreateElement('section', ['game']);
 const gameSectionElem = gameSection.elem;

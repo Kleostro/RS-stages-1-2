@@ -1,5 +1,6 @@
-import BaseCreateElement from '../../../BaseCreateElement';
-import { checkLetter } from '../../gameStates';
+import BaseCreateElement from '../../BaseCreateElement';
+import { checkLetter } from '../game/gameStates';
+import './keyboard.scss';
 
 const keyboardBox = new BaseCreateElement('div', ['keyboard']);
 const keyboardBoxElem = keyboardBox.elem;

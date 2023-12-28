@@ -1,4 +1,5 @@
-import BaseCreateElement from '../../../BaseCreateElement';
+import BaseCreateElement from '../../BaseCreateElement';
+import './quiz.scss';
 
 const quizBox = new BaseCreateElement('div', ['quiz']);
 const quizBoxElem = quizBox.elem;

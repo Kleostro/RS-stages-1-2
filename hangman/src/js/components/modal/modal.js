@@ -1,5 +1,6 @@
-import BaseCreateElement from '../BaseCreateElement';
+import BaseCreateElement from '../../BaseCreateElement';
 import { startGame } from '../game/gameStates';
+import './modal.scss';
 
 const modal = new BaseCreateElement('div', ['modal', 'visible']);
 const modalElem = modal.elem;
