@@ -1,6 +1,5 @@
 import BaseCreateElement from '../../BaseCreateElement';
 import logo from '../logo/logo';
-import resultBtnElem from '../resultsGame/resultsGame';
 import title from '../title/title';
 import './header.scss';
 
@@ -10,7 +9,7 @@ const headerElem = header.elem;
 const headerContainer = new BaseCreateElement('div', ['container', 'header__container']);
 const headerContainerElem = headerContainer.elem;
 
-headerContainerElem.append(logo, title, resultBtnElem);
+headerContainerElem.append(logo, title);
 headerElem.append(headerContainerElem);
 
 export default headerElem;
