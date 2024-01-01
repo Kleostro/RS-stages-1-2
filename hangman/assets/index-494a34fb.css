@@ -340,97 +340,14 @@ img {
 .visually-hidden {
   position: fixed;
   transform: scale(0);
-}
-.header__container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 200px;
-  padding: 20px 40px;
-}
-@media (max-width: 1000px) {
-  .header__container {
-    margin-bottom: 0;
-    padding: 10px 20px;
-  }
-}
-.header__title {
-  font-size: 32px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #e6d4c1;
-}
-@media (max-width: 1000px) {
-  .header__title {
-    font-size: 24px;
-  }
-}
-@media (max-width: 575px) {
-  .header__title {
-    font-size: 16px;
-  }
-}
-.logo img {
-  width: 200px;
-  height: 60px;
-}
-@media (max-width: 1000px) {
-  .logo img {
-    width: 100px;
-    height: 60px;
-  }
-}
-.result {
-  outline: 1px solid #c24e00;
-  border-radius: 10px;
-  padding: 12px 24px;
-  font-size: 16px;
-  letter-spacing: 2px;
-  color: #e6d4c1;
-  transition: background-color 0.3s ease-out, outline-offset 0.3s ease-out, transform 0.3s ease-out;
-}
-@media (max-width: 1000px) {
-  .result {
-    padding: 8px 16px;
-  }
-}
-@media (max-width: 575px) {
-  .result {
-    padding: 8px 16px;
-    font-size: 12px;
-  }
-}
-@media (hover: hover) {
-  .result:hover {
-    outline-offset: 5px;
-    background-color: #ad4601;
-    transform: scale(1.05);
-  }
-}
-.game {
-  background-color: #f5deb3;
-}
-.game__container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 40px;
-  gap: 20px;
-}
-@media (max-width: 1000px) {
-  .game__container {
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 20px;
-  }
-}
-.gallows {
+}.gallows {
   position: relative;
   height: 237px;
   min-width: 200px;
   background-position: center;
   background-repeat: no-repeat;
 }
+
 .man-part {
   position: absolute;
   left: 0;
@@ -440,8 +357,42 @@ img {
   background-position: center;
   background-repeat: no-repeat;
   transition: opacity 0.3s ease-out;
+}.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 360px;
+  gap: 10px;
 }
-.quiz {
+.keyboard__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: 1px solid #914405;
+  border-radius: 4px;
+  padding: 10px;
+  color: #000;
+  background-color: #b5d085;
+  transition: opacity 0.3s ease-out, background-color 0.3s ease-out;
+  /* stylelint-disable-next-line order/order */
+}
+.keyboard__btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .keyboard__btn:hover {
+    background-color: #d5eab0;
+  }
+}
+.keyboard__btn:active {
+  background-color: #7da240;
+}
+@media (max-width: 575px) {
+  .keyboard__btn {
+    padding: 7px;
+  }
+}.quiz {
   display: flex;
   flex-direction: column;
   padding: 30px 0;
@@ -496,44 +447,23 @@ img {
   .quiz {
     padding: 10px 0;
   }
+}.game {
+  background-color: #f5deb3;
 }
-.keyboard {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: 360px;
-  gap: 10px;
-}
-.keyboard__btn {
+.game__container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  outline: 1px solid #914405;
-  border-radius: 4px;
-  padding: 10px;
-  color: #000;
-  background-color: #b5d085;
-  transition: opacity 0.3s ease-out, background-color 0.3s ease-out;
-  /* stylelint-disable-next-line order/order */
+  justify-content: space-between;
+  padding: 20px 40px;
+  gap: 20px;
 }
-.keyboard__btn:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-@media (hover: hover) {
-  .keyboard__btn:hover {
-    background-color: #d5eab0;
+@media (max-width: 1000px) {
+  .game__container {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
   }
-}
-.keyboard__btn:active {
-  background-color: #7da240;
-}
-@media (max-width: 575px) {
-  .keyboard__btn {
-    padding: 7px;
-  }
-}
-.modal {
+}.modal {
   position: absolute;
   opacity: 0;
   visibility: hidden;
@@ -620,4 +550,40 @@ img {
   position: relative;
   opacity: 1;
   visibility: visible;
+}.logo img {
+  width: 200px;
+  height: 60px;
+}
+@media (max-width: 1000px) {
+  .logo img {
+    width: 100px;
+    height: 60px;
+  }
+}.header__title {
+  font-size: 32px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e6d4c1;
+}
+@media (max-width: 1000px) {
+  .header__title {
+    font-size: 24px;
+  }
+}
+@media (max-width: 575px) {
+  .header__title {
+    font-size: 16px;
+  }
+}.header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 200px;
+  padding: 20px 40px;
+}
+@media (max-width: 1000px) {
+  .header__container {
+    margin-bottom: 0;
+    padding: 10px 20px;
+  }
 }
