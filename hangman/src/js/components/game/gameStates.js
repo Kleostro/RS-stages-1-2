@@ -66,13 +66,16 @@ export const checkLetter = (currentBtn, btnLetter) => {
 };
 
 const mouseCheckLetter = (e) => {
-  if (/^[A-Z]/.test(e.key.toUpperCase()) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+  const key = e.key.toUpperCase();
+  const keyCode = e.keyCode || e.code;
+
+  if (/^[A-Z]/.test(key) && keyCode >= 65 && keyCode <= 90) {
     const keyboardBtns = document.querySelectorAll('.keyboard__btn');
     let currBtn;
     keyboardBtns.forEach((btn) => {
-      if (btn.textContent === e.key.toUpperCase()) currBtn = btn;
+      if (btn.textContent === key) currBtn = btn;
     });
-    if (!currBtn.disabled) checkLetter(currBtn, e.key.toUpperCase());
+    if (!currBtn.disabled) checkLetter(currBtn, key);
   }
 };
 
