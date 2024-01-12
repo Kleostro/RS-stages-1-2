@@ -206,65 +206,69 @@ const data = [
     answer: "HASOWNPROPERTY"
   }
 ];
+const modal$1 = "";
+const modal = new BaseCreateElement("div", ["modal", "visible"]);
+const modalElem = modal.elem;
+const modalOverlay = new BaseCreateElement("div", ["modal__overlay", "visible"]);
+const modalOverlayElem = modalOverlay.elem;
+const modalContent = new BaseCreateElement("div", ["modal__content", "visible"]);
+const modalContentElem = modalContent.elem;
+const modalTitle = new BaseCreateElement("h2", ["modal__content-title"]);
+const modalTitleElem = modalTitle.elem;
+const modalSubtitle = new BaseCreateElement("h3", ["modal__content-subtitle"]);
+const modalSubtitleElem = modalSubtitle.elem;
+const playBtn = new BaseCreateElement("button", ["btn-reset", "modal__content-btn"]);
+const playBtnElem = playBtn.elem;
+playBtnElem.textContent = "Play again";
+playBtnElem.addEventListener("click", () => startGame());
+modalContentElem.append(modalTitleElem, modalSubtitleElem, playBtnElem);
+modalOverlayElem.append(modalContentElem);
+modalElem.append(modalOverlayElem);
 const showModal = () => {
-  const modal2 = document.querySelector(".modal");
-  const modalOverlay2 = document.querySelector(".modal__overlay");
-  const modalContent2 = document.querySelector(".modal__content");
-  if (modal2.classList.contains("visible")) {
-    modal2.classList.remove("visible");
-    modalOverlay2.classList.remove("visible");
-    modalContent2.classList.remove("visible");
-    document.body.classList.remove("stop-scroll");
-  } else {
-    modal2.classList.add("visible");
-    modalOverlay2.classList.add("visible");
-    modalContent2.classList.add("visible");
-    document.body.classList.add("stop-scroll");
-  }
+  modalElem.classList.toggle("visible");
+  modalOverlayElem.classList.toggle("visible");
+  modalContentElem.classList.toggle("visible");
 };
-const winModal = (answer) => {
-  const modalTitle2 = document.querySelector(".modal__content-title");
-  modalTitle2.textContent = "VICTORY!";
-  const modalSubtitle2 = document.querySelector(".modal__content-subtitle");
-  modalSubtitle2.innerHTML = `You guessed the word: <span class="modal__content-accent">${answer}</span>`;
+const endGameModal = (outcome, answer) => {
+  modalTitleElem.textContent = outcome === "win" ? "VICTORY!" : "DEFEAT!";
+  modalSubtitleElem.innerHTML = outcome === "win" ? `You guessed the word: <span class="modal__content-accent">${answer}</span>` : `The target word was: <span class="modal__content-accent">${answer}</span>`;
   showModal();
 };
-const defeatModal = (answer) => {
-  const modalTitle2 = document.querySelector(".modal__content-title");
-  modalTitle2.textContent = "DEFEAT!";
-  const modalSubtitle2 = document.querySelector(".modal__content-subtitle");
-  modalSubtitle2.innerHTML = `The target word was: <span class="modal__content-accent">${answer}</span>`;
-  showModal();
-};
+const quiz = "";
+const quizBox = new BaseCreateElement("div", ["quiz"]);
+const quizBoxElem = quizBox.elem;
+const questionTitle = new BaseCreateElement("h2", ["quiz__question"]);
+const questionTitleElem = questionTitle.elem;
+const wrongGuess = new BaseCreateElement("span", ["quiz__wrong"]);
+const wrongGuessElem = wrongGuess.elem;
+const answerBox = new BaseCreateElement("div", ["quiz__answer"]);
+const answerBoxElem = answerBox.elem;
+quizBoxElem.append(questionTitleElem, wrongGuessElem, answerBoxElem);
 const MAX_ATTEMPTS = 6;
 let currentAnswer = "";
 let guessedLettersArr = [];
 let wrongGuessCount = 0;
 const restartGame = () => {
-  const quizAnswerBox = document.querySelector(".quiz__answer");
-  quizAnswerBox.innerHTML = "";
+  answerBoxElem.innerHTML = "";
   guessedLettersArr = [];
   wrongGuessCount = 0;
   for (let i = 0; i < currentAnswer.length; i += 1) {
     const letterField = new BaseCreateElement("span", ["quiz__answer-letter"]);
     const letterFieldElem = letterField.elem;
-    quizAnswerBox.append(letterFieldElem);
+    answerBoxElem.append(letterFieldElem);
   }
   document.querySelectorAll(".man-part").forEach((item) => {
     const currentItem = item;
     currentItem.style.opacity = 0;
   });
-  document.querySelector(".keyboard").querySelectorAll(".keyboard__btn").forEach((btn) => {
+  keyboardBoxElem.querySelectorAll(".keyboard__btn").forEach((btn) => {
     const currentBtn = btn;
     currentBtn.disabled = false;
   });
 };
 const endGame = (outcome) => {
   setTimeout(() => {
-    if (outcome === "win")
-      winModal(currentAnswer);
-    else
-      defeatModal(currentAnswer);
+    endGameModal(outcome, currentAnswer);
   }, 500);
 };
 const checkLetter = (currentBtn, btnLetter) => {
@@ -282,11 +286,11 @@ const checkLetter = (currentBtn, btnLetter) => {
   } else {
     document.querySelectorAll(".man-part")[wrongGuessCount].style.opacity = 1;
     wrongGuessCount += 1;
-    document.querySelector(".quiz__wrong").innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">${wrongGuessCount} / ${MAX_ATTEMPTS}</span>`;
+    wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">${wrongGuessCount} / ${MAX_ATTEMPTS}</span>`;
   }
   if (wrongGuessCount === MAX_ATTEMPTS) {
     endGame("defeat");
-    document.querySelector(".keyboard").querySelectorAll(".keyboard__btn").forEach((btn) => {
+    keyboardBoxElem.querySelectorAll(".keyboard__btn").forEach((btn) => {
       const currBtn = btn;
       currBtn.disabled = true;
     });
@@ -312,8 +316,8 @@ const mouseCheckWrapper = (e) => mouseCheckLetter(e);
 const startGame = () => {
   showModal();
   const { question, answer } = data[Math.floor(Math.random() * data.length)];
-  document.querySelector(".quiz__question").textContent = question;
-  document.querySelector(".quiz__wrong").innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
+  questionTitleElem.textContent = question;
+  wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
   currentAnswer = answer;
   restartGame();
   document.removeEventListener("keydown", mouseCheckWrapper);
@@ -330,16 +334,6 @@ for (let i = 65; i <= 90; i += 1) {
   keyboardBtnElem.addEventListener("click", (e) => checkLetter(e.target, btnLetter));
   keyboardBoxElem.append(keyboardBtnElem);
 }
-const quiz = "";
-const quizBox = new BaseCreateElement("div", ["quiz"]);
-const quizBoxElem = quizBox.elem;
-const questionTitle = new BaseCreateElement("h2", ["quiz__question"]);
-const questionTitleElem = questionTitle.elem;
-const wrongGuess = new BaseCreateElement("span", ["quiz__wrong"]);
-const wrongGuessElem = wrongGuess.elem;
-const answerBox = new BaseCreateElement("div", ["quiz__answer"]);
-const answerBoxElem = answerBox.elem;
-quizBoxElem.append(questionTitleElem, wrongGuessElem, answerBoxElem);
 const game = "";
 const gameSection = new BaseCreateElement("section", ["game"]);
 const gameSectionElem = gameSection.elem;
@@ -347,24 +341,6 @@ const gameContainer = new BaseCreateElement("div", ["container", "game__containe
 const gameContainerElem = gameContainer.elem;
 gameContainerElem.append(gallowsElem, quizBoxElem, keyboardBoxElem);
 gameSectionElem.append(gameContainerElem);
-const modal$1 = "";
-const modal = new BaseCreateElement("div", ["modal", "visible"]);
-const modalElem = modal.elem;
-const modalOverlay = new BaseCreateElement("div", ["modal__overlay", "visible"]);
-const modalOverlayElem = modalOverlay.elem;
-const modalContent = new BaseCreateElement("div", ["modal__content", "visible"]);
-const modalContentElem = modalContent.elem;
-const modalTitle = new BaseCreateElement("h2", ["modal__content-title"]);
-const modalTitleElem = modalTitle.elem;
-const modalSubtitle = new BaseCreateElement("h3", ["modal__content-subtitle"]);
-const modalSubtitleElem = modalSubtitle.elem;
-const playBtn = new BaseCreateElement("button", ["btn-reset", "modal__content-btn"]);
-const playBtnElem = playBtn.elem;
-playBtnElem.textContent = "Play again";
-playBtnElem.addEventListener("click", () => startGame());
-modalContentElem.append(modalTitleElem, modalSubtitleElem, playBtnElem);
-modalOverlayElem.append(modalContentElem);
-modalElem.append(modalOverlayElem);
 const logoSrc = "" + new URL("logo-de83227a.svg", import.meta.url).href;
 const logo$1 = "";
 const logo = new BaseCreateElement("a", ["logo"]);
@@ -390,4 +366,4 @@ app.append(headerElem, gameSectionElem, modalElem);
 document.body.append(app);
 alert("Make sure you use the en layout of the keyboard.");
 startGame();
-//# sourceMappingURL=main-39bd1338.js.map
+//# sourceMappingURL=main-6300b114.js.map

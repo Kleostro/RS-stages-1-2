@@ -357,112 +357,6 @@ img {
   background-position: center;
   background-repeat: no-repeat;
   transition: opacity 0.3s ease-out;
-}.keyboard {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: 360px;
-  gap: 10px;
-}
-.keyboard__btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  outline: 1px solid #914405;
-  border-radius: 4px;
-  padding: 10px;
-  color: #000;
-  background-color: #b5d085;
-  transition: opacity 0.3s ease-out, background-color 0.3s ease-out;
-  /* stylelint-disable-next-line order/order */
-}
-.keyboard__btn:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-@media (hover: hover) {
-  .keyboard__btn:hover {
-    background-color: #d5eab0;
-  }
-}
-.keyboard__btn:active {
-  background-color: #7da240;
-}
-@media (max-width: 575px) {
-  .keyboard__btn {
-    padding: 7px;
-  }
-}.quiz {
-  display: flex;
-  flex-direction: column;
-  padding: 30px 0;
-  max-width: 260px;
-  gap: 10px;
-}
-.quiz__question {
-  font-size: 20px;
-  line-height: 125%;
-  color: #4e1d04;
-}
-@media (max-width: 575px) {
-  .quiz__question {
-    font-size: 16px;
-  }
-}
-.quiz__wrong {
-  font-size: 16px;
-  line-height: 125%;
-  color: #745d5d;
-}
-.quiz__wrong-accent {
-  font-style: italic;
-  color: #7f2121;
-}
-@media (max-width: 575px) {
-  .quiz__wrong {
-    font-size: 12px;
-  }
-}
-.quiz__answer {
-  display: flex;
-  gap: 5px;
-}
-.quiz__answer-letter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #a52a2a;
-  width: 20px;
-  height: 20px;
-  color: #054e0b;
-}
-@media (max-width: 575px) {
-  .quiz__answer-letter {
-    width: 15px;
-    height: 15px;
-    font-size: 12px;
-  }
-}
-@media (max-width: 575px) {
-  .quiz {
-    padding: 10px 0;
-  }
-}.game {
-  background-color: #f5deb3;
-}
-.game__container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 40px;
-  gap: 20px;
-}
-@media (max-width: 1000px) {
-  .game__container {
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 20px;
-  }
 }.modal {
   position: absolute;
   opacity: 0;
@@ -481,6 +375,7 @@ img {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+  backdrop-filter: blur(4px);
   inset: 0;
 }
 .modal__overlay.visible {
@@ -550,6 +445,112 @@ img {
   position: relative;
   opacity: 1;
   visibility: visible;
+}.quiz {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  max-width: 260px;
+  gap: 10px;
+}
+.quiz__question {
+  font-size: 20px;
+  line-height: 125%;
+  color: #4e1d04;
+}
+@media (max-width: 575px) {
+  .quiz__question {
+    font-size: 16px;
+  }
+}
+.quiz__wrong {
+  font-size: 16px;
+  line-height: 125%;
+  color: #745d5d;
+}
+.quiz__wrong-accent {
+  font-style: italic;
+  color: #7f2121;
+}
+@media (max-width: 575px) {
+  .quiz__wrong {
+    font-size: 12px;
+  }
+}
+.quiz__answer {
+  display: flex;
+  gap: 5px;
+}
+.quiz__answer-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #a52a2a;
+  width: 20px;
+  height: 20px;
+  color: #054e0b;
+}
+@media (max-width: 575px) {
+  .quiz__answer-letter {
+    width: 15px;
+    height: 15px;
+    font-size: 12px;
+  }
+}
+@media (max-width: 575px) {
+  .quiz {
+    padding: 10px 0;
+  }
+}.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 360px;
+  gap: 10px;
+}
+.keyboard__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: 1px solid #914405;
+  border-radius: 4px;
+  padding: 10px;
+  color: #000;
+  background-color: #b5d085;
+  transition: opacity 0.3s ease-out, background-color 0.3s ease-out;
+  /* stylelint-disable-next-line order/order */
+}
+.keyboard__btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .keyboard__btn:hover {
+    background-color: #d5eab0;
+  }
+}
+.keyboard__btn:active {
+  background-color: #7da240;
+}
+@media (max-width: 575px) {
+  .keyboard__btn {
+    padding: 7px;
+  }
+}.game {
+  background-color: #f5deb3;
+}
+.game__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  gap: 20px;
+}
+@media (max-width: 1000px) {
+  .game__container {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+  }
 }.logo img {
   width: 200px;
   height: 60px;
