@@ -1,10 +1,10 @@
 import data from '../../../data/data.json';
 import BaseCreateElement from '../../BaseCreateElement';
-import keyboardBoxElem from '../keyboard/keyboard';
-import { showModal, endGameModal } from '../modal/modalFunctions';
+import { showModal, endGameModal, playBtnElem } from '../modal/modal';
 import { answerBoxElem, questionTitleElem, wrongGuessElem } from '../quiz/quiz';
 
 const MAX_ATTEMPTS = 6;
+const ANIMATION_END_TIME = 500;
 let currentAnswer = '';
 let guessedLettersArr = [];
 let wrongGuessCount = 0;
@@ -24,7 +24,7 @@ const restartGame = () => {
     const currentItem = item;
     currentItem.style.opacity = 0;
   });
-  keyboardBoxElem.querySelectorAll('.keyboard__btn').forEach((btn) => {
+  document.querySelectorAll('.keyboard__btn').forEach((btn) => {
     const currentBtn = btn;
     currentBtn.disabled = false;
   });
@@ -33,7 +33,7 @@ const restartGame = () => {
 const endGame = (outcome) => {
   setTimeout(() => {
     endGameModal(outcome, currentAnswer);
-  }, 500);
+  }, ANIMATION_END_TIME);
 };
 
 export const checkLetter = (currentBtn, btnLetter) => {
@@ -56,7 +56,7 @@ export const checkLetter = (currentBtn, btnLetter) => {
 
   if (wrongGuessCount === MAX_ATTEMPTS) {
     endGame('defeat');
-    keyboardBoxElem.querySelectorAll('.keyboard__btn').forEach((btn) => {
+    document.querySelectorAll('.keyboard__btn').forEach((btn) => {
       const currBtn = btn;
       currBtn.disabled = true;
     });
@@ -91,3 +91,5 @@ export const startGame = () => {
   document.removeEventListener('keydown', mouseCheckWrapper);
   document.addEventListener('keydown', mouseCheckWrapper);
 };
+
+playBtnElem.addEventListener('click', startGame);
