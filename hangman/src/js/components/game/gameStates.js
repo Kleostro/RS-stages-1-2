@@ -1,7 +1,7 @@
 import data from '../../../data/data.json';
 import BaseCreateElement from '../../BaseCreateElement';
 import keyboardBoxElem from '../keyboard/keyboard';
-import { showModal, defeatModal, winModal } from '../modal/modalFunctions';
+import { showModal, endGameModal } from '../modal/modalFunctions';
 import { answerBoxElem, questionTitleElem, wrongGuessElem } from '../quiz/quiz';
 
 const MAX_ATTEMPTS = 6;
@@ -32,8 +32,7 @@ const restartGame = () => {
 
 const endGame = (outcome) => {
   setTimeout(() => {
-    if (outcome === 'win') winModal(currentAnswer);
-    else defeatModal(currentAnswer);
+    endGameModal(outcome, currentAnswer);
   }, 500);
 };
 

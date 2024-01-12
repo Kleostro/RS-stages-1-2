@@ -16,6 +16,7 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+    backdrop-filter: blur(4px);
     inset: 0;
 
     &.visible {
