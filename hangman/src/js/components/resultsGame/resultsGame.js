@@ -1,8 +1,0 @@
-import BaseCreateElement from '../../BaseCreateElement';
-import './resultsGame.scss';
-
-const resultBtn = new BaseCreateElement('button', ['btn-reset', 'result']);
-const resultBtnElem = resultBtn.elem;
-resultBtnElem.textContent = 'Results';
-
-export default resultBtnElem;
