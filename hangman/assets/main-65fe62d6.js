@@ -220,10 +220,6 @@ const modalSubtitleElem = modalSubtitle.elem;
 const playBtn = new BaseCreateElement("button", ["btn-reset", "modal__content-btn"]);
 const playBtnElem = playBtn.elem;
 playBtnElem.textContent = "Play again";
-playBtnElem.addEventListener("click", () => startGame());
-modalContentElem.append(modalTitleElem, modalSubtitleElem, playBtnElem);
-modalOverlayElem.append(modalContentElem);
-modalElem.append(modalOverlayElem);
 const showModal = () => {
   modalElem.classList.toggle("visible");
   modalOverlayElem.classList.toggle("visible");
@@ -234,6 +230,9 @@ const endGameModal = (outcome, answer) => {
   modalSubtitleElem.innerHTML = outcome === "win" ? `You guessed the word: <span class="modal__content-accent">${answer}</span>` : `The target word was: <span class="modal__content-accent">${answer}</span>`;
   showModal();
 };
+modalContentElem.append(modalTitleElem, modalSubtitleElem, playBtnElem);
+modalOverlayElem.append(modalContentElem);
+modalElem.append(modalOverlayElem);
 const quiz = "";
 const quizBox = new BaseCreateElement("div", ["quiz"]);
 const quizBoxElem = quizBox.elem;
@@ -245,6 +244,7 @@ const answerBox = new BaseCreateElement("div", ["quiz__answer"]);
 const answerBoxElem = answerBox.elem;
 quizBoxElem.append(questionTitleElem, wrongGuessElem, answerBoxElem);
 const MAX_ATTEMPTS = 6;
+const ANIMATION_END_TIME = 500;
 let currentAnswer = "";
 let guessedLettersArr = [];
 let wrongGuessCount = 0;
@@ -261,7 +261,7 @@ const restartGame = () => {
     const currentItem = item;
     currentItem.style.opacity = 0;
   });
-  keyboardBoxElem.querySelectorAll(".keyboard__btn").forEach((btn) => {
+  document.querySelectorAll(".keyboard__btn").forEach((btn) => {
     const currentBtn = btn;
     currentBtn.disabled = false;
   });
@@ -269,7 +269,7 @@ const restartGame = () => {
 const endGame = (outcome) => {
   setTimeout(() => {
     endGameModal(outcome, currentAnswer);
-  }, 500);
+  }, ANIMATION_END_TIME);
 };
 const checkLetter = (currentBtn, btnLetter) => {
   const currentBtnElem = currentBtn;
@@ -290,7 +290,7 @@ const checkLetter = (currentBtn, btnLetter) => {
   }
   if (wrongGuessCount === MAX_ATTEMPTS) {
     endGame("defeat");
-    keyboardBoxElem.querySelectorAll(".keyboard__btn").forEach((btn) => {
+    document.querySelectorAll(".keyboard__btn").forEach((btn) => {
       const currBtn = btn;
       currBtn.disabled = true;
     });
@@ -323,6 +323,7 @@ const startGame = () => {
   document.removeEventListener("keydown", mouseCheckWrapper);
   document.addEventListener("keydown", mouseCheckWrapper);
 };
+playBtnElem.addEventListener("click", startGame);
 const keyboard = "";
 const keyboardBox = new BaseCreateElement("div", ["keyboard"]);
 const keyboardBoxElem = keyboardBox.elem;
@@ -364,6 +365,5 @@ const app = document.createElement("div");
 app.classList.add("site-container");
 app.append(headerElem, gameSectionElem, modalElem);
 document.body.append(app);
-alert("Make sure you use the en layout of the keyboard.");
 startGame();
-//# sourceMappingURL=main-6300b114.js.map
+//# sourceMappingURL=main-65fe62d6.js.map
