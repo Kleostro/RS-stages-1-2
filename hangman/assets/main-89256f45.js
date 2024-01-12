@@ -365,5 +365,6 @@ const app = document.createElement("div");
 app.classList.add("site-container");
 app.append(headerElem, gameSectionElem, modalElem);
 document.body.append(app);
+alert("Make sure you use the en layout of the keyboard.");
 startGame();
-//# sourceMappingURL=main-65fe62d6.js.map
+//# sourceMappingURL=main-89256f45.js.map
