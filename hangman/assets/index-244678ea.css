@@ -357,6 +357,19 @@ img {
   background-position: center;
   background-repeat: no-repeat;
   transition: opacity 0.3s ease-out;
+  animation: rotate 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-1deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
+  100% {
+    transform: rotate(-1deg);
+  }
 }.modal {
   position: absolute;
   opacity: 0;

@@ -92,7 +92,7 @@ const fifthPartOfMan = new BaseCreateElement("div", ["man-part"]);
 const fifthPartOfManElem = fifthPartOfMan.elem;
 fifthPartOfManElem.style.backgroundImage = `url(${fifthPart})`;
 fifthPartOfManElem.style.opacity = 0;
-const sixthPartOfMan = new BaseCreateElement("div", ["man-part", "hidden"]);
+const sixthPartOfMan = new BaseCreateElement("div", ["man-part"]);
 const sixthPartOfManElem = sixthPartOfMan.elem;
 sixthPartOfManElem.style.backgroundImage = `url(${sixthPart})`;
 sixthPartOfManElem.style.opacity = 0;
@@ -367,4 +367,4 @@ app.append(headerElem, gameSectionElem, modalElem);
 document.body.append(app);
 alert("Make sure you use the en layout of the keyboard.");
 startGame();
-//# sourceMappingURL=main-89256f45.js.map
+//# sourceMappingURL=main-d7537393.js.map
