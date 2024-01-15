@@ -39,6 +39,7 @@ const endGame = (outcome) => {
 export const checkLetter = (currentBtn, btnLetter) => {
   const currentBtnElem = currentBtn;
   currentBtnElem.disabled = true;
+
   if (currentAnswer.includes(btnLetter)) {
     [...currentAnswer].forEach((currentLetter, index) => {
       if (currentLetter === btnLetter) {
@@ -56,6 +57,7 @@ export const checkLetter = (currentBtn, btnLetter) => {
 
   if (wrongGuessCount === MAX_ATTEMPTS) {
     endGame('defeat');
+
     document.querySelectorAll('.keyboard__btn').forEach((btn) => {
       const currBtn = btn;
       currBtn.disabled = true;
@@ -72,9 +74,11 @@ const mouseCheckLetter = (e) => {
   if (/^[A-Z]/.test(key) && keyCode >= 65 && keyCode <= 90) {
     const keyboardBtns = document.querySelectorAll('.keyboard__btn');
     let currBtn;
+
     keyboardBtns.forEach((btn) => {
       if (btn.textContent === key) currBtn = btn;
     });
+
     if (!currBtn.disabled) checkLetter(currBtn, key);
   }
 };
