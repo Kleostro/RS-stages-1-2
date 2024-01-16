@@ -85,12 +85,17 @@ const mouseCheckLetter = (e) => {
 
 const mouseCheckWrapper = (e) => mouseCheckLetter(e);
 
+const getRandomPairs = () => data[Math.floor(Math.random() * data.length)];
+
 export const startGame = () => {
   showModal();
-  const { question, answer } = data[Math.floor(Math.random() * data.length)];
-  questionTitleElem.textContent = question;
+  let randomPairs = getRandomPairs();
+  while (questionTitleElem.textContent === randomPairs.question) {
+    randomPairs = getRandomPairs();
+  }
+  questionTitleElem.textContent = randomPairs.question;
   wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
-  currentAnswer = answer;
+  currentAnswer = randomPairs.answer;
   restartGame();
   document.removeEventListener('keydown', mouseCheckWrapper);
   document.addEventListener('keydown', mouseCheckWrapper);
