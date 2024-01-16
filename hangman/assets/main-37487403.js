@@ -313,12 +313,16 @@ const mouseCheckLetter = (e) => {
   }
 };
 const mouseCheckWrapper = (e) => mouseCheckLetter(e);
+const getRandomPairs = () => data[Math.floor(Math.random() * data.length)];
 const startGame = () => {
   showModal();
-  const { question, answer } = data[Math.floor(Math.random() * data.length)];
-  questionTitleElem.textContent = question;
+  let randomPairs = getRandomPairs();
+  while (questionTitleElem.textContent === randomPairs.question) {
+    randomPairs = getRandomPairs();
+  }
+  questionTitleElem.textContent = randomPairs.question;
   wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
-  currentAnswer = answer;
+  currentAnswer = randomPairs.answer;
   restartGame();
   document.removeEventListener("keydown", mouseCheckWrapper);
   document.addEventListener("keydown", mouseCheckWrapper);
@@ -367,4 +371,4 @@ app.append(headerElem, gameSectionElem, modalElem);
 document.body.append(app);
 alert("Make sure you use the en layout of the keyboard.");
 startGame();
-//# sourceMappingURL=main-d7537393.js.map
+//# sourceMappingURL=main-37487403.js.map
