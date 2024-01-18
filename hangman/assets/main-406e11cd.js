@@ -104,6 +104,43 @@ gallowsElem.append(
   fifthPartOfManElem,
   sixthPartOfManElem
 );
+const modal$1 = "";
+const modal = new BaseCreateElement("div", ["modal", "visible"]);
+const modalElem = modal.elem;
+const modalOverlay = new BaseCreateElement("div", ["modal__overlay", "visible"]);
+const modalOverlayElem = modalOverlay.elem;
+const modalContent = new BaseCreateElement("div", ["modal__content", "visible"]);
+const modalContentElem = modalContent.elem;
+const modalTitle = new BaseCreateElement("h2", ["modal__content-title"]);
+const modalTitleElem = modalTitle.elem;
+const modalSubtitle = new BaseCreateElement("h3", ["modal__content-subtitle"]);
+const modalSubtitleElem = modalSubtitle.elem;
+const playBtn = new BaseCreateElement("button", ["btn-reset", "modal__content-btn"]);
+const playBtnElem = playBtn.elem;
+playBtnElem.textContent = "Play again";
+const showModal = () => {
+  modalElem.classList.toggle("visible");
+  modalOverlayElem.classList.toggle("visible");
+  modalContentElem.classList.toggle("visible");
+};
+const endGameModal = (outcome, answer) => {
+  modalTitleElem.textContent = outcome === "win" ? "VICTORY!" : "DEFEAT!";
+  modalSubtitleElem.innerHTML = outcome === "win" ? `You guessed the word: <span class="modal__content-accent">${answer}</span>` : `The target word was: <span class="modal__content-accent">${answer}</span>`;
+  showModal();
+};
+modalContentElem.append(modalTitleElem, modalSubtitleElem, playBtnElem);
+modalOverlayElem.append(modalContentElem);
+modalElem.append(modalOverlayElem);
+const quiz = "";
+const quizBox = new BaseCreateElement("div", ["quiz"]);
+const quizBoxElem = quizBox.elem;
+const questionTitle = new BaseCreateElement("h2", ["quiz__question"]);
+const questionTitleElem = questionTitle.elem;
+const wrongGuess = new BaseCreateElement("span", ["quiz__wrong"]);
+const wrongGuessElem = wrongGuess.elem;
+const answerBox = new BaseCreateElement("div", ["quiz__answer"]);
+const answerBoxElem = answerBox.elem;
+quizBoxElem.append(questionTitleElem, wrongGuessElem, answerBoxElem);
 const data = [
   {
     id: 1,
@@ -206,94 +243,65 @@ const data = [
     answer: "HASOWNPROPERTY"
   }
 ];
-const modal$1 = "";
-const modal = new BaseCreateElement("div", ["modal", "visible"]);
-const modalElem = modal.elem;
-const modalOverlay = new BaseCreateElement("div", ["modal__overlay", "visible"]);
-const modalOverlayElem = modalOverlay.elem;
-const modalContent = new BaseCreateElement("div", ["modal__content", "visible"]);
-const modalContentElem = modalContent.elem;
-const modalTitle = new BaseCreateElement("h2", ["modal__content-title"]);
-const modalTitleElem = modalTitle.elem;
-const modalSubtitle = new BaseCreateElement("h3", ["modal__content-subtitle"]);
-const modalSubtitleElem = modalSubtitle.elem;
-const playBtn = new BaseCreateElement("button", ["btn-reset", "modal__content-btn"]);
-const playBtnElem = playBtn.elem;
-playBtnElem.textContent = "Play again";
-const showModal = () => {
-  modalElem.classList.toggle("visible");
-  modalOverlayElem.classList.toggle("visible");
-  modalContentElem.classList.toggle("visible");
-};
-const endGameModal = (outcome, answer) => {
-  modalTitleElem.textContent = outcome === "win" ? "VICTORY!" : "DEFEAT!";
-  modalSubtitleElem.innerHTML = outcome === "win" ? `You guessed the word: <span class="modal__content-accent">${answer}</span>` : `The target word was: <span class="modal__content-accent">${answer}</span>`;
-  showModal();
-};
-modalContentElem.append(modalTitleElem, modalSubtitleElem, playBtnElem);
-modalOverlayElem.append(modalContentElem);
-modalElem.append(modalOverlayElem);
-const quiz = "";
-const quizBox = new BaseCreateElement("div", ["quiz"]);
-const quizBoxElem = quizBox.elem;
-const questionTitle = new BaseCreateElement("h2", ["quiz__question"]);
-const questionTitleElem = questionTitle.elem;
-const wrongGuess = new BaseCreateElement("span", ["quiz__wrong"]);
-const wrongGuessElem = wrongGuess.elem;
-const answerBox = new BaseCreateElement("div", ["quiz__answer"]);
-const answerBoxElem = answerBox.elem;
-quizBoxElem.append(questionTitleElem, wrongGuessElem, answerBoxElem);
-const MAX_ATTEMPTS = 6;
-const ANIMATION_END_TIME = 500;
-let currentAnswer = "";
-let guessedLettersArr = [];
-let wrongGuessCount = 0;
-const restartGame = () => {
+const getRandomQA = () => data[Math.floor(Math.random() * data.length)];
+const createAnswerLetterField = (currentAnswer2) => {
   answerBoxElem.innerHTML = "";
-  guessedLettersArr = [];
-  wrongGuessCount = 0;
-  for (let i = 0; i < currentAnswer.length; i += 1) {
+  [...currentAnswer2].forEach(() => {
     const letterField = new BaseCreateElement("span", ["quiz__answer-letter"]);
     const letterFieldElem = letterField.elem;
     answerBoxElem.append(letterFieldElem);
-  }
+  });
+};
+const hideManParts = () => {
   document.querySelectorAll(".man-part").forEach((item) => {
     const currentItem = item;
     currentItem.style.opacity = 0;
   });
+};
+const changeKeyboardBtnsDisabled = (isDisabled) => {
   document.querySelectorAll(".keyboard__btn").forEach((btn) => {
     const currentBtn = btn;
-    currentBtn.disabled = false;
+    currentBtn.disabled = isDisabled;
   });
 };
+const showGuessedLetter = (index, currentLetter, guessedLettersArr2) => {
+  const currentLetterElem = document.querySelectorAll(".quiz__answer-letter")[index];
+  currentLetterElem.textContent = currentLetter;
+  currentLetterElem.style.borderBottom = "none";
+  guessedLettersArr2.push(currentLetter);
+};
+const MAX_ATTEMPTS = 6;
+const ANIMATION_END_TIME = 500;
+let currentAnswer = "";
+let randomQA = {};
+let guessedLettersArr = [];
+let wrongGuessCount = 0;
 const endGame = (outcome) => {
   setTimeout(() => {
     endGameModal(outcome, currentAnswer);
   }, ANIMATION_END_TIME);
+};
+const addTextWrongGuess = () => {
+  wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">${wrongGuessCount} / ${MAX_ATTEMPTS}</span>`;
+};
+const showWrongChoice = () => {
+  document.querySelectorAll(".man-part")[wrongGuessCount].style.opacity = 1;
+  wrongGuessCount += 1;
+  addTextWrongGuess();
 };
 const checkLetter = (currentBtn, btnLetter) => {
   const currentBtnElem = currentBtn;
   currentBtnElem.disabled = true;
   if (currentAnswer.includes(btnLetter)) {
     [...currentAnswer].forEach((currentLetter, index) => {
-      if (currentLetter === btnLetter) {
-        const currentLetterElem = document.querySelectorAll(".quiz__answer-letter")[index];
-        currentLetterElem.textContent = currentLetter;
-        currentLetterElem.style.borderBottom = "none";
-        guessedLettersArr.push(currentLetter);
-      }
+      if (currentLetter === btnLetter)
+        showGuessedLetter(index, currentLetter, guessedLettersArr);
     });
-  } else {
-    document.querySelectorAll(".man-part")[wrongGuessCount].style.opacity = 1;
-    wrongGuessCount += 1;
-    wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">${wrongGuessCount} / ${MAX_ATTEMPTS}</span>`;
-  }
+  } else
+    showWrongChoice();
   if (wrongGuessCount === MAX_ATTEMPTS) {
     endGame("defeat");
-    document.querySelectorAll(".keyboard__btn").forEach((btn) => {
-      const currBtn = btn;
-      currBtn.disabled = true;
-    });
+    changeKeyboardBtnsDisabled(true);
   }
   if (guessedLettersArr.length === currentAnswer.length)
     endGame("win");
@@ -313,17 +321,22 @@ const mouseCheckLetter = (e) => {
   }
 };
 const mouseCheckWrapper = (e) => mouseCheckLetter(e);
-const getRandomPairs = () => data[Math.floor(Math.random() * data.length)];
+const updateCurrentQA = () => {
+  do {
+    randomQA = getRandomQA();
+  } while (questionTitleElem.textContent === randomQA.question);
+  currentAnswer = randomQA.answer;
+  questionTitleElem.textContent = randomQA.question;
+};
 const startGame = () => {
+  guessedLettersArr = [];
+  wrongGuessCount = 0;
   showModal();
-  let randomPairs = getRandomPairs();
-  while (questionTitleElem.textContent === randomPairs.question) {
-    randomPairs = getRandomPairs();
-  }
-  questionTitleElem.textContent = randomPairs.question;
-  wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
-  currentAnswer = randomPairs.answer;
-  restartGame();
+  updateCurrentQA();
+  createAnswerLetterField(currentAnswer);
+  addTextWrongGuess();
+  hideManParts();
+  changeKeyboardBtnsDisabled(false);
   document.removeEventListener("keydown", mouseCheckWrapper);
   document.addEventListener("keydown", mouseCheckWrapper);
 };
@@ -371,4 +384,4 @@ app.append(headerElem, gameSectionElem, modalElem);
 document.body.append(app);
 alert("Make sure you use the en layout of the keyboard.");
 startGame();
-//# sourceMappingURL=main-37487403.js.map
+//# sourceMappingURL=main-406e11cd.js.map
