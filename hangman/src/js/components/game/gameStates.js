@@ -1,39 +1,34 @@
-import data from '../../../data/data.json';
-import BaseCreateElement from '../../BaseCreateElement';
 import { showModal, endGameModal, playBtnElem } from '../modal/modal';
-import { answerBoxElem, questionTitleElem, wrongGuessElem } from '../quiz/quiz';
+import { questionTitleElem, wrongGuessElem } from '../quiz/quiz';
+import {
+  createAnswerLetterField,
+  hideManParts,
+  changeKeyboardBtnsDisabled,
+  showGuessedLetter,
+  getRandomQA,
+} from './utilits';
 
 const MAX_ATTEMPTS = 6;
 const ANIMATION_END_TIME = 500;
 let currentAnswer = '';
+let randomQA = {};
 let guessedLettersArr = [];
 let wrongGuessCount = 0;
-
-const restartGame = () => {
-  answerBoxElem.innerHTML = '';
-  guessedLettersArr = [];
-  wrongGuessCount = 0;
-
-  for (let i = 0; i < currentAnswer.length; i += 1) {
-    const letterField = new BaseCreateElement('span', ['quiz__answer-letter']);
-    const letterFieldElem = letterField.elem;
-    answerBoxElem.append(letterFieldElem);
-  }
-
-  document.querySelectorAll('.man-part').forEach((item) => {
-    const currentItem = item;
-    currentItem.style.opacity = 0;
-  });
-  document.querySelectorAll('.keyboard__btn').forEach((btn) => {
-    const currentBtn = btn;
-    currentBtn.disabled = false;
-  });
-};
 
 const endGame = (outcome) => {
   setTimeout(() => {
     endGameModal(outcome, currentAnswer);
   }, ANIMATION_END_TIME);
+};
+
+const addTextWrongGuess = () => {
+  wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">${wrongGuessCount} / ${MAX_ATTEMPTS}</span>`;
+};
+
+const showWrongChoice = () => {
+  document.querySelectorAll('.man-part')[wrongGuessCount].style.opacity = 1;
+  wrongGuessCount += 1;
+  addTextWrongGuess();
 };
 
 export const checkLetter = (currentBtn, btnLetter) => {
@@ -42,26 +37,13 @@ export const checkLetter = (currentBtn, btnLetter) => {
 
   if (currentAnswer.includes(btnLetter)) {
     [...currentAnswer].forEach((currentLetter, index) => {
-      if (currentLetter === btnLetter) {
-        const currentLetterElem = document.querySelectorAll('.quiz__answer-letter')[index];
-        currentLetterElem.textContent = currentLetter;
-        currentLetterElem.style.borderBottom = 'none';
-        guessedLettersArr.push(currentLetter);
-      }
+      if (currentLetter === btnLetter) showGuessedLetter(index, currentLetter, guessedLettersArr);
     });
-  } else {
-    document.querySelectorAll('.man-part')[wrongGuessCount].style.opacity = 1;
-    wrongGuessCount += 1;
-    wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">${wrongGuessCount} / ${MAX_ATTEMPTS}</span>`;
-  }
+  } else showWrongChoice();
 
   if (wrongGuessCount === MAX_ATTEMPTS) {
     endGame('defeat');
-
-    document.querySelectorAll('.keyboard__btn').forEach((btn) => {
-      const currBtn = btn;
-      currBtn.disabled = true;
-    });
+    changeKeyboardBtnsDisabled(true);
   }
 
   if (guessedLettersArr.length === currentAnswer.length) endGame('win');
@@ -85,18 +67,24 @@ const mouseCheckLetter = (e) => {
 
 const mouseCheckWrapper = (e) => mouseCheckLetter(e);
 
-const getRandomPairs = () => data[Math.floor(Math.random() * data.length)];
+const updateCurrentQA = () => {
+  do {
+    randomQA = getRandomQA();
+  } while (questionTitleElem.textContent === randomQA.question);
+
+  currentAnswer = randomQA.answer;
+  questionTitleElem.textContent = randomQA.question;
+};
 
 export const startGame = () => {
+  guessedLettersArr = [];
+  wrongGuessCount = 0;
   showModal();
-  let randomPairs = getRandomPairs();
-  while (questionTitleElem.textContent === randomPairs.question) {
-    randomPairs = getRandomPairs();
-  }
-  questionTitleElem.textContent = randomPairs.question;
-  wrongGuessElem.innerHTML = `Number of incorrect answers: <span class="quiz__wrong-accent">0 / ${MAX_ATTEMPTS}</span>`;
-  currentAnswer = randomPairs.answer;
-  restartGame();
+  updateCurrentQA();
+  createAnswerLetterField(currentAnswer);
+  addTextWrongGuess();
+  hideManParts();
+  changeKeyboardBtnsDisabled(false);
   document.removeEventListener('keydown', mouseCheckWrapper);
   document.addEventListener('keydown', mouseCheckWrapper);
 };
