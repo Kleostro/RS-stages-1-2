@@ -2,8 +2,15 @@ import CreateElement from '../../CreateElement';
 import gameSection from '../game/gameBox';
 import './playground.scss';
 import {
-  CELL_CLASSES, PLAYGROUND_CLASSES, changeCrossedClass, changePaintedClass,
+  CELL_CLASSES,
+  PLAYGROUND_CLASSES,
+  changeCrossedClass,
+  changePaintedClass,
+  highlightCurrentColumnAndRow,
+  removeHighlightCells,
 } from './utils';
+
+document.body.prepend(gameSection.element);
 
 class PlayGround {
   constructor(matrix) {
@@ -30,28 +37,48 @@ class PlayGround {
       changeCrossedClass(e);
     });
 
+    playGround.addListener('mousemove', (event) => {
+      highlightCurrentColumnAndRow(event, playGround);
+    });
+
+    playGround.addListener('mouseleave', removeHighlightCells);
+
     playGround.element.classList.add(this.playGroundSize);
 
     return playGround.element;
   }
 
   createCell() {
-    let row = 0;
-    let column = 0;
+    let rowCounter = 0;
+    let cellCounter = 0;
+    let dataCellCounter = 0;
 
     for (let i = 0; i < this.matrix.length; i += 1) {
-      row += 1;
+      rowCounter += 1;
+      dataCellCounter = 0;
+      const row = new CreateElement({
+        tag: 'div',
+        classes: ['playground__row'],
+        attrs: {
+          'data-row': rowCounter,
+        },
+        parent: this.playGround,
+      });
 
       for (let j = 0; j < this.matrix[0].length; j += 1) {
-        column += 1;
+        dataCellCounter += 1;
+        cellCounter += 1;
         const cell = new CreateElement({
           tag: 'div',
           classes: ['playground__cell'],
-          parent: this.playGround,
+          attrs: {
+            'data-cell': dataCellCounter,
+          },
+          parent: row.element,
         });
 
-        if (row % 5 === 0) cell.element.style.borderBottom = '2px solid #000';
-        if (column % 5 === 0) cell.element.style.borderRight = '2px solid #000';
+        if (cellCounter % 5 === 0) cell.element.style.borderBottom = '2px solid #000';
+        if (rowCounter % 5 === 0) cell.element.style.borderRight = '2px solid #000';
 
         cell.element.classList.add(this.cellCount);
       }

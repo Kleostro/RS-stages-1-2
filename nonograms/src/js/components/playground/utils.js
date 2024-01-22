@@ -23,3 +23,36 @@ export const changeCrossedClass = (e) => {
     e.target.classList.remove('painted');
   }
 };
+
+export const removeHighlightCells = () => {
+  const cells = document.querySelectorAll('.playground__cell');
+  const rows = document.querySelectorAll('.playground__row');
+
+  cells.forEach((cell) => {
+    cell.classList.remove('cell-highlight');
+  });
+
+  rows.forEach((row) => {
+    row.classList.remove('row-highlight');
+  });
+};
+
+export const highlightCurrentColumnAndRow = (event, playGround) => {
+  const rect = playGround.element.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  const rowIndex = Math.floor(x / 20) + 1;
+  const cellIndex = Math.floor(y / 20) + 1;
+
+  removeHighlightCells();
+
+  if (rowIndex <= 10) {
+    const currentRow = document.querySelector(`.playground__row[data-row="${rowIndex}"]`);
+    currentRow.classList.add('row-highlight');
+  }
+  if (cellIndex <= 10) {
+    const currentCells = document.querySelectorAll(`.playground__cell[data-cell="${cellIndex}"]`);
+    currentCells.forEach((cell) => cell.classList.add('cell-highlight'));
+  }
+};

@@ -5,6 +5,4 @@ const gameSection = new CreateElement({
   classes: ['game'],
 });
 
-document.body.prepend(gameSection.element);
-
 export default gameSection;
