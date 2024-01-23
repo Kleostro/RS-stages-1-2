@@ -8,6 +8,7 @@ body {
   min-width: 320px;
   font-family: "Inter", sans-serif;
   font-weight: 400;
+  background-color: var(--body-dark);
   scroll-behavior: smooth;
 }
 
@@ -22,4 +23,10 @@ img {
 
 .stop-scroll {
   overflow: hidden;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 var(--small-offset);
+  max-width: 1440px;
 }
