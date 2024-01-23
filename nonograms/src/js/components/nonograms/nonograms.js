@@ -1,3 +1,9 @@
+/**
+ * Array with nonograms.
+ * @typedef {Object} Nonogram
+ * @property {number[][]} matrix - Nonogram matrix, where 1 is a filled cell, 0 is an empty cell.
+ * @property {string} title - The title of the nonogram.
+ */
 const nonograms = [
   {
     matrix: [

@@ -1,0 +1,137 @@
+.game {
+  &__wrapper {
+    display: grid;
+    grid-template-columns: max-content auto;
+  }
+}
+
+.left-hints {
+  grid-column: 1;
+  grid-row: 2;
+  border-top: 3px solid var(--hints-border-dark);
+  border-right: 2px solid var(--hints-border-dark);
+  border-left: 2px solid var(--hints-border-dark);
+  width: max-content;
+  background-color: var(--hints-bg);
+
+  &__row {
+    display: flex;
+    justify-content: end;
+
+    &:nth-child(5n) {
+      border-bottom: 4px solid var(--hints-border-dark);
+
+      .left-hints__cell {
+        border-bottom: none;
+      }
+    }
+
+    &:nth-child(5n+1) {
+      .left-hints__cell {
+        border-top: none;
+      }
+    }
+  }
+
+  &__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hints-border-light);
+    width: 20px;
+    height: 20px;
+    color: var(--hints-color);
+    user-select: none;
+
+    &:nth-child(5n) {
+      border-right: 4px solid var(--hints-border-dark);
+    }
+  }
+}
+
+.playground {
+  grid-row: 2;
+  border-top: 3px solid var(--playground-border-dark);
+  border-right: none;
+  border-left: 2px solid var(--playground-border-dark);
+  width: max-content;
+  background-color: var(--playground-bg-light);
+
+  &__row {
+    display: flex;
+    justify-content: end;
+
+    &:nth-child(5n) {
+      border-bottom: 4px solid var(--playground-border-dark);
+    }
+  }
+
+  &__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--playground-border-dark);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+
+    &__cell:nth-child(5n+1) {
+      border-left: none;
+    }
+
+    &:nth-child(5n) {
+      border-right: 4px solid var(--playground-border-dark);
+      width: 24px;
+    }
+
+    &.painted {
+      background-color: var(--playground-bg-dark);
+    }
+  }
+}
+
+.top-hints {
+  display: flex;
+  grid-column: 2;
+  margin-left: -3px;
+  border-top: 3px solid var(--hints-border-dark);
+  border-left: 5px solid var(--hints-border-dark);
+  width: max-content;
+  background-color: var(--hints-bg);
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+
+    &:nth-child(5n) {
+      border-right: 4px solid var(--hints-border-dark);
+
+      .top-hints__cell {
+        border-right: none;
+      }
+    }
+
+    &:nth-child(5n+1) {
+      .top-hints__cell {
+        border-left: none;
+      }
+    }
+  }
+
+  &__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hints-border-light);
+    width: 20px;
+    height: 20px;
+    color: var(--hints-color);
+    user-select: none;
+  }
+}
+
+.row-highlight,
+.cell-highlight {
+  background-color: #fff;
+}
