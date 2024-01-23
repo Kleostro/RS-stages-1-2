@@ -7,6 +7,9 @@ import {
   removeHighlightCells,
 } from './utils';
 
+const LEFT_HINTS_NAME = 'left';
+const TOP_HINTS_NAME = 'top';
+
 let currentPlayground = [];
 
 const currentTitle = 'snowman';
@@ -16,8 +19,8 @@ const { matrix, title } = currentnonogram;
 const startGame = () => {
   currentPlayground = [];
 
-  createHints(matrix, gameWrapper, 'left');
-  createHints(matrix, gameWrapper, 'top');
+  createHints(matrix, gameWrapper, LEFT_HINTS_NAME);
+  createHints(matrix, gameWrapper, TOP_HINTS_NAME);
   currentPlayground = createCurrentPlayground(matrix);
 };
 
@@ -27,22 +30,26 @@ playground.addEventListener('click', (e) => {
   const currentCellIndex = currentCell.getAttribute('data-cell');
   const currentRowIndex = currentRow.getAttribute('data-row');
 
-  if (currentRowIndex && currentCellIndex && !currentCell.classList.contains('painted')) {
-    currentPlayground[currentRowIndex][currentCellIndex] = 1;
-  } else {
-    currentPlayground[currentRowIndex][currentCellIndex] = 0;
+  if (currentRowIndex && currentCellIndex) {
+    if (!currentCell.classList.contains('painted')) {
+      currentPlayground[currentRowIndex][currentCellIndex] = 1;
+    } else {
+      currentPlayground[currentRowIndex][currentCellIndex] = 0;
+    }
   }
 
   currentCell.classList.toggle('painted');
 
-  if (currentPlayground.every((_, i) => currentPlayground[i].every((v, j) => v === matrix[i][j]))) {
+  if (currentPlayground
+    .every((_, rowIndex) => currentPlayground[rowIndex]
+      .every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
     console.log('Головоломка разгадана');
     alert('Game over');
   }
 });
 
 playground.addEventListener('mousemove', (event) => {
-  highlightCurrentColumnAndRow(event);
+  highlightCurrentColumnAndRow(event, matrix);
 });
 
 playground.addEventListener('mouseleave', () => {

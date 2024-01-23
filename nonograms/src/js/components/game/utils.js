@@ -3,6 +3,8 @@ import { playground } from './game';
 
 const playgroundRowsArr = [];
 const playgroundCellsArr = [];
+const CELL_WIDTH = 20;
+const CELL_HEIGHT = 20;
 
 export const createCurrentPlayground = (matrix) => {
   const currentPlayground = [];
@@ -100,22 +102,22 @@ export const removeHighlightCells = () => {
   });
 };
 
-export const highlightCurrentColumnAndRow = (event) => {
+export const highlightCurrentColumnAndRow = (event, matrix) => {
   const rect = playground.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  const rowIndex = Math.floor(y / 20);
-  const cellIndex = Math.floor(x / 20);
+  const rowIndex = Math.floor(y / CELL_HEIGHT);
+  const cellIndex = Math.floor(x / CELL_WIDTH);
 
   removeHighlightCells();
 
-  if (rowIndex < 10 && rowIndex > 0) {
+  if (rowIndex < matrix.length && rowIndex > 0) {
     const currentRow = playgroundRowsArr[rowIndex];
     currentRow.classList.add('row-highlight');
   }
 
-  if (cellIndex < 10) {
+  if (cellIndex < matrix.length && cellIndex > 0) {
     const currentCells = document.querySelectorAll(`.playground__cell[data-cell="${cellIndex}"]`);
     currentCells.forEach((cell) => cell.classList.add('cell-highlight'));
   }
