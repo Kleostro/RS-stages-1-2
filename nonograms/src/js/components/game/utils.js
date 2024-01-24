@@ -1,5 +1,5 @@
 import CreateElement from '../../utils';
-import { playground } from './gameElements';
+import { playground } from './gameLayout';
 
 const playgroundRowsArr = [];
 const playgroundCellsArr = [];

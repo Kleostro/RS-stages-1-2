@@ -1,5 +1,5 @@
 import nonograms from '../../../data/nonograms.json';
-import { gameWrapper, playground } from './gameElements';
+import { gameWrapper, playground } from './gameLayout';
 import {
   createCurrentPlayground,
   createHints,
@@ -13,8 +13,8 @@ const TOP_HINTS_DIRECTION = 'top';
 let currentPlayground = [];
 
 const currentTitle = 'Cherry';
-const currentnonogram = nonograms.find((item) => item.title === currentTitle);
-const { matrix, title } = currentnonogram;
+const currentNonogram = nonograms.find((item) => item.title === currentTitle);
+const { matrix, title } = currentNonogram;
 
 const startGame = () => {
   currentPlayground = [];
