@@ -1,0 +1,120 @@
+.modal {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+
+  &__overlay {
+    position: fixed;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--end-game-modal-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    inset: 0;
+
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 var(--small-offset);
+    border-radius: 10px;
+    padding: var(--small-offset);
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--end-game-modal-bg);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+    cursor: auto;
+
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
+    }
+  }
+
+  &__title {
+    margin-bottom: var(--small-offset);
+    font-size: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+    color: var(--end-game-modal-text);
+
+    &-accent {
+      text-transform: uppercase;
+      color: var(--end-game-modal-text-accent);
+    }
+  }
+
+  &__nonogram {
+    border: 1px solid var(--playground-border-dark);
+    background-color: var(--playground-bg-light);
+
+    &-row {
+      display: flex;
+    }
+
+    &-cell {
+      border: 1px solid var(--playground-border-light);
+      width: var(--cell-width);
+      height: var(--cell-height);
+
+      &.painted {
+        background-color: var(--playground-bg-dark);
+      }
+    }
+  }
+
+  &__close-btn {
+    position: absolute;
+    right: var(--small-offset);
+    top: var(--small-offset);
+    width: var(--modal-btn-width);
+    height: var(--modal-btn-height);
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: var(--modal-btn-width);
+      height: 2px;
+      background-color: var(--end-game-modal-close-btn-accent);
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: var(--modal-btn-width);
+      height: 2px;
+      background-color: var(--end-game-modal-close-btn-accent);
+      transform: rotate(-45deg);
+    }
+  }
+
+  &.visible {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+  }
+}

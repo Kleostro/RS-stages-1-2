@@ -1,4 +1,5 @@
 import nonograms from '../../../data/nonograms.json';
+import { endGameModal, showModal } from '../endGameModal/endGameModal';
 import { gameWrapper, playground } from './gameLayout';
 import {
   createCurrentPlayground,
@@ -9,19 +10,27 @@ import {
 
 const LEFT_HINTS_DIRECTION = 'left';
 const TOP_HINTS_DIRECTION = 'top';
+const END_GAME_ANIMATION = 500;
 
 let currentPlayground = [];
 
-const currentTitle = 'Cherry';
+const currentTitle = 'camel';
 const currentNonogram = nonograms.find((item) => item.title === currentTitle);
 const { matrix, title } = currentNonogram;
 
 const startGame = () => {
   currentPlayground = [];
-
+  showModal();
+  currentPlayground = createCurrentPlayground(matrix);
   createHints(matrix, gameWrapper, LEFT_HINTS_DIRECTION);
   createHints(matrix, gameWrapper, TOP_HINTS_DIRECTION);
-  currentPlayground = createCurrentPlayground(matrix);
+};
+
+const endGame = () => {
+  const copyPlayground = playground.cloneNode(true);
+  setTimeout(() => {
+    endGameModal(title, copyPlayground);
+  }, END_GAME_ANIMATION);
 };
 
 playground.addEventListener('click', (e) => {
@@ -43,8 +52,7 @@ playground.addEventListener('click', (e) => {
   if (currentPlayground
     .every((_, rowIndex) => currentPlayground[rowIndex]
       .every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
-    console.log('Головоломка разгадана');
-    alert('Game over');
+    endGame();
   }
 });
 

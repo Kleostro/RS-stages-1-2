@@ -3,6 +3,12 @@
   --small-offset: 20px;
   --section-offset: 100px;
 
+  // size
+  --cell-width: 20px;
+  --cell-height: 20px;
+  --modal-btn-width: 15px;
+  --modal-btn-height: 15px;
+
   // colors
   --body-dark: #828282;
   --hints-bg: #636363;
@@ -13,4 +19,10 @@
   --playground-bg-dark: #000;
   --playground-border-dark: #000;
   --playground-border-light: #595959;
+  --end-game-modal-overlay: #403f3dcc;
+  --end-game-modal-bg: #e0c2f0;
+  --end-game-modal-text: #083801;
+  --end-game-modal-text-accent: #107b00;
+  --end-game-modal-close-btn-bg: #4d0235;
+  --end-game-modal-close-btn-accent: #931da8;
 }
