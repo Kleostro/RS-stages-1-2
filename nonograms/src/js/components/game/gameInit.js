@@ -1,5 +1,5 @@
-import nonograms from '../nonograms/nonograms';
-import { gameWrapper, playground } from './game';
+import nonograms from '../../../data/nonograms.json';
+import { gameWrapper, playground } from './gameElements';
 import {
   createCurrentPlayground,
   createHints,
@@ -7,20 +7,20 @@ import {
   removeHighlightCells,
 } from './utils';
 
-const LEFT_HINTS_NAME = 'left';
-const TOP_HINTS_NAME = 'top';
+const LEFT_HINTS_DIRECTION = 'left';
+const TOP_HINTS_DIRECTION = 'top';
 
 let currentPlayground = [];
 
-const currentTitle = 'snowman';
+const currentTitle = 'Cherry';
 const currentnonogram = nonograms.find((item) => item.title === currentTitle);
 const { matrix, title } = currentnonogram;
 
 const startGame = () => {
   currentPlayground = [];
 
-  createHints(matrix, gameWrapper, LEFT_HINTS_NAME);
-  createHints(matrix, gameWrapper, TOP_HINTS_NAME);
+  createHints(matrix, gameWrapper, LEFT_HINTS_DIRECTION);
+  createHints(matrix, gameWrapper, TOP_HINTS_DIRECTION);
   currentPlayground = createCurrentPlayground(matrix);
 };
 

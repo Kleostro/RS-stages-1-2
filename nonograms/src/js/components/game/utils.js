@@ -1,10 +1,12 @@
 import CreateElement from '../../utils';
-import { playground } from './game';
+import { playground } from './gameElements';
 
 const playgroundRowsArr = [];
 const playgroundCellsArr = [];
 const CELL_WIDTH = 20;
 const CELL_HEIGHT = 20;
+const LEFT_HINTS_DIRECTION = 'left';
+const TOP_HINTS_DIRECTION = 'top';
 
 export const createCurrentPlayground = (matrix) => {
   const currentPlayground = [];
@@ -59,9 +61,9 @@ export const createHints = (matrix, gameWrapper, direction) => {
     });
 
     for (let cell = 0; cell < matrix[row].length; cell += 1) {
-      if (direction === 'left' && matrix[row][cell] === 1) {
+      if (direction === LEFT_HINTS_DIRECTION && matrix[row][cell] === 1) {
         hintCounter += 1;
-      } else if (direction === 'top' && matrix[cell][row] === 1) {
+      } else if (direction === TOP_HINTS_DIRECTION && matrix[cell][row] === 1) {
         hintCounter += 1;
       } else if (hintCounter > 0) {
         hints.push(hintCounter);
@@ -82,14 +84,14 @@ export const createHints = (matrix, gameWrapper, direction) => {
       });
     });
 
-    if (direction === 'left') {
+    if (direction === LEFT_HINTS_DIRECTION) {
       rowHints.push(hints);
-    } else if (direction === 'top') {
+    } else if (direction === TOP_HINTS_DIRECTION) {
       columnHints.push(hints);
     }
   }
 
-  return direction === 'left' ? rowHints : columnHints;
+  return direction === LEFT_HINTS_DIRECTION ? rowHints : columnHints;
 };
 
 export const removeHighlightCells = () => {
@@ -107,18 +109,26 @@ export const highlightCurrentColumnAndRow = (event, matrix) => {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  const rowIndex = Math.floor(y / CELL_HEIGHT);
-  const cellIndex = Math.floor(x / CELL_WIDTH);
+  let rowIndex = Math.floor(y / CELL_HEIGHT);
+  let cellIndex = Math.floor(x / CELL_WIDTH);
+
+  if (rowIndex > matrix.length - 1) {
+    rowIndex = matrix.length - 1;
+  }
+
+  if (cellIndex > matrix.length - 1) {
+    cellIndex = matrix.length - 1;
+  }
 
   removeHighlightCells();
 
-  if (rowIndex < matrix.length && rowIndex > 0) {
+  if (rowIndex < matrix.length && rowIndex >= 0) {
     const currentRow = playgroundRowsArr[rowIndex];
     currentRow.classList.add('row-highlight');
   }
 
-  if (cellIndex < matrix.length && cellIndex > 0) {
-    const currentCells = document.querySelectorAll(`.playground__cell[data-cell="${cellIndex}"]`);
+  if (cellIndex < matrix.length && cellIndex >= 0) {
+    const currentCells = playgroundCellsArr.filter((cell) => cell.getAttribute('data-cell') === `${cellIndex}`);
     currentCells.forEach((cell) => cell.classList.add('cell-highlight'));
   }
 };
