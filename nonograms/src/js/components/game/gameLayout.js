@@ -23,3 +23,15 @@ export const playground = new CreateElement({
   classes: ['playground'],
   parent: gameWrapper,
 });
+
+export const topHintsBox = new CreateElement({
+  tag: 'div',
+  classes: ['top-hints'],
+  parent: gameWrapper,
+});
+
+export const leftHintsBox = new CreateElement({
+  tag: 'div',
+  classes: ['left-hints'],
+  parent: gameWrapper,
+});

@@ -1,5 +1,6 @@
 :root {
   // offsets
+  --little-offset: 10px;
   --small-offset: 20px;
   --section-offset: 100px;
 
@@ -8,6 +9,7 @@
   --cell-height: 20px;
   --modal-btn-width: 15px;
   --modal-btn-height: 15px;
+  --border-radius: 10px;
 
   // colors
   --body-dark: #828282;
@@ -19,10 +21,17 @@
   --playground-bg-dark: #000;
   --playground-border-dark: #000;
   --playground-border-light: #595959;
+  --playground-highlight: #fff;
   --end-game-modal-overlay: #403f3dcc;
   --end-game-modal-bg: #e0c2f0;
   --end-game-modal-text: #083801;
   --end-game-modal-text-accent: #107b00;
   --end-game-modal-close-btn-bg: #4d0235;
   --end-game-modal-close-btn-accent: #931da8;
+  --settings-bg: #faedcd;
+  --settings-border: #d4a373;
+  --settings-text: #6c8a06;
+  --settings-text-accent: #6a3f0f;
+  --settings-btn-disabled: #bcf29a;
+  --settings-btn-hover: #ffd48e;
 }

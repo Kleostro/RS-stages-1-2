@@ -1,5 +1,6 @@
 import './style.scss';
 import header from './src/js/components/header/header';
+import './src/js/components/game/settings';
 import './src/js/components/game/gameInit';
 import CreateElement from './src/js/utils';
 import { gameSection } from './src/js/components/game/gameLayout';

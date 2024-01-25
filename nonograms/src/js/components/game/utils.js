@@ -1,8 +1,9 @@
 import CreateElement from '../../utils';
+import nonograms from '../../../data/nonograms.json';
 import { playground } from './gameLayout';
 
-const playgroundRowsArr = [];
-const playgroundCellsArr = [];
+let playgroundRowsArr = [];
+let playgroundCellsArr = [];
 const CELL_WIDTH = 20;
 const CELL_HEIGHT = 20;
 const LEFT_HINTS_DIRECTION = 'left';
@@ -10,6 +11,9 @@ const TOP_HINTS_DIRECTION = 'top';
 
 export const createCurrentPlayground = (matrix) => {
   const currentPlayground = [];
+  playgroundRowsArr = [];
+  playgroundCellsArr = [];
+  playground.innerHTML = '';
 
   for (let row = 0; row < matrix.length; row += 1) {
     const rowElement = new CreateElement({
@@ -40,13 +44,9 @@ export const createCurrentPlayground = (matrix) => {
   return currentPlayground;
 };
 
-export const createHints = (matrix, gameWrapper, direction) => {
-  const hintsBox = new CreateElement({
-    tag: 'div',
-    classes: [`${direction}-hints`],
-    parent: gameWrapper,
-  });
-
+export const createHints = (matrix, box, direction) => {
+  const hintsBox = box;
+  hintsBox.innerHTML = '';
   const rowHints = [];
   const columnHints = [];
 
@@ -123,7 +123,9 @@ export const highlightCurrentColumnAndRow = (event, matrix) => {
   removeHighlightCells();
 
   if (rowIndex < matrix.length && rowIndex >= 0) {
+    console.log(rowIndex, playgroundRowsArr)
     const currentRow = playgroundRowsArr[rowIndex];
+    console.log(currentRow)
     currentRow.classList.add('row-highlight');
   }
 
@@ -132,3 +134,25 @@ export const highlightCurrentColumnAndRow = (event, matrix) => {
     currentCells.forEach((cell) => cell.classList.add('cell-highlight'));
   }
 };
+
+export const createUniqueMatrixSizeObj = () => {
+  const uniqueMatrixSizeObj = new Set();
+
+  nonograms.forEach((nonogram) => {
+    uniqueMatrixSizeObj.add(nonogram.size);
+  });
+
+  return uniqueMatrixSizeObj;
+};
+
+export const updateNonogramsList = (sizesSubtitle, nonogramBtns) => {
+  const filterNonogramsArr = nonograms
+    .filter((item) => item.size === sizesSubtitle.textContent);
+  nonogramBtns.forEach((el, index) => {
+    const currentBtn = el;
+    currentBtn.textContent = filterNonogramsArr[index].title;
+  });
+};
+
+export const searchCurrentNonogram = (currTitle) => nonograms
+  .find((item) => item.title === currTitle);

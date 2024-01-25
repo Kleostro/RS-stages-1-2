@@ -32,7 +32,7 @@
     flex-direction: column;
     align-items: center;
     margin: 0 var(--small-offset);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     padding: var(--small-offset);
     width: 100%;
     max-width: 500px;

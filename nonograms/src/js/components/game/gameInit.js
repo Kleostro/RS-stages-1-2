@@ -1,11 +1,11 @@
-import nonograms from '../../../data/nonograms.json';
 import { endGameModal, showModal } from '../endGameModal/endGameModal';
-import { gameWrapper, playground } from './gameLayout';
+import { leftHintsBox, playground, topHintsBox } from './gameLayout';
 import {
   createCurrentPlayground,
   createHints,
   highlightCurrentColumnAndRow,
   removeHighlightCells,
+  searchCurrentNonogram,
 } from './utils';
 
 const LEFT_HINTS_DIRECTION = 'left';
@@ -13,17 +13,18 @@ const TOP_HINTS_DIRECTION = 'top';
 const END_GAME_ANIMATION = 500;
 
 let currentPlayground = [];
+let currentNonogram;
+let matrix;
+let title;
 
-const currentTitle = 'camel';
-const currentNonogram = nonograms.find((item) => item.title === currentTitle);
-const { matrix, title } = currentNonogram;
-
-const startGame = () => {
+const startGame = (currTitle = 'camel') => {
+  currentNonogram = searchCurrentNonogram(currTitle);
+  matrix = currentNonogram.matrix;
+  title = currentNonogram.title;
   currentPlayground = [];
-  showModal();
   currentPlayground = createCurrentPlayground(matrix);
-  createHints(matrix, gameWrapper, LEFT_HINTS_DIRECTION);
-  createHints(matrix, gameWrapper, TOP_HINTS_DIRECTION);
+  createHints(matrix, leftHintsBox, LEFT_HINTS_DIRECTION);
+  createHints(matrix, topHintsBox, TOP_HINTS_DIRECTION);
 };
 
 const endGame = () => {
@@ -65,3 +66,6 @@ playground.addEventListener('mouseleave', () => {
 });
 
 startGame();
+showModal();
+
+export default startGame;
