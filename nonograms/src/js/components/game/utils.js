@@ -123,9 +123,7 @@ export const highlightCurrentColumnAndRow = (event, matrix) => {
   removeHighlightCells();
 
   if (rowIndex < matrix.length && rowIndex >= 0) {
-    console.log(rowIndex, playgroundRowsArr)
     const currentRow = playgroundRowsArr[rowIndex];
-    console.log(currentRow)
     currentRow.classList.add('row-highlight');
   }
 

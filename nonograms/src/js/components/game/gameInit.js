@@ -13,15 +13,13 @@ const TOP_HINTS_DIRECTION = 'top';
 const END_GAME_ANIMATION = 500;
 
 let currentPlayground = [];
-let currentNonogram;
-let matrix;
-let title;
+let currentNonogram = {};
+let { matrix, title } = currentNonogram;
 
 const startGame = (currTitle = 'camel') => {
   currentNonogram = searchCurrentNonogram(currTitle);
   matrix = currentNonogram.matrix;
   title = currentNonogram.title;
-  currentPlayground = [];
   currentPlayground = createCurrentPlayground(matrix);
   createHints(matrix, leftHintsBox, LEFT_HINTS_DIRECTION);
   createHints(matrix, topHintsBox, TOP_HINTS_DIRECTION);
@@ -64,8 +62,6 @@ playground.addEventListener('mousemove', (event) => {
 playground.addEventListener('mouseleave', () => {
   removeHighlightCells();
 });
-
-startGame();
 showModal();
 
 export default startGame;

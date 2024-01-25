@@ -4,7 +4,6 @@ import {
   nonograms,
   nonogramsBox,
   nonogramsDropList,
-  nonogramsTitle,
   nonogramsSubtitle,
   sizeBtns,
   sizes,
@@ -17,7 +16,7 @@ import { updateNonogramsList } from './utils';
 
 const MAX_LETTERS_IN_TITLE = 10;
 
-let newMatrixTitle = '';
+let newMatrixTitle = 'camel';
 let isLockSizes = false;
 
 const showSizesDropList = () => {
@@ -84,7 +83,6 @@ sizeBtns.forEach((btn) => {
     e.target.disabled = true;
     sizesSubtitle.textContent = e.target.textContent;
     updateNonogramsList(sizesSubtitle, nonogramBtns);
-    nonogramsSubtitle.textContent = e.target.textContent;
   });
 });
 
@@ -101,7 +99,7 @@ nonogramBtns.forEach((btn) => {
       currentTitle += '...';
     }
     newMatrixTitle = e.target.textContent;
-    nonogramsTitle.innerHTML = `Selected: <span class="nonograms__subtitle">${currentTitle}</span>`;
+    nonogramsSubtitle.textContent = currentTitle;
   });
 });
 

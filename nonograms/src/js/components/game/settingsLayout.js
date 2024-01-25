@@ -83,14 +83,13 @@ export const nonogramsTitle = new CreateElement({
   tag: 'strong',
   classes: ['nonograms__title'],
   parent: nonogramsBox,
-  textContent: 'Nonograms: ',
+  textContent: 'Selected: ',
 });
 
 export const nonogramsSubtitle = new CreateElement({
   tag: 'span',
   classes: ['nonograms__subtitle'],
   parent: nonogramsTitle,
-  textContent: '5x5',
 });
 
 export const nonogramsDropList = new CreateElement({
@@ -116,6 +115,11 @@ export const nonogramsDropList = new CreateElement({
       parent: nonogramsListItem,
       textContent: filterNonogramsArr[index].title,
     });
+
+    if (filterNonogramsArr[0].title === filterNonogramsArr[index].title) {
+      nonogramBtn.disabled = true;
+      nonogramsSubtitle.textContent = filterNonogramsArr[index].title;
+    }
     nonogramBtns.push(nonogramBtn);
   });
 }());
