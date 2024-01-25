@@ -1,4 +1,4 @@
-import CreateElement from '../../utils';
+import CreateElement from '../../CreateElement';
 import './endGameModal.scss';
 
 export const modal = new CreateElement({

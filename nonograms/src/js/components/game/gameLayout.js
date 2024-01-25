@@ -1,4 +1,4 @@
-import CreateElement from '../../utils';
+import CreateElement from '../../CreateElement';
 import './game.scss';
 
 export const gameSection = new CreateElement({

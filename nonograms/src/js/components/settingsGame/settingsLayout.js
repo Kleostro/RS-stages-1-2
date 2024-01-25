@@ -1,6 +1,6 @@
-import CreateElement from '../../utils';
-import { gameContainer } from './gameLayout';
-import { createUniqueMatrixSizeObj } from './utils';
+import CreateElement from '../../CreateElement';
+import { gameContainer } from '../game/gameLayout';
+import { createUniqueMatrixSizeObj } from '../game/utils';
 import nonogramsData from '../../../data/nonograms.json';
 
 export const sizeBtns = [];

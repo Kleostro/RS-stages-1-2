@@ -1,4 +1,4 @@
-import CreateElement from '../../utils';
+import CreateElement from '../../CreateElement';
 import nonograms from '../../../data/nonograms.json';
 import { playground } from './gameLayout';
 
@@ -6,6 +6,7 @@ let playgroundRowsArr = [];
 let playgroundCellsArr = [];
 const CELL_WIDTH = 20;
 const CELL_HEIGHT = 20;
+const MAX_LETTERS_IN_TITLE = 10;
 const LEFT_HINTS_DIRECTION = 'left';
 const TOP_HINTS_DIRECTION = 'top';
 
@@ -143,12 +144,34 @@ export const createUniqueMatrixSizeObj = () => {
   return uniqueMatrixSizeObj;
 };
 
+export const removeDisabledBtn = (btnsArr) => {
+  btnsArr.forEach((item) => {
+    const otherBtn = item;
+    otherBtn.disabled = false;
+  });
+};
+
+export const formattedTitleMatrixList = (title) => {
+  let currentTitle = title.slice(0, MAX_LETTERS_IN_TITLE);
+
+  if (currentTitle.length < title.length) {
+    currentTitle += '...';
+  }
+  return currentTitle;
+};
+
 export const updateNonogramsList = (sizesSubtitle, nonogramBtns) => {
   const filterNonogramsArr = nonograms
     .filter((item) => item.size === sizesSubtitle.textContent);
+
+  removeDisabledBtn(nonogramBtns);
+
   nonogramBtns.forEach((el, index) => {
     const currentBtn = el;
     currentBtn.textContent = filterNonogramsArr[index].title;
+    if (index === 0) {
+      currentBtn.disabled = true;
+    }
   });
 };
 

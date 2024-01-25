@@ -1,4 +1,4 @@
-import CreateElement from '../../utils';
+import CreateElement from '../../CreateElement';
 import './header.scss';
 import logoSrc from '../../../img/svg/logo.svg';
 
