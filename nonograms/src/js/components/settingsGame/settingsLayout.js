@@ -45,27 +45,25 @@ export const sizesDropList = new CreateElement({
   parent: sizes,
 });
 
-(function () {
-  uniqueMatrixSizeObj.forEach((size) => {
-    const sizesListItem = new CreateElement({
-      tag: 'li',
-      classes: ['sizes__list-item'],
-      parent: sizesDropList,
-    });
-
-    const sizeBtn = new CreateElement({
-      tag: 'button',
-      classes: ['btn-reset', 'sizes__list-btn'],
-      parent: sizesListItem,
-      textContent: size,
-    });
-
-    if (size === Array.from(uniqueMatrixSizeObj)[0]) {
-      sizeBtn.disabled = true;
-    }
-    sizeBtns.push(sizeBtn);
+uniqueMatrixSizeObj.forEach((size) => {
+  const sizesListItem = new CreateElement({
+    tag: 'li',
+    classes: ['sizes__list-item'],
+    parent: sizesDropList,
   });
-}());
+
+  const sizeBtn = new CreateElement({
+    tag: 'button',
+    classes: ['btn-reset', 'sizes__list-btn'],
+    parent: sizesListItem,
+    textContent: size,
+  });
+
+  if (size === Array.from(uniqueMatrixSizeObj)[0]) {
+    sizeBtn.disabled = true;
+  }
+  sizeBtns.push(sizeBtn);
+});
 
 export const nonograms = new CreateElement({
   tag: 'div',
@@ -98,31 +96,29 @@ export const nonogramsDropList = new CreateElement({
   parent: nonograms,
 });
 
-(function () {
-  const filterNonogramsArr = nonogramsData
-    .filter((item) => item.size === sizesSubtitle.textContent);
+const filterNonogramsArr = nonogramsData
+  .filter((item) => item.size === sizesSubtitle.textContent);
 
-  filterNonogramsArr.forEach((_, index) => {
-    const nonogramsListItem = new CreateElement({
-      tag: 'li',
-      classes: ['nonograms__list-item'],
-      parent: nonogramsDropList,
-    });
-
-    const nonogramBtn = new CreateElement({
-      tag: 'button',
-      classes: ['btn-reset', 'nonograms__list-btn'],
-      parent: nonogramsListItem,
-      textContent: filterNonogramsArr[index].title,
-    });
-
-    if (filterNonogramsArr[0].title === filterNonogramsArr[index].title) {
-      nonogramBtn.disabled = true;
-      nonogramsSubtitle.textContent = filterNonogramsArr[index].title;
-    }
-    nonogramBtns.push(nonogramBtn);
+filterNonogramsArr.forEach((_, index) => {
+  const nonogramsListItem = new CreateElement({
+    tag: 'li',
+    classes: ['nonograms__list-item'],
+    parent: nonogramsDropList,
   });
-}());
+
+  const nonogramBtn = new CreateElement({
+    tag: 'button',
+    classes: ['btn-reset', 'nonograms__list-btn'],
+    parent: nonogramsListItem,
+    textContent: filterNonogramsArr[index].title,
+  });
+
+  if (filterNonogramsArr[0].title === filterNonogramsArr[index].title) {
+    nonogramBtn.disabled = true;
+    nonogramsSubtitle.textContent = filterNonogramsArr[index].title;
+  }
+  nonogramBtns.push(nonogramBtn);
+});
 
 export const startGameBtn = new CreateElement({
   tag: 'button',

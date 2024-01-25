@@ -151,29 +151,23 @@ export const removeDisabledBtn = (btnsArr) => {
   });
 };
 
-export const formattedTitleMatrixList = (title) => {
-  let currentTitle = title.slice(0, MAX_LETTERS_IN_TITLE);
+export const searchCurrentNonogramByTitle = (currTitle) => nonograms
+  .find((item) => item.title === currTitle);
 
-  if (currentTitle.length < title.length) {
-    currentTitle += '...';
-  }
-  return currentTitle;
-};
+const searchCurrentNonogramsBySize = (currSize) => nonograms
+  .filter((item) => item.size === currSize);
 
-export const updateNonogramsList = (sizesSubtitle, nonogramBtns) => {
-  const filterNonogramsArr = nonograms
-    .filter((item) => item.size === sizesSubtitle.textContent);
-
+export const updateNonogramsList = (sizesSubtitle, nonogramBtns, nonogramsSubtitle) => {
+  const filterNonogramsArr = searchCurrentNonogramsBySize(sizesSubtitle.textContent);
+  const subtitle = nonogramsSubtitle;
   removeDisabledBtn(nonogramBtns);
 
-  nonogramBtns.forEach((el, index) => {
-    const currentBtn = el;
+  nonogramBtns.forEach((btn, index) => {
+    const currentBtn = btn;
     currentBtn.textContent = filterNonogramsArr[index].title;
     if (index === 0) {
       currentBtn.disabled = true;
+      subtitle.textContent = filterNonogramsArr[index].title;
     }
   });
 };
-
-export const searchCurrentNonogram = (currTitle) => nonograms
-  .find((item) => item.title === currTitle);

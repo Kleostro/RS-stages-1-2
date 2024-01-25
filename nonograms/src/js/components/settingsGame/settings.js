@@ -12,11 +12,12 @@ import {
   sizesSubtitle,
   startGameBtn,
 } from './settingsLayout';
-import { formattedTitleMatrixList, removeDisabledBtn, updateNonogramsList } from '../game/utils';
+import { removeDisabledBtn, updateNonogramsList } from '../game/utils';
 import './settings.scss';
 
 let newMatrixTitle = 'camel';
 let isLockSizes = false;
+let isLockNonograms = false;
 
 const showSizesDropList = () => {
   sizesBox.classList.add('active');
@@ -43,8 +44,6 @@ sizes.addEventListener('mouseleave', () => {
 sizesBox.addEventListener('click', () => {
   isLockSizes = !isLockSizes;
 });
-
-let isLockNonograms = false;
 
 const showNonogramsDropList = () => {
   nonogramsBox.classList.add('active');
@@ -73,28 +72,28 @@ nonogramsBox.addEventListener('click', () => {
 });
 
 sizeBtns.forEach((btn) => {
-  btn.addEventListener('click', (e) => {
+  btn.addEventListener('click', () => {
+    const currentBtn = btn;
     removeDisabledBtn(sizeBtns);
 
-    e.target.disabled = true;
-    sizesSubtitle.textContent = e.target.textContent;
-    updateNonogramsList(sizesSubtitle, nonogramBtns);
+    currentBtn.disabled = true;
+    sizesSubtitle.textContent = currentBtn.textContent;
+    updateNonogramsList(sizesSubtitle, nonogramBtns, nonogramsSubtitle);
     newMatrixTitle = nonogramBtns[0].textContent;
-    nonogramsSubtitle.textContent = formattedTitleMatrixList(nonogramBtns[0].textContent);
   });
 });
 
 nonogramBtns.forEach((btn) => {
-  btn.addEventListener('click', (e) => {
+  btn.addEventListener('click', () => {
+    const currentBtn = btn;
     removeDisabledBtn(nonogramBtns);
 
-    e.target.disabled = true;
-    newMatrixTitle = e.target.textContent;
-    nonogramsSubtitle.textContent = formattedTitleMatrixList(e.target.textContent);
+    currentBtn.disabled = true;
+    newMatrixTitle = currentBtn.textContent;
+    nonogramsSubtitle.textContent = newMatrixTitle;
   });
 });
 
 startGameBtn.addEventListener('click', () => {
-  console.log(newMatrixTitle);
   startGame(newMatrixTitle);
 });

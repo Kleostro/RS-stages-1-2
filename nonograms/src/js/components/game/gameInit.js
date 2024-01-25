@@ -5,7 +5,7 @@ import {
   createHints,
   highlightCurrentColumnAndRow,
   removeHighlightCells,
-  searchCurrentNonogram,
+  searchCurrentNonogramByTitle,
 } from './utils';
 
 const LEFT_HINTS_DIRECTION = 'left';
@@ -17,7 +17,7 @@ let currentNonogram = {};
 let { matrix, title } = currentNonogram;
 
 const startGame = (currTitle = 'camel') => {
-  currentNonogram = searchCurrentNonogram(currTitle);
+  currentNonogram = searchCurrentNonogramByTitle(currTitle);
   matrix = currentNonogram.matrix;
   title = currentNonogram.title;
   currentPlayground = createCurrentPlayground(matrix);
