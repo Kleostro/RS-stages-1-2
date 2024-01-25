@@ -2336,14 +2336,17 @@ const nonogramsData = [
     size: "15x15"
   }
 ];
-let playgroundRowsArr = [];
-let playgroundCellsArr = [];
+const playgroundRowsArr = [];
+const playgroundCellsArr = [];
 const LEFT_HINTS_DIRECTION$1 = "left";
 const TOP_HINTS_DIRECTION$1 = "top";
+const clearPlaygroundArr = () => {
+  playgroundRowsArr.length = 0;
+  playgroundCellsArr.length = 0;
+};
 const createCurrentPlayground = (matrix2) => {
   const currentPlayground2 = [];
-  playgroundRowsArr = [];
-  playgroundCellsArr = [];
+  clearPlaygroundArr();
   playground.innerHTML = "";
   for (let row = 0; row < matrix2.length; row += 1) {
     const rowElement = new CreateElement({
@@ -2486,6 +2489,19 @@ const changeCrossedClass = (e) => {
     e.target.classList.add("crossed");
     e.target.classList.remove("painted");
   }
+};
+const resetCurrentGame = (currentPlayground2) => {
+  currentPlayground2.forEach((row) => {
+    row.forEach((cell, index, arr) => {
+      const rowArr = arr;
+      if (cell === 1) {
+        rowArr[index] = 0;
+      }
+    });
+  });
+  playgroundCellsArr.forEach((cell) => {
+    cell.classList.remove("painted", "crossed");
+  });
 };
 const LEFT_HINTS_DIRECTION = "left";
 const TOP_HINTS_DIRECTION = "top";
@@ -2647,6 +2663,12 @@ const startGameBtn = new CreateElement({
   parent: settingsBox,
   textContent: "Play"
 });
+const resetBtn = new CreateElement({
+  tag: "button",
+  classes: ["btn-reset", "settings__reset-btn"],
+  parent: settingsBox,
+  textContent: "Reset"
+});
 const settings = "";
 let newMatrixTitle = "camel";
 let isLockSizes = false;
@@ -2715,6 +2737,9 @@ nonogramBtns.forEach((btn) => {
 startGameBtn.addEventListener("click", () => {
   startGame(newMatrixTitle);
 });
+resetBtn.addEventListener("click", () => {
+  resetCurrentGame(currentPlayground);
+});
 const main = new CreateElement({
   tag: "main",
   classes: ["main"]
@@ -2722,4 +2747,4 @@ const main = new CreateElement({
 main.append(gameSection);
 document.body.append(header, main, modal);
 startGame();
-//# sourceMappingURL=main-44fd13f4.js.map
+//# sourceMappingURL=main-9afeb091.js.map
