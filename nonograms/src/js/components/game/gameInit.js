@@ -1,5 +1,5 @@
 import { endGameModal, showModal } from '../endGameModal/endGameModal';
-import { leftHintsBox, playground, topHintsBox } from './gameLayout';
+import { gameWrapper, leftHintsBox, playground, topHintsBox } from './gameLayout';
 import {
   createCurrentPlayground,
   createHints,
@@ -12,14 +12,24 @@ const LEFT_HINTS_DIRECTION = 'left';
 const TOP_HINTS_DIRECTION = 'top';
 const END_GAME_ANIMATION = 500;
 
+const SIZE_PLAYGROUND = {
+  '5x5': 'small',
+  '10x10': 'medium',
+  '15x15': 'large',
+};
+
 let currentPlayground = [];
 let currentNonogram = {};
-let { matrix, title } = currentNonogram;
+let { matrix, title, size } = currentNonogram;
 
 const startGame = (currTitle = 'camel') => {
   currentNonogram = searchCurrentNonogramByTitle(currTitle);
   matrix = currentNonogram.matrix;
   title = currentNonogram.title;
+  size = currentNonogram.size;
+
+  gameWrapper.removeAttribute('class');
+  gameWrapper.classList.add('game__wrapper', SIZE_PLAYGROUND[size]);
   currentPlayground = createCurrentPlayground(matrix);
   createHints(matrix, leftHintsBox, LEFT_HINTS_DIRECTION);
   createHints(matrix, topHintsBox, TOP_HINTS_DIRECTION);

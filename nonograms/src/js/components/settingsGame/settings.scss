@@ -1,3 +1,5 @@
+@import "../../../scss/breakpoints";
+
 .settings {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -59,6 +61,12 @@
         transform: rotate(-135deg);
       }
     }
+
+    @include mobile {
+      border: 0.6dvw solid var(--settings-border);
+      border-radius: 2dvw;
+      width: 30dvw;
+    }
   }
 
   &__title {
@@ -70,6 +78,11 @@
     font-size: 1.7dvw;
     color: var(--settings-text);
     gap: 0.7dvw;
+
+    @include mobile {
+      font-size: 4dvw;
+      gap: 2dvw;
+    }
   }
 
   &__subtitle {
@@ -79,6 +92,11 @@
     text-overflow: ellipsis;
     color: var(--settings-text-accent);
     text-wrap: nowrap;
+
+    @include mobile {
+      max-width: 15dvw;
+      font-size: 3.2dvw;
+    }
   }
 
   &__list {
@@ -110,7 +128,7 @@
     &-btn {
       padding: var(--little-offset) 0;
       width: 100%;
-      font-size: 1.5dvw;
+      font-size: 1.8dvw;
       color: var(--settings-text);
       transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 
@@ -118,6 +136,11 @@
         color: var(--settings-text-accent);
         background-color: var(--settings-btn-disabled);
         pointer-events: none;
+      }
+
+      @include mobile {
+        padding: 2.5dvw 0;
+        font-size: 3.2dvw;
       }
 
       @media (hover: hover) {
@@ -131,6 +154,10 @@
       opacity: 0;
       visibility: hidden;
       transform: translateY(-20%);
+    }
+
+    @include mobile {
+      border-radius: 2dvw;
     }
   }
 }

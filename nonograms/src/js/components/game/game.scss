@@ -1,8 +1,69 @@
+@import "../../../scss/breakpoints";
+
 .game {
   &__wrapper {
     display: grid;
-    grid-template-columns: max-content auto;
     height: max-content;
+
+    &.small {
+      --cell-size: 5.5dvw;
+      --hint-text: 3dvw;
+      --cell-border: 0.1dvw;
+      --cell-border-accent: 0.3dvw;
+
+      @include small-tablet {
+        --cell-size: 5.5dvw;
+        --hint-text: 3dvw;
+      }
+
+      @include mobile {
+        --cell-size: 10dvw;
+        --hint-text: 6dvw;
+        --cell-border: 0.3dvw;
+        --cell-border-accent: 0.7dvw;
+      }
+    }
+
+    &.medium {
+      --cell-size: 2.6dvw;
+      --hint-text: 2dvw;
+      --cell-border: 0.1dvw;
+      --cell-border-accent: 0.3dvw;
+
+      @include small-tablet {
+        --cell-size: 4.5dvw;
+        --cell-border-accent: 0.4dvw;
+      }
+
+      @include mobile {
+        --cell-size: 6.5dvw;
+        --hint-text: 4.6dvw;
+        --cell-border-accent: 0.6dvw;
+      }
+    }
+
+    &.large {
+      --cell-size: 2dvw;
+      --hint-text: 1.6dvw;
+      --cell-border: 0.1dvw;
+      --cell-border-accent: 0.3dvw;
+
+      @include small-tablet {
+        --cell-size: 3.3dvw;
+        --hint-text: 2.4dvw;
+        --cell-border-accent: 0.4dvw;
+      }
+
+      @include mobile {
+        --cell-size: 4.7dvw;
+        --hint-text: 3.5dvw;
+        --cell-border-accent: 0.6dvw;
+      }
+    }
+
+    @include small-tablet {
+      width: max-content;
+    }
   }
 
   &__container {
@@ -10,13 +71,18 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--small-offset);
+
+    @include small-tablet {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }
 
 .left-hints {
   grid-column: 1;
   grid-row: 2;
-  border: 0.4dvw solid var(--hints-border-dark);
+  border: var(--cell-border-accent) solid var(--hints-border-dark);
   border-right: none;
   width: max-content;
   background-color: var(--hints-bg);
@@ -26,7 +92,7 @@
     justify-content: end;
 
     &:nth-child(5n):not(:last-child) {
-      border-bottom: 0.4dvw solid var(--hints-border-dark);
+      border-bottom: var(--cell-border-accent) solid var(--hints-border-dark);
     }
   }
 
@@ -34,7 +100,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.2dvw solid var(--hints-border-light);
+    border: var(--cell-border) solid var(--hints-border-light);
     width: var(--cell-size);
     height: var(--cell-size);
     font-size: var(--hint-text);
@@ -45,7 +111,7 @@
 
 .playground {
   grid-row: 2;
-  border: 0.4dvw solid var(--playground-border-dark);
+  border: var(--cell-border-accent) solid var(--playground-border-dark);
   background-color: var(--playground-bg-light);
 
   &__row {
@@ -53,7 +119,7 @@
     justify-content: space-between;
 
     &:nth-child(5n):not(:last-child) {
-      border-bottom: 0.4dvw solid var(--playground-border-dark);
+      border-bottom: var(--cell-border-accent) solid var(--playground-border-dark);
 
       .playground__cell {
         border-bottom: none;
@@ -65,7 +131,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.2dvw solid var(--playground-border-light);
+    border: var(--cell-border) solid var(--playground-border-light);
     width: var(--cell-size);
     height: var(--cell-size);
     cursor: pointer;
@@ -75,7 +141,7 @@
     }
 
     &:nth-child(5n):not(:last-child) {
-      border-right: 0.4dvw solid var(--playground-border-dark);
+      border-right: var(--cell-border-accent) solid var(--playground-border-dark);
       width: calc(var(--cell-size) + 0.13em);
     }
 
@@ -89,7 +155,7 @@
   display: flex;
   grid-column: 2;
   margin-left: 0;
-  border: 0.4dvw solid var(--hints-border-dark);
+  border: var(--cell-border-accent) solid var(--hints-border-dark);
   border-bottom: none;
   width: max-content;
   background-color: var(--hints-bg);
@@ -100,7 +166,7 @@
     justify-content: end;
 
     &:nth-child(5n):not(:last-child) {
-      border-right: 0.4dvw solid var(--hints-border-dark);
+      border-right: var(--cell-border-accent) solid var(--hints-border-dark);
     }
   }
 
@@ -108,7 +174,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.2dvw solid var(--hints-border-light);
+    border: var(--cell-border) solid var(--hints-border-light);
     width: var(--cell-size);
     height: var(--cell-size);
     font-size: var(--hint-text);

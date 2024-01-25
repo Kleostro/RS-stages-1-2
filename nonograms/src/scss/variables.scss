@@ -1,3 +1,5 @@
+@import "./breakpoints";
+
 :root {
   // offsets
   --little-offset: 0.6dvw;
@@ -6,6 +8,8 @@
 
   // size
   --cell-size: 2.5dvw;
+  --cell-border: 0.2dvw;
+  --cell-border-accent: 0.4dvw;
   --modal-btn-width: 15px;
   --modal-btn-height: 15px;
   --border-radius: 1dvw;
