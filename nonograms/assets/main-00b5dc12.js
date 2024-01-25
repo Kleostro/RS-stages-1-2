@@ -2474,13 +2474,21 @@ const updateNonogramsList = (sizesSubtitle2, nonogramBtns2, nonogramsSubtitle2) 
 const LEFT_HINTS_DIRECTION = "left";
 const TOP_HINTS_DIRECTION = "top";
 const END_GAME_ANIMATION = 500;
+const SIZE_PLAYGROUND = {
+  "5x5": "small",
+  "10x10": "medium",
+  "15x15": "large"
+};
 let currentPlayground = [];
 let currentNonogram = {};
-let { matrix, title } = currentNonogram;
+let { matrix, title, size } = currentNonogram;
 const startGame = (currTitle = "camel") => {
   currentNonogram = searchCurrentNonogramByTitle(currTitle);
   matrix = currentNonogram.matrix;
   title = currentNonogram.title;
+  size = currentNonogram.size;
+  gameWrapper.removeAttribute("class");
+  gameWrapper.classList.add("game__wrapper", SIZE_PLAYGROUND[size]);
   currentPlayground = createCurrentPlayground(matrix);
   createHints(matrix, leftHintsBox, LEFT_HINTS_DIRECTION);
   createHints(matrix, topHintsBox, TOP_HINTS_DIRECTION);
@@ -2550,7 +2558,7 @@ const sizesDropList = new CreateElement({
   classes: ["list-reset", "sizes__list", "hidden"],
   parent: sizes
 });
-uniqueMatrixSizeObj.forEach((size) => {
+uniqueMatrixSizeObj.forEach((size2) => {
   const sizesListItem = new CreateElement({
     tag: "li",
     classes: ["sizes__list-item"],
@@ -2560,9 +2568,9 @@ uniqueMatrixSizeObj.forEach((size) => {
     tag: "button",
     classes: ["btn-reset", "sizes__list-btn"],
     parent: sizesListItem,
-    textContent: size
+    textContent: size2
   });
-  if (size === Array.from(uniqueMatrixSizeObj)[0]) {
+  if (size2 === Array.from(uniqueMatrixSizeObj)[0]) {
     sizeBtn.disabled = true;
   }
   sizeBtns.push(sizeBtn);
@@ -2693,4 +2701,4 @@ const main = new CreateElement({
 main.append(gameSection);
 document.body.append(header, main, modal);
 startGame();
-//# sourceMappingURL=main-ecf53f42.js.map
+//# sourceMappingURL=main-00b5dc12.js.map
