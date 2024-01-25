@@ -1,6 +1,8 @@
 import { endGameModal, showModal } from '../endGameModal/endGameModal';
 import { gameWrapper, leftHintsBox, playground, topHintsBox } from './gameLayout';
 import {
+  changeCrossedClass,
+  changePaintedClass,
   createCurrentPlayground,
   createHints,
   highlightCurrentColumnAndRow,
@@ -56,7 +58,7 @@ playground.addEventListener('click', (e) => {
     }
   }
 
-  currentCell.classList.toggle('painted');
+  changePaintedClass(e);
 
   if (currentPlayground
     .every((_, rowIndex) => currentPlayground[rowIndex]
@@ -72,6 +74,12 @@ playground.addEventListener('mousemove', (event) => {
 playground.addEventListener('mouseleave', () => {
   removeHighlightCells();
 });
+
+playground.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  changeCrossedClass(e);
+});
+
 showModal();
 
 export default startGame;

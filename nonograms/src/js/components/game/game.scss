@@ -128,6 +128,7 @@
   }
 
   &__cell {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,6 +148,32 @@
 
     &.painted {
       background-color: var(--playground-bg-dark);
+    }
+
+    &.crossed {
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 0.2dvw;
+        background-color: var(--playground-cell-crossed);
+        transform: translate(0, 50%);
+        rotate: 45deg;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 0.2dvw;
+        background-color: var(--playground-cell-crossed);
+        transform: translate(0, 50%);
+        rotate: -45deg;
+      }
     }
   }
 }

@@ -1,12 +1,15 @@
+@import "../../../scss/breakpoints";
+
 .modal {
   position: absolute;
+  z-index: 10;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
 
   &__overlay {
     position: fixed;
-    z-index: 2;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,6 +31,7 @@
 
   &__content {
     position: relative;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,7 +39,7 @@
     border-radius: var(--border-radius);
     padding: var(--small-offset);
     width: 100%;
-    max-width: 500px;
+    max-width: 90dvw;
     background-color: var(--end-game-modal-bg);
     opacity: 0;
     visibility: hidden;
@@ -52,14 +56,27 @@
 
   &__title {
     margin-bottom: var(--small-offset);
-    font-size: 25px;
-    letter-spacing: 2px;
+    max-width: 60dvw;
+    font-size: 3dvw;
+    letter-spacing: 0.1dvw;
     text-align: center;
     color: var(--end-game-modal-text);
 
     &-accent {
       text-transform: uppercase;
       color: var(--end-game-modal-text-accent);
+    }
+
+    @include tablet {
+      font-size: 4dvw;
+    }
+
+    @include small-tablet {
+      font-size: 5dvw;
+    }
+
+    @include mobile {
+      font-size: 6dvw;
     }
   }
 
@@ -93,7 +110,7 @@
       content: "";
       position: absolute;
       left: 0;
-      top: 6px;
+      top: 2dvw;
       width: var(--modal-btn-width);
       height: 2px;
       background-color: var(--end-game-modal-close-btn-accent);
@@ -104,7 +121,7 @@
       content: "";
       position: absolute;
       left: 0;
-      top: 6px;
+      top: 2dvw;
       width: var(--modal-btn-width);
       height: 2px;
       background-color: var(--end-game-modal-close-btn-accent);
