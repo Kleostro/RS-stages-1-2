@@ -467,8 +467,8 @@ img {
 }
 @media (max-width: 576px) {
   .game__wrapper.medium {
-    --cell-size: 4.2dvw;
-    --hint-text: 3dvw;
+    --cell-size: 6.2dvw;
+    --hint-text: 4dvw;
   }
 }
 @media (max-width: 768px) {
@@ -481,8 +481,8 @@ img {
 }
 @media (max-width: 576px) {
   .game__wrapper.large {
-    --cell-size: 3.5dvw;
-    --hint-text: 2dvw;
+    --cell-size: 4.5dvw;
+    --hint-text: 3dvw;
   }
 }
 @media (max-width: 768px) {
