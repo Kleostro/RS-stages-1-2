@@ -2,15 +2,19 @@ import CreateElement from '../../CreateElement';
 import nonograms from '../../../data/nonograms.json';
 import { playground } from './gameLayout';
 
-let playgroundRowsArr = [];
-let playgroundCellsArr = [];
+export const playgroundRowsArr = [];
+export const playgroundCellsArr = [];
 const LEFT_HINTS_DIRECTION = 'left';
 const TOP_HINTS_DIRECTION = 'top';
 
+const clearPlaygroundArr = () => {
+  playgroundRowsArr.length = 0;
+  playgroundCellsArr.length = 0;
+};
+
 export const createCurrentPlayground = (matrix) => {
   const currentPlayground = [];
-  playgroundRowsArr = [];
-  playgroundCellsArr = [];
+  clearPlaygroundArr();
   playground.innerHTML = '';
 
   for (let row = 0; row < matrix.length; row += 1) {
@@ -181,4 +185,18 @@ export const changeCrossedClass = (e) => {
     e.target.classList.add('crossed');
     e.target.classList.remove('painted');
   }
+};
+
+export const resetCurrentGame = (currentPlayground) => {
+  currentPlayground.forEach((row) => {
+    row.forEach((cell, index, arr) => {
+      const rowArr = arr;
+      if (cell === 1) {
+        rowArr[index] = 0;
+      }
+    });
+  });
+  playgroundCellsArr.forEach((cell) => {
+    cell.classList.remove('painted', 'crossed');
+  });
 };

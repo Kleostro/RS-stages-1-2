@@ -1,10 +1,11 @@
-import startGame from '../game/gameInit';
+import startGame, { currentPlayground } from '../game/gameInit';
 import {
   nonogramBtns,
   nonograms,
   nonogramsBox,
   nonogramsDropList,
   nonogramsSubtitle,
+  resetBtn,
   sizeBtns,
   sizes,
   sizesBox,
@@ -12,7 +13,7 @@ import {
   sizesSubtitle,
   startGameBtn,
 } from './settingsLayout';
-import { removeDisabledBtn, updateNonogramsList } from '../game/utils';
+import { removeDisabledBtn, resetCurrentGame, updateNonogramsList } from '../game/utils';
 import './settings.scss';
 
 let newMatrixTitle = 'camel';
@@ -96,4 +97,8 @@ nonogramBtns.forEach((btn) => {
 
 startGameBtn.addEventListener('click', () => {
   startGame(newMatrixTitle);
+});
+
+resetBtn.addEventListener('click', () => {
+  resetCurrentGame(currentPlayground);
 });

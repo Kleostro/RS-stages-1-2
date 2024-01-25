@@ -1,5 +1,10 @@
 import { endGameModal, showModal } from '../endGameModal/endGameModal';
-import { gameWrapper, leftHintsBox, playground, topHintsBox } from './gameLayout';
+import {
+  gameWrapper,
+  leftHintsBox,
+  playground,
+  topHintsBox,
+} from './gameLayout';
 import {
   changeCrossedClass,
   changePaintedClass,
@@ -20,7 +25,7 @@ const SIZE_PLAYGROUND = {
   '15x15': 'large',
 };
 
-let currentPlayground = [];
+export let currentPlayground = [];
 let currentNonogram = {};
 let { matrix, title, size } = currentNonogram;
 
@@ -51,7 +56,7 @@ playground.addEventListener('click', (e) => {
   const currentRowIndex = currentRow.getAttribute('data-row');
 
   if (currentRowIndex && currentCellIndex) {
-    if (!currentCell.classList.contains('painted')) {
+    if (!currentCell.classList.contains('painted') && !currentCell.classList.contains('crossed')) {
       currentPlayground[currentRowIndex][currentCellIndex] = 1;
     } else {
       currentPlayground[currentRowIndex][currentCellIndex] = 0;
@@ -59,7 +64,7 @@ playground.addEventListener('click', (e) => {
   }
 
   changePaintedClass(e);
-
+  console.log(currentPlayground, matrix);
   if (currentPlayground
     .every((_, rowIndex) => currentPlayground[rowIndex]
       .every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {

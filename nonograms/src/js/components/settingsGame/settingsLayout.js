@@ -126,3 +126,10 @@ export const startGameBtn = new CreateElement({
   parent: settingsBox,
   textContent: 'Play',
 });
+
+export const resetBtn = new CreateElement({
+  tag: 'button',
+  classes: ['btn-reset', 'settings__reset-btn'],
+  parent: settingsBox,
+  textContent: 'Reset',
+});
