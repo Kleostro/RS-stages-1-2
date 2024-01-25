@@ -2250,7 +2250,7 @@ const nonogramsData = [
         0,
         0,
         0,
-        0,
+        1,
         1,
         1,
         1,
@@ -2471,6 +2471,22 @@ const updateNonogramsList = (sizesSubtitle2, nonogramBtns2, nonogramsSubtitle2) 
     }
   });
 };
+const changePaintedClass = (e) => {
+  if (e.target.classList.contains("painted"))
+    e.target.classList.remove("painted");
+  else if (e.target.classList.contains("crossed"))
+    e.target.classList.remove("crossed");
+  else
+    e.target.classList.add("painted");
+};
+const changeCrossedClass = (e) => {
+  if (e.target.classList.contains("crossed"))
+    e.target.classList.remove("crossed");
+  else {
+    e.target.classList.add("crossed");
+    e.target.classList.remove("painted");
+  }
+};
 const LEFT_HINTS_DIRECTION = "left";
 const TOP_HINTS_DIRECTION = "top";
 const END_GAME_ANIMATION = 500;
@@ -2505,13 +2521,14 @@ playground.addEventListener("click", (e) => {
   const currentCellIndex = currentCell.getAttribute("data-cell");
   const currentRowIndex = currentRow.getAttribute("data-row");
   if (currentRowIndex && currentCellIndex) {
-    if (!currentCell.classList.contains("painted")) {
+    if (!currentCell.classList.contains("painted") && !currentCell.classList.contains("crossed")) {
       currentPlayground[currentRowIndex][currentCellIndex] = 1;
     } else {
       currentPlayground[currentRowIndex][currentCellIndex] = 0;
     }
   }
-  currentCell.classList.toggle("painted");
+  changePaintedClass(e);
+  console.log(currentPlayground, matrix);
   if (currentPlayground.every((_, rowIndex) => currentPlayground[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
     endGame();
   }
@@ -2521,6 +2538,10 @@ playground.addEventListener("mousemove", (event) => {
 });
 playground.addEventListener("mouseleave", () => {
   removeHighlightCells();
+});
+playground.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  changeCrossedClass(e);
 });
 showModal();
 const sizeBtns = [];
@@ -2701,4 +2722,4 @@ const main = new CreateElement({
 main.append(gameSection);
 document.body.append(header, main, modal);
 startGame();
-//# sourceMappingURL=main-22746262.js.map
+//# sourceMappingURL=main-44fd13f4.js.map
