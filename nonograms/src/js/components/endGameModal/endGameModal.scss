@@ -73,8 +73,8 @@
 
     &-cell {
       border: 1px solid var(--playground-border-light);
-      width: var(--cell-width);
-      height: var(--cell-height);
+      width: var(--cell-size);
+      height: var(--cell-size);
 
       &.painted {
         background-color: var(--playground-bg-dark);

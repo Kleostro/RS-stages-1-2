@@ -4,9 +4,6 @@ import { playground } from './gameLayout';
 
 let playgroundRowsArr = [];
 let playgroundCellsArr = [];
-const CELL_WIDTH = 20;
-const CELL_HEIGHT = 20;
-const MAX_LETTERS_IN_TITLE = 10;
 const LEFT_HINTS_DIRECTION = 'left';
 const TOP_HINTS_DIRECTION = 'top';
 
@@ -110,8 +107,8 @@ export const highlightCurrentColumnAndRow = (event, matrix) => {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  let rowIndex = Math.floor(y / CELL_HEIGHT);
-  let cellIndex = Math.floor(x / CELL_WIDTH);
+  let rowIndex = Math.floor(y / playgroundCellsArr[0].offsetWidth);
+  let cellIndex = Math.floor(x / playgroundCellsArr[0].offsetHeight);
 
   if (rowIndex > matrix.length - 1) {
     rowIndex = matrix.length - 1;

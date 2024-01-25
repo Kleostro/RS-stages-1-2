@@ -1,27 +1,27 @@
 :root {
   // offsets
-  --little-offset: 10px;
-  --small-offset: 20px;
-  --section-offset: 100px;
+  --little-offset: 0.6dvw;
+  --small-offset: 2dvw;
+  --section-offset: 5dvw;
 
   // size
-  --cell-width: 20px;
-  --cell-height: 20px;
+  --cell-size: 2.5dvw;
   --modal-btn-width: 15px;
   --modal-btn-height: 15px;
-  --border-radius: 10px;
+  --border-radius: 1dvw;
+  --hint-text: 1.5dvw;
 
   // colors
-  --body-dark: #828282;
-  --hints-bg: #636363;
-  --hints-color: #fff;
-  --hints-border-dark: #000;
-  --hints-border-light: #595959;
-  --playground-bg-light: #c8c8c8;
-  --playground-bg-dark: #000;
-  --playground-border-dark: #000;
-  --playground-border-light: #595959;
-  --playground-highlight: #fff;
+  --body-dark: #81966d;
+  --hints-bg: #ddbea9;
+  --hints-color: #553817;
+  --hints-border-dark: #b07942;
+  --hints-border-light: #ffe8d6;
+  --playground-bg-light: #b7b7a4;
+  --playground-bg-dark: #214c02;
+  --playground-border-dark: #414130;
+  --playground-border-light: #a5a58d;
+  --playground-highlight: #d3d3af;
   --end-game-modal-overlay: #403f3dcc;
   --end-game-modal-bg: #e0c2f0;
   --end-game-modal-text: #083801;

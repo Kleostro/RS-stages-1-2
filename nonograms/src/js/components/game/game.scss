@@ -16,9 +16,8 @@
 .left-hints {
   grid-column: 1;
   grid-row: 2;
-  border-top: 3px solid var(--hints-border-dark);
-  border-right: 3px solid var(--hints-border-dark);
-  border-left: 2px solid var(--hints-border-dark);
+  border: 0.4dvw solid var(--hints-border-dark);
+  border-right: none;
   width: max-content;
   background-color: var(--hints-bg);
 
@@ -26,18 +25,8 @@
     display: flex;
     justify-content: end;
 
-    &:nth-child(5n) {
-      border-bottom: 4px solid var(--hints-border-dark);
-
-      .left-hints__cell {
-        border-bottom: none;
-      }
-    }
-
-    &:nth-child(5n+1) {
-      .left-hints__cell {
-        border-top: none;
-      }
+    &:nth-child(5n):not(:last-child) {
+      border-bottom: 0.4dvw solid var(--hints-border-dark);
     }
   }
 
@@ -45,9 +34,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--hints-border-light);
-    width: var(--cell-width);
-    height: var(--cell-height);
+    border: 0.2dvw solid var(--hints-border-light);
+    width: var(--cell-size);
+    height: var(--cell-size);
+    font-size: var(--hint-text);
     color: var(--hints-color);
     user-select: none;
   }
@@ -55,18 +45,19 @@
 
 .playground {
   grid-row: 2;
-  border-top: 3px solid var(--playground-border-dark);
-  border-right: none;
-  border-left: 2px solid var(--playground-border-dark);
-  width: max-content;
+  border: 0.4dvw solid var(--playground-border-dark);
   background-color: var(--playground-bg-light);
 
   &__row {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
 
-    &:nth-child(5n) {
-      border-bottom: 4px solid var(--playground-border-dark);
+    &:nth-child(5n):not(:last-child) {
+      border-bottom: 0.4dvw solid var(--playground-border-dark);
+
+      .playground__cell {
+        border-bottom: none;
+      }
     }
   }
 
@@ -74,18 +65,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--playground-border-dark);
-    width: var(--cell-width);
-    height: var(--cell-height);
+    border: 0.2dvw solid var(--playground-border-light);
+    width: var(--cell-size);
+    height: var(--cell-size);
     cursor: pointer;
 
     &__cell:nth-child(5n+1) {
       border-left: none;
     }
 
-    &:nth-child(5n) {
-      border-right: 4px solid var(--playground-border-dark);
-      width: 24px;
+    &:nth-child(5n):not(:last-child) {
+      border-right: 0.4dvw solid var(--playground-border-dark);
+      width: calc(var(--cell-size) + 0.13em);
     }
 
     &.painted {
@@ -97,9 +88,9 @@
 .top-hints {
   display: flex;
   grid-column: 2;
-  margin-left: -3px;
-  border-top: 3px solid var(--hints-border-dark);
-  border-left: 5px solid var(--hints-border-dark);
+  margin-left: 0;
+  border: 0.4dvw solid var(--hints-border-dark);
+  border-bottom: none;
   width: max-content;
   background-color: var(--hints-bg);
 
@@ -108,18 +99,8 @@
     flex-direction: column;
     justify-content: end;
 
-    &:nth-child(5n) {
-      border-right: 4px solid var(--hints-border-dark);
-
-      .top-hints__cell {
-        border-right: none;
-      }
-    }
-
-    &:nth-child(5n+1) {
-      .top-hints__cell {
-        border-left: none;
-      }
+    &:nth-child(5n):not(:last-child) {
+      border-right: 0.4dvw solid var(--hints-border-dark);
     }
   }
 
@@ -127,9 +108,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--hints-border-light);
-    width: var(--cell-width);
-    height: var(--cell-height);
+    border: 0.2dvw solid var(--hints-border-light);
+    width: var(--cell-size);
+    height: var(--cell-size);
+    font-size: var(--hint-text);
     color: var(--hints-color);
     user-select: none;
   }
