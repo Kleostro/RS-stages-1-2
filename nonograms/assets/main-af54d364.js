@@ -2701,4 +2701,4 @@ const main = new CreateElement({
 main.append(gameSection);
 document.body.append(header, main, modal);
 startGame();
-//# sourceMappingURL=main-554d1e0e.js.map
+//# sourceMappingURL=main-af54d364.js.map

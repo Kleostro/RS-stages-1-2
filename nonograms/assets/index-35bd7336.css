@@ -666,8 +666,8 @@ img {
 @media (max-width: 576px) {
   .sizes__box,
   .nonograms__box {
-    border: 0.5dvw solid var(--settings-border);
-    width: 26dvw;
+    border: 0.6dvw solid var(--settings-border);
+    width: 30dvw;
   }
 }
 
@@ -686,8 +686,8 @@ img {
 @media (max-width: 576px) {
   .sizes__title,
   .nonograms__title {
-    font-size: 3dvw;
-    gap: 1dvw;
+    font-size: 4dvw;
+    gap: 2dvw;
   }
 }
 
@@ -704,8 +704,8 @@ img {
 @media (max-width: 576px) {
   .sizes__subtitle,
   .nonograms__subtitle {
-    max-width: 12dvw;
-    font-size: 2.2dvw;
+    max-width: 15dvw;
+    font-size: 3.2dvw;
   }
 }
 
@@ -756,8 +756,8 @@ img {
 @media (max-width: 576px) {
   .sizes__list-btn,
   .nonograms__list-btn {
-    padding: 1.5dvw 0;
-    font-size: 2.2dvw;
+    padding: 2.5dvw 0;
+    font-size: 3.2dvw;
   }
 }
 
