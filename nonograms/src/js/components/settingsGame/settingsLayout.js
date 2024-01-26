@@ -133,3 +133,17 @@ export const resetBtn = new CreateElement({
   parent: settingsBox,
   textContent: 'Reset',
 });
+
+export const saveGameBtn = new CreateElement({
+  tag: 'button',
+  classes: ['btn-reset', 'settings__save-btn'],
+  parent: settingsBox,
+  textContent: 'Save game',
+});
+
+export const continueGameBtn = new CreateElement({
+  tag: 'button',
+  classes: ['btn-reset', 'settings__continue-btn'],
+  parent: settingsBox,
+  textContent: 'Continue last game',
+});

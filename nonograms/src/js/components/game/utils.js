@@ -13,6 +13,7 @@ const clearPlaygroundArr = () => {
 };
 
 export const createCurrentPlayground = (matrix) => {
+  console.log(matrix);
   const currentPlayground = [];
   clearPlaygroundArr();
   playground.innerHTML = '';
@@ -44,6 +45,18 @@ export const createCurrentPlayground = (matrix) => {
   }
 
   return currentPlayground;
+};
+
+export const updateArrsLastGame = () => {
+  clearPlaygroundArr();
+  console.log();
+  Array.from(playground.children).forEach((row) => {
+    playgroundRowsArr.push(row);
+
+    Array.from(row.children).forEach((cell) => {
+      playgroundCellsArr.push(cell);
+    });
+  });
 };
 
 export const createHints = (matrix, box, direction) => {

@@ -4,6 +4,49 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--small-offset);
+
+  &__start-btn,
+  &__reset-btn,
+  &__save-btn,
+  &__continue-btn {
+    display: flex;
+    align-items: center;
+    align-self: end;
+    justify-content: center;
+    border: 0.3dvw solid var(--settings-border);
+    border-radius: var(--border-radius);
+    padding: var(--little-offset);
+    width: 100%;
+    height: max-content;
+    font-size: 1.7dvw;
+    color: var(--settings-text);
+    background-color: var(--settings-bg);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    cursor: pointer;
+    user-select: none;
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--settings-text-accent);
+        background-color: var(--settings-bg-accent);
+        transform: scale(1.1);
+      }
+    }
+
+    /* stylelint-disable-next-line order/order */
+    &:active {
+      transform: scale(0.9);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+
+  @include small-tablet {
+    width: 100%;
+  }
 }
 
 .sizes,
@@ -19,10 +62,11 @@
     align-items: center;
     border: 0.3dvw solid var(--settings-border);
     border-radius: var(--border-radius);
-    padding: var(--little-offset) var(--little-offset);
-    width: 16dvw;
+    padding: var(--little-offset);
     background-color: var(--settings-bg);
-    transition: border-radius 0.3s ease-in-out;
+    transition:
+      border-radius 0.2s ease-in-out,
+      background-color 0.2s ease-in-out;
     cursor: pointer;
     user-select: none;
 
@@ -52,6 +96,7 @@
 
     &.active {
       border-radius: var(--border-radius) var(--border-radius) 0 0;
+      background-color: var(--settings-bg-lock);
 
       &::before {
         transform: rotate(-45deg);
@@ -65,7 +110,12 @@
     @include mobile {
       border: 0.6dvw solid var(--settings-border);
       border-radius: 2dvw;
-      width: 30dvw;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--settings-btn-hover);
+      }
     }
   }
 

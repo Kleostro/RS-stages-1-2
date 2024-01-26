@@ -15,7 +15,6 @@ import {
 import { removeDisabledBtn, updateNonogramsList } from '../game/utils';
 import './settings.scss';
 
-let newMatrixTitle = 'camel';
 let isLockSizes = false;
 let isLockNonograms = false;
 
@@ -79,7 +78,6 @@ sizeBtns.forEach((btn) => {
     currentBtn.disabled = true;
     sizesSubtitle.textContent = currentBtn.textContent;
     updateNonogramsList(sizesSubtitle, nonogramBtns, nonogramsSubtitle);
-    newMatrixTitle = nonogramBtns[0].textContent;
   });
 });
 
@@ -89,11 +87,10 @@ nonogramBtns.forEach((btn) => {
     removeDisabledBtn(nonogramBtns);
 
     currentBtn.disabled = true;
-    newMatrixTitle = currentBtn.textContent;
-    nonogramsSubtitle.textContent = newMatrixTitle;
+    nonogramsSubtitle.textContent = currentBtn.textContent;
   });
 });
 
 startGameBtn.addEventListener('click', () => {
-  startGame(newMatrixTitle);
+  startGame();
 });

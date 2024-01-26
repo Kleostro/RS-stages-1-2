@@ -1,5 +1,13 @@
 import { endGameModal, showModal } from '../endGameModal/endGameModal';
-import { nonograms, resetBtn, sizes } from '../settingsGame/settingsLayout';
+import {
+  continueGameBtn,
+  nonogramBtns,
+  nonogramsSubtitle,
+  resetBtn,
+  saveGameBtn,
+  sizeBtns,
+  sizesSubtitle,
+} from '../settingsGame/settingsLayout';
 import {
   gameWrapper,
   leftHintsBox,
@@ -13,9 +21,12 @@ import {
   createCurrentPlayground,
   createHints,
   highlightCurrentColumnAndRow,
+  removeDisabledBtn,
   removeHighlightCells,
   resetCurrentGame,
   searchCurrentNonogramByTitle,
+  updateArrsLastGame,
+  updateNonogramsList,
 } from './utils';
 
 const LEFT_HINTS_DIRECTION = 'left';
@@ -60,13 +71,16 @@ const startGameTimer = (timeStamp) => {
   }
 };
 
-const startGame = (currTitle = 'camel') => {
+const startGame = () => {
   isTimerRunning = false;
   startTimerTime = null;
   timer.textContent = INIT_TIMER_TEXT_CONTENT;
+
+  resetBtn.disabled = false;
+  saveGameBtn.disabled = false;
   playground.classList.remove('lock');
 
-  currentNonogram = searchCurrentNonogramByTitle(currTitle);
+  currentNonogram = searchCurrentNonogramByTitle(nonogramsSubtitle.textContent);
   matrix = currentNonogram.matrix;
   title = currentNonogram.title;
   size = currentNonogram.size;
@@ -86,6 +100,8 @@ const endGame = () => {
   const copyPlayground = playground.cloneNode(true);
 
   endGameModal(title, copyPlayground);
+  resetBtn.disabled = true;
+  saveGameBtn.disabled = true;
 };
 
 playground.addEventListener('click', (e) => {
@@ -132,6 +148,80 @@ playground.addEventListener('contextmenu', (e) => {
 
 resetBtn.addEventListener('click', () => {
   resetCurrentGame(currentPlayground);
+});
+
+const saveDataCurrentGame = () => {
+  localStorage['current-game'] = JSON.stringify(currentPlayground);
+  localStorage['left-hints'] = leftHintsBox.innerHTML;
+  localStorage['top-hints'] = topHintsBox.innerHTML;
+  localStorage['current-playground'] = playground.innerHTML;
+  localStorage['current-matrix'] = JSON.stringify(matrix);
+  localStorage['current-title'] = JSON.stringify(title);
+  localStorage['current-size'] = JSON.stringify(size);
+};
+
+saveGameBtn.addEventListener('click', () => {
+  saveDataCurrentGame(currentPlayground);
+});
+
+const readDataLastGame = () => {
+  matrix = JSON.parse(localStorage['current-matrix']);
+  title = JSON.parse(localStorage['current-title']);
+  size = JSON.parse(localStorage['current-size']);
+  currentPlayground = JSON.parse(localStorage['current-game']);
+};
+
+const continueLastGame = () => {
+  readDataLastGame();
+  createCurrentPlayground(JSON.parse(localStorage['current-game']));
+
+  const savedLeftHints = localStorage['left-hints'];
+  if (savedLeftHints) {
+    leftHintsBox.innerHTML = savedLeftHints;
+  }
+
+  const savedTopHints = localStorage['top-hints'];
+  if (savedTopHints) {
+    topHintsBox.innerHTML = savedTopHints;
+  }
+
+  const savedPlayground = localStorage['current-playground'];
+  if (savedPlayground) {
+    playground.innerHTML = savedPlayground;
+  }
+
+  gameWrapper.removeAttribute('class');
+  gameWrapper.classList.add('game__wrapper', SIZE_PLAYGROUND[size]);
+  updateArrsLastGame();
+
+  removeDisabledBtn(sizeBtns);
+
+  sizeBtns.forEach((btn) => {
+    const currentBtn = btn;
+    if (currentBtn.textContent === size) {
+      currentBtn.disabled = true;
+      sizesSubtitle.textContent = size;
+    }
+  });
+
+  updateNonogramsList(sizesSubtitle, nonogramBtns, nonogramsSubtitle);
+  removeDisabledBtn(nonogramBtns);
+
+  nonogramBtns.forEach((btn) => {
+    const currentBtn = btn;
+    if (currentBtn.textContent === title) {
+      currentBtn.disabled = true;
+      nonogramsSubtitle.textContent = title;
+    }
+  });
+};
+
+continueGameBtn.addEventListener('click', () => {
+  if (localStorage.getItem('current-matrix')) {
+    continueLastGame();
+    playground.classList.remove('lock');
+  }
+  resetBtn.disabled = false;
 });
 
 showModal();
