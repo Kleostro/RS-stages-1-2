@@ -5,7 +5,7 @@
   z-index: 10;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
   &__overlay {
     position: fixed;
@@ -18,7 +18,7 @@
     background-color: var(--end-game-modal-overlay);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     cursor: pointer;
     backdrop-filter: blur(4px);
     inset: 0;
@@ -26,6 +26,7 @@
     &.visible {
       opacity: 1;
       visibility: visible;
+      transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
     }
   }
 
@@ -44,13 +45,14 @@
     opacity: 0;
     visibility: hidden;
     transform: scale(0);
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
     cursor: auto;
 
     &.visible {
       opacity: 1;
       visibility: visible;
       transform: none;
-      transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
+      transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s, transform 0.3s ease-in-out 0.5s;
     }
   }
 
@@ -107,6 +109,7 @@
     position: relative;
     opacity: 1;
     visibility: visible;
+    transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
   }
 
   &__title,

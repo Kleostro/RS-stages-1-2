@@ -2,3 +2,8 @@
   position: fixed;
   transform: scale(0);
 }
+
+.lock {
+  pointer-events: none;
+  user-select: none;
+}

@@ -1,15 +1,11 @@
 import CreateElement from '../../CreateElement';
 import nonograms from '../../../data/nonograms.json';
-import { playground, timer } from './gameLayout';
+import { playground } from './gameLayout';
 
 export const playgroundRowsArr = [];
 export const playgroundCellsArr = [];
 const LEFT_HINTS_DIRECTION = 'left';
 const TOP_HINTS_DIRECTION = 'top';
-const ONE_SECOND = 1000;
-
-let timerSec = 0;
-let timerMin = 0;
 
 const clearPlaygroundArr = () => {
   playgroundRowsArr.length = 0;
@@ -203,22 +199,4 @@ export const resetCurrentGame = (currentPlayground) => {
   playgroundCellsArr.forEach((cell) => {
     cell.classList.remove('painted', 'crossed');
   });
-};
-
-export const createGameTimer = () => {
-  timerSec = 0;
-  timerMin = 0;
-
-  return setInterval(() => {
-    timerSec += 1;
-
-    if (timerSec === 60) {
-      timerMin += 1;
-      timerSec = 0;
-    }
-
-    const formattedSec = String(timerSec).padStart(2, '0');
-    const formattedMin = String(timerMin).padStart(2, '0');
-    timer.textContent = `${formattedMin}:${formattedSec}`;
-  }, ONE_SECOND);
 };
