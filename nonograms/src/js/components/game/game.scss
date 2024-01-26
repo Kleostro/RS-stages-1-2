@@ -176,6 +176,12 @@
       }
     }
   }
+
+  &.lock {
+    cursor: not-allowed;
+    pointer-events: none;
+    user-select: none;
+  }
 }
 
 .top-hints {
@@ -213,4 +219,22 @@
 .row-highlight,
 .cell-highlight {
   background-color: var(--playground-highlight);
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 1 span;
+  grid-row: 1;
+  font-size: 2dvw;
+  color: var(--hints-border-light);
+
+  @include tablet {
+    font-size: 3dvw;
+  }
+
+  @include mobile {
+    font-size: 5dvw;
+  }
 }

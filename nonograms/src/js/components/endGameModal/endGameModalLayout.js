@@ -18,10 +18,30 @@ export const modalContent = new CreateElement({
   parent: modalOverlay,
 });
 
-export const modalTitle = new CreateElement({
-  tag: 'h2',
+const modalTitle = new CreateElement({
+  tag: 'h3',
   classes: ['modal__title'],
   parent: modalContent,
+  textContent: 'Great! You have solved the nonogram: ',
+});
+
+export const modalSubtitle = new CreateElement({
+  tag: 'span',
+  classes: ['modal__title-accent'],
+  parent: modalTitle,
+});
+
+const modalTimer = new CreateElement({
+  tag: 'h3',
+  classes: ['modal__timer'],
+  parent: modalContent,
+  textContent: 'Time: ',
+});
+
+export const modalTimerTime = new CreateElement({
+  tag: 'strong',
+  classes: ['modal__timer-accent'],
+  parent: modalTimer,
 });
 
 export const modalCloseBtn = new CreateElement({

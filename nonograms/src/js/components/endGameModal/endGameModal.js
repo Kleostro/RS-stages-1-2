@@ -1,10 +1,12 @@
+import { timer } from '../game/gameLayout';
 import {
   modal,
   modalCloseBtn,
   modalContent,
   modalNonogram,
   modalOverlay,
-  modalTitle,
+  modalSubtitle,
+  modalTimerTime,
 } from './endGameModalLayout';
 
 export const showModal = () => {
@@ -40,7 +42,8 @@ modalOverlay.addEventListener('click', (e) => {
 });
 
 export const endGameModal = (title, copyPlayground) => {
-  modalTitle.innerHTML = `Great! You have solved the nonogram: <span class="modal__title-accent">${title}</span>`;
+  modalSubtitle.textContent = title;
+  modalTimerTime.textContent = timer.textContent;
   showModal();
   showNonogramSolutionInModal(copyPlayground);
 };

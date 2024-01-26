@@ -54,32 +54,6 @@
     }
   }
 
-  &__title {
-    margin-bottom: var(--small-offset);
-    max-width: 60dvw;
-    font-size: 3dvw;
-    letter-spacing: 0.1dvw;
-    text-align: center;
-    color: var(--end-game-modal-text);
-
-    &-accent {
-      text-transform: uppercase;
-      color: var(--end-game-modal-text-accent);
-    }
-
-    @include tablet {
-      font-size: 4dvw;
-    }
-
-    @include small-tablet {
-      font-size: 5dvw;
-    }
-
-    @include mobile {
-      font-size: 6dvw;
-    }
-  }
-
   &__nonogram {
     border: 1px solid var(--playground-border-dark);
     background-color: var(--playground-bg-light);
@@ -133,5 +107,32 @@
     position: relative;
     opacity: 1;
     visibility: visible;
+  }
+
+  &__title,
+  &__timer {
+    margin-bottom: var(--small-offset);
+    max-width: 60dvw;
+    font-size: 3dvw;
+    letter-spacing: 0.1dvw;
+    text-align: center;
+    color: var(--end-game-modal-text);
+
+    &-accent {
+      text-transform: uppercase;
+      color: var(--end-game-modal-text-accent);
+    }
+
+    @include tablet {
+      font-size: 4dvw;
+    }
+
+    @include small-tablet {
+      font-size: 5dvw;
+    }
+
+    @include mobile {
+      font-size: 6dvw;
+    }
   }
 }

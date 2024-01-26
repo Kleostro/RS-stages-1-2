@@ -1,4 +1,5 @@
 import { endGameModal, showModal } from '../endGameModal/endGameModal';
+import { resetBtn } from '../settingsGame/settingsLayout';
 import {
   gameWrapper,
   leftHintsBox,
@@ -9,9 +10,11 @@ import {
   changeCrossedClass,
   changePaintedClass,
   createCurrentPlayground,
+  createGameTimer,
   createHints,
   highlightCurrentColumnAndRow,
   removeHighlightCells,
+  resetCurrentGame,
   searchCurrentNonogramByTitle,
 } from './utils';
 
@@ -25,11 +28,15 @@ const SIZE_PLAYGROUND = {
   '15x15': 'large',
 };
 
-export let currentPlayground = [];
+let currentPlayground = [];
 let currentNonogram = {};
+let isStartTimer = false;
+let timerID;
 let { matrix, title, size } = currentNonogram;
 
 const startGame = (currTitle = 'camel') => {
+  playground.classList.remove('lock');
+  isStartTimer = false;
   currentNonogram = searchCurrentNonogramByTitle(currTitle);
   matrix = currentNonogram.matrix;
   title = currentNonogram.title;
@@ -43,7 +50,12 @@ const startGame = (currTitle = 'camel') => {
 };
 
 const endGame = () => {
+  console.log(playground)
+  playground.classList.add('lock');
+  isStartTimer = false;
   const copyPlayground = playground.cloneNode(true);
+  clearInterval(timerID);
+
   setTimeout(() => {
     endGameModal(title, copyPlayground);
   }, END_GAME_ANIMATION);
@@ -61,6 +73,11 @@ playground.addEventListener('click', (e) => {
     } else {
       currentPlayground[currentRowIndex][currentCellIndex] = 0;
     }
+  }
+
+  if (!isStartTimer) {
+    isStartTimer = true;
+    timerID = createGameTimer();
   }
 
   changePaintedClass(e);
@@ -83,6 +100,10 @@ playground.addEventListener('mouseleave', () => {
 playground.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   changeCrossedClass(e);
+});
+
+resetBtn.addEventListener('click', () => {
+  resetCurrentGame(currentPlayground);
 });
 
 showModal();

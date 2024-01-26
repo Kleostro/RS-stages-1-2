@@ -35,3 +35,10 @@ export const leftHintsBox = new CreateElement({
   classes: ['left-hints'],
   parent: gameWrapper,
 });
+
+export const timer = new CreateElement({
+  tag: 'span',
+  classes: ['timer'],
+  parent: gameWrapper,
+  textContent: '00:00',
+});
