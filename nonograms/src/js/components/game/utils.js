@@ -205,15 +205,20 @@ export const resetCurrentGame = (currentPlayground) => {
   });
 };
 
-export const createGameTimer = () => setInterval(() => {
-  timerSec += 1;
+export const createGameTimer = () => {
+  timerSec = 0;
+  timerMin = 0;
 
-  if (timerSec === 60) {
-    timerMin += 1;
-    timerSec = 0;
-  }
+  return setInterval(() => {
+    timerSec += 1;
 
-  const formattedSec = String(timerSec).padStart(2, '0');
-  const formattedMin = String(timerMin).padStart(2, '0');
-  timer.textContent = `${formattedMin}:${formattedSec}`;
-}, ONE_SECOND);
+    if (timerSec === 60) {
+      timerMin += 1;
+      timerSec = 0;
+    }
+
+    const formattedSec = String(timerSec).padStart(2, '0');
+    const formattedMin = String(timerMin).padStart(2, '0');
+    timer.textContent = `${formattedMin}:${formattedSec}`;
+  }, ONE_SECOND);
+};

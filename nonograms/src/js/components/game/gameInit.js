@@ -4,6 +4,7 @@ import {
   gameWrapper,
   leftHintsBox,
   playground,
+  timer,
   topHintsBox,
 } from './gameLayout';
 import {
@@ -35,6 +36,7 @@ let timerID;
 let { matrix, title, size } = currentNonogram;
 
 const startGame = (currTitle = 'camel') => {
+  timer.textContent = '00:00';
   playground.classList.remove('lock');
   isStartTimer = false;
   currentNonogram = searchCurrentNonogramByTitle(currTitle);
@@ -50,7 +52,6 @@ const startGame = (currTitle = 'camel') => {
 };
 
 const endGame = () => {
-  console.log(playground)
   playground.classList.add('lock');
   isStartTimer = false;
   const copyPlayground = playground.cloneNode(true);
