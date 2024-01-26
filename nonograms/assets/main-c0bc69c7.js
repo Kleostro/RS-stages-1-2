@@ -104,6 +104,42 @@ new CreateElement({
   parent: headerContainer,
   textContent: "Nonograms"
 });
+const game = "";
+const gameSection = new CreateElement({
+  tag: "section",
+  classes: ["game"]
+});
+const gameContainer = new CreateElement({
+  tag: "div",
+  classes: ["game__container", "container"],
+  parent: gameSection
+});
+const gameWrapper = new CreateElement({
+  tag: "div",
+  classes: ["game__wrapper"],
+  parent: gameContainer
+});
+const playground = new CreateElement({
+  tag: "div",
+  classes: ["playground"],
+  parent: gameWrapper
+});
+const topHintsBox = new CreateElement({
+  tag: "div",
+  classes: ["top-hints"],
+  parent: gameWrapper
+});
+const leftHintsBox = new CreateElement({
+  tag: "div",
+  classes: ["left-hints"],
+  parent: gameWrapper
+});
+const timer = new CreateElement({
+  tag: "span",
+  classes: ["timer"],
+  parent: gameWrapper,
+  textContent: "00:00"
+});
 const endGameModal$1 = "";
 const modal = new CreateElement({
   tag: "div",
@@ -120,9 +156,26 @@ const modalContent = new CreateElement({
   parent: modalOverlay
 });
 const modalTitle = new CreateElement({
-  tag: "h2",
+  tag: "h3",
   classes: ["modal__title"],
-  parent: modalContent
+  parent: modalContent,
+  textContent: "Great! You have solved the nonogram: "
+});
+const modalSubtitle = new CreateElement({
+  tag: "span",
+  classes: ["modal__title-accent"],
+  parent: modalTitle
+});
+const modalTimer = new CreateElement({
+  tag: "h3",
+  classes: ["modal__timer"],
+  parent: modalContent,
+  textContent: "Time: "
+});
+const modalTimerTime = new CreateElement({
+  tag: "strong",
+  classes: ["modal__timer-accent"],
+  parent: modalTimer
 });
 const modalCloseBtn = new CreateElement({
   tag: "button",
@@ -160,40 +213,11 @@ modalOverlay.addEventListener("click", (e) => {
   }
 });
 const endGameModal = (title2, copyPlayground) => {
-  modalTitle.innerHTML = `Great! You have solved the nonogram: <span class="modal__title-accent">${title2}</span>`;
+  modalSubtitle.textContent = title2;
+  modalTimerTime.textContent = timer.textContent;
   showModal();
   showNonogramSolutionInModal(copyPlayground);
 };
-const game = "";
-const gameSection = new CreateElement({
-  tag: "section",
-  classes: ["game"]
-});
-const gameContainer = new CreateElement({
-  tag: "div",
-  classes: ["game__container", "container"],
-  parent: gameSection
-});
-const gameWrapper = new CreateElement({
-  tag: "div",
-  classes: ["game__wrapper"],
-  parent: gameContainer
-});
-const playground = new CreateElement({
-  tag: "div",
-  classes: ["playground"],
-  parent: gameWrapper
-});
-const topHintsBox = new CreateElement({
-  tag: "div",
-  classes: ["top-hints"],
-  parent: gameWrapper
-});
-const leftHintsBox = new CreateElement({
-  tag: "div",
-  classes: ["left-hints"],
-  parent: gameWrapper
-});
 const nonogramsData = [
   {
     matrix: [
@@ -2340,6 +2364,9 @@ const playgroundRowsArr = [];
 const playgroundCellsArr = [];
 const LEFT_HINTS_DIRECTION$1 = "left";
 const TOP_HINTS_DIRECTION$1 = "top";
+const ONE_SECOND = 1e3;
+let timerSec = 0;
+let timerMin = 0;
 const clearPlaygroundArr = () => {
   playgroundRowsArr.length = 0;
   playgroundCellsArr.length = 0;
@@ -2503,63 +2530,16 @@ const resetCurrentGame = (currentPlayground2) => {
     cell.classList.remove("painted", "crossed");
   });
 };
-const LEFT_HINTS_DIRECTION = "left";
-const TOP_HINTS_DIRECTION = "top";
-const END_GAME_ANIMATION = 500;
-const SIZE_PLAYGROUND = {
-  "5x5": "small",
-  "10x10": "medium",
-  "15x15": "large"
-};
-let currentPlayground = [];
-let currentNonogram = {};
-let { matrix, title, size } = currentNonogram;
-const startGame = (currTitle = "camel") => {
-  currentNonogram = searchCurrentNonogramByTitle(currTitle);
-  matrix = currentNonogram.matrix;
-  title = currentNonogram.title;
-  size = currentNonogram.size;
-  gameWrapper.removeAttribute("class");
-  gameWrapper.classList.add("game__wrapper", SIZE_PLAYGROUND[size]);
-  currentPlayground = createCurrentPlayground(matrix);
-  createHints(matrix, leftHintsBox, LEFT_HINTS_DIRECTION);
-  createHints(matrix, topHintsBox, TOP_HINTS_DIRECTION);
-};
-const endGame = () => {
-  const copyPlayground = playground.cloneNode(true);
-  setTimeout(() => {
-    endGameModal(title, copyPlayground);
-  }, END_GAME_ANIMATION);
-};
-playground.addEventListener("click", (e) => {
-  const currentCell = e.target;
-  const currentRow = currentCell.parentNode;
-  const currentCellIndex = currentCell.getAttribute("data-cell");
-  const currentRowIndex = currentRow.getAttribute("data-row");
-  if (currentRowIndex && currentCellIndex) {
-    if (!currentCell.classList.contains("painted") && !currentCell.classList.contains("crossed")) {
-      currentPlayground[currentRowIndex][currentCellIndex] = 1;
-    } else {
-      currentPlayground[currentRowIndex][currentCellIndex] = 0;
-    }
+const createGameTimer = () => setInterval(() => {
+  timerSec += 1;
+  if (timerSec === 60) {
+    timerMin += 1;
+    timerSec = 0;
   }
-  changePaintedClass(e);
-  console.log(currentPlayground, matrix);
-  if (currentPlayground.every((_, rowIndex) => currentPlayground[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
-    endGame();
-  }
-});
-playground.addEventListener("mousemove", (event) => {
-  highlightCurrentColumnAndRow(event, matrix);
-});
-playground.addEventListener("mouseleave", () => {
-  removeHighlightCells();
-});
-playground.addEventListener("contextmenu", (e) => {
-  e.preventDefault();
-  changeCrossedClass(e);
-});
-showModal();
+  const formattedSec = String(timerSec).padStart(2, "0");
+  const formattedMin = String(timerMin).padStart(2, "0");
+  timer.textContent = `${formattedMin}:${formattedSec}`;
+}, ONE_SECOND);
 const sizeBtns = [];
 const nonogramBtns = [];
 const uniqueMatrixSizeObj = createUniqueMatrixSizeObj();
@@ -2669,6 +2649,78 @@ const resetBtn = new CreateElement({
   parent: settingsBox,
   textContent: "Reset"
 });
+const LEFT_HINTS_DIRECTION = "left";
+const TOP_HINTS_DIRECTION = "top";
+const END_GAME_ANIMATION = 500;
+const SIZE_PLAYGROUND = {
+  "5x5": "small",
+  "10x10": "medium",
+  "15x15": "large"
+};
+let currentPlayground = [];
+let currentNonogram = {};
+let isStartTimer = false;
+let timerID;
+let { matrix, title, size } = currentNonogram;
+const startGame = (currTitle = "camel") => {
+  playground.classList.remove("lock");
+  isStartTimer = false;
+  currentNonogram = searchCurrentNonogramByTitle(currTitle);
+  matrix = currentNonogram.matrix;
+  title = currentNonogram.title;
+  size = currentNonogram.size;
+  gameWrapper.removeAttribute("class");
+  gameWrapper.classList.add("game__wrapper", SIZE_PLAYGROUND[size]);
+  currentPlayground = createCurrentPlayground(matrix);
+  createHints(matrix, leftHintsBox, LEFT_HINTS_DIRECTION);
+  createHints(matrix, topHintsBox, TOP_HINTS_DIRECTION);
+};
+const endGame = () => {
+  console.log(playground);
+  playground.classList.add("lock");
+  isStartTimer = false;
+  const copyPlayground = playground.cloneNode(true);
+  clearInterval(timerID);
+  setTimeout(() => {
+    endGameModal(title, copyPlayground);
+  }, END_GAME_ANIMATION);
+};
+playground.addEventListener("click", (e) => {
+  const currentCell = e.target;
+  const currentRow = currentCell.parentNode;
+  const currentCellIndex = currentCell.getAttribute("data-cell");
+  const currentRowIndex = currentRow.getAttribute("data-row");
+  if (currentRowIndex && currentCellIndex) {
+    if (!currentCell.classList.contains("painted") && !currentCell.classList.contains("crossed")) {
+      currentPlayground[currentRowIndex][currentCellIndex] = 1;
+    } else {
+      currentPlayground[currentRowIndex][currentCellIndex] = 0;
+    }
+  }
+  if (!isStartTimer) {
+    isStartTimer = true;
+    timerID = createGameTimer();
+  }
+  changePaintedClass(e);
+  console.log(currentPlayground, matrix);
+  if (currentPlayground.every((_, rowIndex) => currentPlayground[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
+    endGame();
+  }
+});
+playground.addEventListener("mousemove", (event) => {
+  highlightCurrentColumnAndRow(event, matrix);
+});
+playground.addEventListener("mouseleave", () => {
+  removeHighlightCells();
+});
+playground.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  changeCrossedClass(e);
+});
+resetBtn.addEventListener("click", () => {
+  resetCurrentGame(currentPlayground);
+});
+showModal();
 const settings = "";
 let newMatrixTitle = "camel";
 let isLockSizes = false;
@@ -2737,9 +2789,6 @@ nonogramBtns.forEach((btn) => {
 startGameBtn.addEventListener("click", () => {
   startGame(newMatrixTitle);
 });
-resetBtn.addEventListener("click", () => {
-  resetCurrentGame(currentPlayground);
-});
 const main = new CreateElement({
   tag: "main",
   classes: ["main"]
@@ -2747,4 +2796,4 @@ const main = new CreateElement({
 main.append(gameSection);
 document.body.append(header, main, modal);
 startGame();
-//# sourceMappingURL=main-9afeb091.js.map
+//# sourceMappingURL=main-c0bc69c7.js.map
