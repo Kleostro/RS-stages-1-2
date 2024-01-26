@@ -2364,14 +2364,12 @@ const playgroundRowsArr = [];
 const playgroundCellsArr = [];
 const LEFT_HINTS_DIRECTION$1 = "left";
 const TOP_HINTS_DIRECTION$1 = "top";
-const ONE_SECOND = 1e3;
-let timerSec = 0;
-let timerMin = 0;
 const clearPlaygroundArr = () => {
   playgroundRowsArr.length = 0;
   playgroundCellsArr.length = 0;
 };
 const createCurrentPlayground = (matrix2) => {
+  console.log(matrix2);
   const currentPlayground2 = [];
   clearPlaygroundArr();
   playground.innerHTML = "";
@@ -2400,6 +2398,16 @@ const createCurrentPlayground = (matrix2) => {
     }
   }
   return currentPlayground2;
+};
+const updateArrsLastGame = () => {
+  clearPlaygroundArr();
+  console.log();
+  Array.from(playground.children).forEach((row) => {
+    playgroundRowsArr.push(row);
+    Array.from(row.children).forEach((cell) => {
+      playgroundCellsArr.push(cell);
+    });
+  });
 };
 const createHints = (matrix2, box, direction) => {
   const hintsBox = box;
@@ -2530,16 +2538,6 @@ const resetCurrentGame = (currentPlayground2) => {
     cell.classList.remove("painted", "crossed");
   });
 };
-const createGameTimer = () => setInterval(() => {
-  timerSec += 1;
-  if (timerSec === 60) {
-    timerMin += 1;
-    timerSec = 0;
-  }
-  const formattedSec = String(timerSec).padStart(2, "0");
-  const formattedMin = String(timerMin).padStart(2, "0");
-  timer.textContent = `${formattedMin}:${formattedSec}`;
-}, ONE_SECOND);
 const sizeBtns = [];
 const nonogramBtns = [];
 const uniqueMatrixSizeObj = createUniqueMatrixSizeObj();
@@ -2649,23 +2647,56 @@ const resetBtn = new CreateElement({
   parent: settingsBox,
   textContent: "Reset"
 });
+const saveGameBtn = new CreateElement({
+  tag: "button",
+  classes: ["btn-reset", "settings__save-btn"],
+  parent: settingsBox,
+  textContent: "Save game"
+});
+const continueGameBtn = new CreateElement({
+  tag: "button",
+  classes: ["btn-reset", "settings__continue-btn"],
+  parent: settingsBox,
+  textContent: "Continue last game"
+});
 const LEFT_HINTS_DIRECTION = "left";
 const TOP_HINTS_DIRECTION = "top";
-const END_GAME_ANIMATION = 500;
+const INIT_TIMER_TEXT_CONTENT = "00:00";
 const SIZE_PLAYGROUND = {
   "5x5": "small",
   "10x10": "medium",
   "15x15": "large"
 };
+const TIMER_MILLISECONDS_IN_SECOND = 1e3;
+const TIMER_MILLISECONDS_IN_MINUTE = 6e4;
+let elapsedTimerTime = 0;
+let startTimerTime = null;
+let isTimerRunning = false;
 let currentPlayground = [];
 let currentNonogram = {};
-let isStartTimer = false;
-let timerID;
 let { matrix, title, size } = currentNonogram;
-const startGame = (currTitle = "camel") => {
+const startGameTimer = (timeStamp) => {
+  if (!startTimerTime) {
+    startTimerTime = timeStamp;
+  }
+  elapsedTimerTime = timeStamp - startTimerTime;
+  const minutes = Math.floor(elapsedTimerTime / TIMER_MILLISECONDS_IN_MINUTE);
+  const seconds = Math.floor(elapsedTimerTime % TIMER_MILLISECONDS_IN_MINUTE / TIMER_MILLISECONDS_IN_SECOND);
+  const formattedSec = String(seconds).padStart(2, "0");
+  const formattedMin = String(minutes).padStart(2, "0");
+  timer.textContent = `${formattedMin}:${formattedSec}`;
+  if (isTimerRunning) {
+    requestAnimationFrame(startGameTimer);
+  }
+};
+const startGame = () => {
+  isTimerRunning = false;
+  startTimerTime = null;
+  timer.textContent = INIT_TIMER_TEXT_CONTENT;
+  resetBtn.disabled = false;
+  saveGameBtn.disabled = false;
   playground.classList.remove("lock");
-  isStartTimer = false;
-  currentNonogram = searchCurrentNonogramByTitle(currTitle);
+  currentNonogram = searchCurrentNonogramByTitle(nonogramsSubtitle.textContent);
   matrix = currentNonogram.matrix;
   title = currentNonogram.title;
   size = currentNonogram.size;
@@ -2676,14 +2707,12 @@ const startGame = (currTitle = "camel") => {
   createHints(matrix, topHintsBox, TOP_HINTS_DIRECTION);
 };
 const endGame = () => {
-  console.log(playground);
+  isTimerRunning = false;
   playground.classList.add("lock");
-  isStartTimer = false;
   const copyPlayground = playground.cloneNode(true);
-  clearInterval(timerID);
-  setTimeout(() => {
-    endGameModal(title, copyPlayground);
-  }, END_GAME_ANIMATION);
+  endGameModal(title, copyPlayground);
+  resetBtn.disabled = true;
+  saveGameBtn.disabled = true;
 };
 playground.addEventListener("click", (e) => {
   const currentCell = e.target;
@@ -2697,9 +2726,10 @@ playground.addEventListener("click", (e) => {
       currentPlayground[currentRowIndex][currentCellIndex] = 0;
     }
   }
-  if (!isStartTimer) {
-    isStartTimer = true;
-    timerID = createGameTimer();
+  if (!isTimerRunning) {
+    isTimerRunning = true;
+    startTimerTime = null;
+    requestAnimationFrame(startGameTimer);
   }
   changePaintedClass(e);
   console.log(currentPlayground, matrix);
@@ -2720,9 +2750,69 @@ playground.addEventListener("contextmenu", (e) => {
 resetBtn.addEventListener("click", () => {
   resetCurrentGame(currentPlayground);
 });
+const saveDataCurrentGame = () => {
+  localStorage["current-game"] = JSON.stringify(currentPlayground);
+  localStorage["left-hints"] = leftHintsBox.innerHTML;
+  localStorage["top-hints"] = topHintsBox.innerHTML;
+  localStorage["current-playground"] = playground.innerHTML;
+  localStorage["current-matrix"] = JSON.stringify(matrix);
+  localStorage["current-title"] = JSON.stringify(title);
+  localStorage["current-size"] = JSON.stringify(size);
+};
+saveGameBtn.addEventListener("click", () => {
+  saveDataCurrentGame();
+});
+const readDataLastGame = () => {
+  matrix = JSON.parse(localStorage["current-matrix"]);
+  title = JSON.parse(localStorage["current-title"]);
+  size = JSON.parse(localStorage["current-size"]);
+  currentPlayground = JSON.parse(localStorage["current-game"]);
+};
+const continueLastGame = () => {
+  readDataLastGame();
+  createCurrentPlayground(JSON.parse(localStorage["current-game"]));
+  const savedLeftHints = localStorage["left-hints"];
+  if (savedLeftHints) {
+    leftHintsBox.innerHTML = savedLeftHints;
+  }
+  const savedTopHints = localStorage["top-hints"];
+  if (savedTopHints) {
+    topHintsBox.innerHTML = savedTopHints;
+  }
+  const savedPlayground = localStorage["current-playground"];
+  if (savedPlayground) {
+    playground.innerHTML = savedPlayground;
+  }
+  gameWrapper.removeAttribute("class");
+  gameWrapper.classList.add("game__wrapper", SIZE_PLAYGROUND[size]);
+  updateArrsLastGame();
+  removeDisabledBtn(sizeBtns);
+  sizeBtns.forEach((btn) => {
+    const currentBtn = btn;
+    if (currentBtn.textContent === size) {
+      currentBtn.disabled = true;
+      sizesSubtitle.textContent = size;
+    }
+  });
+  updateNonogramsList(sizesSubtitle, nonogramBtns, nonogramsSubtitle);
+  removeDisabledBtn(nonogramBtns);
+  nonogramBtns.forEach((btn) => {
+    const currentBtn = btn;
+    if (currentBtn.textContent === title) {
+      currentBtn.disabled = true;
+      nonogramsSubtitle.textContent = title;
+    }
+  });
+};
+continueGameBtn.addEventListener("click", () => {
+  if (localStorage.getItem("current-matrix")) {
+    continueLastGame();
+    playground.classList.remove("lock");
+  }
+  resetBtn.disabled = false;
+});
 showModal();
 const settings = "";
-let newMatrixTitle = "camel";
 let isLockSizes = false;
 let isLockNonograms = false;
 const showSizesDropList = () => {
@@ -2774,7 +2864,6 @@ sizeBtns.forEach((btn) => {
     currentBtn.disabled = true;
     sizesSubtitle.textContent = currentBtn.textContent;
     updateNonogramsList(sizesSubtitle, nonogramBtns, nonogramsSubtitle);
-    newMatrixTitle = nonogramBtns[0].textContent;
   });
 });
 nonogramBtns.forEach((btn) => {
@@ -2782,12 +2871,11 @@ nonogramBtns.forEach((btn) => {
     const currentBtn = btn;
     removeDisabledBtn(nonogramBtns);
     currentBtn.disabled = true;
-    newMatrixTitle = currentBtn.textContent;
-    nonogramsSubtitle.textContent = newMatrixTitle;
+    nonogramsSubtitle.textContent = currentBtn.textContent;
   });
 });
 startGameBtn.addEventListener("click", () => {
-  startGame(newMatrixTitle);
+  startGame();
 });
 const main = new CreateElement({
   tag: "main",
@@ -2796,4 +2884,4 @@ const main = new CreateElement({
 main.append(gameSection);
 document.body.append(header, main, modal);
 startGame();
-//# sourceMappingURL=main-c0bc69c7.js.map
+//# sourceMappingURL=main-6a232c40.js.map
