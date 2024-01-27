@@ -13,5 +13,6 @@ const main = new CreateElement({
 
 main.append(gameSection);
 document.body.append(header, main, modal);
+document.body.classList.add('light');
 
 startGame();

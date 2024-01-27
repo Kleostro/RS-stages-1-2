@@ -15,30 +15,60 @@
   --border-radius: 1dvw;
   --hint-text: 1.5dvw;
 
-  // colors
-  --body-dark: #81966d;
-  --hints-bg: #ddbea9;
-  --hints-color: #553817;
-  --hints-border-dark: #b07942;
-  --hints-border-light: #ffe8d6;
-  --playground-bg-light: #b7b7a4;
-  --playground-bg-dark: #214c02;
-  --playground-border-dark: #414130;
-  --playground-border-light: #a5a58d;
-  --playground-highlight: #d3d3af;
-  --playground-cell-crossed: #ce5656;
-  --end-game-modal-overlay: #403f3dcc;
-  --end-game-modal-bg: #fbd5b3;
-  --end-game-modal-text: #083801;
-  --end-game-modal-text-accent: #107b00;
-  --end-game-modal-close-btn-accent: #a86817;
-  --settings-bg: #faedcd;
-  --settings-bg-accent: #ffe7b1;
-  --settings-bg-lock: #e5ebce;
-  --settings-border: #d4a373;
-  --settings-text: #6c8a06;
-  --settings-text-accent: #6a3f0f;
-  --settings-text-active: #efd7be;
-  --settings-btn-disabled: #bcf29a;
-  --settings-btn-hover: #ffd48e;
+  // light colors
+  body.light {
+    --body-dark: #81966d;
+    --hints-bg: #ddbea9;
+    --hints-color: #553817;
+    --hints-border-dark: #b07942;
+    --hints-border-light: #ffe8d6;
+    --playground-bg-light: #b7b7a4;
+    --playground-bg-dark: #214c02;
+    --playground-border-dark: #414130;
+    --playground-border-light: #a5a58d;
+    --playground-highlight: #d3d3af;
+    --playground-cell-crossed: #ce5656;
+    --end-game-modal-overlay: #403f3dcc;
+    --end-game-modal-bg: #fbd5b3;
+    --end-game-modal-text: #083801;
+    --end-game-modal-text-accent: #107b00;
+    --end-game-modal-close-btn-accent: #a86817;
+    --settings-bg: #faedcd;
+    --settings-bg-accent: #ffe7b1;
+    --settings-bg-lock: #e5ebce;
+    --settings-border: #d4a373;
+    --settings-text: #6c8a06;
+    --settings-text-accent: #6a3f0f;
+    --settings-text-active: #efd7be;
+    --settings-btn-disabled: #bcf29a;
+    --settings-btn-hover: #ffd48e;
+  }
+
+  // dark colors
+  body.dark {
+    --body-dark: #1d1d1d;
+    --hints-bg: #34415a;
+    --hints-color: #f2d4d4;
+    --hints-border-dark: #fff;
+    --hints-border-light: #a2b5c6;
+    --playground-bg-light: #030303;
+    --playground-bg-dark: #6731ab;
+    --playground-border-dark: #8a8a8a;
+    --playground-border-light: #b8baba;
+    --playground-highlight: #313138;
+    --playground-cell-crossed: #e92f2f;
+    --end-game-modal-overlay: #101010cc;
+    --end-game-modal-bg: #676767;
+    --end-game-modal-text: #abd2a0;
+    --end-game-modal-text-accent: #003804;
+    --end-game-modal-close-btn-accent: #52980f;
+    --settings-bg: #545365;
+    --settings-bg-accent: #25357a;
+    --settings-bg-lock: #473561;
+    --settings-border: #bcbcbc;
+    --settings-text: #cbcec2;
+    --settings-text-accent: #fff;
+    --settings-btn-disabled: #8e92d9;
+    --settings-btn-hover: #846eb4;
+  }
 }

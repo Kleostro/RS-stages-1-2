@@ -1,11 +1,14 @@
 import CreateElement from '../../CreateElement';
 import nonograms from '../../../data/nonograms.json';
 import { playground } from './gameLayout';
+import { switchThemeBtn } from '../header/header';
 
 export const playgroundRowsArr = [];
 export const playgroundCellsArr = [];
 const LEFT_HINTS_DIRECTION = 'left';
 const TOP_HINTS_DIRECTION = 'top';
+const DARK_THEME = 'Dark';
+const LIGHT_THEME = 'Light';
 
 const clearPlaygroundArr = () => {
   playgroundRowsArr.length = 0;
@@ -13,7 +16,6 @@ const clearPlaygroundArr = () => {
 };
 
 export const createCurrentPlayground = (matrix) => {
-  console.log(matrix);
   const currentPlayground = [];
   clearPlaygroundArr();
   playground.innerHTML = '';
@@ -49,7 +51,6 @@ export const createCurrentPlayground = (matrix) => {
 
 export const updateArrsLastGame = () => {
   clearPlaygroundArr();
-  console.log();
   Array.from(playground.children).forEach((row) => {
     playgroundRowsArr.push(row);
 
@@ -212,4 +213,17 @@ export const resetCurrentGame = (currentPlayground) => {
   playgroundCellsArr.forEach((cell) => {
     cell.classList.remove('painted', 'crossed');
   });
+};
+
+export const switchTheme = () => {
+  const prevTheme = switchThemeBtn.textContent;
+
+  if (prevTheme === DARK_THEME) {
+    switchThemeBtn.textContent = LIGHT_THEME;
+  } else {
+    switchThemeBtn.textContent = DARK_THEME;
+  }
+
+  document.body.classList.toggle('light');
+  document.body.classList.toggle('dark');
 };

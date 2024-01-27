@@ -78,6 +78,13 @@ const startGame = () => {
 
   resetBtn.disabled = false;
   saveGameBtn.disabled = false;
+
+  if (!localStorage.getItem('current-matrix')) {
+    continueGameBtn.disabled = true;
+  } else {
+    continueGameBtn.disabled = false;
+  }
+
   playground.classList.remove('lock');
 
   currentNonogram = searchCurrentNonogramByTitle(nonogramsSubtitle.textContent);
@@ -162,6 +169,12 @@ const saveDataCurrentGame = () => {
 
 saveGameBtn.addEventListener('click', () => {
   saveDataCurrentGame(currentPlayground);
+
+  if (!localStorage.getItem('current-matrix')) {
+    continueGameBtn.disabled = true;
+  } else {
+    continueGameBtn.disabled = false;
+  }
 });
 
 const readDataLastGame = () => {
@@ -217,10 +230,8 @@ const continueLastGame = () => {
 };
 
 continueGameBtn.addEventListener('click', () => {
-  if (localStorage.getItem('current-matrix')) {
-    continueLastGame();
-    playground.classList.remove('lock');
-  }
+  continueLastGame();
+  playground.classList.remove('lock');
   resetBtn.disabled = false;
 });
 

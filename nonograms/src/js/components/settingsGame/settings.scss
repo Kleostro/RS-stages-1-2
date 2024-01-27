@@ -21,7 +21,11 @@
     font-size: 1.7dvw;
     color: var(--settings-text);
     background-color: var(--settings-bg);
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    transition:
+      opacity 0.2s ease-in-out,
+      transform 0.2s ease-in-out,
+      color 0.2s ease-in-out,
+      background-color 0.2s ease-in-out;
     cursor: pointer;
     user-select: none;
 
@@ -57,7 +61,7 @@
 
   &__box {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: flex;
     align-items: center;
     border: 0.3dvw solid var(--settings-border);
@@ -153,6 +157,7 @@
     position: absolute;
     left: 0;
     top: 93%;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;

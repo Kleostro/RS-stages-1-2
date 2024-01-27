@@ -12,8 +12,9 @@ import {
   sizesSubtitle,
   startGameBtn,
 } from './settingsLayout';
-import { removeDisabledBtn, updateNonogramsList } from '../game/utils';
+import { removeDisabledBtn, switchTheme, updateNonogramsList } from '../game/utils';
 import './settings.scss';
+import { switchThemeBtn } from '../header/header';
 
 let isLockSizes = false;
 let isLockNonograms = false;
@@ -94,3 +95,5 @@ nonogramBtns.forEach((btn) => {
 startGameBtn.addEventListener('click', () => {
   startGame();
 });
+
+switchThemeBtn.addEventListener('click', switchTheme);

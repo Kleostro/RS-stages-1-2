@@ -39,4 +39,11 @@ const title = new CreateElement({
   textContent: 'Nonograms',
 });
 
+export const switchThemeBtn = new CreateElement({
+  tag: 'button',
+  classes: ['btn-reset', 'header__switch-btn'],
+  parent: headerContainer,
+  textContent: 'Dark',
+});
+
 export default header;
