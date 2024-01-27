@@ -104,6 +104,12 @@ new CreateElement({
   parent: headerContainer,
   textContent: "Nonograms"
 });
+const switchThemeBtn = new CreateElement({
+  tag: "button",
+  classes: ["btn-reset", "header__switch-btn"],
+  parent: headerContainer,
+  textContent: "Dark"
+});
 const game = "";
 const gameSection = new CreateElement({
   tag: "section",
@@ -2364,12 +2370,13 @@ const playgroundRowsArr = [];
 const playgroundCellsArr = [];
 const LEFT_HINTS_DIRECTION$1 = "left";
 const TOP_HINTS_DIRECTION$1 = "top";
+const DARK_THEME = "Dark";
+const LIGHT_THEME = "Light";
 const clearPlaygroundArr = () => {
   playgroundRowsArr.length = 0;
   playgroundCellsArr.length = 0;
 };
 const createCurrentPlayground = (matrix2) => {
-  console.log(matrix2);
   const currentPlayground2 = [];
   clearPlaygroundArr();
   playground.innerHTML = "";
@@ -2401,7 +2408,6 @@ const createCurrentPlayground = (matrix2) => {
 };
 const updateArrsLastGame = () => {
   clearPlaygroundArr();
-  console.log();
   Array.from(playground.children).forEach((row) => {
     playgroundRowsArr.push(row);
     Array.from(row.children).forEach((cell) => {
@@ -2537,6 +2543,16 @@ const resetCurrentGame = (currentPlayground2) => {
   playgroundCellsArr.forEach((cell) => {
     cell.classList.remove("painted", "crossed");
   });
+};
+const switchTheme = () => {
+  const prevTheme = switchThemeBtn.textContent;
+  if (prevTheme === DARK_THEME) {
+    switchThemeBtn.textContent = LIGHT_THEME;
+  } else {
+    switchThemeBtn.textContent = DARK_THEME;
+  }
+  document.body.classList.toggle("light");
+  document.body.classList.toggle("dark");
 };
 const sizeBtns = [];
 const nonogramBtns = [];
@@ -2695,6 +2711,11 @@ const startGame = () => {
   timer.textContent = INIT_TIMER_TEXT_CONTENT;
   resetBtn.disabled = false;
   saveGameBtn.disabled = false;
+  if (!localStorage.getItem("current-matrix")) {
+    continueGameBtn.disabled = true;
+  } else {
+    continueGameBtn.disabled = false;
+  }
   playground.classList.remove("lock");
   currentNonogram = searchCurrentNonogramByTitle(nonogramsSubtitle.textContent);
   matrix = currentNonogram.matrix;
@@ -2761,6 +2782,11 @@ const saveDataCurrentGame = () => {
 };
 saveGameBtn.addEventListener("click", () => {
   saveDataCurrentGame();
+  if (!localStorage.getItem("current-matrix")) {
+    continueGameBtn.disabled = true;
+  } else {
+    continueGameBtn.disabled = false;
+  }
 });
 const readDataLastGame = () => {
   matrix = JSON.parse(localStorage["current-matrix"]);
@@ -2805,10 +2831,8 @@ const continueLastGame = () => {
   });
 };
 continueGameBtn.addEventListener("click", () => {
-  if (localStorage.getItem("current-matrix")) {
-    continueLastGame();
-    playground.classList.remove("lock");
-  }
+  continueLastGame();
+  playground.classList.remove("lock");
   resetBtn.disabled = false;
 });
 showModal();
@@ -2877,11 +2901,13 @@ nonogramBtns.forEach((btn) => {
 startGameBtn.addEventListener("click", () => {
   startGame();
 });
+switchThemeBtn.addEventListener("click", switchTheme);
 const main = new CreateElement({
   tag: "main",
   classes: ["main"]
 });
 main.append(gameSection);
 document.body.append(header, main, modal);
+document.body.classList.add("light");
 startGame();
-//# sourceMappingURL=main-6a232c40.js.map
+//# sourceMappingURL=main-89ddd8d4.js.map
