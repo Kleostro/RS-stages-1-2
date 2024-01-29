@@ -289,7 +289,6 @@ class SettingsGameView {
     this.settingsSizeTitle = new CreateElement({ tag: 'span', classes: ['size__title'], textContent: 'Size: ' });
     this.settingsSizeSubtitle = new CreateElement({ tag: 'span', classes: ['size__subtitle'] });
     this.settingsSizeDrop = this.#createDropListSizes();
-    console.log(this.settingsSizeDrop)
 
     this.settingsNameBox = new CreateElement({ classes: ['name'] });
     this.settingsNameTop = new CreateElement({ classes: ['name__top'] });

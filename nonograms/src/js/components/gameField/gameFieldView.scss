@@ -20,11 +20,15 @@
     transition: border-bottom 0.3s ease-in-out;
 
     &:not(:last-child) {
-      border-bottom: 1px solid var(--playground-cell-border);
+      .cell {
+        border-bottom: 1px solid var(--playground-cell-border);
+      }
     }
 
     &:nth-child(5n):not(:last-child) {
-      border-bottom: 2px solid var(--hints-border);
+      .cell {
+        border-bottom: 2px solid var(--hints-border);
+      }
     }
 
     &.highlight {

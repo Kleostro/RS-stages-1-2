@@ -45,15 +45,15 @@ class GameFieldView {
       }
     });
 
-    // TODO подумать как исправить смещение из-за бордеров
+    this.playground.addEventListener('mousemove', ({ target }) => {
+      if (target !== this.playground) {
+        this.#highlightCurrentColumnAndRow(target);
+      }
+    })
 
-    // this.playground.addEventListener('mousemove', (event) => {
-    //   this.#highlightCurrentColumnAndRow(event);
-    // })
-
-    // this.playground.addEventListener('mouseleave', () => {
-    //   this.#removeHighlightCells();
-    // });
+    this.playground.addEventListener('mouseleave', () => {
+      this.#removeHighlightCells();
+    });
 
   }
 
@@ -65,52 +65,49 @@ class GameFieldView {
     return this.gameFieldSection;
   }
 
-  // TODO подумать как исправить смещение из-за бордеров
+  #removeHighlightCells() {
+    this.cellElements.forEach((row) => {
+      row.forEach((cell) => {
+        const currentRow = cell.cell.parentNode;
+        currentRow.classList.remove('highlight');
+        cell.cell.classList.remove('highlight');
+      })
+    })
+  };
 
-  // #removeHighlightCells() {
-  //   this.cellElements.forEach((row) => {
-  //     row.forEach((cell) => {
-  //       const currentRow = cell.cell.parentNode;
-  //       currentRow.classList.remove('highlight');
-  //       cell.cell.classList.remove('highlight');
-  //     })
-  //   })
-  // };
+  #highlightCurrentColumnAndRow(target) {
+    let currentTarget = target;
 
-  // #highlightCurrentColumnAndRow(event) {
-  //   const rect = this.playground.getBoundingClientRect();
-  //   const x = event.clientX - rect.left;
-  //   const y = event.clientY - rect.top;
+    this.cellElements.forEach((row) => {
+      row.forEach((cell) => {
 
-  //   let rowIndex = Math.floor(y / this.cellElements[0][0].cell.clientHeight);
-  //   let cellIndex = Math.floor(x / this.cellElements[0][0].cell.offsetWidth);
+        if (cell === target) {
+          currentTarget = cell;
+        }
 
-  //   console.log(this.cellElements[0][0].cell.offsetHeight)
+      })
+    })
 
-  //   this.#removeHighlightCells();
+    this.#removeHighlightCells();
 
-  //   if (rowIndex > this.cellElements.length - 1) {
-  //     rowIndex = this.cellElements.length - 1;
-  //   }
+    let rowIndex = Number(currentTarget.parentNode.getAttribute('data-row'));
+    let cellIndex = Number(currentTarget.getAttribute('data-cell'));
 
-  //   if (cellIndex > this.cellElements.length - 1) {
-  //     cellIndex = this.cellElements.length - 1;
-  //   }
+    this.cellElements.forEach((row) => {
+      row.forEach((cell) => {
+        const currentRow = cell.cell.parentNode;
 
-  //   this.cellElements.forEach((row) => {
-  //     row.forEach((cell) => {
-  //       const currentRow = cell.cell.parentNode;
+        if (rowIndex === Number(currentRow.getAttribute('data-row'))) {
+          currentRow.classList.add('highlight');
+        }
 
-  //       if (rowIndex === Number(currentRow.getAttribute('data-row'))) {
-  //         currentRow.classList.add('highlight');
-  //       }
+        if (cellIndex === Number(cell.cell.getAttribute('data-cell'))) {
+          cell.cell.classList.add('highlight');
+        }
 
-  //       if (cellIndex === Number(cell.cell.getAttribute('data-cell'))) {
-  //         cell.cell.classList.add('highlight');
-  //       }
-  //     })
-  //   })
-  // };
+      })
+    })
+  };
 
   /**
    * create hints
