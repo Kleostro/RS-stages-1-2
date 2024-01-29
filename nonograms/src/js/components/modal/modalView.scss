@@ -2,20 +2,20 @@
 
 .modal {
   position: absolute;
-  z-index: 10;
+  z-index: 5;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
   &__overlay {
     position: fixed;
-    z-index: 10;
+    z-index: 5;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100vh;
-    background-color: var(--end-game-modal-overlay);
+    background-color: var(--modal-overlay);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -23,7 +23,7 @@
     backdrop-filter: blur(4px);
     inset: 0;
 
-    &.visible {
+    &.hidden {
       opacity: 1;
       visibility: visible;
       transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
@@ -32,23 +32,23 @@
 
   &__content {
     position: relative;
-    z-index: 10;
+    z-index: 5;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 var(--small-offset);
     border-radius: var(--border-radius);
-    padding: var(--small-offset);
+    padding: var(--medium-offset) var(--small-offset);
     width: 100%;
-    max-width: 90dvw;
-    background-color: var(--end-game-modal-bg);
+    max-width: 90%;
+    background-color: var(--modal-content-bg);
     opacity: 0;
     visibility: hidden;
     transform: scale(0);
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
     cursor: auto;
 
-    &.visible {
+    &.hidden {
       opacity: 1;
       visibility: visible;
       transform: none;
@@ -56,40 +56,21 @@
     }
   }
 
-  &__nonogram {
-    border: 1px solid var(--playground-border-dark);
-    background-color: var(--playground-bg-light);
-
-    &-row {
-      display: flex;
-    }
-
-    &-cell {
-      border: 1px solid var(--playground-border-light);
-      width: var(--cell-size);
-      height: var(--cell-size);
-
-      &.painted {
-        background-color: var(--playground-bg-dark);
-      }
-    }
-  }
-
   &__close-btn {
     position: absolute;
     right: var(--small-offset);
     top: var(--small-offset);
-    width: var(--modal-btn-width);
-    height: var(--modal-btn-height);
+    width: var(--modal-close-btn-size);
+    height: var(--modal-close-btn-size);
 
     &::before {
       content: "";
       position: absolute;
       left: 0;
-      top: 2dvw;
-      width: var(--modal-btn-width);
+      top: var(--small-offset);
+      width: var(--modal-close-btn-size);
       height: 2px;
-      background-color: var(--end-game-modal-close-btn-accent);
+      background-color: var(--modal-close-btn-color);
       transform: rotate(45deg);
     }
 
@@ -97,45 +78,30 @@
       content: "";
       position: absolute;
       left: 0;
-      top: 2dvw;
-      width: var(--modal-btn-width);
+      top: var(--small-offset);
+      width: var(--modal-close-btn-size);
       height: 2px;
-      background-color: var(--end-game-modal-close-btn-accent);
+      background-color: var(--modal-close-btn-color);
       transform: rotate(-45deg);
     }
   }
 
-  &.visible {
+  &__title {
+    max-width: 80%;
+    font-size: 16px;
+    letter-spacing: 1px;
+    text-align: center;
+    color: var(--modal-title-color);
+
+    &--accent {
+      color: var(--modal-title-color--accent);
+    }
+  }
+
+  &.hidden {
     position: relative;
     opacity: 1;
     visibility: visible;
     transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
-  }
-
-  &__title,
-  &__timer {
-    margin-bottom: var(--small-offset);
-    max-width: 60dvw;
-    font-size: 3dvw;
-    letter-spacing: 0.1dvw;
-    text-align: center;
-    color: var(--end-game-modal-text);
-
-    &-accent {
-      text-transform: uppercase;
-      color: var(--end-game-modal-text-accent);
-    }
-
-    @include tablet {
-      font-size: 4dvw;
-    }
-
-    @include small-tablet {
-      font-size: 5dvw;
-    }
-
-    @include mobile {
-      font-size: 6dvw;
-    }
   }
 }
