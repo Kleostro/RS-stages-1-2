@@ -41,6 +41,7 @@ const SIZE_PLAYGROUND = {
 
 const TIMER_MILLISECONDS_IN_SECOND = 1000;
 const TIMER_MILLISECONDS_IN_MINUTE = 60000;
+
 let elapsedTimerTime = 0;
 let startTimerTime = null;
 let isTimerRunning = false;

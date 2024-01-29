@@ -159,7 +159,6 @@
         width: 100%;
         height: 0.2dvw;
         background-color: var(--playground-cell-crossed);
-        transform: translate(0, 50%);
         rotate: 45deg;
       }
 
@@ -171,7 +170,6 @@
         width: 100%;
         height: 0.2dvw;
         background-color: var(--playground-cell-crossed);
-        transform: translate(0, 50%);
         rotate: -45deg;
       }
     }

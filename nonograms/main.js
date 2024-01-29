@@ -1,18 +1,21 @@
 import './style.scss';
-import header from './src/js/components/header/header';
-import './src/js/components/settingsGame/settings';
-import CreateElement from './src/js/CreateElement';
-import { gameSection } from './src/js/components/game/gameLayout';
-import { modal } from './src/js/components/endGameModal/endGameModalLayout';
-import startGame from './src/js/components/game/gameInit';
+import HeaderView from './src/js/components/header/HeaderView';
+import MainView from './src/js/components/main/MainView';
 
-const main = new CreateElement({
-  tag: 'main',
-  classes: ['main'],
-});
+/** Create app
+* @class
+*/
+class App {
+  constructor() {
+    const main = new MainView();
+    const header = new HeaderView();
 
-main.append(gameSection);
-document.body.append(header, main, modal);
-document.body.classList.add('light');
+    document.body.prepend(
+      header.getHTML(),
+      main.getHTML(),
+    );
+    document.body.classList.add('light');
+  }
+}
 
-startGame();
+const myApp = new App();

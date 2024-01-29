@@ -2,46 +2,31 @@
 
 :root {
   // offsets
-  --little-offset: 0.6dvw;
-  --small-offset: 2dvw;
-  --section-offset: 5dvw;
+  --small-offset: 10px;
+  --medium-offset: 30px;
+  --large-offset: 60px;
 
   // size
-  --cell-size: 2.5dvw;
-  --cell-border: 0.2dvw;
-  --cell-border-accent: 0.4dvw;
-  --modal-btn-width: 4dvw;
-  --modal-btn-height: 4dvw;
-  --border-radius: 1dvw;
-  --hint-text: 1.5dvw;
+  --cell-size: 20px;
+  --modal-close-btn-size: 20px;
+  --border-radius: 10px;
 
   // light colors
   body.light {
-    --body-dark: #81966d;
-    --hints-bg: #ddbea9;
-    --hints-color: #553817;
-    --hints-border-dark: #b07942;
-    --hints-border-light: #ffe8d6;
-    --playground-bg-light: #b7b7a4;
-    --playground-bg-dark: #214c02;
-    --playground-border-dark: #414130;
-    --playground-border-light: #a5a58d;
-    --playground-highlight: #d3d3af;
-    --playground-cell-crossed: #ce5656;
-    --end-game-modal-overlay: #403f3dcc;
-    --end-game-modal-bg: #fbd5b3;
-    --end-game-modal-text: #083801;
-    --end-game-modal-text-accent: #107b00;
-    --end-game-modal-close-btn-accent: #a86817;
-    --settings-bg: #faedcd;
-    --settings-bg-accent: #ffe7b1;
-    --settings-bg-lock: #e5ebce;
-    --settings-border: #d4a373;
-    --settings-text: #6c8a06;
-    --settings-text-accent: #6a3f0f;
-    --settings-text-active: #efd7be;
-    --settings-btn-disabled: #bcf29a;
-    --settings-btn-hover: #ffd48e;
+    --playground-cell-border: #ababab;
+    --playground-cell-highlight: #c2c2c2a5;
+    --playground-border: #353535;
+    --playground-bg: #fff;
+    --hints-cell-border: #6d6d6d;
+    --hints-border: #353535;
+    --hints-bg: #aaa;
+    --cell-field: #000;
+    --cell-crossed: #f00;
+    --modal-overlay: #aaaaaa90;
+    --modal-content-bg: #303048;
+    --modal-close-btn-color: #b0bde4;
+    --modal-title-color: #cda3df;
+    --modal-title-color--accent: #8a22b6;
   }
 
   // dark colors

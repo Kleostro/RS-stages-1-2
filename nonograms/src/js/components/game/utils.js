@@ -70,11 +70,7 @@ export const createHints = (matrix, box, direction) => {
     const hints = [];
     let hintCounter = 0;
 
-    const hintRow = new CreateElement({
-      tag: 'div',
-      classes: [`${direction}-hints__row`],
-      parent: hintsBox,
-    });
+    const hintRow = new CreateElement({ tag: 'div', classes: [`${direction}-hints__row`], parent: hintsBox });
 
     for (let cell = 0; cell < matrix[row].length; cell += 1) {
       if (direction === LEFT_HINTS_DIRECTION && matrix[row][cell] === 1) {
@@ -93,10 +89,7 @@ export const createHints = (matrix, box, direction) => {
 
     hints.forEach((hint) => {
       const hintCell = new CreateElement({
-        tag: 'div',
-        classes: [`${direction}-hints__cell`],
-        parent: hintRow,
-        textContent: hint,
+        tag: 'div', classes: [`${direction}-hints__cell`], parent: hintRow, textContent: hint,
       });
     });
 

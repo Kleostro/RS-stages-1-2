@@ -14,5 +14,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
   },
-  rules: {},
+  rules: {
+    'max-lines-per-function': ['error', { max: 40, skipBlankLines: true }],
+  },
 };
