@@ -2505,6 +2505,7 @@ class GameFieldView {
     this.isLockPlayground = false;
     this.lockPlayground();
     this.timer.stopTimer();
+    this.timer.currentTime = 0;
   }
   lockPlayground() {
     if (!this.isLockPlayground) {
@@ -2746,7 +2747,7 @@ continueGameHandler_fn = function() {
       btn.disabled = true;
     }
   });
-  this.timer.currentTime = JSON.parse(localStorage["current-time"]);
+  this.timer.currentTime = +JSON.parse(localStorage["current-time"]);
 };
 _createCellsToLS = new WeakSet();
 createCellsToLS_fn = function(savedCells) {
@@ -2875,7 +2876,6 @@ class TimerView {
   }
   startTimer() {
     this.timer.textContent = "00:00";
-    this.currentTime = 0;
     this.isStart = true;
     return this.intervalID = setInterval(() => {
       this.currentTime += 1;
@@ -2935,4 +2935,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-399dd1f1.js.map
+//# sourceMappingURL=main-d9d63130.js.map
