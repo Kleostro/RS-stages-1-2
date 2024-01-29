@@ -174,7 +174,7 @@ class SettingsGameView {
       }
     });
 
-    this.timer.currentTime = JSON.parse(localStorage['current-time']);
+    this.timer.currentTime = +JSON.parse(localStorage['current-time']);
   }
 
   #createCellsToLS(savedCells) {

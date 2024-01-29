@@ -190,7 +190,9 @@ class GameFieldView {
     this.isLockPlayground = false;
 
     this.lockPlayground();
+
     this.timer.stopTimer();
+    this.timer.currentTime = 0;
   }
 
   lockPlayground() {

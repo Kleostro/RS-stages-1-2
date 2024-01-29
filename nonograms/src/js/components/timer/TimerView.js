@@ -20,7 +20,6 @@ class TimerView {
 
   startTimer() {
     this.timer.textContent = '00:00';
-    this.currentTime = 0;
     this.isStart = true;
     return this.intervalID = setInterval(() => {
       this.currentTime += 1;
