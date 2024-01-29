@@ -180,12 +180,14 @@ class SettingsGameView {
   #createCellsToLS(savedCells) {
     if (savedCells) {
       this.gameField.cellElements = [];
+      this.gameField.cellValues = [];
       this.gameField.playground.innerHTML = '';
 
       for (let row = 0; row < savedCells.length; row += 1) {
 
         const rowElem = new CreateElement({ classes: ['playground__row'], attrs: { 'data-row': row } });
         this.gameField.cellElements[row] = [];
+        this.gameField.cellValues[row] = [];
 
         for (let column = 0; column < savedCells[0].length; column += 1) {
           const cellParse = JSON.parse(savedCells[row][column]);
@@ -197,6 +199,7 @@ class SettingsGameView {
 
           rowElem.append(cellElem);
           this.gameField.cellElements[row][column] = cell;
+          this.gameField.cellValues[row] = cellParse.cellValue;
         }
 
         this.gameField.playground.append(rowElem);

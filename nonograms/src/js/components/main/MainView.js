@@ -1,7 +1,7 @@
 import CreateElement from '../../CreateElement';
 import GameFieldView from '../gameField/GameFieldView';
 import ModalView from '../modal/ModalView';
-import SettingsGameView from '../settingsGsme/SettingsGameView';
+import SettingsGameView from '../settingsGame/SettingsGameView';
 import TimerView from '../timer/TimerView';
 import './mainView.scss';
 
