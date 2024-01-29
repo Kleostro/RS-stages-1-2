@@ -396,10 +396,10 @@ img {
   justify-content: space-between;
   transition: border-bottom 0.3s ease-in-out;
 }
-.playground__row:not(:last-child) {
+.playground__row:not(:last-child) .cell {
   border-bottom: 1px solid var(--playground-cell-border);
 }
-.playground__row:nth-child(5n):not(:last-child) {
+.playground__row:nth-child(5n):not(:last-child) .cell {
   border-bottom: 2px solid var(--hints-border);
 }
 .playground__row.highlight {

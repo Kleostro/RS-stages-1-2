@@ -11,7 +11,7 @@ var __privateMethod = (obj, member, method) => {
   __accessCheck(obj, member, "access private method");
   return method;
 };
-var _toggleTheme, toggleTheme_fn, _createHTML, createHTML_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _toggleIsClickableCell, toggleIsClickableCell_fn, _createHTML3, createHTML_fn3, _createHTML4, createHTML_fn4, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7;
+var _toggleTheme, toggleTheme_fn, _createHTML, createHTML_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _toggleIsClickableCell, toggleIsClickableCell_fn, _createHTML3, createHTML_fn3, _createHTML4, createHTML_fn4, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7;
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -2366,6 +2366,8 @@ const DIRECTIONS = ["left", "top"];
 const MESSAGE = "Great! You have solved the nonogram: ";
 class GameFieldView {
   constructor(modal, timer) {
+    __privateAdd(this, _removeHighlightCells);
+    __privateAdd(this, _highlightCurrentColumnAndRow);
     __privateAdd(this, _cellHasClicked);
     __privateAdd(this, _isWin);
     __privateAdd(this, _toggleIsClickableCell);
@@ -2393,6 +2395,14 @@ class GameFieldView {
         this.lockPlayground();
       }
     });
+    this.playground.addEventListener("mousemove", ({ target }) => {
+      if (target !== this.playground) {
+        __privateMethod(this, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn).call(this, target);
+      }
+    });
+    this.playground.addEventListener("mouseleave", () => {
+      __privateMethod(this, _removeHighlightCells, removeHighlightCells_fn).call(this);
+    });
   }
   /**
   * get HTML cell
@@ -2401,42 +2411,6 @@ class GameFieldView {
   getHTML() {
     return this.gameFieldSection;
   }
-  // TODO подумать как исправить смещение из-за бордеров
-  // #removeHighlightCells() {
-  //   this.cellElements.forEach((row) => {
-  //     row.forEach((cell) => {
-  //       const currentRow = cell.cell.parentNode;
-  //       currentRow.classList.remove('highlight');
-  //       cell.cell.classList.remove('highlight');
-  //     })
-  //   })
-  // };
-  // #highlightCurrentColumnAndRow(event) {
-  //   const rect = this.playground.getBoundingClientRect();
-  //   const x = event.clientX - rect.left;
-  //   const y = event.clientY - rect.top;
-  //   let rowIndex = Math.floor(y / this.cellElements[0][0].cell.clientHeight);
-  //   let cellIndex = Math.floor(x / this.cellElements[0][0].cell.offsetWidth);
-  //   console.log(this.cellElements[0][0].cell.offsetHeight)
-  //   this.#removeHighlightCells();
-  //   if (rowIndex > this.cellElements.length - 1) {
-  //     rowIndex = this.cellElements.length - 1;
-  //   }
-  //   if (cellIndex > this.cellElements.length - 1) {
-  //     cellIndex = this.cellElements.length - 1;
-  //   }
-  //   this.cellElements.forEach((row) => {
-  //     row.forEach((cell) => {
-  //       const currentRow = cell.cell.parentNode;
-  //       if (rowIndex === Number(currentRow.getAttribute('data-row'))) {
-  //         currentRow.classList.add('highlight');
-  //       }
-  //       if (cellIndex === Number(cell.cell.getAttribute('data-cell'))) {
-  //         cell.cell.classList.add('highlight');
-  //       }
-  //     })
-  //   })
-  // };
   /**
    * create hints
    * @param {number[][]} matrix - matrix for the current game
@@ -2506,6 +2480,7 @@ class GameFieldView {
     this.lockPlayground();
     this.timer.stopTimer();
     this.timer.currentTime = 0;
+    this.timer.timer.textContent = "00:00";
   }
   lockPlayground() {
     if (!this.isLockPlayground) {
@@ -2516,6 +2491,41 @@ class GameFieldView {
     this.isLockPlayground = !this.isLockPlayground;
   }
 }
+_removeHighlightCells = new WeakSet();
+removeHighlightCells_fn = function() {
+  this.cellElements.forEach((row) => {
+    row.forEach((cell) => {
+      const currentRow = cell.cell.parentNode;
+      currentRow.classList.remove("highlight");
+      cell.cell.classList.remove("highlight");
+    });
+  });
+};
+_highlightCurrentColumnAndRow = new WeakSet();
+highlightCurrentColumnAndRow_fn = function(target) {
+  let currentTarget = target;
+  this.cellElements.forEach((row) => {
+    row.forEach((cell) => {
+      if (cell === target) {
+        currentTarget = cell;
+      }
+    });
+  });
+  __privateMethod(this, _removeHighlightCells, removeHighlightCells_fn).call(this);
+  let rowIndex = Number(currentTarget.parentNode.getAttribute("data-row"));
+  let cellIndex = Number(currentTarget.getAttribute("data-cell"));
+  this.cellElements.forEach((row) => {
+    row.forEach((cell) => {
+      const currentRow = cell.cell.parentNode;
+      if (rowIndex === Number(currentRow.getAttribute("data-row"))) {
+        currentRow.classList.add("highlight");
+      }
+      if (cellIndex === Number(cell.cell.getAttribute("data-cell"))) {
+        cell.cell.classList.add("highlight");
+      }
+    });
+  });
+};
 _cellHasClicked = new WeakSet();
 cellHasClicked_fn = function() {
   this.cellElements.forEach((row, rowIndex) => {
@@ -2660,6 +2670,8 @@ class SettingsGameView {
       } else {
         this.continueGameBtn.disabled = true;
       }
+      const { formattedMin, formattedSec } = this.timer.formattedTime();
+      this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
     if (!localStorage.length) {
       this.continueGameBtn.disabled = true;
@@ -2840,7 +2852,6 @@ createHTML_fn5 = function() {
   this.settingsSizeTitle = new CreateElement({ tag: "span", classes: ["size__title"], textContent: "Size: " });
   this.settingsSizeSubtitle = new CreateElement({ tag: "span", classes: ["size__subtitle"] });
   this.settingsSizeDrop = __privateMethod(this, _createDropListSizes, createDropListSizes_fn).call(this);
-  console.log(this.settingsSizeDrop);
   this.settingsNameBox = new CreateElement({ classes: ["name"] });
   this.settingsNameTop = new CreateElement({ classes: ["name__top"] });
   this.settingsNameTitle = new CreateElement({ tag: "span", classes: ["name__title"] });
@@ -2875,7 +2886,6 @@ class TimerView {
     return this.timer;
   }
   startTimer() {
-    this.timer.textContent = "00:00";
     this.isStart = true;
     return this.intervalID = setInterval(() => {
       this.currentTime += 1;
@@ -2935,4 +2945,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-d9d63130.js.map
+//# sourceMappingURL=main-77536043.js.map
