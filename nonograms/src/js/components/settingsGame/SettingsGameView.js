@@ -74,6 +74,9 @@ class SettingsGameView {
       } else {
         this.continueGameBtn.disabled = true;
       }
+
+      const { formattedMin, formattedSec } = this.timer.formattedTime();
+      this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
 
     if (!localStorage.length) {

@@ -193,6 +193,7 @@ class GameFieldView {
 
     this.timer.stopTimer();
     this.timer.currentTime = 0;
+    this.timer.timer.textContent = '00:00';
   }
 
   lockPlayground() {
