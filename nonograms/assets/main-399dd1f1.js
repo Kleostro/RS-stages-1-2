@@ -2752,10 +2752,12 @@ _createCellsToLS = new WeakSet();
 createCellsToLS_fn = function(savedCells) {
   if (savedCells) {
     this.gameField.cellElements = [];
+    this.gameField.cellValues = [];
     this.gameField.playground.innerHTML = "";
     for (let row = 0; row < savedCells.length; row += 1) {
       const rowElem = new CreateElement({ classes: ["playground__row"], attrs: { "data-row": row } });
       this.gameField.cellElements[row] = [];
+      this.gameField.cellValues[row] = [];
       for (let column = 0; column < savedCells[0].length; column += 1) {
         const cellParse = JSON.parse(savedCells[row][column]);
         const cell = new CellView(cellParse.cellValue, cellParse.state, cellParse.isClickable);
@@ -2763,6 +2765,7 @@ createCellsToLS_fn = function(savedCells) {
         cellElem.setAttribute("data-cell", column);
         rowElem.append(cellElem);
         this.gameField.cellElements[row][column] = cell;
+        this.gameField.cellValues[row] = cellParse.cellValue;
       }
       this.gameField.playground.append(rowElem);
     }
@@ -2932,4 +2935,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-b77be192.js.map
+//# sourceMappingURL=main-399dd1f1.js.map
