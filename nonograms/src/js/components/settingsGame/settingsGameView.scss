@@ -61,10 +61,15 @@
       }
 
       &__title {
+        overflow: hidden;
         margin-right: 30px;
+        min-width: 160px;
+        max-width: 160px;
         font-weight: 300;
         font-size: 18px;
+        text-overflow: ellipsis;
         color: var(--settings-game-text);
+        text-wrap: nowrap;
       }
 
       &__subtitle {

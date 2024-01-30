@@ -189,21 +189,6 @@ class GameFieldView {
     this.originalTitle = nonogramObj.title;
     this.originalSize = nonogramObj.size;
 
-    this.cellElements.length = 0;
-    this.cellValues.length = 0;
-
-    this.createHints(this.originalMatrix, DIRECTIONS);
-    this.createCells(this.originalMatrix);
-
-    this.modal.isShowSolution = false;
-    this.isLockPlayground = false;
-    this.lockPlayground();
-
-    this.timer.stopTimer();
-    this.timer.currentTime = 0;
-    this.timer.timer.textContent = '00:00';
-    this.isEndGame = false;
-
     switch (this.originalSize) {
       case '5x5': {
         this.gameField.classList.remove('medium', 'large');
@@ -221,6 +206,21 @@ class GameFieldView {
         break;
       }
     }
+
+    this.cellElements.length = 0;
+    this.cellValues.length = 0;
+
+    this.createHints(this.originalMatrix, DIRECTIONS);
+    this.createCells(this.originalMatrix);
+
+    this.modal.isShowSolution = false;
+    this.isLockPlayground = false;
+    this.lockPlayground();
+
+    this.timer.stopTimer();
+    this.timer.currentTime = 0;
+    this.timer.timer.textContent = '00:00';
+    this.isEndGame = false;
   }
 
   /**

@@ -226,6 +226,24 @@ class SettingsGameView {
     this.gameField.originalTitle = JSON.parse(LS['current-game']).originalTitle;
     this.gameField.originalSize = JSON.parse(LS['current-game']).originalSize;
 
+    switch (this.gameField.originalSize) {
+      case '5x5': {
+        this.gameField.gameField.classList.remove('medium', 'large');
+        this.gameField.gameField.classList.add('small');
+        break;
+      }
+      case '10x10': {
+        this.gameField.gameField.classList.remove('small', 'large');
+        this.gameField.gameField.classList.add('medium');
+        break;
+      }
+      case '15x15': {
+        this.gameField.gameField.classList.remove('small', 'medium');
+        this.gameField.gameField.classList.add('large');
+        break;
+      }
+    }
+
     this.settingsSizeSubtitle.textContent = JSON.parse(LS['current-game']).originalSize;
     this.#undisabledBtns(this.sizeBtnsArr);
     this.sizeBtnsArr.forEach((btn) => {
