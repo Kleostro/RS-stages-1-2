@@ -131,6 +131,13 @@
         margin-bottom: var(--small-offset);
       }
     }
+
+    &-title {
+      overflow: hidden;
+      max-width: 84px;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+    }
   }
 
   &.hidden {

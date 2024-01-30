@@ -26,103 +26,8 @@ class SettingsGameView {
 
     this.#createHTML();
 
-    this.sizeBtnsArr.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        this.#undisabledBtns(this.sizeBtnsArr);
-        btn.disabled = true;
-        this.settingsSizeSubtitle.textContent = btn.textContent;
-        this.#updateListNames();
-        this.currentName = this.settingsNameSubtitle.textContent;
-        this.newOriginalData = this.#updateCurrentMatrix();
-      });
-    })
-
-    this.nameBtnsArr.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        this.#undisabledBtns(this.nameBtnsArr);
-        btn.disabled = true;
-        this.currentName = btn.textContent;
-        if (btn.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
-          const formattedSubtitle = btn.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
-          this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
-        } else {
-          this.settingsNameSubtitle.textContent = btn.textContent;
-        }
-
-      });
-    })
-
-    this.settingsSizeTop.addEventListener('mouseover', () => {
-      if (!this.isLockListSizes) {
-        this.#showSizesDropList();
-      }
-    });
-
-    this.settingsSizeBox.addEventListener('mouseleave', () => {
-      if (!this.isLockListSizes) {
-        this.#hiddenSizesDropList();
-      }
-    });
-
-    this.settingsSizeTop.addEventListener('click', () => {
-      this.isLockListSizes = !this.isLockListSizes;
-    });
-
-    this.settingsNameTop.addEventListener('mouseover', () => {
-      if (!this.isLockListNames) {
-        this.#showDropListNames();
-      }
-    });
-
-    this.settingsNameBox.addEventListener('mouseleave', () => {
-      if (!this.isLockListNames) {
-        this.#hiddenDropListNames();
-      }
-    });
-
-    this.settingsNameTop.addEventListener('click', () => {
-      this.isLockListNames = !this.isLockListNames;
-    });
-
-    this.startGameBtn.addEventListener('click', () => {
-      this.#startGameHandler.apply(this);
-      this.resetGameBtn.disabled = false;
-      this.saveGameBtn.disabled = false;
-      this.continueGameBtn.disabled = false;
-    });
-
-    this.showSolutionBtn.addEventListener('click', () => {
-      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
-        this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
-        this.gameField.lockPlayground();
-      }
-      this.showSolutionBtn.disabled = true;
-      this.saveGameBtn.disabled = true;
-      this.resetGameBtn.disabled = true;
-      this.continueGameBtn.disabled = true;
-    });
-
-    this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
-    this.saveGameBtn.addEventListener('click', this.#saveGameHandler.bind(this));
-
-    this.continueGameBtn.addEventListener('click', () => {
-      this.showSolutionBtn.disabled = false;
-      this.resetGameBtn.disabled = false;
-      this.saveGameBtn.disabled = false;
-
-      const LS = JSON.parse(localStorage.getItem('kleostro'));
-
-      if (LS['current-game']) {
-        this.#continueGameHandler.apply(this);
-      } else {
-        this.continueGameBtn.disabled = true;
-      }
-
-      const { formattedMin, formattedSec } = this.timer.formattedTime();
-      this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
-    });
-
-    this.randomGameBtn.addEventListener('click', this.#randomGameHandler.bind(this));
+    this.sizeBtnsArr.forEach((btn) => btn.addEventListener('click', ({ target }) => this.#updateBtnsSizeContent(target)));
+    this.nameBtnsArr.forEach((btn) => btn.addEventListener('click', ({ target }) => this.#updateBtnsNameContent(target)));
 
     const LS = JSON.parse(localStorage.getItem('kleostro'));
     if (!LS['current-game']) {
@@ -226,23 +131,9 @@ class SettingsGameView {
     this.gameField.originalTitle = JSON.parse(LS['current-game']).originalTitle;
     this.gameField.originalSize = JSON.parse(LS['current-game']).originalSize;
 
-    switch (this.gameField.originalSize) {
-      case '5x5': {
-        this.gameField.gameField.classList.remove('medium', 'large');
-        this.gameField.gameField.classList.add('small');
-        break;
-      }
-      case '10x10': {
-        this.gameField.gameField.classList.remove('small', 'large');
-        this.gameField.gameField.classList.add('medium');
-        break;
-      }
-      case '15x15': {
-        this.gameField.gameField.classList.remove('small', 'medium');
-        this.gameField.gameField.classList.add('large');
-        break;
-      }
-    }
+    this.startGameBtn.disabled = true;
+
+    this.#updateSizeGameField();
 
     this.settingsSizeSubtitle.textContent = JSON.parse(LS['current-game']).originalSize;
     this.#undisabledBtns(this.sizeBtnsArr);
@@ -347,6 +238,50 @@ class SettingsGameView {
    */
   #undisabledBtns(btnsArr) {
     btnsArr.forEach((btn) => btn.disabled = false)
+  }
+
+  #updateSizeGameField() {
+    switch (this.gameField.originalSize) {
+      case '5x5': {
+        this.gameField.gameField.classList.remove('medium', 'large');
+        this.gameField.gameField.classList.add('small');
+        break;
+      }
+      case '10x10': {
+        this.gameField.gameField.classList.remove('small', 'large');
+        this.gameField.gameField.classList.add('medium');
+        break;
+      }
+      case '15x15': {
+        this.gameField.gameField.classList.remove('small', 'medium');
+        this.gameField.gameField.classList.add('large');
+        break;
+      }
+    }
+  }
+
+  #updateBtnsSizeContent(target) {
+    this.startGameBtn.disabled = false;
+    this.#undisabledBtns(this.sizeBtnsArr);
+    target.disabled = true;
+    this.settingsSizeSubtitle.textContent = target.textContent;
+    this.#updateListNames();
+    this.currentName = this.settingsNameSubtitle.textContent;
+    this.newOriginalData = this.#updateCurrentMatrix();
+  }
+
+  #updateBtnsNameContent(target) {
+    this.startGameBtn.disabled = false;
+    this.#undisabledBtns(this.nameBtnsArr);
+    target.disabled = true;
+    this.currentName = target.textContent;
+
+    if (target.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
+      const formattedSubtitle = target.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
+      this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
+    } else {
+      this.settingsNameSubtitle.textContent = target.textContent;
+    }
   }
 
   /**
@@ -485,6 +420,78 @@ class SettingsGameView {
     this.settingsContainer.append(this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn, this.settingsSizeBox, this.settingsNameBox);
     this.settings.append(this.settingsContainer);
     this.gameField.gameFieldContainer.append(this.settings);
+
+    this.settingsSizeTop.addEventListener('mouseover', () => {
+      if (!this.isLockListSizes) {
+        this.#showSizesDropList();
+      }
+    });
+
+    this.settingsSizeBox.addEventListener('mouseleave', () => {
+      if (!this.isLockListSizes) {
+        this.#hiddenSizesDropList();
+      }
+    });
+
+    this.settingsSizeTop.addEventListener('click', () => {
+      this.isLockListSizes = !this.isLockListSizes;
+    });
+
+    this.settingsNameTop.addEventListener('mouseover', () => {
+      if (!this.isLockListNames) {
+        this.#showDropListNames();
+      }
+    });
+
+    this.settingsNameBox.addEventListener('mouseleave', () => {
+      if (!this.isLockListNames) {
+        this.#hiddenDropListNames();
+      }
+    });
+
+    this.settingsNameTop.addEventListener('click', () => {
+      this.isLockListNames = !this.isLockListNames;
+    });
+
+    this.startGameBtn.addEventListener('click', () => {
+      this.#startGameHandler.apply(this);
+      this.resetGameBtn.disabled = false;
+      this.saveGameBtn.disabled = false;
+      this.continueGameBtn.disabled = false;
+    });
+
+    this.showSolutionBtn.addEventListener('click', () => {
+      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
+        this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
+        this.gameField.lockPlayground();
+      }
+      this.showSolutionBtn.disabled = true;
+      this.saveGameBtn.disabled = true;
+      this.resetGameBtn.disabled = true;
+      this.continueGameBtn.disabled = true;
+    });
+
+    this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
+    this.saveGameBtn.addEventListener('click', this.#saveGameHandler.bind(this));
+
+    this.continueGameBtn.addEventListener('click', () => {
+      this.showSolutionBtn.disabled = false;
+      this.resetGameBtn.disabled = false;
+      this.saveGameBtn.disabled = false;
+
+      const LS = JSON.parse(localStorage.getItem('kleostro'));
+
+      if (LS['current-game']) {
+        this.#continueGameHandler.apply(this);
+      } else {
+        this.continueGameBtn.disabled = true;
+      }
+
+      const { formattedMin, formattedSec } = this.timer.formattedTime();
+      this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
+    });
+
+    this.randomGameBtn.addEventListener('click', this.#randomGameHandler.bind(this));
   }
 }
 
