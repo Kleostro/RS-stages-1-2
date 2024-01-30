@@ -52,24 +52,6 @@ class SettingsGameView {
       });
     })
 
-    this.startGameBtn.addEventListener('click', () => {
-      this.#startGameHandler.apply(this);
-      this.resetGameBtn.disabled = false;
-      this.saveGameBtn.disabled = false;
-      this.continueGameBtn.disabled = false;
-    });
-
-    this.showSolutionBtn.addEventListener('click', () => {
-      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
-        this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
-        this.gameField.lockPlayground();
-      }
-      this.showSolutionBtn.disabled = true;
-      this.saveGameBtn.disabled = true;
-      this.resetGameBtn.disabled = true;
-      this.continueGameBtn.disabled = true;
-    });
-
     this.settingsSizeTop.addEventListener('mouseover', () => {
       if (!this.isLockListSizes) {
         this.#showSizesDropList();
@@ -102,6 +84,24 @@ class SettingsGameView {
       this.isLockListNames = !this.isLockListNames;
     });
 
+    this.startGameBtn.addEventListener('click', () => {
+      this.#startGameHandler.apply(this);
+      this.resetGameBtn.disabled = false;
+      this.saveGameBtn.disabled = false;
+      this.continueGameBtn.disabled = false;
+    });
+
+    this.showSolutionBtn.addEventListener('click', () => {
+      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
+        this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
+        this.gameField.lockPlayground();
+      }
+      this.showSolutionBtn.disabled = true;
+      this.saveGameBtn.disabled = true;
+      this.resetGameBtn.disabled = true;
+      this.continueGameBtn.disabled = true;
+    });
+
     this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
     this.saveGameBtn.addEventListener('click', this.#saveGameHandler.bind(this));
 
@@ -123,6 +123,11 @@ class SettingsGameView {
     });
 
     this.randomGameBtn.addEventListener('click', this.#randomGameHandler.bind(this));
+
+    const LS = JSON.parse(localStorage.getItem('kleostro'));
+    if (!LS['current-game']) {
+      this.continueGameBtn.disabled = true;
+    }
   }
 
   /**
@@ -237,7 +242,7 @@ class SettingsGameView {
         btn.disabled = true;
       }
     });
-
+    this.timer.stopTimer();
     this.timer.currentTime = +JSON.parse(LS['current-time']);
   }
 
