@@ -11,7 +11,7 @@ var __privateMethod = (obj, member, method) => {
   __accessCheck(obj, member, "access private method");
   return method;
 };
-var _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _winnersClickHandler, winnersClickHandler_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _createHTML3, createHTML_fn3, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _createHTML4, createHTML_fn4, _createHTML5, createHTML_fn5, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8, _createHTML9, createHTML_fn9;
+var _winnersClickHandler, winnersClickHandler_fn, _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _createHTML3, createHTML_fn3, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _createHTML4, createHTML_fn4, _createHTML5, createHTML_fn5, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _showSizesDropList, showSizesDropList_fn, _hiddenSizesDropList, hiddenSizesDropList_fn, _showDropListNames, showDropListNames_fn, _hiddenDropListNames, hiddenDropListNames_fn, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8, _createHTML9, createHTML_fn9;
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -82,7 +82,11 @@ const headerView = "";
 const settingsAppView = "";
 const APP_THEME_NAMES = ["light", "dark"];
 class SettingsAppView {
-  constructor() {
+  constructor(winners) {
+    /**
+    * winners click handler
+    */
+    __privateAdd(this, _winnersClickHandler);
     /**
     * changes the current application theme
     */
@@ -91,8 +95,10 @@ class SettingsAppView {
     * create HTML settings
     */
     __privateAdd(this, _createHTML);
+    this.winners = winners;
     __privateMethod(this, _createHTML, createHTML_fn).call(this);
     this.theme = APP_THEME_NAMES[0];
+    this.winnersBtn.addEventListener("click", __privateMethod(this, _winnersClickHandler, winnersClickHandler_fn).bind(this));
     this.themeBtn.addEventListener("click", __privateMethod(this, _toggleThemeHandler, toggleThemeHandler_fn).bind(this));
   }
   /**
@@ -100,9 +106,13 @@ class SettingsAppView {
   * @returns {Element} HTML-Element settings
   */
   getHTML() {
-    return this.themeBtn;
+    return this.settingsAppBox;
   }
 }
+_winnersClickHandler = new WeakSet();
+winnersClickHandler_fn = function() {
+  this.winners.show();
+};
 _toggleThemeHandler = new WeakSet();
 toggleThemeHandler_fn = function() {
   this.theme = this.theme === APP_THEME_NAMES[0] ? APP_THEME_NAMES[1] : APP_THEME_NAMES[0];
@@ -112,22 +122,20 @@ toggleThemeHandler_fn = function() {
 };
 _createHTML = new WeakSet();
 createHTML_fn = function() {
-  this.themeBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__theme-btn"], textContent: APP_THEME_NAMES[0] });
+  this.settingsAppBox = new CreateElement({ classes: ["header__settings"] });
+  this.winnersBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-winners-btn"], textContent: "Winners" });
+  this.themeBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-theme-btn"], textContent: APP_THEME_NAMES[0] });
+  this.settingsAppBox.append(this.winnersBtn, this.themeBtn);
 };
 class HeaderView {
   constructor(winners) {
     /**
-    * winners click handler
-    */
-    __privateAdd(this, _winnersClickHandler);
-    /**
     * create HTML header
     */
     __privateAdd(this, _createHTML2);
-    this.settingsApp = new SettingsAppView();
+    this.settingsApp = new SettingsAppView(winners);
     this.winners = winners;
     __privateMethod(this, _createHTML2, createHTML_fn2).call(this);
-    this.winnersBtn.addEventListener("click", __privateMethod(this, _winnersClickHandler, winnersClickHandler_fn).bind(this));
   }
   /**
   * get HTML header
@@ -137,17 +145,12 @@ class HeaderView {
     return this.header;
   }
 }
-_winnersClickHandler = new WeakSet();
-winnersClickHandler_fn = function() {
-  this.winners.show();
-};
 _createHTML2 = new WeakSet();
 createHTML_fn2 = function() {
   this.header = new CreateElement({ tag: "header", classes: ["header"] });
   this.headerContainer = new CreateElement({ tag: "div", classes: ["header__container", "container"] });
   this.title = new CreateElement({ tag: "h1", classes: ["header__title"], textContent: "Nonograms" });
-  this.winnersBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__winners-btn"], textContent: "Winners" });
-  this.headerContainer.append(this.title, this.winnersBtn, this.settingsApp.getHTML());
+  this.headerContainer.append(this.title, this.settingsApp.getHTML());
   this.header.append(this.headerContainer);
 };
 const cellView = "";
@@ -2444,6 +2447,7 @@ class GameFieldView {
         this.timer.startTimer();
       }
       __privateMethod(this, _cellHasClicked, cellHasClicked_fn).call(this);
+      console.log(this.cellValues, this.originalMatrix);
       __privateMethod(this, _isWin, isWin_fn).call(this, this.cellValues, this.originalMatrix);
     });
     this.playground.addEventListener("mousemove", ({ target }) => {
@@ -2528,6 +2532,7 @@ class GameFieldView {
     this.originalTitle = nonogramObj.title;
     this.originalSize = nonogramObj.size;
     this.cellElements.length = 0;
+    this.cellValues.length = 0;
     this.createHints(this.originalMatrix, DIRECTIONS);
     this.createCells(this.originalMatrix);
     this.modal.isShowSolution = false;
@@ -2537,6 +2542,23 @@ class GameFieldView {
     this.timer.currentTime = 0;
     this.timer.timer.textContent = "00:00";
     this.isEndGame = false;
+    switch (this.originalSize) {
+      case "5x5": {
+        this.gameField.classList.remove("medium", "large");
+        this.gameField.classList.add("small");
+        break;
+      }
+      case "10x10": {
+        this.gameField.classList.remove("small", "large");
+        this.gameField.classList.add("medium");
+        break;
+      }
+      case "15x15": {
+        this.gameField.classList.remove("small", "medium");
+        this.gameField.classList.add("large");
+        break;
+      }
+    }
   }
   /**
   * changes the locking of the playground
@@ -2611,12 +2633,14 @@ isWin_fn = function(cellValues, matrix) {
 _createHTML4 = new WeakSet();
 createHTML_fn4 = function() {
   this.gameFieldSection = new CreateElement({ tag: "section", classes: ["game"] });
+  this.gameFieldContainer = new CreateElement({ classes: ["container", "game__container"] });
   this.gameField = new CreateElement({ classes: ["game__field"] });
   this.playground = new CreateElement({ classes: ["playground"] });
   this.leftHintsBox = new CreateElement({ classes: ["left-hints"] });
   this.topHintsBox = new CreateElement({ classes: ["top-hints"] });
   this.gameField.append(this.playground, this.leftHintsBox, this.topHintsBox, this.timer.getHTML());
-  this.gameFieldSection.append(this.gameField);
+  this.gameFieldContainer.append(this.gameField);
+  this.gameFieldSection.append(this.gameFieldContainer);
 };
 const modalView = "";
 class ModalView {
@@ -2675,6 +2699,7 @@ createHTML_fn5 = function() {
   this.modalBox.append(this.overlay);
 };
 const settingsGameView = "";
+const MAX_LETTERS_IN_SUBTITLE = 10;
 class SettingsGameView {
   constructor(gameField, timer) {
     /**
@@ -2735,6 +2760,10 @@ class SettingsGameView {
      * create list names
      */
     __privateAdd(this, _createDropListNames);
+    __privateAdd(this, _showSizesDropList);
+    __privateAdd(this, _hiddenSizesDropList);
+    __privateAdd(this, _showDropListNames);
+    __privateAdd(this, _hiddenDropListNames);
     /**
     * create HTML settings game
     */
@@ -2745,6 +2774,8 @@ class SettingsGameView {
     this.nameBtnsArr = [];
     this.currentName = null;
     this.newOriginalData = null;
+    this.isLockListSizes = false;
+    this.isLockListNames = false;
     __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
     this.sizeBtnsArr.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -2761,7 +2792,12 @@ class SettingsGameView {
         __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
         btn.disabled = true;
         this.currentName = btn.textContent;
-        this.settingsNameSubtitle.textContent = btn.textContent;
+        if (btn.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
+          const formattedSubtitle = btn.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
+          this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
+        } else {
+          this.settingsNameSubtitle.textContent = btn.textContent;
+        }
       });
     });
     this.startGameBtn.addEventListener("click", () => {
@@ -2779,6 +2815,32 @@ class SettingsGameView {
       this.saveGameBtn.disabled = true;
       this.resetGameBtn.disabled = true;
       this.continueGameBtn.disabled = true;
+    });
+    this.settingsSizeTop.addEventListener("mouseover", () => {
+      if (!this.isLockListSizes) {
+        __privateMethod(this, _showSizesDropList, showSizesDropList_fn).call(this);
+      }
+    });
+    this.settingsSizeBox.addEventListener("mouseleave", () => {
+      if (!this.isLockListSizes) {
+        __privateMethod(this, _hiddenSizesDropList, hiddenSizesDropList_fn).call(this);
+      }
+    });
+    this.settingsSizeTop.addEventListener("click", () => {
+      this.isLockListSizes = !this.isLockListSizes;
+    });
+    this.settingsNameTop.addEventListener("mouseover", () => {
+      if (!this.isLockListNames) {
+        __privateMethod(this, _showDropListNames, showDropListNames_fn).call(this);
+      }
+    });
+    this.settingsNameBox.addEventListener("mouseleave", () => {
+      if (!this.isLockListNames) {
+        __privateMethod(this, _hiddenDropListNames, hiddenDropListNames_fn).call(this);
+      }
+    });
+    this.settingsNameTop.addEventListener("click", () => {
+      this.isLockListNames = !this.isLockListNames;
     });
     this.resetGameBtn.addEventListener("click", __privateMethod(this, _resetGameHandler, resetGameHandler_fn).bind(this));
     this.saveGameBtn.addEventListener("click", __privateMethod(this, _saveGameHandler, saveGameHandler_fn).bind(this));
@@ -2964,7 +3026,7 @@ createDropListSizes_fn = function() {
     uniqueDataObj.add(item.size);
   });
   const uniqueDataArr = Array.from(uniqueDataObj);
-  const dropList = new CreateElement({ tag: "ul", classes: ["size__drop", "list-reset"] });
+  const dropList = new CreateElement({ tag: "ul", classes: ["size__drop", "list-reset", "hidden"] });
   uniqueDataArr.forEach((item, index) => {
     const listItem = new CreateElement({ tag: "li", classes: ["size__drop-item"] });
     const btn = new CreateElement({ tag: "button", classes: ["size__drop-btn", "btn-reset"], textContent: item });
@@ -2981,7 +3043,7 @@ createDropListSizes_fn = function() {
 _createDropListNames = new WeakSet();
 createDropListNames_fn = function() {
   const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
-  const dropList = new CreateElement({ tag: "ul", classes: ["name__drop", "list-reset"] });
+  const dropList = new CreateElement({ tag: "ul", classes: ["name__drop", "list-reset", "hidden"] });
   filteredData.forEach((item, index) => {
     const listItem = new CreateElement({ tag: "li", classes: ["name__drop-item"] });
     const btn = new CreateElement({ tag: "button", classes: ["name__drop-btn", "btn-reset"], textContent: item.title });
@@ -2996,33 +3058,55 @@ createDropListNames_fn = function() {
   this.settingsNameSubtitle.textContent = filteredData[0].title;
   return dropList;
 };
+_showSizesDropList = new WeakSet();
+showSizesDropList_fn = function() {
+  this.settingsSizeTop.classList.add("active");
+  this.settingsSizeDrop.classList.remove("hidden");
+};
+_hiddenSizesDropList = new WeakSet();
+hiddenSizesDropList_fn = function() {
+  this.settingsSizeTop.classList.remove("active");
+  this.settingsSizeDrop.classList.add("hidden");
+};
+_showDropListNames = new WeakSet();
+showDropListNames_fn = function() {
+  this.settingsNameTop.classList.add("active");
+  this.settingsNameDrop.classList.remove("hidden");
+};
+_hiddenDropListNames = new WeakSet();
+hiddenDropListNames_fn = function() {
+  this.settingsNameTop.classList.remove("active");
+  this.settingsNameDrop.classList.add("hidden");
+};
 _createHTML6 = new WeakSet();
 createHTML_fn6 = function() {
-  this.settings = new CreateElement({ classes: ["settings"] });
-  this.settingsContainer = new CreateElement({ classes: ["settings__container"] });
+  this.settings = new CreateElement({ classes: ["game__settings"] });
+  this.settingsContainer = new CreateElement({ classes: ["game__settings-container"] });
   this.settingsSizeBox = new CreateElement({ classes: ["size"] });
   this.settingsSizeTop = new CreateElement({ classes: ["size__top"] });
-  this.settingsSizeTitle = new CreateElement({ tag: "span", classes: ["size__title"], textContent: "Size: " });
+  this.settingsSizeTitle = new CreateElement({ tag: "h3", classes: ["size__title"], textContent: "Size: " });
   this.settingsSizeSubtitle = new CreateElement({ tag: "span", classes: ["size__subtitle"] });
   this.settingsSizeDrop = __privateMethod(this, _createDropListSizes, createDropListSizes_fn).call(this);
   this.settingsNameBox = new CreateElement({ classes: ["name"] });
   this.settingsNameTop = new CreateElement({ classes: ["name__top"] });
-  this.settingsNameTitle = new CreateElement({ tag: "span", classes: ["name__title"], textContent: "Selected: " });
+  this.settingsNameTitle = new CreateElement({ tag: "h3", classes: ["name__title"], textContent: "Selected: " });
   this.settingsNameSubtitle = new CreateElement({ tag: "span", classes: ["name__subtitle"] });
   this.settingsNameDrop = __privateMethod(this, _createDropListNames, createDropListNames_fn).call(this);
-  this.startGameBtn = new CreateElement({ tag: "button", classes: ["start-game"], textContent: "Play" });
-  this.showSolutionBtn = new CreateElement({ tag: "button", classes: ["show-solution"], textContent: "Show Solution" });
-  this.resetGameBtn = new CreateElement({ tag: "button", classes: ["reset-game"], textContent: "Reset" });
-  this.saveGameBtn = new CreateElement({ tag: "button", classes: ["save-game"], textContent: "Save game" });
-  this.continueGameBtn = new CreateElement({ tag: "button", classes: ["continue-game"], textContent: "Continue last game" });
-  this.randomGameBtn = new CreateElement({ tag: "button", classes: ["random-game"], textContent: "Random game" });
-  this.settingsSizeTop.append(this.settingsSizeTitle, this.settingsSizeSubtitle);
+  this.startGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "start-game"], textContent: "Play" });
+  this.showSolutionBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "show-solution"], textContent: "Show Solution" });
+  this.resetGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "reset-game"], textContent: "Reset" });
+  this.saveGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "save-game"], textContent: "Save game" });
+  this.continueGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "continue-game"], textContent: "Continue last game" });
+  this.randomGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "random-game"], textContent: "Random game" });
+  this.settingsSizeTitle.append(this.settingsSizeSubtitle);
+  this.settingsSizeTop.append(this.settingsSizeTitle);
   this.settingsSizeBox.append(this.settingsSizeTop, this.settingsSizeDrop);
-  this.settingsNameTop.append(this.settingsNameTitle, this.settingsNameSubtitle);
+  this.settingsNameTitle.append(this.settingsNameSubtitle);
+  this.settingsNameTop.append(this.settingsNameTitle);
   this.settingsNameBox.append(this.settingsNameTop, this.settingsNameDrop);
-  this.settingsContainer.append(this.settingsNameBox, this.settingsSizeBox, this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn);
+  this.settingsContainer.append(this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn, this.settingsSizeBox, this.settingsNameBox);
   this.settings.append(this.settingsContainer);
-  this.gameField.gameFieldSection.append(this.settings);
+  this.gameField.gameFieldContainer.append(this.settings);
 };
 const timerView = "";
 const TIMER_INTERVAL = 1e3;
@@ -3136,12 +3220,11 @@ class WinnersView {
     this.content.classList.toggle("hidden");
     document.body.classList.toggle("stop-scroll");
     const sortedListWinners = this.sortWinners();
-    const listHeader = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"] });
     const listIndex = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "№" });
     const listTitle = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "Name" });
     const listSize = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "Size" });
     const listTime = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "Time" });
-    this.winnersList.append(listHeader, listIndex, listTitle, listSize, listTime);
+    this.winnersList.append(listIndex, listTitle, listSize, listTime);
     sortedListWinners.forEach((winner, index) => {
       const formattedMin = Math.floor(winner.time / MAX_SEC_IN_MIN).toString().padStart(2, "0");
       const formattedSec = (winner.time % MAX_MS_IN_SEC).toString().padStart(2, "0");
@@ -3209,4 +3292,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-ba7e191e.js.map
+//# sourceMappingURL=main-6efd2937.js.map
