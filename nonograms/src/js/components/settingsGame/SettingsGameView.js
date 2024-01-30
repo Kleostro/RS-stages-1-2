@@ -79,6 +79,8 @@ class SettingsGameView {
       const { formattedMin, formattedSec } = this.timer.formattedTime();
       this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
+
+    this.randomGameBtn.addEventListener('click', this.#randomGameHandler.bind(this));
   }
 
   /**
@@ -178,6 +180,36 @@ class SettingsGameView {
     });
 
     this.timer.currentTime = +JSON.parse(LS['current-time']);
+  }
+
+  #randomGameHandler() {
+    const { matrix, title, size } = this.#getRandomGame();
+    this.#undisabledBtns(this.sizeBtnsArr);
+    this.settingsSizeSubtitle.textContent = size;
+    this.sizeBtnsArr.forEach((btn) => {
+
+      if (this.settingsSizeSubtitle.textContent === btn.textContent) {
+        btn.disabled = true;
+      }
+
+    });
+    this.#updateListNames();
+    this.#undisabledBtns(this.nameBtnsArr);
+
+    this.settingsNameSubtitle.textContent = title;
+    this.nameBtnsArr.forEach((btn) => {
+
+      if (this.settingsNameSubtitle.textContent === btn.textContent) {
+        btn.disabled = true;
+      }
+    });
+
+    this.gameField.startGame({ matrix, title, size });
+  }
+
+  #getRandomGame() {
+    const randomIndex = Math.floor(Math.random() * data.length);
+    return data[randomIndex];
   }
 
   #createCellsToLS(savedCells) {
@@ -302,6 +334,7 @@ class SettingsGameView {
     this.resetGameBtn = new CreateElement({ tag: 'button', classes: ['reset-game'], textContent: 'Reset' });
     this.saveGameBtn = new CreateElement({ tag: 'button', classes: ['save-game'], textContent: 'Save game' });
     this.continueGameBtn = new CreateElement({ tag: 'button', classes: ['continue-game'], textContent: 'Continue last game' });
+    this.randomGameBtn = new CreateElement({ tag: 'button', classes: ['random-game'], textContent: 'Random game' });
 
 
     this.settingsSizeTop.append(this.settingsSizeTitle, this.settingsSizeSubtitle);
@@ -310,7 +343,7 @@ class SettingsGameView {
     this.settingsNameTop.append(this.settingsNameTitle, this.settingsNameSubtitle);
     this.settingsNameBox.append(this.settingsNameTop, this.settingsNameDrop);
 
-    this.settingsContainer.append(this.settingsNameBox, this.settingsSizeBox, this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn);
+    this.settingsContainer.append(this.settingsNameBox, this.settingsSizeBox, this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn);
     this.settings.append(this.settingsContainer);
     this.gameField.gameFieldSection.append(this.settings);
   }
