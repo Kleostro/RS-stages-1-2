@@ -7,12 +7,15 @@ import MainView from './src/js/components/main/MainView';
 */
 class App {
   constructor() {
-    const main = new MainView();
-    const header = new HeaderView();
+    if (!(localStorage.getItem('kleostro'))) {
+      localStorage.kleostro = JSON.stringify({});
+    }
+    this.main = new MainView();
+    this.header = new HeaderView(this.main.winners);
 
     document.body.prepend(
-      header.getHTML(),
-      main.getHTML(),
+      this.header.getHTML(),
+      this.main.getHTML(),
     );
     document.body.classList.add('light');
   }

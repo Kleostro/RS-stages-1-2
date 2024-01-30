@@ -12,9 +12,6 @@ class SettingsGameView {
   constructor(gameField, timer) {
     this.gameField = gameField;
     this.timer = timer;
-    console.log(this.gameField)
-
-    this.isShowSolution = false;
 
     this.sizeBtnsArr = [];
     this.nameBtnsArr = [];
@@ -51,20 +48,19 @@ class SettingsGameView {
     });
 
     this.showSolutionBtn.addEventListener('click', () => {
+      if (!this.gameField.isShowSolution) {
+        this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
+        this.gameField.lockPlayground();
+      }
       this.showSolutionBtn.disabled = true;
-
       this.saveGameBtn.disabled = true;
       this.resetGameBtn.disabled = true;
-      this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
-      this.gameField.lockPlayground();
     });
 
     this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
     this.saveGameBtn.addEventListener('click', this.#saveGameHandler.bind(this));
 
     this.continueGameBtn.addEventListener('click', () => {
-      this.isShowSolution = !this.isShowSolution;
-
       this.showSolutionBtn.disabled = false;
       this.resetGameBtn.disabled = false;
       this.saveGameBtn.disabled = false;
@@ -79,7 +75,9 @@ class SettingsGameView {
       this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
 
-    if (!localStorage.length) {
+    const LS = JSON.parse(localStorage.kleostro);
+
+    if (!LS['current-game']) {
       this.continueGameBtn.disabled = true;
     }
   }
@@ -102,15 +100,13 @@ class SettingsGameView {
   #showSolutionHandler(matrix, cellElements) {
     matrix.forEach((row, rowIndex) => {
       row.forEach((_, columnIndex) => {
+        cellElements[rowIndex][columnIndex].cell.classList.remove('field');
         if (cellElements[rowIndex][columnIndex].cellValue === 1 && !this.isShowSolution) {
           cellElements[rowIndex][columnIndex].cell.classList.add('field');
-        } else if (cellElements[rowIndex][columnIndex].cellValue === 1 && this.isShowSolution && cellElements[rowIndex][columnIndex].state !== 'field') {
-          cellElements[rowIndex][columnIndex].cell.classList.remove('field');
+          cellElements[rowIndex][columnIndex].cell.classList.remove('crossed');
         }
       })
     })
-
-    this.isShowSolution = !this.isShowSolution;
   }
 
   #resetGameHandler() {
@@ -123,11 +119,12 @@ class SettingsGameView {
   }
 
   #saveGameHandler() {
-    localStorage['current-game'] = JSON.stringify(this.gameField);
-    localStorage['left-hints'] = this.gameField.leftHintsBox.innerHTML;
-    localStorage['top-hints'] = this.gameField.topHintsBox.innerHTML;
-    localStorage['current-playground'] = this.gameField.playground.innerHTML;
-    localStorage['current-time'] = this.timer.getTime();
+    const LS = JSON.parse(localStorage.kleostro);
+    LS['current-game'] = JSON.stringify(this.gameField);
+    LS['left-hints'] = this.gameField.leftHintsBox.innerHTML;
+    LS['top-hints'] = this.gameField.topHintsBox.innerHTML;
+    LS['current-playground'] = this.gameField.playground.innerHTML;
+    LS['current-time'] = this.timer.getTime();
 
     const savedArr = [];
     this.gameField.cellElements.forEach((row) => {
@@ -138,10 +135,12 @@ class SettingsGameView {
       });
 
       savedArr.push(rowArr);
-      localStorage['savedArr'] = JSON.stringify(savedArr);
+      LS['saved-cells'] = JSON.stringify(savedArr);
 
       this.continueGameBtn.disabled = false;
     })
+
+    localStorage.kleostro = JSON.stringify(LS);
   }
 
   #continueGameHandler() {
@@ -149,18 +148,19 @@ class SettingsGameView {
       this.gameField.lockPlayground();
     }
 
-    const savedCells = JSON.parse(localStorage['savedArr'])
+    const LS = JSON.parse(localStorage.kleostro);
+    const savedCells = JSON.parse(LS['saved-cells'])
     this.#createCellsToLS(savedCells)
 
 
-    this.gameField.leftHintsBox.innerHTML = localStorage['left-hints'];
-    this.gameField.topHintsBox.innerHTML = localStorage['top-hints'];
+    this.gameField.leftHintsBox.innerHTML = LS['left-hints'];
+    this.gameField.topHintsBox.innerHTML = LS['top-hints'];
 
-    this.gameField.originalMatrix = JSON.parse(localStorage['current-game']).originalMatrix;
-    this.gameField.originalTitle = JSON.parse(localStorage['current-game']).originalTitle;
-    this.gameField.originalSize = JSON.parse(localStorage['current-game']).originalSize;
+    this.gameField.originalMatrix = JSON.parse(LS['current-game']).originalMatrix;
+    this.gameField.originalTitle = JSON.parse(LS['current-game']).originalTitle;
+    this.gameField.originalSize = JSON.parse(LS['current-game']).originalSize;
 
-    this.settingsSizeSubtitle.textContent = JSON.parse(localStorage['current-game']).originalSize;
+    this.settingsSizeSubtitle.textContent = JSON.parse(LS['current-game']).originalSize;
     this.#undisabledBtns(this.sizeBtnsArr);
     this.sizeBtnsArr.forEach((btn) => {
       if (this.settingsSizeSubtitle.textContent === btn.textContent) {
@@ -169,7 +169,7 @@ class SettingsGameView {
     });
 
     this.#updateListNames();
-    this.settingsNameSubtitle.textContent = JSON.parse(localStorage['current-game']).originalTitle;
+    this.settingsNameSubtitle.textContent = JSON.parse(LS['current-game']).originalTitle;
     this.#undisabledBtns(this.nameBtnsArr);
     this.nameBtnsArr.forEach((btn) => {
       if (this.settingsNameSubtitle.textContent === btn.textContent) {
@@ -177,11 +177,12 @@ class SettingsGameView {
       }
     });
 
-    this.timer.currentTime = +JSON.parse(localStorage['current-time']);
+    this.timer.currentTime = +JSON.parse(LS['current-time']);
   }
 
   #createCellsToLS(savedCells) {
     if (savedCells) {
+      console.log(savedCells)
       this.gameField.cellElements = [];
       this.gameField.cellValues = [];
       this.gameField.playground.innerHTML = '';

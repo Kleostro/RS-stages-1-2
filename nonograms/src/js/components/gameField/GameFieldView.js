@@ -11,11 +11,13 @@ const MESSAGE = 'Great! You have solved the nonogram: ';
  * @class
  * @param {object} modal - modal class instance
  * @param {object} timer - timer class instance
+ * @param {object} winners - winners class instance
  */
 class GameFieldView {
-  constructor(modal, timer) {
+  constructor(modal, timer, winners) {
     this.modal = modal;
     this.timer = timer;
+    this.winners = winners;
 
     this.currentNonogramObj = data[0];
     this.originalMatrix = this.currentNonogramObj.matrix;
@@ -26,6 +28,7 @@ class GameFieldView {
     this.cellValues = [];
 
     this.isLockPlayground = false;
+    this.isShowSolution = false;
 
     this.#createHTML();
     this.startGame(this.currentNonogramObj);
@@ -37,12 +40,7 @@ class GameFieldView {
       }
       this.#cellHasClicked();
 
-      if (this.#isWin(this.cellValues, this.originalMatrix)) {
-        this.timer.stopTimer();
-        this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
-        this.#toggleIsClickableCell(this.cellElements);
-        this.lockPlayground();
-      }
+      this.#isWin(this.cellValues, this.originalMatrix)
     });
 
     this.playground.addEventListener('mousemove', ({ target }) => {
@@ -222,7 +220,14 @@ class GameFieldView {
   }
 
   #isWin(cellValues, matrix) {
-    return cellValues.every((_, rowIndex) => cellValues[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))
+    if (cellValues.every((_, rowIndex) => cellValues[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
+      this.timer.stopTimer();
+      this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
+      this.#toggleIsClickableCell(this.cellElements);
+      this.lockPlayground();
+      this.isShowSolution = !this.isShowSolution;
+      this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
+    }
   }
 
   #toggleIsClickableCell(cellElements) {
