@@ -3,6 +3,8 @@ import './settingsGameView.scss';
 import data from '../../../data/nonograms.json';
 import CellView from '../gameField/cell/CellView';
 
+const MAX_LETTERS_IN_SUBTITLE = 10;
+
 /** Create a settings
 * @class
 * @param {object} gameField - gameField class instance
@@ -18,6 +20,9 @@ class SettingsGameView {
 
     this.currentName = null;
     this.newOriginalData = null;
+
+    this.isLockListSizes = false;
+    this.isLockListNames = false;
 
     this.#createHTML();
 
@@ -37,7 +42,13 @@ class SettingsGameView {
         this.#undisabledBtns(this.nameBtnsArr);
         btn.disabled = true;
         this.currentName = btn.textContent;
-        this.settingsNameSubtitle.textContent = btn.textContent;
+        if (btn.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
+          const formattedSubtitle = btn.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
+          this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
+        } else {
+          this.settingsNameSubtitle.textContent = btn.textContent;
+        }
+
       });
     })
 
@@ -57,6 +68,38 @@ class SettingsGameView {
       this.saveGameBtn.disabled = true;
       this.resetGameBtn.disabled = true;
       this.continueGameBtn.disabled = true;
+    });
+
+    this.settingsSizeTop.addEventListener('mouseover', () => {
+      if (!this.isLockListSizes) {
+        this.#showSizesDropList();
+      }
+    });
+
+    this.settingsSizeBox.addEventListener('mouseleave', () => {
+      if (!this.isLockListSizes) {
+        this.#hiddenSizesDropList();
+      }
+    });
+
+    this.settingsSizeTop.addEventListener('click', () => {
+      this.isLockListSizes = !this.isLockListSizes;
+    });
+
+    this.settingsNameTop.addEventListener('mouseover', () => {
+      if (!this.isLockListNames) {
+        this.#showDropListNames();
+      }
+    });
+
+    this.settingsNameBox.addEventListener('mouseleave', () => {
+      if (!this.isLockListNames) {
+        this.#hiddenDropListNames();
+      }
+    });
+
+    this.settingsNameTop.addEventListener('click', () => {
+      this.isLockListNames = !this.isLockListNames;
     });
 
     this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
@@ -300,7 +343,6 @@ class SettingsGameView {
     this.#undisabledBtns(this.nameBtnsArr);
 
     filteredData.forEach((item, index) => {
-
       if (index === 0) {
         this.settingsNameSubtitle.textContent = item.title;
         this.nameBtnsArr[index].disabled = true;
@@ -321,7 +363,7 @@ class SettingsGameView {
 
     const uniqueDataArr = Array.from(uniqueDataObj);
 
-    const dropList = new CreateElement({ tag: 'ul', classes: ['size__drop', 'list-reset'] });
+    const dropList = new CreateElement({ tag: 'ul', classes: ['size__drop', 'list-reset', 'hidden'] });
     uniqueDataArr.forEach((item, index) => {
       const listItem = new CreateElement({ tag: 'li', classes: ['size__drop-item'] });;
       const btn = new CreateElement({ tag: 'button', classes: ['size__drop-btn', 'btn-reset'], textContent: item });
@@ -344,7 +386,7 @@ class SettingsGameView {
   #createDropListNames() {
     const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
 
-    const dropList = new CreateElement({ tag: 'ul', classes: ['name__drop', 'list-reset'] });
+    const dropList = new CreateElement({ tag: 'ul', classes: ['name__drop', 'list-reset', 'hidden'] });
     filteredData.forEach((item, index) => {
       const listItem = new CreateElement({ tag: 'li', classes: ['name__drop-item'] });;
       const btn = new CreateElement({ tag: 'button', classes: ['name__drop-btn', 'btn-reset'], textContent: item.title });
@@ -362,42 +404,64 @@ class SettingsGameView {
     return dropList;
   }
 
+  #showSizesDropList() {
+    this.settingsSizeTop.classList.add('active');
+    this.settingsSizeDrop.classList.remove('hidden');
+  };
+
+  #hiddenSizesDropList() {
+    this.settingsSizeTop.classList.remove('active');
+    this.settingsSizeDrop.classList.add('hidden');
+  };
+
+  #showDropListNames() {
+    this.settingsNameTop.classList.add('active');
+    this.settingsNameDrop.classList.remove('hidden');
+  };
+
+  #hiddenDropListNames() {
+    this.settingsNameTop.classList.remove('active');
+    this.settingsNameDrop.classList.add('hidden');
+  };
+
   /**
   * create HTML settings game
   */
   #createHTML() {
-    this.settings = new CreateElement({ classes: ['settings'] });
-    this.settingsContainer = new CreateElement({ classes: ['settings__container'] });
+    this.settings = new CreateElement({ classes: ['game__settings'] });
+    this.settingsContainer = new CreateElement({ classes: ['game__settings-container'] });
 
     this.settingsSizeBox = new CreateElement({ classes: ['size'] });
     this.settingsSizeTop = new CreateElement({ classes: ['size__top'] });
-    this.settingsSizeTitle = new CreateElement({ tag: 'span', classes: ['size__title'], textContent: 'Size: ' });
+    this.settingsSizeTitle = new CreateElement({ tag: 'h3', classes: ['size__title'], textContent: 'Size: ' });
     this.settingsSizeSubtitle = new CreateElement({ tag: 'span', classes: ['size__subtitle'] });
     this.settingsSizeDrop = this.#createDropListSizes();
 
     this.settingsNameBox = new CreateElement({ classes: ['name'] });
     this.settingsNameTop = new CreateElement({ classes: ['name__top'] });
-    this.settingsNameTitle = new CreateElement({ tag: 'span', classes: ['name__title'], textContent: 'Selected: ' });
+    this.settingsNameTitle = new CreateElement({ tag: 'h3', classes: ['name__title'], textContent: 'Selected: ' });
     this.settingsNameSubtitle = new CreateElement({ tag: 'span', classes: ['name__subtitle'] });
     this.settingsNameDrop = this.#createDropListNames();
 
-    this.startGameBtn = new CreateElement({ tag: 'button', classes: ['start-game'], textContent: 'Play' });
-    this.showSolutionBtn = new CreateElement({ tag: 'button', classes: ['show-solution'], textContent: 'Show Solution' });
-    this.resetGameBtn = new CreateElement({ tag: 'button', classes: ['reset-game'], textContent: 'Reset' });
-    this.saveGameBtn = new CreateElement({ tag: 'button', classes: ['save-game'], textContent: 'Save game' });
-    this.continueGameBtn = new CreateElement({ tag: 'button', classes: ['continue-game'], textContent: 'Continue last game' });
-    this.randomGameBtn = new CreateElement({ tag: 'button', classes: ['random-game'], textContent: 'Random game' });
+    this.startGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'start-game'], textContent: 'Play' });
+    this.showSolutionBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'show-solution'], textContent: 'Show Solution' });
+    this.resetGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'reset-game'], textContent: 'Reset' });
+    this.saveGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'save-game'], textContent: 'Save game' });
+    this.continueGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'continue-game'], textContent: 'Continue last game' });
+    this.randomGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'random-game'], textContent: 'Random game' });
 
 
-    this.settingsSizeTop.append(this.settingsSizeTitle, this.settingsSizeSubtitle);
+    this.settingsSizeTitle.append(this.settingsSizeSubtitle);
+    this.settingsSizeTop.append(this.settingsSizeTitle);
     this.settingsSizeBox.append(this.settingsSizeTop, this.settingsSizeDrop);
 
-    this.settingsNameTop.append(this.settingsNameTitle, this.settingsNameSubtitle);
+    this.settingsNameTitle.append(this.settingsNameSubtitle);
+    this.settingsNameTop.append(this.settingsNameTitle);
     this.settingsNameBox.append(this.settingsNameTop, this.settingsNameDrop);
 
-    this.settingsContainer.append(this.settingsNameBox, this.settingsSizeBox, this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn);
+    this.settingsContainer.append(this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn, this.settingsSizeBox, this.settingsNameBox);
     this.settings.append(this.settingsContainer);
-    this.gameField.gameFieldSection.append(this.settings);
+    this.gameField.gameFieldContainer.append(this.settings);
   }
 }
 

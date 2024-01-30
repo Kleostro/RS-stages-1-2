@@ -40,13 +40,14 @@
     border-radius: var(--border-radius);
     padding: var(--medium-offset) var(--small-offset);
     width: 100%;
-    max-width: 90%;
+    max-width: 460px;
     background-color: var(--modal-content-bg);
     opacity: 0;
     visibility: hidden;
     transform: scale(0);
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
     cursor: auto;
+    gap: var(--little-offset);
 
     &.hidden {
       opacity: 1;
@@ -86,9 +87,17 @@
     }
   }
 
-  &__title {
+  &.hidden {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
+  }
+
+  &__title,
+  &__subtitle {
     max-width: 80%;
-    font-size: 16px;
+    font-size: 20px;
     letter-spacing: 1px;
     text-align: center;
     color: var(--modal-title-color);
@@ -96,12 +105,5 @@
     &--accent {
       color: var(--modal-title-color--accent);
     }
-  }
-
-  &.hidden {
-    position: relative;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
   }
 }

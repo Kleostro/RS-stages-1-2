@@ -2,6 +2,7 @@
 
 :root {
   // offsets
+  --little-offset: 5px;
   --small-offset: 10px;
   --medium-offset: 30px;
   --large-offset: 60px;
@@ -10,9 +11,23 @@
   --cell-size: 20px;
   --modal-close-btn-size: 20px;
   --border-radius: 10px;
+  --cell-text: 15px;
 
   // light colors
   body.light {
+    --body-bg: #b2b5e1;
+    --header-title-color: #3f2a7e;
+    --settings-app-btn-bg: #7655d2;
+    --settings-app-btn-bg-hover: #8669d6;
+    --settings-app-btn-bg-active: #6a43d6;
+    --settings-app-btn-color: #fff;
+    --settings-game-border: #8c74c3;
+    --settings-game-bg: #7650cf;
+    --settings-game-text: #fff;
+    --settings-game-text-accent: #ffe38f;
+    --settings-game-btn-disabled: #341b55;
+    --settings-game-btn-hover: #9669d0;
+    --timer-text: #2d1668;
     --playground-cell-border: #ababab;
     --playground-cell-highlight: #c2c2c2a5;
     --playground-border: #353535;
@@ -23,10 +38,12 @@
     --cell-field: #000;
     --cell-crossed: #f00;
     --modal-overlay: #aaaaaa90;
-    --modal-content-bg: #303048;
-    --modal-close-btn-color: #b0bde4;
-    --modal-title-color: #cda3df;
-    --modal-title-color--accent: #8a22b6;
+    --modal-content-bg: #864fcd;
+    --modal-close-btn-color: #e8ddf5;
+    --modal-title-color: #eec5ff;
+    --modal-title-color--accent: #341962;
+    --modal-winners-color--accent: #fff;
+    --modal-winners-color--item: #fff8dc;
   }
 
   // dark colors

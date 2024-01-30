@@ -1,0 +1,170 @@
+@import "../../../scss/breakpoints";
+
+.game__settings {
+  &-container {
+    display: grid;
+    gap: var(--small-offset);
+
+    .size,
+    .name {
+      position: relative;
+      grid-column: 1 span;
+      grid-row: 4;
+      height: max-content;
+
+      &__top {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        border: 3px solid var(--settings-game-border);
+        padding: var(--little-offset) var(--little-offset);
+        min-width: 160px;
+        background-color: var(--settings-game-bg);
+        transition: border-radius 0.2s ease-in-out;
+        cursor: pointer;
+        user-select: none;
+
+        &::before {
+          content: "";
+          position: absolute;
+          right: 11px;
+          top: 15px;
+          width: 10px;
+          height: 2px;
+          background-color: var(--settings-game-text);
+          transform: rotate(45deg);
+          transition: transform 0.2s ease-in-out;
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          right: 5px;
+          top: 15px;
+          width: 10px;
+          height: 2px;
+          background-color: var(--settings-game-text);
+          transform: rotate(135deg);
+          transition: transform 0.2s ease-in-out;
+        }
+
+        &.active {
+          &::before {
+            transform: rotate(-45deg);
+          }
+
+          &::after {
+            transform: rotate(-135deg);
+          }
+        }
+      }
+
+      &__title {
+        margin-right: 30px;
+        font-weight: 300;
+        font-size: 18px;
+        color: var(--settings-game-text);
+      }
+
+      &__subtitle {
+        color: var(--settings-game-text-accent);
+      }
+
+      &__drop {
+        position: absolute;
+        left: 0;
+        top: 93%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid var(--settings-game-border);
+        width: 100%;
+        background-color: var(--settings-game-bg);
+        transform: none;
+        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+        &-item {
+          width: 100%;
+        }
+
+        &-btn {
+          padding: var(--little-offset) 0;
+          width: 100%;
+          font-size: 16px;
+          color: var(--settings-game-text);
+          transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+          &:disabled {
+            color: var(--settings-game-text-accent);
+            background-color: var(--settings-game-btn-disabled);
+            pointer-events: none;
+          }
+
+          @media (hover: hover) {
+            &:hover {
+              background-color: var(--settings-game-btn-hover);
+            }
+          }
+        }
+
+        &.hidden {
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-20%);
+        }
+      }
+    }
+
+    .start-game,
+    .show-solution,
+    .reset-game,
+    .save-game,
+    .continue-game,
+    .random-game {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--small-offset);
+      letter-spacing: 1px;
+      text-transform: capitalize;
+      color: var(--settings-app-btn-color);
+      background-color: var(--settings-app-btn-bg);
+      transition: transform 0.1s ease-in, background-color 0.2s ease-in, opacity 0.2s ease-in;
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--settings-app-btn-bg-hover);
+          animation: wiggling 0.7s ease-in-out infinite;
+        }
+      }
+
+      /* stylelint-disable-next-line order/order */
+      &:active {
+        background-color: var(--settings-app-btn-bg-active);
+        transform: scale(0.9);
+        animation: none;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+@keyframes wiggling {
+  0% {
+    rotate: 0;
+  }
+
+  50% {
+    rotate: 5deg;
+  }
+
+  100% {
+    rotate: 0;
+  }
+}

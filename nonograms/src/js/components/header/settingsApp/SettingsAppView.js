@@ -4,9 +4,11 @@ import './settingsAppView.scss';
 const APP_THEME_NAMES = ['light', 'dark'];
 
 class SettingsAppView {
-  constructor() {
+  constructor(winners) {
+    this.winners = winners;
     this.#createHTML();
     this.theme = APP_THEME_NAMES[0];
+    this.winnersBtn.addEventListener('click', this.#winnersClickHandler.bind(this));
     this.themeBtn.addEventListener('click', this.#toggleThemeHandler.bind(this));
   }
 
@@ -15,7 +17,14 @@ class SettingsAppView {
   * @returns {Element} HTML-Element settings
   */
   getHTML() {
-    return this.themeBtn;
+    return this.settingsAppBox;
+  }
+
+  /**
+  * winners click handler
+  */
+  #winnersClickHandler() {
+    this.winners.show();
   }
 
   /**
@@ -32,7 +41,11 @@ class SettingsAppView {
   * create HTML settings
   */
   #createHTML() {
-    this.themeBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'header__theme-btn'], textContent: APP_THEME_NAMES[0] });
+    this.settingsAppBox = new CreateElement({ classes: ['header__settings'] });
+    this.winnersBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'header__settings-winners-btn'], textContent: 'Winners' });
+    this.themeBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'header__settings-theme-btn'], textContent: APP_THEME_NAMES[0] });
+
+    this.settingsAppBox.append(this.winnersBtn, this.themeBtn);
   }
 }
 

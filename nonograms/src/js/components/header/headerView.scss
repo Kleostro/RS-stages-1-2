@@ -1,0 +1,17 @@
+.header {
+  &__container {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--large-offset);
+    padding: var(--small-offset);
+  }
+
+  &__title {
+    margin-right: auto;
+    font-style: italic;
+    font-size: 30px;
+    letter-spacing: 1px;
+    color: var(--header-title-color);
+    transition: color 0.3s ease-in;
+  }
+}

@@ -8,11 +8,9 @@ import SettingsAppView from './settingsApp/SettingsAppView';
 */
 class HeaderView {
   constructor(winners) {
-    this.settingsApp = new SettingsAppView();
+    this.settingsApp = new SettingsAppView(winners);
     this.winners = winners;
     this.#createHTML();
-
-    this.winnersBtn.addEventListener('click', this.#winnersClickHandler.bind(this));
   }
 
   /**
@@ -24,22 +22,14 @@ class HeaderView {
   }
 
   /**
-  * winners click handler
-  */
-  #winnersClickHandler() {
-    this.winners.show();
-  }
-
-  /**
   * create HTML header
   */
   #createHTML() {
     this.header = new CreateElement({ tag: 'header', classes: ['header'] });
     this.headerContainer = new CreateElement({ tag: 'div', classes: ['header__container', 'container'] });
     this.title = new CreateElement({ tag: 'h1', classes: ['header__title'], textContent: 'Nonograms' });
-    this.winnersBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'header__winners-btn'], textContent: 'Winners' });
 
-    this.headerContainer.append(this.title, this.winnersBtn, this.settingsApp.getHTML());
+    this.headerContainer.append(this.title, this.settingsApp.getHTML());
     this.header.append(this.headerContainer);
   }
 }

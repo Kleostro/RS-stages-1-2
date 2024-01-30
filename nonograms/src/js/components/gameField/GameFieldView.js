@@ -40,6 +40,7 @@ class GameFieldView {
         this.timer.startTimer();
       }
       this.#cellHasClicked();
+      console.log(this.cellValues, this.originalMatrix)
 
       this.#isWin(this.cellValues, this.originalMatrix)
     });
@@ -189,6 +190,7 @@ class GameFieldView {
     this.originalSize = nonogramObj.size;
 
     this.cellElements.length = 0;
+    this.cellValues.length = 0;
 
     this.createHints(this.originalMatrix, DIRECTIONS);
     this.createCells(this.originalMatrix);
@@ -201,6 +203,24 @@ class GameFieldView {
     this.timer.currentTime = 0;
     this.timer.timer.textContent = '00:00';
     this.isEndGame = false;
+
+    switch (this.originalSize) {
+      case '5x5': {
+        this.gameField.classList.remove('medium', 'large');
+        this.gameField.classList.add('small');
+        break;
+      }
+      case '10x10': {
+        this.gameField.classList.remove('small', 'large');
+        this.gameField.classList.add('medium');
+        break;
+      }
+      case '15x15': {
+        this.gameField.classList.remove('small', 'medium');
+        this.gameField.classList.add('large');
+        break;
+      }
+    }
   }
 
   /**
@@ -255,13 +275,15 @@ class GameFieldView {
   */
   #createHTML() {
     this.gameFieldSection = new CreateElement({ tag: 'section', classes: ['game'] });
+    this.gameFieldContainer = new CreateElement({ classes: ['container', 'game__container'] });
     this.gameField = new CreateElement({ classes: ['game__field'] });
     this.playground = new CreateElement({ classes: ['playground'] });
     this.leftHintsBox = new CreateElement({ classes: ['left-hints'] });
     this.topHintsBox = new CreateElement({ classes: ['top-hints'] });
 
     this.gameField.append(this.playground, this.leftHintsBox, this.topHintsBox, this.timer.getHTML());
-    this.gameFieldSection.append(this.gameField);
+    this.gameFieldContainer.append(this.gameField);
+    this.gameFieldSection.append(this.gameFieldContainer);
   }
 }
 

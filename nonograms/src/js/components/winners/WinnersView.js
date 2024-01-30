@@ -60,13 +60,12 @@ class WinnersView {
 
     const sortedListWinners = this.sortWinners();
 
-    const listHeader = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'] });
     const listIndex = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: '№' });
     const listTitle = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Name' });
     const listSize = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Size' });
     const listTime = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Time' });
 
-    this.winnersList.append(listHeader, listIndex, listTitle, listSize, listTime);
+    this.winnersList.append(listIndex, listTitle, listSize, listTime);
 
     sortedListWinners.forEach((winner, index) => {
       const formattedMin = Math.floor(winner.time / MAX_SEC_IN_MIN).toString().padStart(2, '0');

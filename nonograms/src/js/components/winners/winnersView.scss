@@ -26,7 +26,7 @@
     &.hidden {
       opacity: 1;
       visibility: visible;
-      transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
   }
 
@@ -40,19 +40,20 @@
     border-radius: var(--border-radius);
     padding: var(--medium-offset) var(--small-offset);
     width: 100%;
-    max-width: 90%;
+    max-width: 460px;
     background-color: var(--modal-content-bg);
     opacity: 0;
     visibility: hidden;
     transform: scale(0);
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
     cursor: auto;
+    gap: var(--small-offset);
 
     &.hidden {
       opacity: 1;
       visibility: visible;
       transform: none;
-      transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s, transform 0.3s ease-in-out 0.5s;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
     }
   }
 
@@ -87,8 +88,7 @@
   }
 
   &__title {
-    max-width: 80%;
-    font-size: 16px;
+    font-size: 20px;
     letter-spacing: 1px;
     text-align: center;
     color: var(--modal-title-color);
@@ -98,10 +98,42 @@
     }
   }
 
+  &__list {
+    display: grid;
+    width: 100%;
+
+    &-header {
+      grid-column: auto;
+      grid-row: 1;
+      margin-bottom: var(--small-offset);
+      border-bottom: 1px solid;
+      font-weight: 600;
+      text-align: center;
+      color: var(--modal-winners-color--accent);
+    }
+
+    &-item {
+      display: flex;
+      justify-content: space-around;
+      grid-column: 4 span;
+      border-top: 1px solid;
+      border-bottom: 1px solid;
+      padding: var(--little-offset);
+      width: 100%;
+      font-weight: 300;
+      font-size: 16px;
+      color: var(--modal-winners-color--item);
+
+      &:not(:last-child) {
+        margin-bottom: var(--small-offset);
+      }
+    }
+  }
+
   &.hidden {
     position: relative;
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
   }
 }

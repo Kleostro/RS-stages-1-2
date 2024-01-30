@@ -1,0 +1,45 @@
+.header__settings {
+  display: flex;
+  gap: var(--small-offset);
+
+  &-winners-btn,
+  &-theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--little-offset) var(--small-offset);
+    letter-spacing: 1px;
+    text-transform: capitalize;
+    color: var(--settings-app-btn-color);
+    background-color: var(--settings-app-btn-bg);
+    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--settings-app-btn-bg-hover);
+        animation: wiggling 0.7s ease-in-out infinite;
+      }
+    }
+
+    /* stylelint-disable-next-line order/order */
+    &:active {
+      background-color: var(--settings-app-btn-bg-active);
+      transform: scale(0.9);
+      animation: none;
+    }
+  }
+}
+
+@keyframes wiggling {
+  0% {
+    rotate: 0;
+  }
+
+  50% {
+    rotate: 5deg;
+  }
+
+  100% {
+    rotate: 0;
+  }
+}
