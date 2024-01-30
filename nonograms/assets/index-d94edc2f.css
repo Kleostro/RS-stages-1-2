@@ -467,6 +467,7 @@ img {
 }
 .game__field {
   display: grid;
+  margin-bottom: var(--small-offset);
   height: max-content;
   max-width: max-content;
 }
@@ -728,10 +729,15 @@ img {
 }
 .game__settings-container .size__title,
 .game__settings-container .name__title {
+  overflow: hidden;
   margin-right: 30px;
+  min-width: 160px;
+  max-width: 160px;
   font-weight: 300;
   font-size: 18px;
+  text-overflow: ellipsis;
   color: var(--settings-game-text);
+  text-wrap: nowrap;
 }
 .game__settings-container .size__subtitle,
 .game__settings-container .name__subtitle {

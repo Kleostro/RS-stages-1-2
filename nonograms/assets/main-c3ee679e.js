@@ -2531,17 +2531,6 @@ class GameFieldView {
     this.originalMatrix = nonogramObj.matrix;
     this.originalTitle = nonogramObj.title;
     this.originalSize = nonogramObj.size;
-    this.cellElements.length = 0;
-    this.cellValues.length = 0;
-    this.createHints(this.originalMatrix, DIRECTIONS);
-    this.createCells(this.originalMatrix);
-    this.modal.isShowSolution = false;
-    this.isLockPlayground = false;
-    this.lockPlayground();
-    this.timer.stopTimer();
-    this.timer.currentTime = 0;
-    this.timer.timer.textContent = "00:00";
-    this.isEndGame = false;
     switch (this.originalSize) {
       case "5x5": {
         this.gameField.classList.remove("medium", "large");
@@ -2559,6 +2548,17 @@ class GameFieldView {
         break;
       }
     }
+    this.cellElements.length = 0;
+    this.cellValues.length = 0;
+    this.createHints(this.originalMatrix, DIRECTIONS);
+    this.createCells(this.originalMatrix);
+    this.modal.isShowSolution = false;
+    this.isLockPlayground = false;
+    this.lockPlayground();
+    this.timer.stopTimer();
+    this.timer.currentTime = 0;
+    this.timer.timer.textContent = "00:00";
+    this.isEndGame = false;
   }
   /**
   * changes the locking of the playground
@@ -2933,6 +2933,23 @@ continueGameHandler_fn = function() {
   this.gameField.originalMatrix = JSON.parse(LS["current-game"]).originalMatrix;
   this.gameField.originalTitle = JSON.parse(LS["current-game"]).originalTitle;
   this.gameField.originalSize = JSON.parse(LS["current-game"]).originalSize;
+  switch (this.gameField.originalSize) {
+    case "5x5": {
+      this.gameField.gameField.classList.remove("medium", "large");
+      this.gameField.gameField.classList.add("small");
+      break;
+    }
+    case "10x10": {
+      this.gameField.gameField.classList.remove("small", "large");
+      this.gameField.gameField.classList.add("medium");
+      break;
+    }
+    case "15x15": {
+      this.gameField.gameField.classList.remove("small", "medium");
+      this.gameField.gameField.classList.add("large");
+      break;
+    }
+  }
   this.settingsSizeSubtitle.textContent = JSON.parse(LS["current-game"]).originalSize;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   this.sizeBtnsArr.forEach((btn) => {
@@ -3301,4 +3318,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-501ed1c4.js.map
+//# sourceMappingURL=main-c3ee679e.js.map
