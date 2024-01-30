@@ -45,16 +45,18 @@ class SettingsGameView {
       this.#startGameHandler.apply(this);
       this.resetGameBtn.disabled = false;
       this.saveGameBtn.disabled = false;
+      this.continueGameBtn.disabled = false;
     });
 
     this.showSolutionBtn.addEventListener('click', () => {
-      if (!this.gameField.isShowSolution) {
+      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
         this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
         this.gameField.lockPlayground();
       }
       this.showSolutionBtn.disabled = true;
       this.saveGameBtn.disabled = true;
       this.resetGameBtn.disabled = true;
+      this.continueGameBtn.disabled = true;
     });
 
     this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
@@ -65,7 +67,10 @@ class SettingsGameView {
       this.resetGameBtn.disabled = false;
       this.saveGameBtn.disabled = false;
 
-      if (localStorage.length) {
+      const LS = JSON.parse(localStorage.getItem('kleostro'));
+
+      if (LS['current-game']) {
+        console.log('попал сюда')
         this.#continueGameHandler.apply(this);
       } else {
         this.continueGameBtn.disabled = true;
@@ -74,12 +79,6 @@ class SettingsGameView {
       const { formattedMin, formattedSec } = this.timer.formattedTime();
       this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
-
-    const LS = JSON.parse(localStorage.kleostro);
-
-    if (!LS['current-game']) {
-      this.continueGameBtn.disabled = true;
-    }
   }
 
   /**
@@ -147,6 +146,7 @@ class SettingsGameView {
     if (!this.gameField.isLockPlayground) {
       this.gameField.lockPlayground();
     }
+    this.gameField.isEndGame = false;
 
     const LS = JSON.parse(localStorage.kleostro);
     const savedCells = JSON.parse(LS['saved-cells'])

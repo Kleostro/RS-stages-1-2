@@ -5,10 +5,11 @@ class WinnersView {
   constructor() {
     this.#createHTML();
 
-    if (!localStorage['winners']) {
-      const kleostroLS = JSON.parse(localStorage.kleostro);
-      kleostroLS['winners'] = [];
-      localStorage.kleostro = JSON.stringify(kleostroLS);
+    const LS = JSON.parse(localStorage.getItem('kleostro'));
+
+    if (!LS?.winners) {
+      LS.winners = [];
+      localStorage.setItem('kleostro', JSON.stringify(LS));
     }
 
     this.closeBtn.addEventListener('click', () => this.show());
@@ -30,9 +31,9 @@ class WinnersView {
       size: params[1],
       time: params[2]
     }
-    const LS = JSON.parse(localStorage.kleostro);
+    const LS = JSON.parse(localStorage.getItem('kleostro'));
     LS['winners'].push(winner);
-    localStorage.kleostro = JSON.stringify(LS);
+    localStorage.setItem('kleostro', JSON.stringify(LS));
   }
 
   show() {

@@ -7,8 +7,8 @@ import MainView from './src/js/components/main/MainView';
 */
 class App {
   constructor() {
-    if (!(localStorage.getItem('kleostro'))) {
-      localStorage.kleostro = JSON.stringify({});
+    if (!localStorage.getItem('kleostro')) {
+      localStorage.setItem('kleostro', JSON.stringify({}));
     }
     this.main = new MainView();
     this.header = new HeaderView(this.main.winners);

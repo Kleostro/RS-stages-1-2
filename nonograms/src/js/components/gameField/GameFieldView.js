@@ -29,6 +29,7 @@ class GameFieldView {
 
     this.isLockPlayground = false;
     this.isShowSolution = false;
+    this.isEndGame = false;
 
     this.#createHTML();
     this.startGame(this.currentNonogramObj);
@@ -189,6 +190,7 @@ class GameFieldView {
     this.timer.stopTimer();
     this.timer.currentTime = 0;
     this.timer.timer.textContent = '00:00';
+    this.isEndGame = false;
   }
 
   lockPlayground() {
@@ -225,7 +227,7 @@ class GameFieldView {
       this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
       this.#toggleIsClickableCell(this.cellElements);
       this.lockPlayground();
-      this.isShowSolution = !this.isShowSolution;
+      this.isEndGame = true;
       this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
     }
   }
