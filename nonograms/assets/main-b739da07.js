@@ -2779,6 +2779,7 @@ class SettingsGameView {
     __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
     this.sizeBtnsArr.forEach((btn) => {
       btn.addEventListener("click", () => {
+        this.startGameBtn.disabled = false;
         __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
         btn.disabled = true;
         this.settingsSizeSubtitle.textContent = btn.textContent;
@@ -2789,6 +2790,7 @@ class SettingsGameView {
     });
     this.nameBtnsArr.forEach((btn) => {
       btn.addEventListener("click", () => {
+        this.startGameBtn.disabled = false;
         __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
         btn.disabled = true;
         this.currentName = btn.textContent;
@@ -2933,6 +2935,7 @@ continueGameHandler_fn = function() {
   this.gameField.originalMatrix = JSON.parse(LS["current-game"]).originalMatrix;
   this.gameField.originalTitle = JSON.parse(LS["current-game"]).originalTitle;
   this.gameField.originalSize = JSON.parse(LS["current-game"]).originalSize;
+  this.startGameBtn.disabled = true;
   switch (this.gameField.originalSize) {
     case "5x5": {
       this.gameField.gameField.classList.remove("medium", "large");
@@ -3318,4 +3321,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-c3ee679e.js.map
+//# sourceMappingURL=main-b739da07.js.map

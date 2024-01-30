@@ -290,6 +290,7 @@ img {
 .container {
   margin: 0 auto;
   padding: 0 var(--small-offset);
+  max-width: 1440px;
 }
 :root {
   --little-offset: 5px;
@@ -764,7 +765,7 @@ img {
 }
 .game__settings-container .size__drop-btn,
 .game__settings-container .name__drop-btn {
-  padding: var(--little-offset) 0;
+  padding: var(--small-offset) 0;
   width: 100%;
   font-size: 16px;
   color: var(--settings-game-text);
