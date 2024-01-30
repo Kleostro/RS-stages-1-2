@@ -11,7 +11,7 @@ var __privateMethod = (obj, member, method) => {
   __accessCheck(obj, member, "access private method");
   return method;
 };
-var _toggleTheme, toggleTheme_fn, _createHTML, createHTML_fn, _winnersClickHandler, winnersClickHandler_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _toggleIsClickableCell, toggleIsClickableCell_fn, _createHTML3, createHTML_fn3, _createHTML4, createHTML_fn4, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _createCellsToLS, createCellsToLS_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8;
+var _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _winnersClickHandler, winnersClickHandler_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _toggleIsClickableCell, toggleIsClickableCell_fn, _createHTML3, createHTML_fn3, _createHTML4, createHTML_fn4, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _createCellsToLS, createCellsToLS_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8;
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -83,18 +83,18 @@ const settingsAppView = "";
 const APP_THEME_NAMES = ["light", "dark"];
 class SettingsAppView {
   constructor() {
-    __privateAdd(this, _toggleTheme);
+    __privateAdd(this, _toggleThemeHandler);
     __privateAdd(this, _createHTML);
     __privateMethod(this, _createHTML, createHTML_fn).call(this);
     this.theme = APP_THEME_NAMES[0];
-    this.themeBtn.addEventListener("click", __privateMethod(this, _toggleTheme, toggleTheme_fn).bind(this));
+    this.themeBtn.addEventListener("click", __privateMethod(this, _toggleThemeHandler, toggleThemeHandler_fn).bind(this));
   }
   getHTML() {
     return this.themeBtn;
   }
 }
-_toggleTheme = new WeakSet();
-toggleTheme_fn = function() {
+_toggleThemeHandler = new WeakSet();
+toggleThemeHandler_fn = function() {
   this.theme = this.theme === APP_THEME_NAMES[0] ? APP_THEME_NAMES[1] : APP_THEME_NAMES[0];
   this.themeBtn.textContent = this.theme;
   document.body.classList.toggle(APP_THEME_NAMES[1]);
@@ -2784,8 +2784,8 @@ continueGameHandler_fn = function() {
 _randomGameHandler = new WeakSet();
 randomGameHandler_fn = function() {
   const { matrix, title, size } = __privateMethod(this, _getRandomGame, getRandomGame_fn).call(this);
-  __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   this.settingsSizeSubtitle.textContent = size;
+  __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   this.sizeBtnsArr.forEach((btn) => {
     if (this.settingsSizeSubtitle.textContent === btn.textContent) {
       btn.disabled = true;
@@ -2799,7 +2799,12 @@ randomGameHandler_fn = function() {
       btn.disabled = true;
     }
   });
+  this.currentName = title;
   this.gameField.startGame({ matrix, title, size });
+  this.showSolutionBtn.disabled = false;
+  this.resetGameBtn.disabled = false;
+  this.saveGameBtn.disabled = false;
+  this.continueGameBtn.disabled = false;
 };
 _getRandomGame = new WeakSet();
 getRandomGame_fn = function() {
@@ -2900,7 +2905,7 @@ createHTML_fn5 = function() {
   this.settingsSizeDrop = __privateMethod(this, _createDropListSizes, createDropListSizes_fn).call(this);
   this.settingsNameBox = new CreateElement({ classes: ["name"] });
   this.settingsNameTop = new CreateElement({ classes: ["name__top"] });
-  this.settingsNameTitle = new CreateElement({ tag: "span", classes: ["name__title"] });
+  this.settingsNameTitle = new CreateElement({ tag: "span", classes: ["name__title"], textContent: "Selected: " });
   this.settingsNameSubtitle = new CreateElement({ tag: "span", classes: ["name__subtitle"] });
   this.settingsNameDrop = __privateMethod(this, _createDropListNames, createDropListNames_fn).call(this);
   this.startGameBtn = new CreateElement({ tag: "button", classes: ["start-game"], textContent: "Play" });
@@ -3077,4 +3082,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-e0801fd0.js.map
+//# sourceMappingURL=main-6e05e103.js.map
