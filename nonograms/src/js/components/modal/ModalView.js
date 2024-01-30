@@ -18,10 +18,20 @@ class ModalView {
     });
   }
 
+  /**
+  * get HTML modal
+  * @returns {Element} HTML-Element modal
+  */
   getHTML() {
     return this.modalBox;
   }
 
+  /**
+  * show modal
+  * @param {string} message - modal message
+  * @param {string} name - modal name
+  * @param {number} time - modal time
+  */
   show(message, name, time) {
     this.message = message;
     this.name = name;
@@ -37,6 +47,9 @@ class ModalView {
     document.body.classList.toggle('stop-scroll');
   }
 
+  /**
+  * create HTML modal
+  */
   #createHTML() {
     this.modalBox = new CreateElement({ classes: ['modal'] });
     this.overlay = new CreateElement({ classes: ['modal__overlay'] });

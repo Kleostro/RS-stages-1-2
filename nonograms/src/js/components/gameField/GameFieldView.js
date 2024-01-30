@@ -64,6 +64,9 @@ class GameFieldView {
     return this.gameFieldSection;
   }
 
+  /**
+  * removes cell and row highlighting
+  */
   #removeHighlightCells() {
     this.cellElements.forEach((row) => {
       row.forEach((cell) => {
@@ -74,6 +77,10 @@ class GameFieldView {
     })
   };
 
+  /**
+  * adds cell and row highlighting
+  * @param {target} - current cell
+  */
   #highlightCurrentColumnAndRow(target) {
     let currentTarget = target;
 
@@ -172,6 +179,10 @@ class GameFieldView {
     }
   }
 
+  /**
+   * start game
+   * @param {object} nonogramObj - object for the current game
+   */
   startGame(nonogramObj) {
     this.originalMatrix = nonogramObj.matrix;
     this.originalTitle = nonogramObj.title;
@@ -184,7 +195,6 @@ class GameFieldView {
 
     this.modal.isShowSolution = false;
     this.isLockPlayground = false;
-
     this.lockPlayground();
 
     this.timer.stopTimer();
@@ -193,17 +203,21 @@ class GameFieldView {
     this.isEndGame = false;
   }
 
+  /**
+  * changes the locking of the playground
+  */
   lockPlayground() {
     if (!this.isLockPlayground) {
       this.playground.classList.remove('lock');
     } else {
       this.playground.classList.add('lock');
     }
-
     this.isLockPlayground = !this.isLockPlayground;
-
   }
 
+  /**
+  * fills the array of cells with field
+  */
   #cellHasClicked() {
     this.cellElements.forEach((row, rowIndex) => {
 
@@ -221,25 +235,24 @@ class GameFieldView {
     });
   }
 
+  /**
+  * checks the outcome of the game
+  * @param {number[][]} cellValues - two-dimensional array of current cell values
+  * @param {number[][]} matrix - two-dimensional array of the original matrix
+  */
   #isWin(cellValues, matrix) {
     if (cellValues.every((_, rowIndex) => cellValues[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
       this.timer.stopTimer();
       this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
-      this.#toggleIsClickableCell(this.cellElements);
       this.lockPlayground();
       this.isEndGame = true;
       this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
     }
   }
 
-  #toggleIsClickableCell(cellElements) {
-    cellElements.forEach((row) => {
-      row.forEach((cell) => {
-        cell.setClickable(false);
-      });
-    });
-  }
-
+  /**
+  * create HTML gameField
+  */
   #createHTML() {
     this.gameFieldSection = new CreateElement({ tag: 'section', classes: ['game'] });
     this.gameField = new CreateElement({ classes: ['game__field'] });

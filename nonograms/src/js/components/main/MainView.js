@@ -22,6 +22,9 @@ class MainView {
     return this.main;
   }
 
+  /**
+  * create HTML main
+  */
   #createHTML() {
     this.main = new CreateElement({ tag: 'main', classes: ['main'] });
     this.modal = new ModalView();

@@ -70,7 +70,6 @@ class SettingsGameView {
       const LS = JSON.parse(localStorage.getItem('kleostro'));
 
       if (LS['current-game']) {
-        console.log('попал сюда')
         this.#continueGameHandler.apply(this);
       } else {
         this.continueGameBtn.disabled = true;
@@ -84,13 +83,16 @@ class SettingsGameView {
   }
 
   /**
- * get HTML settings section
- * @returns {Element} HTML-Element settings section
- */
+   * get HTML settings section
+   * @returns {Element} HTML-Element settings section
+   */
   getHTML() {
     return this.settings;
   }
 
+  /**
+   * start current game
+   */
   #startGameHandler() {
     this.newOriginalData = this.#updateCurrentMatrix();
     this.gameField.startGame(this.newOriginalData);
@@ -98,6 +100,11 @@ class SettingsGameView {
     this.isShowSolution = false;
   }
 
+  /**
+   * show solution current game
+   * @param {number[][]} matrix - matrix for the current game
+   * @param {Element[][]} cellElements - matrix for the current cell elements
+   */
   #showSolutionHandler(matrix, cellElements) {
     matrix.forEach((row, rowIndex) => {
       row.forEach((_, columnIndex) => {
@@ -110,6 +117,9 @@ class SettingsGameView {
     })
   }
 
+  /**
+   * clears the current gameField
+   */
   #resetGameHandler() {
     this.gameField.cellElements.forEach((row) => {
       row.forEach((cell) => {
@@ -119,6 +129,9 @@ class SettingsGameView {
     })
   }
 
+  /**
+   * save state the current game
+   */
   #saveGameHandler() {
     const LS = JSON.parse(localStorage.kleostro);
     LS['current-game'] = JSON.stringify(this.gameField);
@@ -144,6 +157,9 @@ class SettingsGameView {
     localStorage.kleostro = JSON.stringify(LS);
   }
 
+  /**
+   * runs the last saved game
+   */
   #continueGameHandler() {
     if (!this.gameField.isLockPlayground) {
       this.gameField.lockPlayground();
@@ -182,39 +198,12 @@ class SettingsGameView {
     this.timer.currentTime = +JSON.parse(LS['current-time']);
   }
 
-  #randomGameHandler() {
-    const { matrix, title, size } = this.#getRandomGame();
-    this.#undisabledBtns(this.sizeBtnsArr);
-    this.settingsSizeSubtitle.textContent = size;
-    this.sizeBtnsArr.forEach((btn) => {
-
-      if (this.settingsSizeSubtitle.textContent === btn.textContent) {
-        btn.disabled = true;
-      }
-
-    });
-    this.#updateListNames();
-    this.#undisabledBtns(this.nameBtnsArr);
-
-    this.settingsNameSubtitle.textContent = title;
-    this.nameBtnsArr.forEach((btn) => {
-
-      if (this.settingsNameSubtitle.textContent === btn.textContent) {
-        btn.disabled = true;
-      }
-    });
-
-    this.gameField.startGame({ matrix, title, size });
-  }
-
-  #getRandomGame() {
-    const randomIndex = Math.floor(Math.random() * data.length);
-    return data[randomIndex];
-  }
-
+  /**
+   * create save game cells
+   * @param {object[][]} savedCells - two-dimensional array of cell objects
+   */
   #createCellsToLS(savedCells) {
     if (savedCells) {
-      console.log(savedCells)
       this.gameField.cellElements = [];
       this.gameField.cellValues = [];
       this.gameField.playground.innerHTML = '';
@@ -228,7 +217,7 @@ class SettingsGameView {
         for (let column = 0; column < savedCells[0].length; column += 1) {
           const cellParse = JSON.parse(savedCells[row][column]);
 
-          const cell = new CellView(cellParse.cellValue, cellParse.state, cellParse.isClickable);
+          const cell = new CellView(cellParse.cellValue, cellParse.state);
 
           const cellElem = cell.getHTML();
           cellElem.setAttribute('data-cell', column);
@@ -243,14 +232,68 @@ class SettingsGameView {
     }
   }
 
+  /**
+   * runs the random game
+   */
+  #randomGameHandler() {
+    const { matrix, title, size } = this.#getRandomGame();
+    this.settingsSizeSubtitle.textContent = size;
+
+    this.#undisabledBtns(this.sizeBtnsArr);
+    this.sizeBtnsArr.forEach((btn) => {
+
+      if (this.settingsSizeSubtitle.textContent === btn.textContent) {
+        btn.disabled = true;
+      }
+
+    });
+    this.#updateListNames();
+
+    this.#undisabledBtns(this.nameBtnsArr);
+    this.settingsNameSubtitle.textContent = title;
+    this.nameBtnsArr.forEach((btn) => {
+
+      if (this.settingsNameSubtitle.textContent === btn.textContent) {
+        btn.disabled = true;
+      }
+    });
+
+    this.currentName = title;
+    this.gameField.startGame({ matrix, title, size });
+    this.showSolutionBtn.disabled = false;
+    this.resetGameBtn.disabled = false;
+    this.saveGameBtn.disabled = false;
+    this.continueGameBtn.disabled = false;
+  }
+
+  /**
+   * get random game data
+   * @returns {object} - random game data
+   */
+  #getRandomGame() {
+    const randomIndex = Math.floor(Math.random() * data.length);
+    return data[randomIndex];
+  }
+
+  /**
+   * unlock the buttons
+   * @param {object} - object btns
+   */
   #undisabledBtns(btnsArr) {
     btnsArr.forEach((btn) => btn.disabled = false)
   }
 
+  /**
+   * find the current matrix by name
+   * @returns {object} - current matrix
+   */
   #updateCurrentMatrix() {
     return data.find((item) => item.title === this.currentName)
   }
 
+  /**
+   * update the list of current titles
+   */
   #updateListNames() {
     const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
 
@@ -267,6 +310,9 @@ class SettingsGameView {
     })
   }
 
+  /**
+   * create list sizes
+   */
   #createDropListSizes() {
     const uniqueDataObj = new Set();
     data.forEach((item) => {
@@ -292,6 +338,9 @@ class SettingsGameView {
     return dropList;
   }
 
+  /**
+   * create list names
+   */
   #createDropListNames() {
     const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
 
@@ -313,6 +362,9 @@ class SettingsGameView {
     return dropList;
   }
 
+  /**
+  * create HTML settings game
+  */
   #createHTML() {
     this.settings = new CreateElement({ classes: ['settings'] });
     this.settingsContainer = new CreateElement({ classes: ['settings__container'] });
@@ -325,7 +377,7 @@ class SettingsGameView {
 
     this.settingsNameBox = new CreateElement({ classes: ['name'] });
     this.settingsNameTop = new CreateElement({ classes: ['name__top'] });
-    this.settingsNameTitle = new CreateElement({ tag: 'span', classes: ['name__title'] });
+    this.settingsNameTitle = new CreateElement({ tag: 'span', classes: ['name__title'], textContent: 'Selected: ' });
     this.settingsNameSubtitle = new CreateElement({ tag: 'span', classes: ['name__subtitle'] });
     this.settingsNameDrop = this.#createDropListNames();
 

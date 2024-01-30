@@ -14,10 +14,18 @@ class TimerView {
     this.#createHTML();
   }
 
+  /**
+  * get HTML timer
+  * @returns {Element} HTML-Element timer
+  */
   getHTML() {
     return this.timer;
   }
 
+  /**
+  * start timer
+  * @returns {number} - ID timer
+  */
   startTimer() {
     this.isStart = true;
     return this.intervalID = setInterval(() => {
@@ -29,15 +37,26 @@ class TimerView {
     }, TIMER_INTERVAL);
   }
 
+  /**
+  * stop timer
+  */
   stopTimer() {
     clearInterval(this.intervalID);
     this.isStart = false;
   }
 
+  /**
+  * get current time
+  * @returns {number} - current time
+  */
   getTime() {
     return this.currentTime;
   }
 
+  /**
+  * formatted time
+  * @returns {object} - formatted time
+  */
   formattedTime() {
     const formattedMin = Math.floor(this.currentTime / MAX_SEC_IN_MIN).toString().padStart(2, '0');
     const formattedSec = (this.currentTime % MAX_MS_IN_SEC).toString().padStart(2, '0');
@@ -45,6 +64,9 @@ class TimerView {
     return { formattedMin, formattedSec };
   }
 
+  /**
+  * create HTML timer
+  */
   #createHTML() {
     this.timer = new CreateElement({ tag: 'span', classes: ['timer'], textContent: '00:00' });
   }

@@ -5,16 +5,13 @@ import './cellView.scss';
 * @class
 * @param {number} cellValue - Cell value: 0 - unpainted, 1 - painted
 * @param {string} state - Cell state (default is 'empty')
-* @param {boolean} isClickable - flag that indicates the clickability of the cell (default is 'true')
 */
 class CellView {
-  constructor(cellValue, state = 'empty', isClickable = true) {
-    this.state = state;
-    this.isClickable = isClickable;
+  constructor(cellValue, state = 'empty') {
     this.cellValue = cellValue;
+    this.state = state;
 
-    this.cell = new CreateElement({ classes: ['cell'] });
-
+    this.#createHTML();
     this.#getField();
     this.#getCrossed();
 
@@ -61,46 +58,59 @@ class CellView {
   }
 
   /**
-   * set isClickable property
-   * @param {boolean} isClick - flag that indicates the clickability of the cell
+   * sets the field class to a cell
+   * @param {event} event - event
    */
-  setClickable(isClick) {
-    this.isClickable = isClick;
-  }
-
   #setField(event) {
-    if (this.isClickable) {
-      this.state = 'field';
-      event.target.classList.add('field');
-    }
+    this.state = 'field';
+    event.target.classList.add('field');
   }
 
+  /**
+   * sets the field class to a cell
+   */
   #getField() {
-    if (this.isClickable && this.state === 'field') {
+    if (this.state === 'field') {
       this.cell.classList.add('field');
     }
   }
 
+  /**
+   * sets the crossed class to a cell
+   * @param {event} event - event
+   */
   #setCrossed(event) {
-    if (this.isClickable) {
-      this.state = 'crossed';
-      event.target.classList.remove('field');
-      event.target.classList.add('crossed');
-    }
+    this.state = 'crossed';
+    event.target.classList.remove('field');
+    event.target.classList.add('crossed');
+
   }
 
+
+  /**
+   * sets the crossed class to a cell
+   */
   #getCrossed() {
-    if (this.isClickable && this.state === 'crossed') {
+    if (this.state === 'crossed') {
       this.cell.classList.remove('field');
       this.cell.classList.add('crossed');
     }
   }
 
+  /**
+   * removes the field and crossed classes on a cell
+   * @param {event} event - event
+   */
   #setEmpty(event) {
-    if (this.isClickable) {
-      this.state = 'empty';
-      event.target.classList.remove('field', 'crossed');
-    }
+    this.state = 'empty';
+    event.target.classList.remove('field', 'crossed');
+  }
+
+  /**
+  * create HTML cell
+  */
+  #createHTML() {
+    this.cell = new CreateElement({ classes: ['cell'] });
   }
 }
 

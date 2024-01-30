@@ -23,10 +23,16 @@ class HeaderView {
     return this.header;
   }
 
+  /**
+  * winners click handler
+  */
   #winnersClickHandler() {
     this.winners.show();
   }
 
+  /**
+  * create HTML header
+  */
   #createHTML() {
     this.header = new CreateElement({ tag: 'header', classes: ['header'] });
     this.headerContainer = new CreateElement({ tag: 'div', classes: ['header__container', 'container'] });
