@@ -101,6 +101,9 @@
   &__list {
     display: grid;
     width: 100%;
+    font-size: 16px;
+    text-align: center;
+    color: var(--modal-winners-color--item);
 
     &-header {
       grid-column: auto;

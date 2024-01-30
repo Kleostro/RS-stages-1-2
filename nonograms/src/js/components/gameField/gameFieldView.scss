@@ -96,7 +96,8 @@
     width: var(--cell-size);
     height: var(--cell-size);
     font-size: var(--cell-text);
-    transition: border 0.3s ease-in-out;
+    color: var(--hints-color);
+    transition: border 0.3s ease-in-out, color 0.3s ease-in-out;
   }
 }
 

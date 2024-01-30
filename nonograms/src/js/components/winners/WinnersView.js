@@ -60,6 +60,11 @@ class WinnersView {
 
     const sortedListWinners = this.sortWinners();
 
+    if (sortedListWinners.length === 0) {
+      this.winnersList.textContent = 'List is empty...';
+      return;
+    }
+
     const listIndex = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: '№' });
     const listTitle = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Name' });
     const listSize = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Size' });
