@@ -11,7 +11,7 @@ var __privateMethod = (obj, member, method) => {
   __accessCheck(obj, member, "access private method");
   return method;
 };
-var _toggleTheme, toggleTheme_fn, _createHTML, createHTML_fn, _winnersClickHandler, winnersClickHandler_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _toggleIsClickableCell, toggleIsClickableCell_fn, _createHTML3, createHTML_fn3, _createHTML4, createHTML_fn4, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8;
+var _toggleTheme, toggleTheme_fn, _createHTML, createHTML_fn, _winnersClickHandler, winnersClickHandler_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _toggleIsClickableCell, toggleIsClickableCell_fn, _createHTML3, createHTML_fn3, _createHTML4, createHTML_fn4, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _createCellsToLS, createCellsToLS_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8;
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -2626,6 +2626,8 @@ class SettingsGameView {
     __privateAdd(this, _resetGameHandler);
     __privateAdd(this, _saveGameHandler);
     __privateAdd(this, _continueGameHandler);
+    __privateAdd(this, _randomGameHandler);
+    __privateAdd(this, _getRandomGame);
     __privateAdd(this, _createCellsToLS);
     __privateAdd(this, _undisabledBtns);
     __privateAdd(this, _updateCurrentMatrix);
@@ -2690,6 +2692,7 @@ class SettingsGameView {
       const { formattedMin, formattedSec } = this.timer.formattedTime();
       this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
+    this.randomGameBtn.addEventListener("click", __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this));
   }
   /**
   * get HTML settings section
@@ -2777,6 +2780,31 @@ continueGameHandler_fn = function() {
     }
   });
   this.timer.currentTime = +JSON.parse(LS["current-time"]);
+};
+_randomGameHandler = new WeakSet();
+randomGameHandler_fn = function() {
+  const { matrix, title, size } = __privateMethod(this, _getRandomGame, getRandomGame_fn).call(this);
+  __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
+  this.settingsSizeSubtitle.textContent = size;
+  this.sizeBtnsArr.forEach((btn) => {
+    if (this.settingsSizeSubtitle.textContent === btn.textContent) {
+      btn.disabled = true;
+    }
+  });
+  __privateMethod(this, _updateListNames, updateListNames_fn).call(this);
+  __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
+  this.settingsNameSubtitle.textContent = title;
+  this.nameBtnsArr.forEach((btn) => {
+    if (this.settingsNameSubtitle.textContent === btn.textContent) {
+      btn.disabled = true;
+    }
+  });
+  this.gameField.startGame({ matrix, title, size });
+};
+_getRandomGame = new WeakSet();
+getRandomGame_fn = function() {
+  const randomIndex = Math.floor(Math.random() * data.length);
+  return data[randomIndex];
 };
 _createCellsToLS = new WeakSet();
 createCellsToLS_fn = function(savedCells) {
@@ -2880,11 +2908,12 @@ createHTML_fn5 = function() {
   this.resetGameBtn = new CreateElement({ tag: "button", classes: ["reset-game"], textContent: "Reset" });
   this.saveGameBtn = new CreateElement({ tag: "button", classes: ["save-game"], textContent: "Save game" });
   this.continueGameBtn = new CreateElement({ tag: "button", classes: ["continue-game"], textContent: "Continue last game" });
+  this.randomGameBtn = new CreateElement({ tag: "button", classes: ["random-game"], textContent: "Random game" });
   this.settingsSizeTop.append(this.settingsSizeTitle, this.settingsSizeSubtitle);
   this.settingsSizeBox.append(this.settingsSizeTop, this.settingsSizeDrop);
   this.settingsNameTop.append(this.settingsNameTitle, this.settingsNameSubtitle);
   this.settingsNameBox.append(this.settingsNameTop, this.settingsNameDrop);
-  this.settingsContainer.append(this.settingsNameBox, this.settingsSizeBox, this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn);
+  this.settingsContainer.append(this.settingsNameBox, this.settingsSizeBox, this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn);
   this.settings.append(this.settingsContainer);
   this.gameField.gameFieldSection.append(this.settings);
 };
@@ -3048,4 +3077,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-6c3cdd60.js.map
+//# sourceMappingURL=main-e0801fd0.js.map
