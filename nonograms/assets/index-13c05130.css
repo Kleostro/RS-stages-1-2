@@ -322,6 +322,7 @@ img {
   --hints-cell-border: #6d6d6d;
   --hints-border: #353535;
   --hints-bg: #aaa;
+  --hints-color: #000;
   --cell-field: #000;
   --cell-crossed: #f00;
   --modal-overlay: #aaaaaa90;
@@ -333,30 +334,36 @@ img {
   --modal-winners-color--item: #fff8dc;
 }
 :root body.dark {
-  --body-dark: #1d1d1d;
-  --hints-bg: #34415a;
-  --hints-color: #f2d4d4;
-  --hints-border-dark: #fff;
-  --hints-border-light: #a2b5c6;
-  --playground-bg-light: #030303;
-  --playground-bg-dark: #6731ab;
-  --playground-border-dark: #8a8a8a;
-  --playground-border-light: #b8baba;
-  --playground-highlight: #313138;
-  --playground-cell-crossed: #e92f2f;
-  --end-game-modal-overlay: #101010cc;
-  --end-game-modal-bg: #676767;
-  --end-game-modal-text: #abd2a0;
-  --end-game-modal-text-accent: #003804;
-  --end-game-modal-close-btn-accent: #52980f;
-  --settings-bg: #545365;
-  --settings-bg-accent: #25357a;
-  --settings-bg-lock: #473561;
-  --settings-border: #bcbcbc;
-  --settings-text: #cbcec2;
-  --settings-text-accent: #fff;
-  --settings-btn-disabled: #8e92d9;
-  --settings-btn-hover: #846eb4;
+  --body-bg: #1c1c1c;
+  --header-title-color: #be6600;
+  --settings-app-btn-bg: #c47809;
+  --settings-app-btn-bg-hover: #e2a425;
+  --settings-app-btn-bg-active: #926a0d;
+  --settings-app-btn-color: #000;
+  --settings-game-border: #d9b45b;
+  --settings-game-bg: #be6200;
+  --settings-game-text: #000;
+  --settings-game-text-accent: #fff;
+  --settings-game-btn-disabled: #4c2a03;
+  --settings-game-btn-hover: #cb7f21;
+  --timer-text: #e79036;
+  --playground-cell-border: #000;
+  --playground-cell-highlight: #5a5a5aa5;
+  --playground-border: #fff;
+  --playground-bg: #777;
+  --hints-cell-border: #fff;
+  --hints-border: #fff;
+  --hints-bg: #3d3d3d;
+  --hints-color: #fff;
+  --cell-field: #cdb088;
+  --cell-crossed: #f00;
+  --modal-overlay: #23232390;
+  --modal-content-bg: #685a52;
+  --modal-close-btn-color: #e6a016;
+  --modal-title-color: #f4d096;
+  --modal-title-color--accent: #b38100;
+  --modal-winners-color--accent: #ffca8f;
+  --modal-winners-color--item: #f7ad00;
 }.header__container {
   display: flex;
   align-items: center;
@@ -525,7 +532,8 @@ img {
   width: var(--cell-size);
   height: var(--cell-size);
   font-size: var(--cell-text);
-  transition: border 0.3s ease-in-out;
+  color: var(--hints-color);
+  transition: border 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 .left-hints {
   grid-column: 1;
@@ -923,6 +931,9 @@ img {
 .winners-modal__list {
   display: grid;
   width: 100%;
+  font-size: 16px;
+  text-align: center;
+  color: var(--modal-winners-color--item);
 }
 .winners-modal__list-header {
   grid-column: auto;
