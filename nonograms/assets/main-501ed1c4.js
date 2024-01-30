@@ -2800,22 +2800,6 @@ class SettingsGameView {
         }
       });
     });
-    this.startGameBtn.addEventListener("click", () => {
-      __privateMethod(this, _startGameHandler, startGameHandler_fn).apply(this);
-      this.resetGameBtn.disabled = false;
-      this.saveGameBtn.disabled = false;
-      this.continueGameBtn.disabled = false;
-    });
-    this.showSolutionBtn.addEventListener("click", () => {
-      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
-        __privateMethod(this, _showSolutionHandler, showSolutionHandler_fn).apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
-        this.gameField.lockPlayground();
-      }
-      this.showSolutionBtn.disabled = true;
-      this.saveGameBtn.disabled = true;
-      this.resetGameBtn.disabled = true;
-      this.continueGameBtn.disabled = true;
-    });
     this.settingsSizeTop.addEventListener("mouseover", () => {
       if (!this.isLockListSizes) {
         __privateMethod(this, _showSizesDropList, showSizesDropList_fn).call(this);
@@ -2842,14 +2826,30 @@ class SettingsGameView {
     this.settingsNameTop.addEventListener("click", () => {
       this.isLockListNames = !this.isLockListNames;
     });
+    this.startGameBtn.addEventListener("click", () => {
+      __privateMethod(this, _startGameHandler, startGameHandler_fn).apply(this);
+      this.resetGameBtn.disabled = false;
+      this.saveGameBtn.disabled = false;
+      this.continueGameBtn.disabled = false;
+    });
+    this.showSolutionBtn.addEventListener("click", () => {
+      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
+        __privateMethod(this, _showSolutionHandler, showSolutionHandler_fn).apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
+        this.gameField.lockPlayground();
+      }
+      this.showSolutionBtn.disabled = true;
+      this.saveGameBtn.disabled = true;
+      this.resetGameBtn.disabled = true;
+      this.continueGameBtn.disabled = true;
+    });
     this.resetGameBtn.addEventListener("click", __privateMethod(this, _resetGameHandler, resetGameHandler_fn).bind(this));
     this.saveGameBtn.addEventListener("click", __privateMethod(this, _saveGameHandler, saveGameHandler_fn).bind(this));
     this.continueGameBtn.addEventListener("click", () => {
       this.showSolutionBtn.disabled = false;
       this.resetGameBtn.disabled = false;
       this.saveGameBtn.disabled = false;
-      const LS = JSON.parse(localStorage.getItem("kleostro"));
-      if (LS["current-game"]) {
+      const LS2 = JSON.parse(localStorage.getItem("kleostro"));
+      if (LS2["current-game"]) {
         __privateMethod(this, _continueGameHandler, continueGameHandler_fn).apply(this);
       } else {
         this.continueGameBtn.disabled = true;
@@ -2858,6 +2858,10 @@ class SettingsGameView {
       this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
     this.randomGameBtn.addEventListener("click", __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this));
+    const LS = JSON.parse(localStorage.getItem("kleostro"));
+    if (!LS["current-game"]) {
+      this.continueGameBtn.disabled = true;
+    }
   }
   /**
    * get HTML settings section
@@ -2944,6 +2948,7 @@ continueGameHandler_fn = function() {
       btn.disabled = true;
     }
   });
+  this.timer.stopTimer();
   this.timer.currentTime = +JSON.parse(LS["current-time"]);
 };
 _createCellsToLS = new WeakSet();
@@ -3296,4 +3301,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-8df181b8.js.map
+//# sourceMappingURL=main-501ed1c4.js.map
