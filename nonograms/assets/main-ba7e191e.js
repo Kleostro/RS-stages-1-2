@@ -11,7 +11,7 @@ var __privateMethod = (obj, member, method) => {
   __accessCheck(obj, member, "access private method");
   return method;
 };
-var _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _winnersClickHandler, winnersClickHandler_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _toggleIsClickableCell, toggleIsClickableCell_fn, _createHTML3, createHTML_fn3, _createHTML4, createHTML_fn4, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _createCellsToLS, createCellsToLS_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8;
+var _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _winnersClickHandler, winnersClickHandler_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _createHTML3, createHTML_fn3, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _createHTML4, createHTML_fn4, _createHTML5, createHTML_fn5, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8, _createHTML9, createHTML_fn9;
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -83,12 +83,22 @@ const settingsAppView = "";
 const APP_THEME_NAMES = ["light", "dark"];
 class SettingsAppView {
   constructor() {
+    /**
+    * changes the current application theme
+    */
     __privateAdd(this, _toggleThemeHandler);
+    /**
+    * create HTML settings
+    */
     __privateAdd(this, _createHTML);
     __privateMethod(this, _createHTML, createHTML_fn).call(this);
     this.theme = APP_THEME_NAMES[0];
     this.themeBtn.addEventListener("click", __privateMethod(this, _toggleThemeHandler, toggleThemeHandler_fn).bind(this));
   }
+  /**
+  * get HTML settings
+  * @returns {Element} HTML-Element settings
+  */
   getHTML() {
     return this.themeBtn;
   }
@@ -106,7 +116,13 @@ createHTML_fn = function() {
 };
 class HeaderView {
   constructor(winners) {
+    /**
+    * winners click handler
+    */
     __privateAdd(this, _winnersClickHandler);
+    /**
+    * create HTML header
+    */
     __privateAdd(this, _createHTML2);
     this.settingsApp = new SettingsAppView();
     this.winners = winners;
@@ -136,16 +152,37 @@ createHTML_fn2 = function() {
 };
 const cellView = "";
 class CellView {
-  constructor(cellValue, state = "empty", isClickable = true) {
+  constructor(cellValue, state = "empty") {
+    /**
+     * sets the field class to a cell
+     * @param {event} event - event
+     */
     __privateAdd(this, _setField);
+    /**
+     * sets the field class to a cell
+     */
     __privateAdd(this, _getField);
+    /**
+     * sets the crossed class to a cell
+     * @param {event} event - event
+     */
     __privateAdd(this, _setCrossed);
+    /**
+     * sets the crossed class to a cell
+     */
     __privateAdd(this, _getCrossed);
+    /**
+     * removes the field and crossed classes on a cell
+     * @param {event} event - event
+     */
     __privateAdd(this, _setEmpty);
-    this.state = state;
-    this.isClickable = isClickable;
+    /**
+    * create HTML cell
+    */
+    __privateAdd(this, _createHTML3);
     this.cellValue = cellValue;
-    this.cell = new CreateElement({ classes: ["cell"] });
+    this.state = state;
+    __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
     __privateMethod(this, _getField, getField_fn).call(this);
     __privateMethod(this, _getCrossed, getCrossed_fn).call(this);
     this.cell.addEventListener("click", (event) => {
@@ -184,48 +221,39 @@ class CellView {
   getCellValue() {
     return this.cellValue;
   }
-  /**
-   * set isClickable property
-   * @param {boolean} isClick - flag that indicates the clickability of the cell
-   */
-  setClickable(isClick) {
-    this.isClickable = isClick;
-  }
 }
 _setField = new WeakSet();
 setField_fn = function(event) {
-  if (this.isClickable) {
-    this.state = "field";
-    event.target.classList.add("field");
-  }
+  this.state = "field";
+  event.target.classList.add("field");
 };
 _getField = new WeakSet();
 getField_fn = function() {
-  if (this.isClickable && this.state === "field") {
+  if (this.state === "field") {
     this.cell.classList.add("field");
   }
 };
 _setCrossed = new WeakSet();
 setCrossed_fn = function(event) {
-  if (this.isClickable) {
-    this.state = "crossed";
-    event.target.classList.remove("field");
-    event.target.classList.add("crossed");
-  }
+  this.state = "crossed";
+  event.target.classList.remove("field");
+  event.target.classList.add("crossed");
 };
 _getCrossed = new WeakSet();
 getCrossed_fn = function() {
-  if (this.isClickable && this.state === "crossed") {
+  if (this.state === "crossed") {
     this.cell.classList.remove("field");
     this.cell.classList.add("crossed");
   }
 };
 _setEmpty = new WeakSet();
 setEmpty_fn = function(event) {
-  if (this.isClickable) {
-    this.state = "empty";
-    event.target.classList.remove("field", "crossed");
-  }
+  this.state = "empty";
+  event.target.classList.remove("field", "crossed");
+};
+_createHTML3 = new WeakSet();
+createHTML_fn3 = function() {
+  this.cell = new CreateElement({ classes: ["cell"] });
 };
 const gameFieldView = "";
 const data = [
@@ -2374,12 +2402,29 @@ const DIRECTIONS = ["left", "top"];
 const MESSAGE = "Great! You have solved the nonogram: ";
 class GameFieldView {
   constructor(modal, timer, winners) {
+    /**
+    * removes cell and row highlighting
+    */
     __privateAdd(this, _removeHighlightCells);
+    /**
+    * adds cell and row highlighting
+    * @param {target} - current cell
+    */
     __privateAdd(this, _highlightCurrentColumnAndRow);
+    /**
+    * fills the array of cells with field
+    */
     __privateAdd(this, _cellHasClicked);
+    /**
+    * checks the outcome of the game
+    * @param {number[][]} cellValues - two-dimensional array of current cell values
+    * @param {number[][]} matrix - two-dimensional array of the original matrix
+    */
     __privateAdd(this, _isWin);
-    __privateAdd(this, _toggleIsClickableCell);
-    __privateAdd(this, _createHTML3);
+    /**
+    * create HTML gameField
+    */
+    __privateAdd(this, _createHTML4);
     this.modal = modal;
     this.timer = timer;
     this.winners = winners;
@@ -2392,7 +2437,7 @@ class GameFieldView {
     this.isLockPlayground = false;
     this.isShowSolution = false;
     this.isEndGame = false;
-    __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
+    __privateMethod(this, _createHTML4, createHTML_fn4).call(this);
     this.startGame(this.currentNonogramObj);
     this.playground.addEventListener("click", () => {
       if (!this.timer.isStart) {
@@ -2474,6 +2519,10 @@ class GameFieldView {
       this.playground.append(rowElem);
     }
   }
+  /**
+   * start game
+   * @param {object} nonogramObj - object for the current game
+   */
   startGame(nonogramObj) {
     this.originalMatrix = nonogramObj.matrix;
     this.originalTitle = nonogramObj.title;
@@ -2489,6 +2538,9 @@ class GameFieldView {
     this.timer.timer.textContent = "00:00";
     this.isEndGame = false;
   }
+  /**
+  * changes the locking of the playground
+  */
   lockPlayground() {
     if (!this.isLockPlayground) {
       this.playground.classList.remove("lock");
@@ -2551,22 +2603,13 @@ isWin_fn = function(cellValues, matrix) {
   if (cellValues.every((_, rowIndex) => cellValues[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
     this.timer.stopTimer();
     this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
-    __privateMethod(this, _toggleIsClickableCell, toggleIsClickableCell_fn).call(this, this.cellElements);
     this.lockPlayground();
     this.isEndGame = true;
     this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
   }
 };
-_toggleIsClickableCell = new WeakSet();
-toggleIsClickableCell_fn = function(cellElements) {
-  cellElements.forEach((row) => {
-    row.forEach((cell) => {
-      cell.setClickable(false);
-    });
-  });
-};
-_createHTML3 = new WeakSet();
-createHTML_fn3 = function() {
+_createHTML4 = new WeakSet();
+createHTML_fn4 = function() {
   this.gameFieldSection = new CreateElement({ tag: "section", classes: ["game"] });
   this.gameField = new CreateElement({ classes: ["game__field"] });
   this.playground = new CreateElement({ classes: ["playground"] });
@@ -2578,11 +2621,14 @@ createHTML_fn3 = function() {
 const modalView = "";
 class ModalView {
   constructor() {
-    __privateAdd(this, _createHTML4);
+    /**
+    * create HTML modal
+    */
+    __privateAdd(this, _createHTML5);
     this.message = null;
     this.name = null;
     this.time = null;
-    __privateMethod(this, _createHTML4, createHTML_fn4).call(this);
+    __privateMethod(this, _createHTML5, createHTML_fn5).call(this);
     this.closeBtn.addEventListener("click", () => this.show(this.message, this.name, this.time));
     this.overlay.addEventListener("click", ({ target }) => {
       if (target === this.overlay) {
@@ -2590,9 +2636,19 @@ class ModalView {
       }
     });
   }
+  /**
+  * get HTML modal
+  * @returns {Element} HTML-Element modal
+  */
   getHTML() {
     return this.modalBox;
   }
+  /**
+  * show modal
+  * @param {string} message - modal message
+  * @param {string} name - modal name
+  * @param {number} time - modal time
+  */
   show(message, name, time) {
     this.message = message;
     this.name = name;
@@ -2606,8 +2662,8 @@ class ModalView {
     document.body.classList.toggle("stop-scroll");
   }
 }
-_createHTML4 = new WeakSet();
-createHTML_fn4 = function() {
+_createHTML5 = new WeakSet();
+createHTML_fn5 = function() {
   this.modalBox = new CreateElement({ classes: ["modal"] });
   this.overlay = new CreateElement({ classes: ["modal__overlay"] });
   this.content = new CreateElement({ classes: ["modal__content"] });
@@ -2621,27 +2677,75 @@ createHTML_fn4 = function() {
 const settingsGameView = "";
 class SettingsGameView {
   constructor(gameField, timer) {
+    /**
+     * start current game
+     */
     __privateAdd(this, _startGameHandler);
+    /**
+     * show solution current game
+     * @param {number[][]} matrix - matrix for the current game
+     * @param {Element[][]} cellElements - matrix for the current cell elements
+     */
     __privateAdd(this, _showSolutionHandler);
+    /**
+     * clears the current gameField
+     */
     __privateAdd(this, _resetGameHandler);
+    /**
+     * save state the current game
+     */
     __privateAdd(this, _saveGameHandler);
+    /**
+     * runs the last saved game
+     */
     __privateAdd(this, _continueGameHandler);
-    __privateAdd(this, _randomGameHandler);
-    __privateAdd(this, _getRandomGame);
+    /**
+     * create save game cells
+     * @param {object[][]} savedCells - two-dimensional array of cell objects
+     */
     __privateAdd(this, _createCellsToLS);
+    /**
+     * runs the random game
+     */
+    __privateAdd(this, _randomGameHandler);
+    /**
+     * get random game data
+     * @returns {object} - random game data
+     */
+    __privateAdd(this, _getRandomGame);
+    /**
+     * unlock the buttons
+     * @param {object} - object btns
+     */
     __privateAdd(this, _undisabledBtns);
+    /**
+     * find the current matrix by name
+     * @returns {object} - current matrix
+     */
     __privateAdd(this, _updateCurrentMatrix);
+    /**
+     * update the list of current titles
+     */
     __privateAdd(this, _updateListNames);
+    /**
+     * create list sizes
+     */
     __privateAdd(this, _createDropListSizes);
+    /**
+     * create list names
+     */
     __privateAdd(this, _createDropListNames);
-    __privateAdd(this, _createHTML5);
+    /**
+    * create HTML settings game
+    */
+    __privateAdd(this, _createHTML6);
     this.gameField = gameField;
     this.timer = timer;
     this.sizeBtnsArr = [];
     this.nameBtnsArr = [];
     this.currentName = null;
     this.newOriginalData = null;
-    __privateMethod(this, _createHTML5, createHTML_fn5).call(this);
+    __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
     this.sizeBtnsArr.forEach((btn) => {
       btn.addEventListener("click", () => {
         __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
@@ -2684,7 +2788,6 @@ class SettingsGameView {
       this.saveGameBtn.disabled = false;
       const LS = JSON.parse(localStorage.getItem("kleostro"));
       if (LS["current-game"]) {
-        console.log("попал сюда");
         __privateMethod(this, _continueGameHandler, continueGameHandler_fn).apply(this);
       } else {
         this.continueGameBtn.disabled = true;
@@ -2695,9 +2798,9 @@ class SettingsGameView {
     this.randomGameBtn.addEventListener("click", __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this));
   }
   /**
-  * get HTML settings section
-  * @returns {Element} HTML-Element settings section
-  */
+   * get HTML settings section
+   * @returns {Element} HTML-Element settings section
+   */
   getHTML() {
     return this.settings;
   }
@@ -2781,6 +2884,29 @@ continueGameHandler_fn = function() {
   });
   this.timer.currentTime = +JSON.parse(LS["current-time"]);
 };
+_createCellsToLS = new WeakSet();
+createCellsToLS_fn = function(savedCells) {
+  if (savedCells) {
+    this.gameField.cellElements = [];
+    this.gameField.cellValues = [];
+    this.gameField.playground.innerHTML = "";
+    for (let row = 0; row < savedCells.length; row += 1) {
+      const rowElem = new CreateElement({ classes: ["playground__row"], attrs: { "data-row": row } });
+      this.gameField.cellElements[row] = [];
+      this.gameField.cellValues[row] = [];
+      for (let column = 0; column < savedCells[0].length; column += 1) {
+        const cellParse = JSON.parse(savedCells[row][column]);
+        const cell = new CellView(cellParse.cellValue, cellParse.state);
+        const cellElem = cell.getHTML();
+        cellElem.setAttribute("data-cell", column);
+        rowElem.append(cellElem);
+        this.gameField.cellElements[row][column] = cell;
+        this.gameField.cellValues[row] = cellParse.cellValue;
+      }
+      this.gameField.playground.append(rowElem);
+    }
+  }
+};
 _randomGameHandler = new WeakSet();
 randomGameHandler_fn = function() {
   const { matrix, title, size } = __privateMethod(this, _getRandomGame, getRandomGame_fn).call(this);
@@ -2810,30 +2936,6 @@ _getRandomGame = new WeakSet();
 getRandomGame_fn = function() {
   const randomIndex = Math.floor(Math.random() * data.length);
   return data[randomIndex];
-};
-_createCellsToLS = new WeakSet();
-createCellsToLS_fn = function(savedCells) {
-  if (savedCells) {
-    console.log(savedCells);
-    this.gameField.cellElements = [];
-    this.gameField.cellValues = [];
-    this.gameField.playground.innerHTML = "";
-    for (let row = 0; row < savedCells.length; row += 1) {
-      const rowElem = new CreateElement({ classes: ["playground__row"], attrs: { "data-row": row } });
-      this.gameField.cellElements[row] = [];
-      this.gameField.cellValues[row] = [];
-      for (let column = 0; column < savedCells[0].length; column += 1) {
-        const cellParse = JSON.parse(savedCells[row][column]);
-        const cell = new CellView(cellParse.cellValue, cellParse.state, cellParse.isClickable);
-        const cellElem = cell.getHTML();
-        cellElem.setAttribute("data-cell", column);
-        rowElem.append(cellElem);
-        this.gameField.cellElements[row][column] = cell;
-        this.gameField.cellValues[row] = cellParse.cellValue;
-      }
-      this.gameField.playground.append(rowElem);
-    }
-  }
 };
 _undisabledBtns = new WeakSet();
 undisabledBtns_fn = function(btnsArr) {
@@ -2894,8 +2996,8 @@ createDropListNames_fn = function() {
   this.settingsNameSubtitle.textContent = filteredData[0].title;
   return dropList;
 };
-_createHTML5 = new WeakSet();
-createHTML_fn5 = function() {
+_createHTML6 = new WeakSet();
+createHTML_fn6 = function() {
   this.settings = new CreateElement({ classes: ["settings"] });
   this.settingsContainer = new CreateElement({ classes: ["settings__container"] });
   this.settingsSizeBox = new CreateElement({ classes: ["size"] });
@@ -2928,15 +3030,26 @@ const MAX_MS_IN_SEC$1 = 60;
 const MAX_SEC_IN_MIN$1 = 60;
 class TimerView {
   constructor() {
-    __privateAdd(this, _createHTML6);
+    /**
+    * create HTML timer
+    */
+    __privateAdd(this, _createHTML7);
     this.intervalID = null;
     this.currentTime = 0;
     this.isStart = false;
-    __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
+    __privateMethod(this, _createHTML7, createHTML_fn7).call(this);
   }
+  /**
+  * get HTML timer
+  * @returns {Element} HTML-Element timer
+  */
   getHTML() {
     return this.timer;
   }
+  /**
+  * start timer
+  * @returns {number} - ID timer
+  */
   startTimer() {
     this.isStart = true;
     return this.intervalID = setInterval(() => {
@@ -2945,21 +3058,32 @@ class TimerView {
       this.timer.textContent = `${formattedMin}:${formattedSec}`;
     }, TIMER_INTERVAL);
   }
+  /**
+  * stop timer
+  */
   stopTimer() {
     clearInterval(this.intervalID);
     this.isStart = false;
   }
+  /**
+  * get current time
+  * @returns {number} - current time
+  */
   getTime() {
     return this.currentTime;
   }
+  /**
+  * formatted time
+  * @returns {object} - formatted time
+  */
   formattedTime() {
     const formattedMin = Math.floor(this.currentTime / MAX_SEC_IN_MIN$1).toString().padStart(2, "0");
     const formattedSec = (this.currentTime % MAX_MS_IN_SEC$1).toString().padStart(2, "0");
     return { formattedMin, formattedSec };
   }
 }
-_createHTML6 = new WeakSet();
-createHTML_fn6 = function() {
+_createHTML7 = new WeakSet();
+createHTML_fn7 = function() {
   this.timer = new CreateElement({ tag: "span", classes: ["timer"], textContent: "00:00" });
 };
 const winnersView = "";
@@ -2968,8 +3092,8 @@ const MAX_SEC_IN_MIN = 60;
 const MAX_WINNERS = 5;
 class WinnersView {
   constructor() {
-    __privateAdd(this, _createHTML7);
-    __privateMethod(this, _createHTML7, createHTML_fn7).call(this);
+    __privateAdd(this, _createHTML8);
+    __privateMethod(this, _createHTML8, createHTML_fn8).call(this);
     const LS = JSON.parse(localStorage.getItem("kleostro"));
     if (!(LS == null ? void 0 : LS.winners)) {
       LS.winners = [];
@@ -3031,8 +3155,8 @@ class WinnersView {
     });
   }
 }
-_createHTML7 = new WeakSet();
-createHTML_fn7 = function() {
+_createHTML8 = new WeakSet();
+createHTML_fn8 = function() {
   this.winnersBox = new CreateElement({ classes: ["winners-modal"] });
   this.overlay = new CreateElement({ classes: ["winners-modal__overlay"] });
   this.content = new CreateElement({ classes: ["winners-modal__content"] });
@@ -3046,8 +3170,11 @@ createHTML_fn7 = function() {
 const mainView = "";
 class MainView {
   constructor() {
-    __privateAdd(this, _createHTML8);
-    __privateMethod(this, _createHTML8, createHTML_fn8).call(this);
+    /**
+    * create HTML main
+    */
+    __privateAdd(this, _createHTML9);
+    __privateMethod(this, _createHTML9, createHTML_fn9).call(this);
   }
   /**
   * get HTML main
@@ -3057,8 +3184,8 @@ class MainView {
     return this.main;
   }
 }
-_createHTML8 = new WeakSet();
-createHTML_fn8 = function() {
+_createHTML9 = new WeakSet();
+createHTML_fn9 = function() {
   this.main = new CreateElement({ tag: "main", classes: ["main"] });
   this.modal = new ModalView();
   this.timer = new TimerView();
@@ -3082,4 +3209,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-6e05e103.js.map
+//# sourceMappingURL=main-ba7e191e.js.map
