@@ -155,25 +155,52 @@ createHTML_fn2 = function() {
 };
 const audio = "";
 const winSound = "" + new URL("win-fa6a458c.mp3", import.meta.url).href;
+const fieldSound = "data:audio/mpeg;base64,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uquBdea+1TkVpZZOKxxQaDKz4ZREZErnhhB9Jh5HWd19p79Jv55al1rcYpaOFLgyeCRpSoloUnJvv+T/7rPdyoNQAVZgQl882lnSUMOYQf/7UsQtAwlkyyJHmGXBMZgjyPMMaCQTd35SAnAYtQy1HQ5ZNkBkK2bhGPDBTikqscMgQ4opCIOjpD2zrHuIPIEAVoY0OqauYcAuxpX//6PyK66qACLIAIEk5C52tugXrBJciQVOHGQGjP5KTCwTR+GYZ1PB2zCgOGgmsuCscaQZFQEAlpcdc5xMO54wI0byK5JjHdj/7bVI+in+NRrMQofQ5EUDVgCXCMLNR0M1PlYE54q4KHRMpZdYCiEaCSDe0iit7GqUPJi1di1lmjcaBvYk//tSxD8CSUh3GMeEZkEVh2IE8Yhw6jRotewlVoRe3+4ugzYVaSEt8AfI4x5rENSW8WmIaCwbEzDySpJhULEoavpQ0OB+mQNrXZmaXuN9pPZBVSIO6jd0kq+laFXqSUfrlcAFgogWUkwKua4NDB5AZewHFnkX0UUqFFGHbX7zEmDgaa45N0Bom0k5ntWZiWtCAoyeAXteTLaliVjlumZFA47BV0s/FCNpBCcXMOkGoaokuNReWsUCoWOEg/mA/OPk2WUNYDRzJ11125SpVc9vXCv/+1LEVQNI3E8MJ4RLQR6F4MGHmAjUFHiYsLKkSKdkjvs+r5GW6SFZ1QaU8FYaUHRKxYwGtYwity3Hnkis6IolhosHZHgD5DWFvJIa6BQo6T+RSnZB6CakiJEo+LYso8+NzZo0UKDo6VDJWssUMDBhlyQWFWRVj6wqLP7ahZmoXZ+sUb+pvFhX+Kt//F1MQU1FMy45N1VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7UsRrg0lIWvoMMGDBIg3YhPMNaFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//tSxIADwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=";
+const crossedSound = "data:audio/mpeg;base64,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6uB4u34/p/RKPx96xqPhPyimWoWdAIx9pfHNSd5YEzEKE6WCLWxsB85XIuRYwICc+1jcoGRkPZNCNvwwQFz4gmO8gg5YBCOcI4ApDdDCX//7UsQnABNdh5W4KAAZUhatM4YwActhlsZM+IUFkEQJIihHjhJUi5v/qJ9NN1M6CFBJ9q//jKEgmXCYJwvl8+gibG5Iz6M1J4olX//k+QRE3WpkU1JGhfLpkpFFJE1RQwVCIAACAAAC0jUpSwuoZwmY4UcBBD9BCmgYCPY2ZVVVhqUaxma8YMKbnFVVX2b5/l3ZqTCmBf1/wjvxm/4QSbMVlGxQt0YKKP+Gy7h2JI7zTjZoz//4tUAgBHBUVc1YalHQOs6cj488aMoZ6e0NYcmH//tSxA0ACgEpTsYMUeE6m2bNliFh14bMzGq6rRMbX6z6qpZa4Zqqr9VvY761sKJP1nV3USGeZTP/1RyAxPZ1YurdSlUMDE7WmZGRUBrhAGyq2NWcZQsJOwFCI6raCIxPhMFaToexCqzE6ucQH9DWaV5SyUaDr+eTVFXrmaYlIZnFSKbItbaYEFaZlX5X/v9YB60tSWzJnDZf0gCMfAAuN4aCdhh3Zpilq83ZQZV0t4uFStU67hX5lxe2gBNaRi37Nrc19f/BVCwGWMhh40WtVhn/+1LEG4IJVKcuzDEM6SuVJQ2WFZjho8fS21iBZrn865fu6yf3Ygu3iW42AAE2s27F2tIXJvtrqzBjLUWLPoYHTnsn2PZ6ATTUgxUZ0iJJEZlQmsqGlC3GMrSqPdlZCuYvKWYdICdyF3//0f//RT/5Np/+ugDCRtAAAykX7LoBcVOvJZbJ4H/rcrxqr/lirLmh89s2U/wQs9WCiPyYvXgKVWOR4RSmoIeIniJp+oOM7H9n+a9H6fTdbVr7TyXItuYLilJHGAAEhmLjBcbE5xDjhf/7UsQuggmkkyTsPGXBHAwk6YYgIGgAF1Pa2jEHqyQGhe7cY96Qas1NMp1gITkhYTDlJBBAucBZaYEeLGzBJxAA//1f/X9Xd6HdSPVVfkADWxs54vASRCCPq1VTQRc/EXzCTlVCAxWo/S6RIWLVlHHFTAWJrGKrdnT3yL/f2kfnXSP8WWEg1kqwVCTRYceep+8FUdZ1sStSCHiTQpjwyyOAo0UFCUXymqnxqngyaPLVmWqBqJSOoCgEFnBpnQwl/f6+zJbJJnRvaPO0eqPRERVn//tSxEIDSTRrHEwwoUEGh+BJgxgACUSjHuhJ5VVMQU1FMy45N1VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+1LEWgPAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==";
+const emptySound = "data:audio/mpeg;base64,//tQxAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAAEEwBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAgICAgICAgICAgICAgICAgICAgICAgICAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD///////////////////////////////8AAAA5TEFNRTMuOTcgAaUAAAAALGoAABRAJAYbQgAAQAAABBNKziI+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/7UMQAAAmxUV4UAoABkCiyNwUAA/+T////Oc76EIc7///185znPIQhznkDgcFFDgcFCEIRjhwOChG1OHA4RlOc7zh8PgcPi6BwAwDD4uehA4Hw+Ln5A4Bw+5BAUDEQAgc5TAYDAYDAYDAYDAYDAQAQP4wTw4jz7edRLn8hpeN/8lCKKJMfv/HPJQyJ8bf/83LRFDIZUPyIH//lkOWDdlEXQc0Z0WeXf//xYgvaJ+D8wuEC8xTBqCrD5wR////lAcozqQ7NWpWXZnhjVmcZIAX/+1LEBIALpNth/IGACW6m6vwwj1FRzddZVkssaFa+OwxHGanGkOHasZeSqVMEev/9VT2PtXZvzO5Z/l1tcqomshtqVIVKMWN1llwJNCpfMoWvcndcoRGhRNEFYmnbOa9S39i+C8/zdv4r1EiBE0yWEpPkZsKinhuI5FbCYhR3MtB/4/SVVciWbVaW4TiOs/9bCq5mqapEcRmzLAKGpSk39/+HyrrcwjZTiDqUDGJNsSYrvN8+v35MEDtQc7dcl3UV95r/XRI2AA44G7FQz0iShv/7UsQGAEt1RT9imHcBRaWlIAMM+YrjBUWFWM9pnI60uPdgZKs1itfHNnM8TOTjf//55Z6lnOeSTbU9pwkNdXoluFUlUmdaueXGmf9VSVROqgmWFzFBWpGKASQKRrFWlQr2gr9YAAnM7OxISNp503N9VX/avP0F0jjQMBBljcNSZc1ja/GZmZsKJjaxlPqgIDAICDCgwqhRJd2FMBCqX/sexdL/aNt6r1WYMBeFpBQHCoiZIKmxAgoIHKCBhI5HcyZrP+yWGv8QSMiMDX/CRkIJ//tSxA2DyRjUrgGE1MAAADSAAAAEGxZRZRxZR8XGszxs0aUWW0nGnAYEBgYEWYeZYJizcXFTLuAhYXZwZCojDLpkWUxBTUUzLjk3VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=";
+const settingsGameClick = "data:audio/mpeg;base64,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";
 class Audio {
   constructor() {
     __privateAdd(this, _createHTML3);
     __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
-    this.winSound.play();
   }
   getHTML() {
     return this.soundBox;
+  }
+  playField() {
+    this.fieldSound.currentTime = 0;
+    this.fieldSound.play();
+  }
+  playCrossed() {
+    this.crossedSound.currentTime = 0;
+    this.crossedSound.play();
+  }
+  playEmpty() {
+    this.emptySound.currentTime = 0;
+    this.emptySound.play();
+  }
+  playModal() {
+    this.winSound.currentTime = 0;
+    this.winSound.play();
+  }
+  playSettingsGameClick() {
+    this.settingsGameSound.currentTime = 0;
+    this.settingsGameSound.play();
   }
 }
 _createHTML3 = new WeakSet();
 createHTML_fn3 = function() {
   this.soundBox = new CreateElement({ classes: ["sound-box"] });
+  this.fieldSound = new CreateElement({ tag: "audio", classes: ["field-sound"], attrs: { src: fieldSound } });
+  this.crossedSound = new CreateElement({ tag: "audio", classes: ["crossed-sound"], attrs: { src: crossedSound } });
+  this.emptySound = new CreateElement({ tag: "audio", classes: ["empty-sound"], attrs: { src: emptySound } });
   this.winSound = new CreateElement({ tag: "audio", classes: ["win-sound"], attrs: { src: winSound } });
-  this.soundBox.append(this.winSound);
+  this.settingsGameSound = new CreateElement({ tag: "audio", classes: ["empty-sound"], attrs: { src: settingsGameClick } });
+  this.soundBox.append(this.winSound, this.fieldSound, this.crossedSound, this.emptySound, this.settingsGameSound);
 };
 const cellView = "";
 class CellView {
-  constructor(cellValue, state = "empty") {
+  constructor(cellValue, audio2, state = "empty") {
     /**
      * sets the field class to a cell
      * @param {event} event - event
@@ -201,6 +228,7 @@ class CellView {
     * create HTML cell
     */
     __privateAdd(this, _createHTML4);
+    this.audio = audio2;
     this.cellValue = cellValue;
     this.state = state;
     __privateMethod(this, _createHTML4, createHTML_fn4).call(this);
@@ -245,6 +273,7 @@ class CellView {
 }
 _setField = new WeakSet();
 setField_fn = function(event) {
+  this.audio.playField();
   this.state = "field";
   event.target.classList.add("field");
 };
@@ -256,6 +285,7 @@ getField_fn = function() {
 };
 _setCrossed = new WeakSet();
 setCrossed_fn = function(event) {
+  this.audio.playCrossed();
   this.state = "crossed";
   event.target.classList.remove("field");
   event.target.classList.add("crossed");
@@ -269,6 +299,7 @@ getCrossed_fn = function() {
 };
 _setEmpty = new WeakSet();
 setEmpty_fn = function(event) {
+  this.audio.playEmpty();
   this.state = "empty";
   event.target.classList.remove("field", "crossed");
 };
@@ -2422,7 +2453,7 @@ const data = [
 const DIRECTIONS = ["left", "top"];
 const MESSAGE = "Great! You have solved the nonogram: ";
 class GameFieldView {
-  constructor(modal, timer, winners) {
+  constructor(modal, timer, winners, audio2) {
     /**
     * removes cell and row highlighting
     */
@@ -2449,6 +2480,7 @@ class GameFieldView {
     this.modal = modal;
     this.timer = timer;
     this.winners = winners;
+    this.audio = audio2;
     this.currentNonogramObj = data[0];
     this.originalMatrix = this.currentNonogramObj.matrix;
     this.originalTitle = this.currentNonogramObj.title;
@@ -2532,7 +2564,7 @@ class GameFieldView {
       const rowElem = new CreateElement({ classes: ["playground__row"], attrs: { "data-row": row } });
       this.cellElements[row] = [];
       for (let column = 0; column < matrix[0].length; column += 1) {
-        const cell = new CellView(matrix[row][column]);
+        const cell = new CellView(matrix[row][column], this.audio);
         const cellElem = cell.getHTML();
         cellElem.setAttribute("data-cell", column);
         rowElem.append(cellElem);
@@ -2646,6 +2678,7 @@ isWin_fn = function(cellValues, matrix) {
     this.lockPlayground();
     this.isEndGame = true;
     this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
+    this.audio.playModal();
   }
 };
 _createHTML5 = new WeakSet();
@@ -2662,12 +2695,11 @@ createHTML_fn5 = function() {
 };
 const modalView = "";
 class ModalView {
-  constructor(audio2) {
+  constructor() {
     /**
     * create HTML modal
     */
     __privateAdd(this, _createHTML6);
-    this.audio = audio2;
     this.message = null;
     this.name = null;
     this.time = null;
@@ -2720,7 +2752,7 @@ createHTML_fn6 = function() {
 const settingsGameView = "";
 const MAX_LETTERS_IN_SUBTITLE = 10;
 class SettingsGameView {
-  constructor(gameField, timer) {
+  constructor(gameField, timer, audio2) {
     /**
      * start current game
      */
@@ -2792,6 +2824,7 @@ class SettingsGameView {
     __privateAdd(this, _createHTML7);
     this.gameField = gameField;
     this.timer = timer;
+    this.audio = audio2;
     this.sizeBtnsArr = [];
     this.nameBtnsArr = [];
     this.currentName = null;
@@ -2816,6 +2849,7 @@ class SettingsGameView {
 }
 _startGameHandler = new WeakSet();
 startGameHandler_fn = function() {
+  this.audio.playSettingsGameClick();
   this.newOriginalData = __privateMethod(this, _updateCurrentMatrix, updateCurrentMatrix_fn).call(this);
   this.gameField.startGame(this.newOriginalData);
   this.showSolutionBtn.disabled = false;
@@ -2823,6 +2857,7 @@ startGameHandler_fn = function() {
 };
 _showSolutionHandler = new WeakSet();
 showSolutionHandler_fn = function(matrix, cellElements) {
+  this.audio.playSettingsGameClick();
   matrix.forEach((row, rowIndex) => {
     row.forEach((_, columnIndex) => {
       cellElements[rowIndex][columnIndex].cell.classList.remove("field", "crossed");
@@ -2834,6 +2869,7 @@ showSolutionHandler_fn = function(matrix, cellElements) {
 };
 _resetGameHandler = new WeakSet();
 resetGameHandler_fn = function() {
+  this.audio.playSettingsGameClick();
   this.gameField.cellElements.forEach((row) => {
     row.forEach((cell) => {
       cell.cell.classList.remove("field", "crossed");
@@ -2843,6 +2879,7 @@ resetGameHandler_fn = function() {
 };
 _saveGameHandler = new WeakSet();
 saveGameHandler_fn = function() {
+  this.audio.playSettingsGameClick();
   const LS = JSON.parse(localStorage.kleostro);
   LS["current-game"] = JSON.stringify(this.gameField);
   LS["left-hints"] = this.gameField.leftHintsBox.innerHTML;
@@ -2863,6 +2900,7 @@ saveGameHandler_fn = function() {
 };
 _continueGameHandler = new WeakSet();
 continueGameHandler_fn = function() {
+  this.audio.playSettingsGameClick();
   if (!this.gameField.isLockPlayground) {
     this.gameField.lockPlayground();
   }
@@ -2920,6 +2958,7 @@ createCellsToLS_fn = function(savedCells) {
 };
 _randomGameHandler = new WeakSet();
 randomGameHandler_fn = function() {
+  this.audio.playSettingsGameClick();
   const { matrix, title, size } = __privateMethod(this, _getRandomGame, getRandomGame_fn).call(this);
   this.settingsSizeSubtitle.textContent = size;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
@@ -2974,6 +3013,7 @@ updateSizeGameField_fn = function() {
 };
 _updateBtnsSizeContent = new WeakSet();
 updateBtnsSizeContent_fn = function(target) {
+  this.audio.playSettingsGameClick();
   this.startGameBtn.disabled = false;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   target.disabled = true;
@@ -2984,6 +3024,7 @@ updateBtnsSizeContent_fn = function(target) {
 };
 _updateBtnsNameContent = new WeakSet();
 updateBtnsNameContent_fn = function(target) {
+  this.audio.playSettingsGameClick();
   this.startGameBtn.disabled = false;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
   target.disabled = true;
@@ -3110,6 +3151,7 @@ createHTML_fn7 = function() {
     }
   });
   this.settingsSizeTop.addEventListener("click", () => {
+    this.audio.playSettingsGameClick();
     this.isLockListSizes = !this.isLockListSizes;
   });
   this.settingsNameTop.addEventListener("mouseover", () => {
@@ -3123,6 +3165,7 @@ createHTML_fn7 = function() {
     }
   });
   this.settingsNameTop.addEventListener("click", () => {
+    this.audio.playSettingsGameClick();
     this.isLockListNames = !this.isLockListNames;
   });
   this.startGameBtn.addEventListener("click", () => {
@@ -3325,11 +3368,11 @@ _createHTML10 = new WeakSet();
 createHTML_fn10 = function() {
   this.main = new CreateElement({ tag: "main", classes: ["main"] });
   this.audio = new Audio();
-  this.modal = new ModalView(this.audio);
+  this.modal = new ModalView();
   this.timer = new TimerView();
   this.winners = new WinnersView();
-  this.gameField = new GameFieldView(this.modal, this.timer, this.winners);
-  this.settingsBox = new SettingsGameView(this.gameField, this.timer);
+  this.gameField = new GameFieldView(this.modal, this.timer, this.winners, this.audio);
+  this.settingsBox = new SettingsGameView(this.gameField, this.timer, this.audio);
   this.main.append(this.gameField.getHTML(), this.modal.getHTML(), this.winners.getHTML(), this.audio.getHTML());
 };
 class App {
@@ -3347,4 +3390,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-619de173.js.map
+//# sourceMappingURL=main-207581b9.js.map
