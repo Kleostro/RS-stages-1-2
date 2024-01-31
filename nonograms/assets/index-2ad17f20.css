@@ -966,6 +966,12 @@ img {
 .winners-modal__list-item:not(:last-child) {
   margin-bottom: var(--small-offset);
 }
+.winners-modal__list-title {
+  overflow: hidden;
+  max-width: 84px;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}
 .winners-modal.hidden {
   position: relative;
   opacity: 1;

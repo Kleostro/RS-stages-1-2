@@ -11,7 +11,7 @@ var __privateMethod = (obj, member, method) => {
   __accessCheck(obj, member, "access private method");
   return method;
 };
-var _winnersClickHandler, winnersClickHandler_fn, _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _createHTML2, createHTML_fn2, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _createHTML3, createHTML_fn3, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _createHTML4, createHTML_fn4, _createHTML5, createHTML_fn5, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _undisabledBtns, undisabledBtns_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _showSizesDropList, showSizesDropList_fn, _hiddenSizesDropList, hiddenSizesDropList_fn, _showDropListNames, showDropListNames_fn, _hiddenDropListNames, hiddenDropListNames_fn, _createHTML6, createHTML_fn6, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8, _createHTML9, createHTML_fn9;
+var _winnersClickHandler, winnersClickHandler_fn, _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _createHTML2, createHTML_fn2, _createHTML3, createHTML_fn3, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _createHTML4, createHTML_fn4, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _undisabledBtns, undisabledBtns_fn, _updateSizeGameField, updateSizeGameField_fn, _updateBtnsSizeContent, updateBtnsSizeContent_fn, _updateBtnsNameContent, updateBtnsNameContent_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _showSizesDropList, showSizesDropList_fn, _hiddenSizesDropList, hiddenSizesDropList_fn, _showDropListNames, showDropListNames_fn, _hiddenDropListNames, hiddenDropListNames_fn, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8, _createHTML9, createHTML_fn9, _createHTML10, createHTML_fn10;
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -153,6 +153,23 @@ createHTML_fn2 = function() {
   this.headerContainer.append(this.title, this.settingsApp.getHTML());
   this.header.append(this.headerContainer);
 };
+const audio = "";
+const winSound = "" + new URL("win-fa6a458c.mp3", import.meta.url).href;
+class Audio {
+  constructor() {
+    __privateAdd(this, _createHTML3);
+    __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
+  }
+  getHTML() {
+    return this.soundBox;
+  }
+}
+_createHTML3 = new WeakSet();
+createHTML_fn3 = function() {
+  this.soundBox = new CreateElement({ classes: ["sound-box"] });
+  this.winSound = new CreateElement({ tag: "audio", classes: ["win-sound"], attrs: { src: `.${winSound}` } });
+  this.soundBox.append(this.winSound);
+};
 const cellView = "";
 class CellView {
   constructor(cellValue, state = "empty") {
@@ -182,10 +199,10 @@ class CellView {
     /**
     * create HTML cell
     */
-    __privateAdd(this, _createHTML3);
+    __privateAdd(this, _createHTML4);
     this.cellValue = cellValue;
     this.state = state;
-    __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
+    __privateMethod(this, _createHTML4, createHTML_fn4).call(this);
     __privateMethod(this, _getField, getField_fn).call(this);
     __privateMethod(this, _getCrossed, getCrossed_fn).call(this);
     this.cell.addEventListener("click", (event) => {
@@ -254,8 +271,8 @@ setEmpty_fn = function(event) {
   this.state = "empty";
   event.target.classList.remove("field", "crossed");
 };
-_createHTML3 = new WeakSet();
-createHTML_fn3 = function() {
+_createHTML4 = new WeakSet();
+createHTML_fn4 = function() {
   this.cell = new CreateElement({ classes: ["cell"] });
 };
 const gameFieldView = "";
@@ -2427,7 +2444,7 @@ class GameFieldView {
     /**
     * create HTML gameField
     */
-    __privateAdd(this, _createHTML4);
+    __privateAdd(this, _createHTML5);
     this.modal = modal;
     this.timer = timer;
     this.winners = winners;
@@ -2440,7 +2457,7 @@ class GameFieldView {
     this.isLockPlayground = false;
     this.isShowSolution = false;
     this.isEndGame = false;
-    __privateMethod(this, _createHTML4, createHTML_fn4).call(this);
+    __privateMethod(this, _createHTML5, createHTML_fn5).call(this);
     this.startGame(this.currentNonogramObj);
     this.playground.addEventListener("click", () => {
       if (!this.timer.isStart) {
@@ -2630,8 +2647,8 @@ isWin_fn = function(cellValues, matrix) {
     this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
   }
 };
-_createHTML4 = new WeakSet();
-createHTML_fn4 = function() {
+_createHTML5 = new WeakSet();
+createHTML_fn5 = function() {
   this.gameFieldSection = new CreateElement({ tag: "section", classes: ["game"] });
   this.gameFieldContainer = new CreateElement({ classes: ["container", "game__container"] });
   this.gameField = new CreateElement({ classes: ["game__field"] });
@@ -2644,15 +2661,16 @@ createHTML_fn4 = function() {
 };
 const modalView = "";
 class ModalView {
-  constructor() {
+  constructor(audio2) {
     /**
     * create HTML modal
     */
-    __privateAdd(this, _createHTML5);
+    __privateAdd(this, _createHTML6);
+    this.audio = audio2;
     this.message = null;
     this.name = null;
     this.time = null;
-    __privateMethod(this, _createHTML5, createHTML_fn5).call(this);
+    __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
     this.closeBtn.addEventListener("click", () => this.show(this.message, this.name, this.time));
     this.overlay.addEventListener("click", ({ target }) => {
       if (target === this.overlay) {
@@ -2686,8 +2704,8 @@ class ModalView {
     document.body.classList.toggle("stop-scroll");
   }
 }
-_createHTML5 = new WeakSet();
-createHTML_fn5 = function() {
+_createHTML6 = new WeakSet();
+createHTML_fn6 = function() {
   this.modalBox = new CreateElement({ classes: ["modal"] });
   this.overlay = new CreateElement({ classes: ["modal__overlay"] });
   this.content = new CreateElement({ classes: ["modal__content"] });
@@ -2743,6 +2761,9 @@ class SettingsGameView {
      * @param {object} - object btns
      */
     __privateAdd(this, _undisabledBtns);
+    __privateAdd(this, _updateSizeGameField);
+    __privateAdd(this, _updateBtnsSizeContent);
+    __privateAdd(this, _updateBtnsNameContent);
     /**
      * find the current matrix by name
      * @returns {object} - current matrix
@@ -2767,7 +2788,7 @@ class SettingsGameView {
     /**
     * create HTML settings game
     */
-    __privateAdd(this, _createHTML6);
+    __privateAdd(this, _createHTML7);
     this.gameField = gameField;
     this.timer = timer;
     this.sizeBtnsArr = [];
@@ -2776,90 +2797,9 @@ class SettingsGameView {
     this.newOriginalData = null;
     this.isLockListSizes = false;
     this.isLockListNames = false;
-    __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
-    this.sizeBtnsArr.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        this.startGameBtn.disabled = false;
-        __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
-        btn.disabled = true;
-        this.settingsSizeSubtitle.textContent = btn.textContent;
-        __privateMethod(this, _updateListNames, updateListNames_fn).call(this);
-        this.currentName = this.settingsNameSubtitle.textContent;
-        this.newOriginalData = __privateMethod(this, _updateCurrentMatrix, updateCurrentMatrix_fn).call(this);
-      });
-    });
-    this.nameBtnsArr.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        this.startGameBtn.disabled = false;
-        __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
-        btn.disabled = true;
-        this.currentName = btn.textContent;
-        if (btn.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
-          const formattedSubtitle = btn.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
-          this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
-        } else {
-          this.settingsNameSubtitle.textContent = btn.textContent;
-        }
-      });
-    });
-    this.settingsSizeTop.addEventListener("mouseover", () => {
-      if (!this.isLockListSizes) {
-        __privateMethod(this, _showSizesDropList, showSizesDropList_fn).call(this);
-      }
-    });
-    this.settingsSizeBox.addEventListener("mouseleave", () => {
-      if (!this.isLockListSizes) {
-        __privateMethod(this, _hiddenSizesDropList, hiddenSizesDropList_fn).call(this);
-      }
-    });
-    this.settingsSizeTop.addEventListener("click", () => {
-      this.isLockListSizes = !this.isLockListSizes;
-    });
-    this.settingsNameTop.addEventListener("mouseover", () => {
-      if (!this.isLockListNames) {
-        __privateMethod(this, _showDropListNames, showDropListNames_fn).call(this);
-      }
-    });
-    this.settingsNameBox.addEventListener("mouseleave", () => {
-      if (!this.isLockListNames) {
-        __privateMethod(this, _hiddenDropListNames, hiddenDropListNames_fn).call(this);
-      }
-    });
-    this.settingsNameTop.addEventListener("click", () => {
-      this.isLockListNames = !this.isLockListNames;
-    });
-    this.startGameBtn.addEventListener("click", () => {
-      __privateMethod(this, _startGameHandler, startGameHandler_fn).apply(this);
-      this.resetGameBtn.disabled = false;
-      this.saveGameBtn.disabled = false;
-      this.continueGameBtn.disabled = false;
-    });
-    this.showSolutionBtn.addEventListener("click", () => {
-      if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
-        __privateMethod(this, _showSolutionHandler, showSolutionHandler_fn).apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
-        this.gameField.lockPlayground();
-      }
-      this.showSolutionBtn.disabled = true;
-      this.saveGameBtn.disabled = true;
-      this.resetGameBtn.disabled = true;
-      this.continueGameBtn.disabled = true;
-    });
-    this.resetGameBtn.addEventListener("click", __privateMethod(this, _resetGameHandler, resetGameHandler_fn).bind(this));
-    this.saveGameBtn.addEventListener("click", __privateMethod(this, _saveGameHandler, saveGameHandler_fn).bind(this));
-    this.continueGameBtn.addEventListener("click", () => {
-      this.showSolutionBtn.disabled = false;
-      this.resetGameBtn.disabled = false;
-      this.saveGameBtn.disabled = false;
-      const LS2 = JSON.parse(localStorage.getItem("kleostro"));
-      if (LS2["current-game"]) {
-        __privateMethod(this, _continueGameHandler, continueGameHandler_fn).apply(this);
-      } else {
-        this.continueGameBtn.disabled = true;
-      }
-      const { formattedMin, formattedSec } = this.timer.formattedTime();
-      this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
-    });
-    this.randomGameBtn.addEventListener("click", __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this));
+    __privateMethod(this, _createHTML7, createHTML_fn7).call(this);
+    this.sizeBtnsArr.forEach((btn) => btn.addEventListener("click", ({ target }) => __privateMethod(this, _updateBtnsSizeContent, updateBtnsSizeContent_fn).call(this, target)));
+    this.nameBtnsArr.forEach((btn) => btn.addEventListener("click", ({ target }) => __privateMethod(this, _updateBtnsNameContent, updateBtnsNameContent_fn).call(this, target)));
     const LS = JSON.parse(localStorage.getItem("kleostro"));
     if (!LS["current-game"]) {
       this.continueGameBtn.disabled = true;
@@ -2884,10 +2824,9 @@ _showSolutionHandler = new WeakSet();
 showSolutionHandler_fn = function(matrix, cellElements) {
   matrix.forEach((row, rowIndex) => {
     row.forEach((_, columnIndex) => {
-      cellElements[rowIndex][columnIndex].cell.classList.remove("field");
+      cellElements[rowIndex][columnIndex].cell.classList.remove("field", "crossed");
       if (cellElements[rowIndex][columnIndex].cellValue === 1 && !this.isShowSolution) {
         cellElements[rowIndex][columnIndex].cell.classList.add("field");
-        cellElements[rowIndex][columnIndex].cell.classList.remove("crossed");
       }
     });
   });
@@ -2936,23 +2875,7 @@ continueGameHandler_fn = function() {
   this.gameField.originalTitle = JSON.parse(LS["current-game"]).originalTitle;
   this.gameField.originalSize = JSON.parse(LS["current-game"]).originalSize;
   this.startGameBtn.disabled = true;
-  switch (this.gameField.originalSize) {
-    case "5x5": {
-      this.gameField.gameField.classList.remove("medium", "large");
-      this.gameField.gameField.classList.add("small");
-      break;
-    }
-    case "10x10": {
-      this.gameField.gameField.classList.remove("small", "large");
-      this.gameField.gameField.classList.add("medium");
-      break;
-    }
-    case "15x15": {
-      this.gameField.gameField.classList.remove("small", "medium");
-      this.gameField.gameField.classList.add("large");
-      break;
-    }
-  }
+  __privateMethod(this, _updateSizeGameField, updateSizeGameField_fn).call(this);
   this.settingsSizeSubtitle.textContent = JSON.parse(LS["current-game"]).originalSize;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   this.sizeBtnsArr.forEach((btn) => {
@@ -3027,6 +2950,49 @@ getRandomGame_fn = function() {
 _undisabledBtns = new WeakSet();
 undisabledBtns_fn = function(btnsArr) {
   btnsArr.forEach((btn) => btn.disabled = false);
+};
+_updateSizeGameField = new WeakSet();
+updateSizeGameField_fn = function() {
+  switch (this.gameField.originalSize) {
+    case "5x5": {
+      this.gameField.gameField.classList.remove("medium", "large");
+      this.gameField.gameField.classList.add("small");
+      break;
+    }
+    case "10x10": {
+      this.gameField.gameField.classList.remove("small", "large");
+      this.gameField.gameField.classList.add("medium");
+      break;
+    }
+    case "15x15": {
+      this.gameField.gameField.classList.remove("small", "medium");
+      this.gameField.gameField.classList.add("large");
+      break;
+    }
+  }
+};
+_updateBtnsSizeContent = new WeakSet();
+updateBtnsSizeContent_fn = function(target) {
+  this.startGameBtn.disabled = false;
+  __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
+  target.disabled = true;
+  this.settingsSizeSubtitle.textContent = target.textContent;
+  __privateMethod(this, _updateListNames, updateListNames_fn).call(this);
+  this.currentName = this.settingsNameSubtitle.textContent;
+  this.newOriginalData = __privateMethod(this, _updateCurrentMatrix, updateCurrentMatrix_fn).call(this);
+};
+_updateBtnsNameContent = new WeakSet();
+updateBtnsNameContent_fn = function(target) {
+  this.startGameBtn.disabled = false;
+  __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
+  target.disabled = true;
+  this.currentName = target.textContent;
+  if (target.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
+    const formattedSubtitle = target.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
+    this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
+  } else {
+    this.settingsNameSubtitle.textContent = target.textContent;
+  }
 };
 _updateCurrentMatrix = new WeakSet();
 updateCurrentMatrix_fn = function() {
@@ -3103,8 +3069,8 @@ hiddenDropListNames_fn = function() {
   this.settingsNameTop.classList.remove("active");
   this.settingsNameDrop.classList.add("hidden");
 };
-_createHTML6 = new WeakSet();
-createHTML_fn6 = function() {
+_createHTML7 = new WeakSet();
+createHTML_fn7 = function() {
   this.settings = new CreateElement({ classes: ["game__settings"] });
   this.settingsContainer = new CreateElement({ classes: ["game__settings-container"] });
   this.settingsSizeBox = new CreateElement({ classes: ["size"] });
@@ -3132,6 +3098,64 @@ createHTML_fn6 = function() {
   this.settingsContainer.append(this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn, this.settingsSizeBox, this.settingsNameBox);
   this.settings.append(this.settingsContainer);
   this.gameField.gameFieldContainer.append(this.settings);
+  this.settingsSizeTop.addEventListener("mouseover", () => {
+    if (!this.isLockListSizes) {
+      __privateMethod(this, _showSizesDropList, showSizesDropList_fn).call(this);
+    }
+  });
+  this.settingsSizeBox.addEventListener("mouseleave", () => {
+    if (!this.isLockListSizes) {
+      __privateMethod(this, _hiddenSizesDropList, hiddenSizesDropList_fn).call(this);
+    }
+  });
+  this.settingsSizeTop.addEventListener("click", () => {
+    this.isLockListSizes = !this.isLockListSizes;
+  });
+  this.settingsNameTop.addEventListener("mouseover", () => {
+    if (!this.isLockListNames) {
+      __privateMethod(this, _showDropListNames, showDropListNames_fn).call(this);
+    }
+  });
+  this.settingsNameBox.addEventListener("mouseleave", () => {
+    if (!this.isLockListNames) {
+      __privateMethod(this, _hiddenDropListNames, hiddenDropListNames_fn).call(this);
+    }
+  });
+  this.settingsNameTop.addEventListener("click", () => {
+    this.isLockListNames = !this.isLockListNames;
+  });
+  this.startGameBtn.addEventListener("click", () => {
+    __privateMethod(this, _startGameHandler, startGameHandler_fn).apply(this);
+    this.resetGameBtn.disabled = false;
+    this.saveGameBtn.disabled = false;
+    this.continueGameBtn.disabled = false;
+  });
+  this.showSolutionBtn.addEventListener("click", () => {
+    if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
+      __privateMethod(this, _showSolutionHandler, showSolutionHandler_fn).apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
+      this.gameField.lockPlayground();
+    }
+    this.showSolutionBtn.disabled = true;
+    this.saveGameBtn.disabled = true;
+    this.resetGameBtn.disabled = true;
+    this.continueGameBtn.disabled = true;
+  });
+  this.resetGameBtn.addEventListener("click", __privateMethod(this, _resetGameHandler, resetGameHandler_fn).bind(this));
+  this.saveGameBtn.addEventListener("click", __privateMethod(this, _saveGameHandler, saveGameHandler_fn).bind(this));
+  this.continueGameBtn.addEventListener("click", () => {
+    this.showSolutionBtn.disabled = false;
+    this.resetGameBtn.disabled = false;
+    this.saveGameBtn.disabled = false;
+    const LS = JSON.parse(localStorage.getItem("kleostro"));
+    if (LS["current-game"]) {
+      __privateMethod(this, _continueGameHandler, continueGameHandler_fn).apply(this);
+    } else {
+      this.continueGameBtn.disabled = true;
+    }
+    const { formattedMin, formattedSec } = this.timer.formattedTime();
+    this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
+  });
+  this.randomGameBtn.addEventListener("click", __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this));
 };
 const timerView = "";
 const TIMER_INTERVAL = 1e3;
@@ -3142,11 +3166,11 @@ class TimerView {
     /**
     * create HTML timer
     */
-    __privateAdd(this, _createHTML7);
+    __privateAdd(this, _createHTML8);
     this.intervalID = null;
     this.currentTime = 0;
     this.isStart = false;
-    __privateMethod(this, _createHTML7, createHTML_fn7).call(this);
+    __privateMethod(this, _createHTML8, createHTML_fn8).call(this);
   }
   /**
   * get HTML timer
@@ -3191,8 +3215,8 @@ class TimerView {
     return { formattedMin, formattedSec };
   }
 }
-_createHTML7 = new WeakSet();
-createHTML_fn7 = function() {
+_createHTML8 = new WeakSet();
+createHTML_fn8 = function() {
   this.timer = new CreateElement({ tag: "span", classes: ["timer"], textContent: "00:00" });
 };
 const winnersView = "";
@@ -3201,8 +3225,8 @@ const MAX_SEC_IN_MIN = 60;
 const MAX_WINNERS = 5;
 class WinnersView {
   constructor() {
-    __privateAdd(this, _createHTML8);
-    __privateMethod(this, _createHTML8, createHTML_fn8).call(this);
+    __privateAdd(this, _createHTML9);
+    __privateMethod(this, _createHTML9, createHTML_fn9).call(this);
     const LS = JSON.parse(localStorage.getItem("kleostro"));
     if (!(LS == null ? void 0 : LS.winners)) {
       LS.winners = [];
@@ -3267,8 +3291,8 @@ class WinnersView {
     });
   }
 }
-_createHTML8 = new WeakSet();
-createHTML_fn8 = function() {
+_createHTML9 = new WeakSet();
+createHTML_fn9 = function() {
   this.winnersBox = new CreateElement({ classes: ["winners-modal"] });
   this.overlay = new CreateElement({ classes: ["winners-modal__overlay"] });
   this.content = new CreateElement({ classes: ["winners-modal__content"] });
@@ -3285,8 +3309,8 @@ class MainView {
     /**
     * create HTML main
     */
-    __privateAdd(this, _createHTML9);
-    __privateMethod(this, _createHTML9, createHTML_fn9).call(this);
+    __privateAdd(this, _createHTML10);
+    __privateMethod(this, _createHTML10, createHTML_fn10).call(this);
   }
   /**
   * get HTML main
@@ -3296,15 +3320,16 @@ class MainView {
     return this.main;
   }
 }
-_createHTML9 = new WeakSet();
-createHTML_fn9 = function() {
+_createHTML10 = new WeakSet();
+createHTML_fn10 = function() {
   this.main = new CreateElement({ tag: "main", classes: ["main"] });
-  this.modal = new ModalView();
+  this.audio = new Audio();
+  this.modal = new ModalView(this.audio);
   this.timer = new TimerView();
   this.winners = new WinnersView();
   this.gameField = new GameFieldView(this.modal, this.timer, this.winners);
   this.settingsBox = new SettingsGameView(this.gameField, this.timer);
-  this.main.append(this.gameField.getHTML(), this.modal.getHTML(), this.winners.getHTML());
+  this.main.append(this.gameField.getHTML(), this.modal.getHTML(), this.winners.getHTML(), this.audio.getHTML());
 };
 class App {
   constructor() {
@@ -3321,4 +3346,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-b739da07.js.map
+//# sourceMappingURL=main-d5a1f32f.js.map
