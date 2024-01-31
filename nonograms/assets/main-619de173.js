@@ -159,6 +159,7 @@ class Audio {
   constructor() {
     __privateAdd(this, _createHTML3);
     __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
+    this.winSound.play();
   }
   getHTML() {
     return this.soundBox;
@@ -167,7 +168,7 @@ class Audio {
 _createHTML3 = new WeakSet();
 createHTML_fn3 = function() {
   this.soundBox = new CreateElement({ classes: ["sound-box"] });
-  this.winSound = new CreateElement({ tag: "audio", classes: ["win-sound"], attrs: { src: `.${winSound}` } });
+  this.winSound = new CreateElement({ tag: "audio", classes: ["win-sound"], attrs: { src: winSound } });
   this.soundBox.append(this.winSound);
 };
 const cellView = "";
@@ -3346,4 +3347,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-d5a1f32f.js.map
+//# sourceMappingURL=main-619de173.js.map
