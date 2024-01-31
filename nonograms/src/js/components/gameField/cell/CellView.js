@@ -7,7 +7,8 @@ import './cellView.scss';
 * @param {string} state - Cell state (default is 'empty')
 */
 class CellView {
-  constructor(cellValue, state = 'empty') {
+  constructor(cellValue, audio, state = 'empty') {
+    this.audio = audio;
     this.cellValue = cellValue;
     this.state = state;
 
@@ -62,6 +63,7 @@ class CellView {
    * @param {event} event - event
    */
   #setField(event) {
+    this.audio.playField();
     this.state = 'field';
     event.target.classList.add('field');
   }
@@ -80,6 +82,7 @@ class CellView {
    * @param {event} event - event
    */
   #setCrossed(event) {
+    this.audio.playCrossed();
     this.state = 'crossed';
     event.target.classList.remove('field');
     event.target.classList.add('crossed');
@@ -102,6 +105,7 @@ class CellView {
    * @param {event} event - event
    */
   #setEmpty(event) {
+    this.audio.playEmpty();
     this.state = 'empty';
     event.target.classList.remove('field', 'crossed');
   }

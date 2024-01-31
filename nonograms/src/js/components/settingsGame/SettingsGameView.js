@@ -11,9 +11,10 @@ const MAX_LETTERS_IN_SUBTITLE = 10;
 * @param {object} timer - timer class instance
 */
 class SettingsGameView {
-  constructor(gameField, timer) {
+  constructor(gameField, timer, audio) {
     this.gameField = gameField;
     this.timer = timer;
+    this.audio = audio;
 
     this.sizeBtnsArr = [];
     this.nameBtnsArr = [];
@@ -47,6 +48,7 @@ class SettingsGameView {
    * start current game
    */
   #startGameHandler() {
+    this.audio.playSettingsGameClick();
     this.newOriginalData = this.#updateCurrentMatrix();
     this.gameField.startGame(this.newOriginalData);
     this.showSolutionBtn.disabled = false;
@@ -59,12 +61,12 @@ class SettingsGameView {
    * @param {Element[][]} cellElements - matrix for the current cell elements
    */
   #showSolutionHandler(matrix, cellElements) {
+    this.audio.playSettingsGameClick();
     matrix.forEach((row, rowIndex) => {
       row.forEach((_, columnIndex) => {
-        cellElements[rowIndex][columnIndex].cell.classList.remove('field');
+        cellElements[rowIndex][columnIndex].cell.classList.remove('field', 'crossed');
         if (cellElements[rowIndex][columnIndex].cellValue === 1 && !this.isShowSolution) {
           cellElements[rowIndex][columnIndex].cell.classList.add('field');
-          cellElements[rowIndex][columnIndex].cell.classList.remove('crossed');
         }
       })
     })
@@ -74,6 +76,7 @@ class SettingsGameView {
    * clears the current gameField
    */
   #resetGameHandler() {
+    this.audio.playSettingsGameClick();
     this.gameField.cellElements.forEach((row) => {
       row.forEach((cell) => {
         cell.cell.classList.remove('field', 'crossed');
@@ -86,6 +89,7 @@ class SettingsGameView {
    * save state the current game
    */
   #saveGameHandler() {
+    this.audio.playSettingsGameClick();
     const LS = JSON.parse(localStorage.kleostro);
     LS['current-game'] = JSON.stringify(this.gameField);
     LS['left-hints'] = this.gameField.leftHintsBox.innerHTML;
@@ -114,6 +118,7 @@ class SettingsGameView {
    * runs the last saved game
    */
   #continueGameHandler() {
+    this.audio.playSettingsGameClick();
     if (!this.gameField.isLockPlayground) {
       this.gameField.lockPlayground();
     }
@@ -193,6 +198,7 @@ class SettingsGameView {
    * runs the random game
    */
   #randomGameHandler() {
+    this.audio.playSettingsGameClick();
     const { matrix, title, size } = this.#getRandomGame();
     this.settingsSizeSubtitle.textContent = size;
 
@@ -261,6 +267,7 @@ class SettingsGameView {
   }
 
   #updateBtnsSizeContent(target) {
+    this.audio.playSettingsGameClick();
     this.startGameBtn.disabled = false;
     this.#undisabledBtns(this.sizeBtnsArr);
     target.disabled = true;
@@ -271,6 +278,7 @@ class SettingsGameView {
   }
 
   #updateBtnsNameContent(target) {
+    this.audio.playSettingsGameClick();
     this.startGameBtn.disabled = false;
     this.#undisabledBtns(this.nameBtnsArr);
     target.disabled = true;
@@ -434,6 +442,7 @@ class SettingsGameView {
     });
 
     this.settingsSizeTop.addEventListener('click', () => {
+      this.audio.playSettingsGameClick();
       this.isLockListSizes = !this.isLockListSizes;
     });
 
@@ -450,6 +459,7 @@ class SettingsGameView {
     });
 
     this.settingsNameTop.addEventListener('click', () => {
+      this.audio.playSettingsGameClick();
       this.isLockListNames = !this.isLockListNames;
     });
 

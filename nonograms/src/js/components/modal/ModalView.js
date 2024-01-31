@@ -36,6 +36,7 @@ class ModalView {
     this.message = message;
     this.name = name;
     this.time = time;
+
     const { formattedMin, formattedSec } = this.time;
 
     this.title.innerHTML = `${this.message}<span class="modal__title--accent">${this.name}</span>`;

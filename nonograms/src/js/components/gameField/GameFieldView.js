@@ -14,10 +14,11 @@ const MESSAGE = 'Great! You have solved the nonogram: ';
  * @param {object} winners - winners class instance
  */
 class GameFieldView {
-  constructor(modal, timer, winners) {
+  constructor(modal, timer, winners, audio) {
     this.modal = modal;
     this.timer = timer;
     this.winners = winners;
+    this.audio = audio;
 
     this.currentNonogramObj = data[0];
     this.originalMatrix = this.currentNonogramObj.matrix;
@@ -169,7 +170,7 @@ class GameFieldView {
       const rowElem = new CreateElement({ classes: ['playground__row'], attrs: { 'data-row': row } });
       this.cellElements[row] = [];
       for (let column = 0; column < matrix[0].length; column += 1) {
-        const cell = new CellView(matrix[row][column]);
+        const cell = new CellView(matrix[row][column], this.audio);
         const cellElem = cell.getHTML();
         cellElem.setAttribute('data-cell', column);
         rowElem.append(cellElem);
@@ -267,6 +268,7 @@ class GameFieldView {
       this.lockPlayground();
       this.isEndGame = true;
       this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
+      this.audio.playModal();
     }
   }
 
