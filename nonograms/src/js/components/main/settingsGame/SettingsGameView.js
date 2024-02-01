@@ -1,6 +1,6 @@
-import CreateElement from '../../CreateElement';
+import CreateElement from '../../../CreateElement';
 import './settingsGameView.scss';
-import data from '../../../data/nonograms.json';
+import data from '../../../../data/nonograms.json';
 import CellView from '../gameField/cell/CellView';
 
 const MAX_LETTERS_IN_SUBTITLE = 10;
@@ -53,6 +53,24 @@ class SettingsGameView {
     this.gameField.startGame(this.newOriginalData);
     this.showSolutionBtn.disabled = false;
     this.isShowSolution = false;
+    this.settingsSizeSubtitle.textContent = this.newOriginalData.size;
+    this.#undisabledBtns(this.sizeBtnsArr);
+    this.sizeBtnsArr.forEach((btn) => {
+      const currentBtn = btn;
+      if (this.settingsSizeSubtitle.textContent === btn.textContent) {
+        currentBtn.disabled = true;
+      }
+    });
+
+    this.#updateListNames();
+    this.settingsNameSubtitle.textContent = this.newOriginalData.title;
+    this.#undisabledBtns(this.nameBtnsArr);
+    this.nameBtnsArr.forEach((btn) => {
+      const currentBtn = btn;
+      if (this.settingsNameSubtitle.textContent === btn.textContent) {
+        currentBtn.disabled = true;
+      }
+    });
   }
 
   /**
@@ -68,8 +86,8 @@ class SettingsGameView {
         if (cellElements[rowIndex][columnIndex].cellValue === 1 && !this.isShowSolution) {
           cellElements[rowIndex][columnIndex].cell.classList.add('field');
         }
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -79,10 +97,11 @@ class SettingsGameView {
     this.audio.playSettingsGameClick();
     this.gameField.cellElements.forEach((row) => {
       row.forEach((cell) => {
-        cell.cell.classList.remove('field', 'crossed');
-        cell.state = 'empty';
-      })
-    })
+        const currentCell = cell;
+        currentCell.cell.classList.remove('field', 'crossed');
+        currentCell.state = 'empty';
+      });
+    });
   }
 
   /**
@@ -109,7 +128,7 @@ class SettingsGameView {
       LS['saved-cells'] = JSON.stringify(savedArr);
 
       this.continueGameBtn.disabled = false;
-    })
+    });
 
     localStorage.kleostro = JSON.stringify(LS);
   }
@@ -125,9 +144,8 @@ class SettingsGameView {
     this.gameField.isEndGame = false;
 
     const LS = JSON.parse(localStorage.kleostro);
-    const savedCells = JSON.parse(LS['saved-cells'])
-    this.#createCellsToLS(savedCells)
-
+    const savedCells = JSON.parse(LS['saved-cells']);
+    this.#createCellsToLS(savedCells);
 
     this.gameField.leftHintsBox.innerHTML = LS['left-hints'];
     this.gameField.topHintsBox.innerHTML = LS['top-hints'];
@@ -136,15 +154,14 @@ class SettingsGameView {
     this.gameField.originalTitle = JSON.parse(LS['current-game']).originalTitle;
     this.gameField.originalSize = JSON.parse(LS['current-game']).originalSize;
 
-    this.startGameBtn.disabled = true;
-
     this.#updateSizeGameField();
 
     this.settingsSizeSubtitle.textContent = JSON.parse(LS['current-game']).originalSize;
     this.#undisabledBtns(this.sizeBtnsArr);
     this.sizeBtnsArr.forEach((btn) => {
+      const currentBtn = btn;
       if (this.settingsSizeSubtitle.textContent === btn.textContent) {
-        btn.disabled = true;
+        currentBtn.disabled = true;
       }
     });
 
@@ -152,8 +169,9 @@ class SettingsGameView {
     this.settingsNameSubtitle.textContent = JSON.parse(LS['current-game']).originalTitle;
     this.#undisabledBtns(this.nameBtnsArr);
     this.nameBtnsArr.forEach((btn) => {
+      const currentBtn = btn;
       if (this.settingsNameSubtitle.textContent === btn.textContent) {
-        btn.disabled = true;
+        currentBtn.disabled = true;
       }
     });
     this.timer.stopTimer();
@@ -171,7 +189,6 @@ class SettingsGameView {
       this.gameField.playground.innerHTML = '';
 
       for (let row = 0; row < savedCells.length; row += 1) {
-
         const rowElem = new CreateElement({ classes: ['playground__row'], attrs: { 'data-row': row } });
         this.gameField.cellElements[row] = [];
         this.gameField.cellValues[row] = [];
@@ -179,7 +196,7 @@ class SettingsGameView {
         for (let column = 0; column < savedCells[0].length; column += 1) {
           const cellParse = JSON.parse(savedCells[row][column]);
 
-          const cell = new CellView(cellParse.cellValue, cellParse.state);
+          const cell = new CellView(cellParse.cellValue, this.audio, cellParse.state);
 
           const cellElem = cell.getHTML();
           cellElem.setAttribute('data-cell', column);
@@ -204,20 +221,20 @@ class SettingsGameView {
 
     this.#undisabledBtns(this.sizeBtnsArr);
     this.sizeBtnsArr.forEach((btn) => {
-
+      const currentBtn = btn;
       if (this.settingsSizeSubtitle.textContent === btn.textContent) {
-        btn.disabled = true;
+        currentBtn.disabled = true;
       }
-
     });
+
     this.#updateListNames();
 
     this.#undisabledBtns(this.nameBtnsArr);
     this.settingsNameSubtitle.textContent = title;
     this.nameBtnsArr.forEach((btn) => {
-
+      const currentBtn = btn;
       if (this.settingsNameSubtitle.textContent === btn.textContent) {
-        btn.disabled = true;
+        currentBtn.disabled = true;
       }
     });
 
@@ -234,8 +251,8 @@ class SettingsGameView {
    * @returns {object} - random game data
    */
   #getRandomGame() {
-    const randomIndex = Math.floor(Math.random() * data.length);
-    return data[randomIndex];
+    this.randomIndex = Math.floor(Math.random() * data.length);
+    return data[this.randomIndex];
   }
 
   /**
@@ -243,7 +260,10 @@ class SettingsGameView {
    * @param {object} - object btns
    */
   #undisabledBtns(btnsArr) {
-    btnsArr.forEach((btn) => btn.disabled = false)
+    btnsArr.forEach((btn) => {
+      this.currentBtn = btn;
+      this.currentBtn.disabled = false;
+    });
   }
 
   #updateSizeGameField() {
@@ -267,10 +287,12 @@ class SettingsGameView {
   }
 
   #updateBtnsSizeContent(target) {
+    const currentBtn = target;
+
     this.audio.playSettingsGameClick();
     this.startGameBtn.disabled = false;
     this.#undisabledBtns(this.sizeBtnsArr);
-    target.disabled = true;
+    currentBtn.disabled = true;
     this.settingsSizeSubtitle.textContent = target.textContent;
     this.#updateListNames();
     this.currentName = this.settingsNameSubtitle.textContent;
@@ -278,10 +300,12 @@ class SettingsGameView {
   }
 
   #updateBtnsNameContent(target) {
+    const currentBtn = target;
+
     this.audio.playSettingsGameClick();
     this.startGameBtn.disabled = false;
     this.#undisabledBtns(this.nameBtnsArr);
-    target.disabled = true;
+    currentBtn.disabled = true;
     this.currentName = target.textContent;
 
     if (target.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
@@ -297,7 +321,7 @@ class SettingsGameView {
    * @returns {object} - current matrix
    */
   #updateCurrentMatrix() {
-    return data.find((item) => item.title === this.currentName)
+    return data.find((item) => item.title === this.currentName);
   }
 
   /**
@@ -315,7 +339,7 @@ class SettingsGameView {
       }
 
       this.nameBtnsArr[index].textContent = item.title;
-    })
+    });
   }
 
   /**
@@ -325,13 +349,13 @@ class SettingsGameView {
     const uniqueDataObj = new Set();
     data.forEach((item) => {
       uniqueDataObj.add(item.size);
-    })
+    });
 
     const uniqueDataArr = Array.from(uniqueDataObj);
 
     const dropList = new CreateElement({ tag: 'ul', classes: ['size__drop', 'list-reset', 'hidden'] });
     uniqueDataArr.forEach((item, index) => {
-      const listItem = new CreateElement({ tag: 'li', classes: ['size__drop-item'] });;
+      const listItem = new CreateElement({ tag: 'li', classes: ['size__drop-item'] });
       const btn = new CreateElement({ tag: 'button', classes: ['size__drop-btn', 'btn-reset'], textContent: item });
 
       if (index === 0) {
@@ -341,8 +365,10 @@ class SettingsGameView {
       this.sizeBtnsArr.push(btn);
       listItem.append(btn);
       dropList.append(listItem);
-    })
-    this.settingsSizeSubtitle.textContent = uniqueDataArr[0];
+    });
+
+    const [firstElement] = uniqueDataArr;
+    this.settingsSizeSubtitle.textContent = firstElement;
     return dropList;
   }
 
@@ -354,7 +380,7 @@ class SettingsGameView {
 
     const dropList = new CreateElement({ tag: 'ul', classes: ['name__drop', 'list-reset', 'hidden'] });
     filteredData.forEach((item, index) => {
-      const listItem = new CreateElement({ tag: 'li', classes: ['name__drop-item'] });;
+      const listItem = new CreateElement({ tag: 'li', classes: ['name__drop-item'] });
       const btn = new CreateElement({ tag: 'button', classes: ['name__drop-btn', 'btn-reset'], textContent: item.title });
 
       if (index === 0) {
@@ -366,29 +392,31 @@ class SettingsGameView {
       listItem.append(btn);
       dropList.append(listItem);
     });
-    this.settingsNameSubtitle.textContent = filteredData[0].title;
+
+    const [firstElement] = filteredData;
+    this.settingsNameSubtitle.textContent = firstElement.title;
     return dropList;
   }
 
   #showSizesDropList() {
     this.settingsSizeTop.classList.add('active');
     this.settingsSizeDrop.classList.remove('hidden');
-  };
+  }
 
   #hiddenSizesDropList() {
     this.settingsSizeTop.classList.remove('active');
     this.settingsSizeDrop.classList.add('hidden');
-  };
+  }
 
   #showDropListNames() {
     this.settingsNameTop.classList.add('active');
     this.settingsNameDrop.classList.remove('hidden');
-  };
+  }
 
   #hiddenDropListNames() {
     this.settingsNameTop.classList.remove('active');
     this.settingsNameDrop.classList.add('hidden');
-  };
+  }
 
   /**
   * create HTML settings game
@@ -396,80 +424,65 @@ class SettingsGameView {
   #createHTML() {
     this.settings = new CreateElement({ classes: ['game__settings'] });
     this.settingsContainer = new CreateElement({ classes: ['game__settings-container'] });
-
     this.settingsSizeBox = new CreateElement({ classes: ['size'] });
     this.settingsSizeTop = new CreateElement({ classes: ['size__top'] });
     this.settingsSizeTitle = new CreateElement({ tag: 'h3', classes: ['size__title'], textContent: 'Size: ' });
     this.settingsSizeSubtitle = new CreateElement({ tag: 'span', classes: ['size__subtitle'] });
     this.settingsSizeDrop = this.#createDropListSizes();
-
     this.settingsNameBox = new CreateElement({ classes: ['name'] });
     this.settingsNameTop = new CreateElement({ classes: ['name__top'] });
     this.settingsNameTitle = new CreateElement({ tag: 'h3', classes: ['name__title'], textContent: 'Selected: ' });
     this.settingsNameSubtitle = new CreateElement({ tag: 'span', classes: ['name__subtitle'] });
     this.settingsNameDrop = this.#createDropListNames();
-
     this.startGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'start-game'], textContent: 'Play' });
     this.showSolutionBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'show-solution'], textContent: 'Show Solution' });
     this.resetGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'reset-game'], textContent: 'Reset' });
     this.saveGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'save-game'], textContent: 'Save game' });
     this.continueGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'continue-game'], textContent: 'Continue last game' });
     this.randomGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'random-game'], textContent: 'Random game' });
-
-
     this.settingsSizeTitle.append(this.settingsSizeSubtitle);
     this.settingsSizeTop.append(this.settingsSizeTitle);
     this.settingsSizeBox.append(this.settingsSizeTop, this.settingsSizeDrop);
-
     this.settingsNameTitle.append(this.settingsNameSubtitle);
     this.settingsNameTop.append(this.settingsNameTitle);
     this.settingsNameBox.append(this.settingsNameTop, this.settingsNameDrop);
-
     this.settingsContainer.append(this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn, this.settingsSizeBox, this.settingsNameBox);
     this.settings.append(this.settingsContainer);
     this.gameField.gameFieldContainer.append(this.settings);
-
     this.settingsSizeTop.addEventListener('mouseover', () => {
       if (!this.isLockListSizes) {
         this.#showSizesDropList();
       }
     });
-
     this.settingsSizeBox.addEventListener('mouseleave', () => {
       if (!this.isLockListSizes) {
         this.#hiddenSizesDropList();
       }
     });
-
     this.settingsSizeTop.addEventListener('click', () => {
       this.audio.playSettingsGameClick();
       this.isLockListSizes = !this.isLockListSizes;
     });
-
     this.settingsNameTop.addEventListener('mouseover', () => {
       if (!this.isLockListNames) {
         this.#showDropListNames();
       }
     });
-
     this.settingsNameBox.addEventListener('mouseleave', () => {
       if (!this.isLockListNames) {
         this.#hiddenDropListNames();
       }
     });
-
     this.settingsNameTop.addEventListener('click', () => {
       this.audio.playSettingsGameClick();
       this.isLockListNames = !this.isLockListNames;
     });
-
     this.startGameBtn.addEventListener('click', () => {
       this.#startGameHandler.apply(this);
       this.resetGameBtn.disabled = false;
       this.saveGameBtn.disabled = false;
       this.continueGameBtn.disabled = false;
     });
-
     this.showSolutionBtn.addEventListener('click', () => {
       if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
         this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
@@ -480,27 +493,21 @@ class SettingsGameView {
       this.resetGameBtn.disabled = true;
       this.continueGameBtn.disabled = true;
     });
-
     this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
     this.saveGameBtn.addEventListener('click', this.#saveGameHandler.bind(this));
-
     this.continueGameBtn.addEventListener('click', () => {
       this.showSolutionBtn.disabled = false;
       this.resetGameBtn.disabled = false;
       this.saveGameBtn.disabled = false;
-
       const LS = JSON.parse(localStorage.getItem('kleostro'));
-
       if (LS['current-game']) {
         this.#continueGameHandler.apply(this);
       } else {
         this.continueGameBtn.disabled = true;
       }
-
       const { formattedMin, formattedSec } = this.timer.formattedTime();
       this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
-
     this.randomGameBtn.addEventListener('click', this.#randomGameHandler.bind(this));
   }
 }

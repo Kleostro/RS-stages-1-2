@@ -1,4 +1,4 @@
-import CreateElement from '../../CreateElement';
+import CreateElement from '../../../CreateElement';
 import './timerView.scss';
 
 const TIMER_INTERVAL = 1000;
@@ -28,13 +28,13 @@ class TimerView {
   */
   startTimer() {
     this.isStart = true;
-    return this.intervalID = setInterval(() => {
+    this.intervalID = setInterval(() => {
       this.currentTime += 1;
-
       const { formattedMin, formattedSec } = this.formattedTime();
-
       this.timer.textContent = `${formattedMin}:${formattedSec}`;
     }, TIMER_INTERVAL);
+
+    return this.intervalID;
   }
 
   /**

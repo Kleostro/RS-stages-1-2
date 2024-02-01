@@ -2,6 +2,23 @@
   display: flex;
   gap: var(--small-offset);
 
+  &-sounds-bg-box,
+  &-sounds-box {
+    display: flex;
+    align-items: center;
+    gap: var(--little-offset);
+  }
+
+  &-sounds-bg-text,
+  &-sounds-text {
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--settings-sounds-color);
+    transition: color 0.2s ease-in;
+  }
+
+  &-sounds-bg-settings-btn,
+  &-sounds-settings-btn,
   &-winners-btn,
   &-theme-btn {
     display: flex;

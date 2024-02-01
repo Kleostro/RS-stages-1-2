@@ -1,4 +1,4 @@
-import CreateElement from '../../../CreateElement';
+import CreateElement from '../../../../CreateElement';
 import './cellView.scss';
 
 /** Create a cell
@@ -86,9 +86,7 @@ class CellView {
     this.state = 'crossed';
     event.target.classList.remove('field');
     event.target.classList.add('crossed');
-
   }
-
 
   /**
    * sets the crossed class to a cell

@@ -1,4 +1,4 @@
-import CreateElement from '../../CreateElement';
+import CreateElement from '../../../CreateElement';
 import './modalView.scss';
 
 class ModalView {
@@ -7,7 +7,7 @@ class ModalView {
     this.name = null;
     this.time = null;
 
-    this.#createHTML()
+    this.#createHTML();
 
     this.closeBtn.addEventListener('click', () => this.show(this.message, this.name, this.time));
 

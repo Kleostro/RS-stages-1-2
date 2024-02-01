@@ -1,6 +1,6 @@
-@import "../../../scss/breakpoints";
+@import "../../../../scss/breakpoints";
 
-.modal {
+.winners-modal {
   position: absolute;
   z-index: 5;
   opacity: 0;
@@ -26,7 +26,7 @@
     &.hidden {
       opacity: 1;
       visibility: visible;
-      transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
   }
 
@@ -47,13 +47,13 @@
     transform: scale(0);
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
     cursor: auto;
-    gap: var(--little-offset);
+    gap: var(--small-offset);
 
     &.hidden {
       opacity: 1;
       visibility: visible;
       transform: none;
-      transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s, transform 0.3s ease-in-out 0.5s;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
     }
   }
 
@@ -87,16 +87,7 @@
     }
   }
 
-  &.hidden {
-    position: relative;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease-in-out 0.5s, visibility 0.3s ease-in-out 0.5s;
-  }
-
-  &__title,
-  &__subtitle {
-    max-width: 80%;
+  &__title {
     font-size: 20px;
     letter-spacing: 1px;
     text-align: center;
@@ -105,5 +96,54 @@
     &--accent {
       color: var(--modal-title-color--accent);
     }
+  }
+
+  &__list {
+    display: grid;
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+    color: var(--modal-winners-color--item);
+
+    &-header {
+      grid-column: auto;
+      grid-row: 1;
+      margin-bottom: var(--small-offset);
+      border-bottom: 1px solid;
+      font-weight: 600;
+      text-align: center;
+      color: var(--modal-winners-color--accent);
+    }
+
+    &-item {
+      display: flex;
+      justify-content: space-around;
+      grid-column: 4 span;
+      border-top: 1px solid;
+      border-bottom: 1px solid;
+      padding: var(--little-offset);
+      width: 100%;
+      font-weight: 300;
+      font-size: 16px;
+      color: var(--modal-winners-color--item);
+
+      &:not(:last-child) {
+        margin-bottom: var(--small-offset);
+      }
+    }
+
+    &-title {
+      overflow: hidden;
+      max-width: 84px;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+    }
+  }
+
+  &.hidden {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
   }
 }

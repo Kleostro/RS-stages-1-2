@@ -12,7 +12,7 @@ module.exports = {
     SharedArrayBuffer: 'readonly',
   },
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 13,
   },
   rules: {
     'max-lines-per-function': ['error', { max: 40, skipBlankLines: true }],

@@ -1,11 +1,12 @@
-import CreateElement from '../../CreateElement';
+import CreateElement from '../../../CreateElement';
 import CellView from './cell/CellView';
 import './gameFieldView.scss';
-import data from '../../../data/nonograms.json';
+import data from '../../../../data/nonograms.json';
 
 const DIRECTIONS = ['left', 'top'];
 
 const MESSAGE = 'Great! You have solved the nonogram: ';
+const [firstGame] = data;
 
 /**
  * @class
@@ -20,7 +21,7 @@ class GameFieldView {
     this.winners = winners;
     this.audio = audio;
 
-    this.currentNonogramObj = data[0];
+    this.currentNonogramObj = firstGame;
     this.originalMatrix = this.currentNonogramObj.matrix;
     this.originalTitle = this.currentNonogramObj.title;
     this.originalSize = this.currentNonogramObj.size;
@@ -36,26 +37,30 @@ class GameFieldView {
     this.startGame(this.currentNonogramObj);
 
     this.playground.addEventListener('click', () => {
-
       if (!this.timer.isStart) {
         this.timer.startTimer();
       }
-      this.#cellHasClicked();
-      console.log(this.cellValues, this.originalMatrix)
 
-      this.#isWin(this.cellValues, this.originalMatrix)
+      this.#cellHasClicked();
+      this.#isWin(this.cellValues, this.originalMatrix);
+    });
+
+    this.playground.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      if (!this.timer.isStart) {
+        this.timer.startTimer();
+      }
     });
 
     this.playground.addEventListener('mousemove', ({ target }) => {
       if (target !== this.playground) {
         this.#highlightCurrentColumnAndRow(target);
       }
-    })
+    });
 
     this.playground.addEventListener('mouseleave', () => {
       this.#removeHighlightCells();
     });
-
   }
 
   /**
@@ -75,9 +80,9 @@ class GameFieldView {
         const currentRow = cell.cell.parentNode;
         currentRow.classList.remove('highlight');
         cell.cell.classList.remove('highlight');
-      })
-    })
-  };
+      });
+    });
+  }
 
   /**
   * adds cell and row highlighting
@@ -88,18 +93,16 @@ class GameFieldView {
 
     this.cellElements.forEach((row) => {
       row.forEach((cell) => {
-
         if (cell === target) {
           currentTarget = cell;
         }
-
-      })
-    })
+      });
+    });
 
     this.#removeHighlightCells();
 
-    let rowIndex = Number(currentTarget.parentNode.getAttribute('data-row'));
-    let cellIndex = Number(currentTarget.getAttribute('data-cell'));
+    const rowIndex = Number(currentTarget.parentNode.getAttribute('data-row'));
+    const cellIndex = Number(currentTarget.getAttribute('data-cell'));
 
     this.cellElements.forEach((row) => {
       row.forEach((cell) => {
@@ -112,10 +115,9 @@ class GameFieldView {
         if (cellIndex === Number(cell.cell.getAttribute('data-cell'))) {
           cell.cell.classList.add('highlight');
         }
-
-      })
-    })
-  };
+      });
+    });
+  }
 
   /**
    * create hints
@@ -156,7 +158,7 @@ class GameFieldView {
           hintRow.append(hintCell);
         });
       }
-    })
+    });
   }
 
   /**
@@ -164,11 +166,12 @@ class GameFieldView {
    * @param {number[][]} matrix - matrix for the current game
    */
   createCells(matrix) {
-    console.log(matrix)
     this.playground.innerHTML = '';
+
     for (let row = 0; row < matrix.length; row += 1) {
       const rowElem = new CreateElement({ classes: ['playground__row'], attrs: { 'data-row': row } });
       this.cellElements[row] = [];
+
       for (let column = 0; column < matrix[0].length; column += 1) {
         const cell = new CellView(matrix[row][column], this.audio);
         const cellElem = cell.getHTML();
@@ -206,6 +209,7 @@ class GameFieldView {
         this.gameField.classList.add('large');
         break;
       }
+      default: break;
     }
 
     this.cellElements.length = 0;
@@ -241,17 +245,13 @@ class GameFieldView {
   */
   #cellHasClicked() {
     this.cellElements.forEach((row, rowIndex) => {
-
       this.cellValues[rowIndex] = [];
-
       row.forEach((cell, cellIndex) => {
-
         if (cell.state === 'field') {
           this.cellValues[rowIndex][cellIndex] = 1;
         } else {
           this.cellValues[rowIndex][cellIndex] = 0;
         }
-
       });
     });
   }
@@ -262,7 +262,10 @@ class GameFieldView {
   * @param {number[][]} matrix - two-dimensional array of the original matrix
   */
   #isWin(cellValues, matrix) {
-    if (cellValues.every((_, rowIndex) => cellValues[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
+    if (cellValues
+      .every((_, rowIndex) => cellValues[rowIndex]
+        .every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))
+    ) {
       this.timer.stopTimer();
       this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
       this.lockPlayground();
@@ -283,7 +286,12 @@ class GameFieldView {
     this.leftHintsBox = new CreateElement({ classes: ['left-hints'] });
     this.topHintsBox = new CreateElement({ classes: ['top-hints'] });
 
-    this.gameField.append(this.playground, this.leftHintsBox, this.topHintsBox, this.timer.getHTML());
+    this.gameField.append(
+      this.playground,
+      this.leftHintsBox,
+      this.topHintsBox,
+      this.timer.getHTML(),
+    );
     this.gameFieldContainer.append(this.gameField);
     this.gameFieldSection.append(this.gameFieldContainer);
   }

@@ -1,4 +1,4 @@
-@import "../../../scss/breakpoints";
+@import "../../../../scss/breakpoints";
 
 .game {
   &__container {
@@ -141,13 +141,4 @@
       border-right: 2px solid var(--hints-border);
     }
   }
-}
-
-.timer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  // padding-right: var(--small-offset);
-  font-size: 20px;
-  color: var(--timer-text);
 }

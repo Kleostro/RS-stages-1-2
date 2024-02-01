@@ -1,4 +1,4 @@
-import CreateElement from '../../CreateElement';
+import CreateElement from '../../../CreateElement';
 import './winnersView.scss';
 
 const MAX_MS_IN_SEC = 60;
@@ -33,8 +33,8 @@ class WinnersView {
     const winner = {
       title: params[0],
       size: params[1],
-      time: params[2]
-    }
+      time: params[2],
+    };
     const LS = JSON.parse(localStorage.getItem('kleostro'));
     if (LS.winners.length >= MAX_WINNERS) {
       LS.winners.shift();
@@ -47,8 +47,8 @@ class WinnersView {
   }
 
   sortWinners() {
-    const LS = JSON.parse(localStorage.getItem('kleostro'));
-    return LS.winners.sort((a, b) => a.time - b.time);
+    this.LS = JSON.parse(localStorage.getItem('kleostro'));
+    return this.LS.winners.sort((a, b) => a.time - b.time);
   }
 
   show() {
@@ -75,9 +75,10 @@ class WinnersView {
     sortedListWinners.forEach((winner, index) => {
       const formattedMin = Math.floor(winner.time / MAX_SEC_IN_MIN).toString().padStart(2, '0');
       const formattedSec = (winner.time % MAX_MS_IN_SEC).toString().padStart(2, '0');
+      const currentIndex = index + 1;
 
       const listItem = new CreateElement({ tag: 'li', classes: ['winners-modal__list-item'] });
-      const winnerIndex = new CreateElement({ tag: 'span', classes: ['winners-modal__list-index'], textContent: index += 1 });
+      const winnerIndex = new CreateElement({ tag: 'span', classes: ['winners-modal__list-index'], textContent: currentIndex });
       const winnerTitle = new CreateElement({ tag: 'span', classes: ['winners-modal__list-title'], textContent: winner.title });
       const winnerSize = new CreateElement({ tag: 'span', classes: ['winners-modal__list-size'], textContent: winner.size });
       const winnerTime = new CreateElement({ tag: 'span', classes: ['winners-modal__list-time'], textContent: `${formattedMin}:${formattedSec}` });
