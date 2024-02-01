@@ -196,7 +196,13 @@ createHTML_fn3 = function() {
   this.emptySound = new CreateElement({ tag: "audio", classes: ["empty-sound"], attrs: { src: emptySound } });
   this.winSound = new CreateElement({ tag: "audio", classes: ["win-sound"], attrs: { src: winSound } });
   this.settingsGameSound = new CreateElement({ tag: "audio", classes: ["empty-sound"], attrs: { src: settingsGameClick } });
-  this.soundBox.append(this.winSound, this.fieldSound, this.crossedSound, this.emptySound, this.settingsGameSound);
+  this.soundBox.append(
+    this.winSound,
+    this.fieldSound,
+    this.crossedSound,
+    this.emptySound,
+    this.settingsGameSound
+  );
 };
 const cellView = "";
 class CellView {
@@ -2500,6 +2506,12 @@ class GameFieldView {
       console.log(this.cellValues, this.originalMatrix);
       __privateMethod(this, _isWin, isWin_fn).call(this, this.cellValues, this.originalMatrix);
     });
+    this.playground.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      if (!this.timer.isStart) {
+        this.timer.startTimer();
+      }
+    });
     this.playground.addEventListener("mousemove", ({ target }) => {
       if (target !== this.playground) {
         __privateMethod(this, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn).call(this, target);
@@ -2872,8 +2884,9 @@ resetGameHandler_fn = function() {
   this.audio.playSettingsGameClick();
   this.gameField.cellElements.forEach((row) => {
     row.forEach((cell) => {
-      cell.cell.classList.remove("field", "crossed");
-      cell.state = "empty";
+      const currentCell = cell;
+      currentCell.cell.classList.remove("field", "crossed");
+      currentCell.state = "empty";
     });
   });
 };
@@ -2918,16 +2931,18 @@ continueGameHandler_fn = function() {
   this.settingsSizeSubtitle.textContent = JSON.parse(LS["current-game"]).originalSize;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   this.sizeBtnsArr.forEach((btn) => {
+    const currentBtn = btn;
     if (this.settingsSizeSubtitle.textContent === btn.textContent) {
-      btn.disabled = true;
+      currentBtn.disabled = true;
     }
   });
   __privateMethod(this, _updateListNames, updateListNames_fn).call(this);
   this.settingsNameSubtitle.textContent = JSON.parse(LS["current-game"]).originalTitle;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
   this.nameBtnsArr.forEach((btn) => {
+    const currentBtn = btn;
     if (this.settingsNameSubtitle.textContent === btn.textContent) {
-      btn.disabled = true;
+      currentBtn.disabled = true;
     }
   });
   this.timer.stopTimer();
@@ -2963,16 +2978,18 @@ randomGameHandler_fn = function() {
   this.settingsSizeSubtitle.textContent = size;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   this.sizeBtnsArr.forEach((btn) => {
+    const currentBtn = btn;
     if (this.settingsSizeSubtitle.textContent === btn.textContent) {
-      btn.disabled = true;
+      currentBtn.disabled = true;
     }
   });
   __privateMethod(this, _updateListNames, updateListNames_fn).call(this);
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
   this.settingsNameSubtitle.textContent = title;
   this.nameBtnsArr.forEach((btn) => {
+    const currentBtn = btn;
     if (this.settingsNameSubtitle.textContent === btn.textContent) {
-      btn.disabled = true;
+      currentBtn.disabled = true;
     }
   });
   this.currentName = title;
@@ -2989,7 +3006,10 @@ getRandomGame_fn = function() {
 };
 _undisabledBtns = new WeakSet();
 undisabledBtns_fn = function(btnsArr) {
-  btnsArr.forEach((btn) => btn.disabled = false);
+  btnsArr.forEach((btn) => {
+    const currentBtn = btn;
+    currentBtn.disabled = false;
+  });
 };
 _updateSizeGameField = new WeakSet();
 updateSizeGameField_fn = function() {
@@ -3013,10 +3033,11 @@ updateSizeGameField_fn = function() {
 };
 _updateBtnsSizeContent = new WeakSet();
 updateBtnsSizeContent_fn = function(target) {
+  const currentBtn = target;
   this.audio.playSettingsGameClick();
   this.startGameBtn.disabled = false;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
-  target.disabled = true;
+  currentBtn.disabled = true;
   this.settingsSizeSubtitle.textContent = target.textContent;
   __privateMethod(this, _updateListNames, updateListNames_fn).call(this);
   this.currentName = this.settingsNameSubtitle.textContent;
@@ -3024,10 +3045,11 @@ updateBtnsSizeContent_fn = function(target) {
 };
 _updateBtnsNameContent = new WeakSet();
 updateBtnsNameContent_fn = function(target) {
+  const currentBtn = target;
   this.audio.playSettingsGameClick();
   this.startGameBtn.disabled = false;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
-  target.disabled = true;
+  currentBtn.disabled = true;
   this.currentName = target.textContent;
   if (target.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
     const formattedSubtitle = target.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
@@ -3070,7 +3092,8 @@ createDropListSizes_fn = function() {
     listItem.append(btn);
     dropList.append(listItem);
   });
-  this.settingsSizeSubtitle.textContent = uniqueDataArr[0];
+  const [firstElement] = uniqueDataArr;
+  this.settingsSizeSubtitle.textContent = firstElement;
   return dropList;
 };
 _createDropListNames = new WeakSet();
@@ -3088,7 +3111,8 @@ createDropListNames_fn = function() {
     listItem.append(btn);
     dropList.append(listItem);
   });
-  this.settingsNameSubtitle.textContent = filteredData[0].title;
+  const [firstElement] = filteredData;
+  this.settingsNameSubtitle.textContent = firstElement.title;
   return dropList;
 };
 _showSizesDropList = new WeakSet();
@@ -3373,7 +3397,12 @@ createHTML_fn10 = function() {
   this.winners = new WinnersView();
   this.gameField = new GameFieldView(this.modal, this.timer, this.winners, this.audio);
   this.settingsBox = new SettingsGameView(this.gameField, this.timer, this.audio);
-  this.main.append(this.gameField.getHTML(), this.modal.getHTML(), this.winners.getHTML(), this.audio.getHTML());
+  this.main.append(
+    this.gameField.getHTML(),
+    this.modal.getHTML(),
+    this.winners.getHTML(),
+    this.audio.getHTML()
+  );
 };
 class App {
   constructor() {
@@ -3390,4 +3419,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-28aabb86.js.map
+//# sourceMappingURL=main-b10ca710.js.map
