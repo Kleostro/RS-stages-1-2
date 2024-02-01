@@ -80,7 +80,8 @@ function CreateElement({
 }
 const headerView = "";
 const settingsAppView = "";
-const APP_THEME_NAMES = ["light", "dark"];
+const APP_THEME_NAMES = ["dark", "light"];
+const [lightTheme, darkTheme] = APP_THEME_NAMES;
 class SettingsAppView {
   constructor(winners) {
     /**
@@ -97,7 +98,7 @@ class SettingsAppView {
     __privateAdd(this, _createHTML);
     this.winners = winners;
     __privateMethod(this, _createHTML, createHTML_fn).call(this);
-    this.theme = APP_THEME_NAMES[0];
+    this.theme = lightTheme;
     this.winnersBtn.addEventListener("click", __privateMethod(this, _winnersClickHandler, winnersClickHandler_fn).bind(this));
     this.themeBtn.addEventListener("click", __privateMethod(this, _toggleThemeHandler, toggleThemeHandler_fn).bind(this));
   }
@@ -115,16 +116,16 @@ winnersClickHandler_fn = function() {
 };
 _toggleThemeHandler = new WeakSet();
 toggleThemeHandler_fn = function() {
-  this.theme = this.theme === APP_THEME_NAMES[0] ? APP_THEME_NAMES[1] : APP_THEME_NAMES[0];
+  this.theme = this.theme === lightTheme ? darkTheme : lightTheme;
   this.themeBtn.textContent = this.theme;
-  document.body.classList.toggle(APP_THEME_NAMES[1]);
-  document.body.classList.toggle(APP_THEME_NAMES[0]);
+  document.body.classList.toggle(darkTheme);
+  document.body.classList.toggle(lightTheme);
 };
 _createHTML = new WeakSet();
 createHTML_fn = function() {
   this.settingsAppBox = new CreateElement({ classes: ["header__settings"] });
   this.winnersBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-winners-btn"], textContent: "Winners" });
-  this.themeBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-theme-btn"], textContent: APP_THEME_NAMES[0] });
+  this.themeBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-theme-btn"], textContent: lightTheme });
   this.settingsAppBox.append(this.winnersBtn, this.themeBtn);
 };
 class HeaderView {
@@ -2458,6 +2459,7 @@ const data = [
 ];
 const DIRECTIONS = ["left", "top"];
 const MESSAGE = "Great! You have solved the nonogram: ";
+const [firstGame] = data;
 class GameFieldView {
   constructor(modal, timer, winners, audio2) {
     /**
@@ -2487,7 +2489,7 @@ class GameFieldView {
     this.timer = timer;
     this.winners = winners;
     this.audio = audio2;
-    this.currentNonogramObj = data[0];
+    this.currentNonogramObj = firstGame;
     this.originalMatrix = this.currentNonogramObj.matrix;
     this.originalTitle = this.currentNonogramObj.title;
     this.originalSize = this.currentNonogramObj.size;
@@ -2655,8 +2657,8 @@ highlightCurrentColumnAndRow_fn = function(target) {
     });
   });
   __privateMethod(this, _removeHighlightCells, removeHighlightCells_fn).call(this);
-  let rowIndex = Number(currentTarget.parentNode.getAttribute("data-row"));
-  let cellIndex = Number(currentTarget.getAttribute("data-cell"));
+  const rowIndex = Number(currentTarget.parentNode.getAttribute("data-row"));
+  const cellIndex = Number(currentTarget.getAttribute("data-cell"));
   this.cellElements.forEach((row) => {
     row.forEach((cell) => {
       const currentRow = cell.cell.parentNode;
@@ -2701,7 +2703,12 @@ createHTML_fn5 = function() {
   this.playground = new CreateElement({ classes: ["playground"] });
   this.leftHintsBox = new CreateElement({ classes: ["left-hints"] });
   this.topHintsBox = new CreateElement({ classes: ["top-hints"] });
-  this.gameField.append(this.playground, this.leftHintsBox, this.topHintsBox, this.timer.getHTML());
+  this.gameField.append(
+    this.playground,
+    this.leftHintsBox,
+    this.topHintsBox,
+    this.timer.getHTML()
+  );
   this.gameFieldContainer.append(this.gameField);
   this.gameFieldSection.append(this.gameFieldContainer);
 };
@@ -3001,14 +3008,14 @@ randomGameHandler_fn = function() {
 };
 _getRandomGame = new WeakSet();
 getRandomGame_fn = function() {
-  const randomIndex = Math.floor(Math.random() * data.length);
-  return data[randomIndex];
+  this.randomIndex = Math.floor(Math.random() * data.length);
+  return data[this.randomIndex];
 };
 _undisabledBtns = new WeakSet();
 undisabledBtns_fn = function(btnsArr) {
   btnsArr.forEach((btn) => {
-    const currentBtn = btn;
-    currentBtn.disabled = false;
+    this.currentBtn = btn;
+    this.currentBtn.disabled = false;
   });
 };
 _updateSizeGameField = new WeakSet();
@@ -3253,11 +3260,12 @@ class TimerView {
   */
   startTimer() {
     this.isStart = true;
-    return this.intervalID = setInterval(() => {
+    this.intervalID = setInterval(() => {
       this.currentTime += 1;
       const { formattedMin, formattedSec } = this.formattedTime();
       this.timer.textContent = `${formattedMin}:${formattedSec}`;
     }, TIMER_INTERVAL);
+    return this.intervalID;
   }
   /**
   * stop timer
@@ -3327,8 +3335,8 @@ class WinnersView {
     this.sortWinners();
   }
   sortWinners() {
-    const LS = JSON.parse(localStorage.getItem("kleostro"));
-    return LS.winners.sort((a, b) => a.time - b.time);
+    this.LS = JSON.parse(localStorage.getItem("kleostro"));
+    return this.LS.winners.sort((a, b) => a.time - b.time);
   }
   show() {
     this.winnersList.innerHTML = "";
@@ -3349,8 +3357,9 @@ class WinnersView {
     sortedListWinners.forEach((winner, index) => {
       const formattedMin = Math.floor(winner.time / MAX_SEC_IN_MIN).toString().padStart(2, "0");
       const formattedSec = (winner.time % MAX_MS_IN_SEC).toString().padStart(2, "0");
+      const currentIndex = index + 1;
       const listItem = new CreateElement({ tag: "li", classes: ["winners-modal__list-item"] });
-      const winnerIndex = new CreateElement({ tag: "span", classes: ["winners-modal__list-index"], textContent: index += 1 });
+      const winnerIndex = new CreateElement({ tag: "span", classes: ["winners-modal__list-index"], textContent: currentIndex });
       const winnerTitle = new CreateElement({ tag: "span", classes: ["winners-modal__list-title"], textContent: winner.title });
       const winnerSize = new CreateElement({ tag: "span", classes: ["winners-modal__list-size"], textContent: winner.size });
       const winnerTime = new CreateElement({ tag: "span", classes: ["winners-modal__list-time"], textContent: `${formattedMin}:${formattedSec}` });
@@ -3419,4 +3428,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-b10ca710.js.map
+//# sourceMappingURL=main-ed389cef.js.map
