@@ -305,6 +305,7 @@ img {
 :root body.light {
   --body-bg: #b2b5e1;
   --header-title-color: #3f2a7e;
+  --settings-sounds-color: #3b3180;
   --settings-app-btn-bg: #7655d2;
   --settings-app-btn-bg-hover: #8669d6;
   --settings-app-btn-bg-active: #6a43d6;
@@ -337,10 +338,11 @@ img {
 :root body.dark {
   --body-bg: #1c1c1c;
   --header-title-color: #be6600;
+  --settings-sounds-color: #b3b3b3;
   --settings-app-btn-bg: #c47809;
   --settings-app-btn-bg-hover: #e2a425;
   --settings-app-btn-bg-active: #926a0d;
-  --settings-app-btn-color: #000;
+  --settings-app-btn-color: #e2e2e2;
   --settings-game-border: #d9b45b;
   --settings-game-bg: #be6200;
   --settings-game-text: #000;
@@ -382,7 +384,18 @@ img {
   display: flex;
   gap: var(--small-offset);
 }
-.header__settings-winners-btn, .header__settings-theme-btn {
+.header__settings-sounds-bg-box, .header__settings-sounds-box {
+  display: flex;
+  align-items: center;
+  gap: var(--little-offset);
+}
+.header__settings-sounds-bg-text, .header__settings-sounds-text {
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--settings-sounds-color);
+  transition: color 0.2s ease-in;
+}
+.header__settings-sounds-bg-settings-btn, .header__settings-sounds-settings-btn, .header__settings-winners-btn, .header__settings-theme-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -395,12 +408,12 @@ img {
   /* stylelint-disable-next-line order/order */
 }
 @media (hover: hover) {
-  .header__settings-winners-btn:hover, .header__settings-theme-btn:hover {
+  .header__settings-sounds-bg-settings-btn:hover, .header__settings-sounds-settings-btn:hover, .header__settings-winners-btn:hover, .header__settings-theme-btn:hover {
     background-color: var(--settings-app-btn-bg-hover);
     animation: wiggling 0.7s ease-in-out infinite;
   }
 }
-.header__settings-winners-btn:active, .header__settings-theme-btn:active {
+.header__settings-sounds-bg-settings-btn:active, .header__settings-sounds-settings-btn:active, .header__settings-winners-btn:active, .header__settings-theme-btn:active {
   background-color: var(--settings-app-btn-bg-active);
   transform: scale(0.9);
   animation: none;
