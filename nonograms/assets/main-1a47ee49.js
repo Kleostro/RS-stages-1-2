@@ -1,6 +1,16 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 var __accessCheck = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
+};
+var __privateGet = (obj, member, getter) => {
+  __accessCheck(obj, member, "read from private field");
+  return getter ? getter.call(obj) : member.get(obj);
 };
 var __privateAdd = (obj, member, value) => {
   if (member.has(obj))
@@ -11,7 +21,7 @@ var __privateMethod = (obj, member, method) => {
   __accessCheck(obj, member, "access private method");
   return method;
 };
-var _winnersClickHandler, winnersClickHandler_fn, _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _createHTML2, createHTML_fn2, _createHTML3, createHTML_fn3, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _createHTML4, createHTML_fn4, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _undisabledBtns, undisabledBtns_fn, _updateSizeGameField, updateSizeGameField_fn, _updateBtnsSizeContent, updateBtnsSizeContent_fn, _updateBtnsNameContent, updateBtnsNameContent_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _showSizesDropList, showSizesDropList_fn, _hiddenSizesDropList, hiddenSizesDropList_fn, _showDropListNames, showDropListNames_fn, _hiddenDropListNames, hiddenDropListNames_fn, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8, _createHTML9, createHTML_fn9, _createHTML10, createHTML_fn10;
+var _mediator, _winnersClickHandler, winnersClickHandler_fn, _toggleThemeHandler, toggleThemeHandler_fn, _createHTML, createHTML_fn, _createHTML2, createHTML_fn2, _createHTML3, createHTML_fn3, _setField, setField_fn, _getField, getField_fn, _setCrossed, setCrossed_fn, _getCrossed, getCrossed_fn, _setEmpty, setEmpty_fn, _createHTML4, createHTML_fn4, _removeHighlightCells, removeHighlightCells_fn, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn, _cellHasClicked, cellHasClicked_fn, _isWin, isWin_fn, _createHTML5, createHTML_fn5, _createHTML6, createHTML_fn6, _startGameHandler, startGameHandler_fn, _showSolutionHandler, showSolutionHandler_fn, _resetGameHandler, resetGameHandler_fn, _saveGameHandler, saveGameHandler_fn, _continueGameHandler, continueGameHandler_fn, _createCellsToLS, createCellsToLS_fn, _randomGameHandler, randomGameHandler_fn, _getRandomGame, getRandomGame_fn, _undisabledBtns, undisabledBtns_fn, _updateSizeGameField, updateSizeGameField_fn, _updateBtnsSizeContent, updateBtnsSizeContent_fn, _updateBtnsNameContent, updateBtnsNameContent_fn, _updateCurrentMatrix, updateCurrentMatrix_fn, _updateListNames, updateListNames_fn, _createDropListSizes, createDropListSizes_fn, _createDropListNames, createDropListNames_fn, _showSizesDropList, showSizesDropList_fn, _hiddenSizesDropList, hiddenSizesDropList_fn, _showDropListNames, showDropListNames_fn, _hiddenDropListNames, hiddenDropListNames_fn, _createHTML7, createHTML_fn7, _createHTML8, createHTML_fn8, _createHTML9, createHTML_fn9, _createHTML10, createHTML_fn10;
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -80,10 +90,54 @@ function CreateElement({
 }
 const headerView = "";
 const settingsAppView = "";
+const AppEvent = {
+  toggleSound: "toggleSound",
+  settingsClick: "settingsClick"
+};
+const _Mediator = class _Mediator {
+  constructor() {
+    this.listeners = /* @__PURE__ */ new Map();
+  }
+  /**
+   * @returns {Object} - Mediator class instance
+   */
+  static getInstance() {
+    return __privateGet(_Mediator, _mediator);
+  }
+  /**
+   * @param {string} nameEvent
+   * @param {function} listener
+   */
+  subscribe(nameEvent, listener) {
+    if (this.listeners.has(nameEvent)) {
+      const listeners = this.listeners.get(nameEvent);
+      listeners.push(listener);
+    } else {
+      const newListeners = [];
+      newListeners.push(listener);
+      this.listeners.set(nameEvent, newListeners);
+    }
+  }
+  // unsubscribe(nameEvent, listener) {
+  // }
+  /**
+   * @param {string} nameEvent
+   * @param {string} params
+   */
+  notify(nameEvent, params) {
+    const eventListeners = this.listeners.get(nameEvent);
+    if (eventListeners) {
+      eventListeners.forEach((listener) => listener(params));
+    }
+  }
+};
+_mediator = new WeakMap();
+__privateAdd(_Mediator, _mediator, new _Mediator());
+let Mediator = _Mediator;
 const APP_THEME_NAMES = ["dark", "light"];
 const [lightTheme, darkTheme] = APP_THEME_NAMES;
 class SettingsAppView {
-  constructor(winners) {
+  constructor(mediator, winners) {
     /**
     * winners click handler
     */
@@ -96,11 +150,12 @@ class SettingsAppView {
     * create HTML settings
     */
     __privateAdd(this, _createHTML);
+    __publicField(this, "mediator", null);
     this.winners = winners;
-    __privateMethod(this, _createHTML, createHTML_fn).call(this);
     this.theme = lightTheme;
-    this.winnersBtn.addEventListener("click", __privateMethod(this, _winnersClickHandler, winnersClickHandler_fn).bind(this));
-    this.themeBtn.addEventListener("click", __privateMethod(this, _toggleThemeHandler, toggleThemeHandler_fn).bind(this));
+    this.singletonMediator = Mediator.getInstance();
+    this.singletonMediator.notify(AppEvent.toggleSound, "off");
+    __privateMethod(this, _createHTML, createHTML_fn).call(this);
   }
   /**
   * get HTML settings
@@ -126,15 +181,23 @@ createHTML_fn = function() {
   this.settingsAppBox = new CreateElement({ classes: ["header__settings"] });
   this.winnersBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-winners-btn"], textContent: "Winners" });
   this.themeBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-theme-btn"], textContent: lightTheme });
+  this.winnersBtn.addEventListener("click", () => {
+    __privateMethod(this, _winnersClickHandler, winnersClickHandler_fn).apply(this);
+    this.singletonMediator.notify(AppEvent.settingsClick);
+  });
+  this.themeBtn.addEventListener("click", () => {
+    __privateMethod(this, _toggleThemeHandler, toggleThemeHandler_fn).apply(this);
+    this.singletonMediator.notify(AppEvent.settingsClick);
+  });
   this.settingsAppBox.append(this.winnersBtn, this.themeBtn);
 };
 class HeaderView {
-  constructor(winners) {
+  constructor(mediator, winners) {
     /**
     * create HTML header
     */
     __privateAdd(this, _createHTML2);
-    this.settingsApp = new SettingsAppView(winners);
+    this.settingsApp = new SettingsAppView(mediator, winners);
     this.winners = winners;
     __privateMethod(this, _createHTML2, createHTML_fn2).call(this);
   }
@@ -161,12 +224,26 @@ const crossedSound = "data:audio/mpeg;base64,//tQxAAAAAAAAAAAAAAAAAAAAAAASW5mbwA
 const emptySound = "data:audio/mpeg;base64,//tQxAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAAEEwBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAgICAgICAgICAgICAgICAgICAgICAgICAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD///////////////////////////////8AAAA5TEFNRTMuOTcgAaUAAAAALGoAABRAJAYbQgAAQAAABBNKziI+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/7UMQAAAmxUV4UAoABkCiyNwUAA/+T////Oc76EIc7///185znPIQhznkDgcFFDgcFCEIRjhwOChG1OHA4RlOc7zh8PgcPi6BwAwDD4uehA4Hw+Ln5A4Bw+5BAUDEQAgc5TAYDAYDAYDAYDAYDAQAQP4wTw4jz7edRLn8hpeN/8lCKKJMfv/HPJQyJ8bf/83LRFDIZUPyIH//lkOWDdlEXQc0Z0WeXf//xYgvaJ+D8wuEC8xTBqCrD5wR////lAcozqQ7NWpWXZnhjVmcZIAX/+1LEBIALpNth/IGACW6m6vwwj1FRzddZVkssaFa+OwxHGanGkOHasZeSqVMEev/9VT2PtXZvzO5Z/l1tcqomshtqVIVKMWN1llwJNCpfMoWvcndcoRGhRNEFYmnbOa9S39i+C8/zdv4r1EiBE0yWEpPkZsKinhuI5FbCYhR3MtB/4/SVVciWbVaW4TiOs/9bCq5mqapEcRmzLAKGpSk39/+HyrrcwjZTiDqUDGJNsSYrvN8+v35MEDtQc7dcl3UV95r/XRI2AA44G7FQz0iShv/7UsQGAEt1RT9imHcBRaWlIAMM+YrjBUWFWM9pnI60uPdgZKs1itfHNnM8TOTjf//55Z6lnOeSTbU9pwkNdXoluFUlUmdaueXGmf9VSVROqgmWFzFBWpGKASQKRrFWlQr2gr9YAAnM7OxISNp503N9VX/avP0F0jjQMBBljcNSZc1ja/GZmZsKJjaxlPqgIDAICDCgwqhRJd2FMBCqX/sexdL/aNt6r1WYMBeFpBQHCoiZIKmxAgoIHKCBhI5HcyZrP+yWGv8QSMiMDX/CRkIJ//tSxA2DyRjUrgGE1MAAADSAAAAEGxZRZRxZR8XGszxs0aUWW0nGnAYEBgYEWYeZYJizcXFTLuAhYXZwZCojDLpkWUxBTUUzLjk3VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=";
 const settingsGameClick = "data:audio/mpeg;base64,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";
 class AudioModel {
-  constructor() {
+  constructor(mediator) {
     __privateAdd(this, _createHTML3);
+    __publicField(this, "soundOnOff", "on");
+    __publicField(this, "mediator", null);
+    this.mediator = mediator;
     __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
+    const singletonMediator = Mediator.getInstance();
+    singletonMediator.subscribe(AppEvent.toggleSound, this.setonOff.bind(this));
+    singletonMediator.subscribe(AppEvent.settingsClick, this.playSettingsGameClick.bind(this));
+    console.log(this.soundOnOff);
   }
   getHTML() {
     return this.soundBox;
+  }
+  /**
+  * @param {string} value
+  */
+  setonOff(value) {
+    this.soundOnOff = value;
+    console.log(this.soundOnOff);
   }
   playField() {
     this.fieldSound.currentTime = 0;
@@ -3382,11 +3459,12 @@ createHTML_fn9 = function() {
 };
 const mainView = "";
 class MainView {
-  constructor() {
+  constructor(mediator) {
     /**
     * create HTML main
     */
     __privateAdd(this, _createHTML10);
+    this.mediator = mediator;
     __privateMethod(this, _createHTML10, createHTML_fn10).call(this);
   }
   /**
@@ -3400,7 +3478,7 @@ class MainView {
 _createHTML10 = new WeakSet();
 createHTML_fn10 = function() {
   this.main = new CreateElement({ tag: "main", classes: ["main"] });
-  this.audio = new AudioModel();
+  this.audio = new AudioModel(this.mediator);
   this.modal = new ModalView();
   this.timer = new TimerView();
   this.winners = new WinnersView();
@@ -3418,8 +3496,9 @@ class App {
     if (!localStorage.getItem("kleostro")) {
       localStorage.setItem("kleostro", JSON.stringify({}));
     }
-    this.main = new MainView();
-    this.header = new HeaderView(this.main.winners);
+    this.mediator = new Mediator();
+    this.main = new MainView(this.mediator);
+    this.header = new HeaderView(this.mediator, this.main.winners);
     document.body.prepend(
       this.header.getHTML(),
       this.main.getHTML()
@@ -3428,4 +3507,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-ed389cef.js.map
+//# sourceMappingURL=main-1a47ee49.js.map
