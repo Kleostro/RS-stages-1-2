@@ -475,11 +475,11 @@ img {
   transition-delay: 100ms;
 }.header__settings {
   display: flex;
+  transition: transform 0.3s ease-in-out;
   gap: var(--small-offset);
 }
 .header__settings.open {
-  transform: none;
-  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
 }
 .header__settings-sounds-bg-box, .header__settings-sounds-box {
   display: flex;
@@ -544,7 +544,7 @@ img {
 @media (max-width: 1024px) {
   .header__settings {
     position: fixed;
-    left: 0;
+    right: -100%;
     top: 0;
     z-index: 5;
     display: grid;
@@ -555,7 +555,7 @@ img {
     height: 100%;
     font-size: 25px;
     background-color: var(--burger-bg);
-    transform: translateX(100%);
+    transform: none;
     -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
     gap: var(--medium-offset);

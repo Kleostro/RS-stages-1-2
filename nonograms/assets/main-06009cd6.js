@@ -58,12 +58,7 @@ var _mediator, _toggleSoundBgClickHandler, toggleSoundBgClickHandler_fn, _toggle
   }
 })();
 const style = "";
-function CreateElement({
-  tag = "div",
-  classes = [],
-  attrs = {},
-  textContent
-}) {
+function CreateElement({ tag = "div", classes = [], attrs = {}, textContent }) {
   this.tag = tag;
   this.classes = classes;
   this.attrs = attrs;
@@ -114,8 +109,6 @@ const _Mediator = class _Mediator {
       this.listeners.set(nameEvent, newListeners);
     }
   }
-  // unsubscribe(nameEvent, listener) {
-  // }
   /**
    * @param {string} nameEvent
    * @param {string} params
@@ -124,6 +117,19 @@ const _Mediator = class _Mediator {
     const eventListeners = this.listeners.get(nameEvent);
     if (eventListeners) {
       eventListeners.forEach((listener) => listener(params));
+    }
+  }
+  /**
+   * @param {string} nameEvent
+   * @param {function} listener
+   */
+  unsubscribe(nameEvent, listener) {
+    if (this.listeners.has(nameEvent)) {
+      const listeners = this.listeners.get(nameEvent);
+      const index = listeners.indexOf(listener);
+      if (index !== -1) {
+        listeners.splice(index, 1);
+      }
     }
   }
 };
@@ -140,20 +146,20 @@ class SettingsAppView {
     __privateAdd(this, _toggleSettingsSoundForLS);
     __privateAdd(this, _toggleSettingsSoundClickHandler);
     /**
-    * winners click handler
-    */
+     * winners click handler
+     */
     __privateAdd(this, _winnersClickHandler);
     /**
-    * changes the current application theme click handler
-    */
+     * changes the current application theme click handler
+     */
     __privateAdd(this, _toggleThemeHandler);
     /**
-    * changes the current application theme from LS
-    */
+     * changes the current application theme from LS
+     */
     __privateAdd(this, _toggleThemeAppFromLS);
     /**
-    * create HTML settings
-    */
+     * create HTML settings
+     */
     __privateAdd(this, _createHTML);
     this.winners = winners;
     this.soundOnOff = soundOn;
@@ -174,9 +180,9 @@ class SettingsAppView {
     __privateMethod(this, _toggleSettingsSoundForLS, toggleSettingsSoundForLS_fn).call(this);
   }
   /**
-  * get HTML settings
-  * @returns {Element} HTML-Element settings
-  */
+   * get HTML settings
+   * @returns {Element} HTML-Element settings
+   */
   getHTML() {
     return this.settingsAppBox;
   }
@@ -196,7 +202,10 @@ toggleSettingsSoundForLS_fn = function() {
 _toggleSettingsSoundClickHandler = new WeakSet();
 toggleSettingsSoundClickHandler_fn = function() {
   this.soundOnOff = this.soundOnOff === soundOn ? soundOff : soundOn;
-  this.singletonMediator.notify(AppEvent.toggleSettingsSound, this.soundOnOff);
+  this.singletonMediator.notify(
+    AppEvent.toggleSettingsSound,
+    this.soundOnOff
+  );
   this.soundsSettingsBtn.textContent = this.soundOnOff === soundOff ? soundOn : soundOff;
   const LS = JSON.parse(localStorage.getItem("kleostro"));
   LS.sound = this.soundOnOff;
@@ -221,19 +230,49 @@ toggleThemeAppFromLS_fn = function() {
   const LS = JSON.parse(localStorage.getItem("kleostro"));
   this.theme = LS.theme;
   this.themeBtn.textContent = this.theme;
-  document.body.classList.toggle(this.theme === lightTheme ? darkTheme : lightTheme);
+  document.body.classList.toggle(
+    this.theme === lightTheme ? darkTheme : lightTheme
+  );
 };
 _createHTML = new WeakSet();
 createHTML_fn = function() {
   this.settingsAppBox = new CreateElement({ classes: ["header__settings"] });
-  this.soundBgSettingsBox = new CreateElement({ classes: ["header__settings-sounds-bg-box"] });
-  this.soundBgSettingsText = new CreateElement({ tag: "span", classes: ["header__settings-sounds-bg-text"], textContent: "Background sound:" });
-  this.soundBgSettingsBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-sounds-bg-settings-btn"], textContent: soundOn });
-  this.soundSettingsBox = new CreateElement({ classes: ["header__settings-sounds-box"] });
-  this.soundSettingsText = new CreateElement({ tag: "span", classes: ["header__settings-sounds-text"], textContent: "Settings sound:" });
-  this.soundsSettingsBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-sounds-settings-btn"], textContent: soundOff });
-  this.winnersBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-winners-btn"], textContent: "Winners" });
-  this.themeBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "header__settings-theme-btn"], textContent: lightTheme });
+  this.soundBgSettingsBox = new CreateElement({
+    classes: ["header__settings-sounds-bg-box"]
+  });
+  this.soundBgSettingsText = new CreateElement({
+    tag: "span",
+    classes: ["header__settings-sounds-bg-text"],
+    textContent: "Background sound:"
+  });
+  this.soundBgSettingsBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "header__settings-sounds-bg-settings-btn"],
+    textContent: soundOn
+  });
+  this.soundSettingsBox = new CreateElement({
+    classes: ["header__settings-sounds-box"]
+  });
+  this.soundSettingsText = new CreateElement({
+    tag: "span",
+    classes: ["header__settings-sounds-text"],
+    textContent: "Settings sound:"
+  });
+  this.soundsSettingsBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "header__settings-sounds-settings-btn"],
+    textContent: soundOff
+  });
+  this.winnersBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "header__settings-winners-btn"],
+    textContent: "Winners"
+  });
+  this.themeBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "header__settings-theme-btn"],
+    textContent: lightTheme
+  });
   this.soundBgSettingsBtn.addEventListener("click", () => {
     this.singletonMediator.notify(AppEvent.settingsClick);
     this.singletonMediator.notify(AppEvent.soundBg);
@@ -252,8 +291,14 @@ createHTML_fn = function() {
     __privateMethod(this, _toggleThemeHandler, toggleThemeHandler_fn).apply(this);
     this.singletonMediator.notify(AppEvent.settingsClick);
   });
-  this.soundBgSettingsBox.append(this.soundBgSettingsText, this.soundBgSettingsBtn);
-  this.soundSettingsBox.append(this.soundSettingsText, this.soundsSettingsBtn);
+  this.soundBgSettingsBox.append(
+    this.soundBgSettingsText,
+    this.soundBgSettingsBtn
+  );
+  this.soundSettingsBox.append(
+    this.soundSettingsText,
+    this.soundsSettingsBtn
+  );
   this.settingsAppBox.append(
     this.soundBgSettingsBox,
     this.soundSettingsBox,
@@ -264,17 +309,17 @@ createHTML_fn = function() {
 class HeaderView {
   constructor(winners) {
     /**
-    * create HTML header
-    */
+     * create HTML header
+     */
     __privateAdd(this, _createHTML2);
     this.settingsApp = new SettingsAppView(winners);
     this.winners = winners;
     __privateMethod(this, _createHTML2, createHTML_fn2).call(this);
   }
   /**
-  * get HTML header
-  * @returns {Element} HTML-Element header
-  */
+   * get HTML header
+   * @returns {Element} HTML-Element header
+   */
   getHTML() {
     return this.header;
   }
@@ -282,19 +327,53 @@ class HeaderView {
 _createHTML2 = new WeakSet();
 createHTML_fn2 = function() {
   this.header = new CreateElement({ tag: "header", classes: ["header"] });
-  this.title = new CreateElement({ tag: "h1", classes: ["header__title"], textContent: "Nonograms" });
-  this.headerContainer = new CreateElement({ tag: "div", classes: ["header__container", "container"] });
-  this.burger = new CreateElement({ tag: "button", classes: ["btn-reset", "burger"] });
-  this.burgerLineOne = new CreateElement({ tag: "span", classes: ["burger__line"] });
-  this.burgerLineTwo = new CreateElement({ tag: "span", classes: ["burger__line"] });
-  this.burgerLineThree = new CreateElement({ tag: "span", classes: ["burger__line"] });
+  this.title = new CreateElement({
+    tag: "h1",
+    classes: ["header__title"],
+    textContent: "Nonograms"
+  });
+  this.headerContainer = new CreateElement({
+    tag: "div",
+    classes: ["header__container", "container"]
+  });
+  this.burger = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "burger"]
+  });
+  this.burgerLineOne = new CreateElement({
+    tag: "span",
+    classes: ["burger__line"]
+  });
+  this.burgerLineTwo = new CreateElement({
+    tag: "span",
+    classes: ["burger__line"]
+  });
+  this.burgerLineThree = new CreateElement({
+    tag: "span",
+    classes: ["burger__line"]
+  });
   this.burger.addEventListener("click", () => {
     this.burger.classList.toggle("open");
     this.burger.previousSibling.classList.toggle("open");
     document.body.classList.toggle("stop-scroll");
   });
-  this.burger.append(this.burgerLineOne, this.burgerLineTwo, this.burgerLineThree);
-  this.headerContainer.append(this.title, this.settingsApp.getHTML(), this.burger);
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 1e3 && window.innerWidth < 1050) {
+      this.burger.classList.remove("open");
+      this.burger.previousSibling.classList.remove("open");
+      document.body.classList.remove("stop-scroll");
+    }
+  });
+  this.burger.append(
+    this.burgerLineOne,
+    this.burgerLineTwo,
+    this.burgerLineThree
+  );
+  this.headerContainer.append(
+    this.title,
+    this.settingsApp.getHTML(),
+    this.burger
+  );
   this.header.append(this.headerContainer);
 };
 const audio = "";
@@ -311,11 +390,23 @@ class AudioModel {
     this.soundOnOff = SOUND_ON;
     this.BgOnOff = SOUND_ON;
     __privateMethod(this, _createHTML3, createHTML_fn3).call(this);
-    const singletonMediator = Mediator.getInstance();
-    singletonMediator.subscribe(AppEvent.toggleSettingsSound, this.setSettingsSoundOnOff.bind(this));
-    singletonMediator.subscribe(AppEvent.toggleSoundBg, this.setBgSoundOnOff.bind(this));
-    singletonMediator.subscribe(AppEvent.settingsClick, this.playSettingsGameClick.bind(this));
-    singletonMediator.subscribe(AppEvent.soundBg, this.playBgSound.bind(this));
+    this.singletonMediator = Mediator.getInstance();
+    this.singletonMediator.subscribe(
+      AppEvent.toggleSettingsSound,
+      this.setSettingsSoundOnOff.bind(this)
+    );
+    this.singletonMediator.subscribe(
+      AppEvent.toggleSoundBg,
+      this.setBgSoundOnOff.bind(this)
+    );
+    this.singletonMediator.subscribe(
+      AppEvent.settingsClick,
+      this.playSettingsGameClick.bind(this)
+    );
+    this.singletonMediator.subscribe(
+      AppEvent.soundBg,
+      this.playBgSound.bind(this)
+    );
     const LS = JSON.parse(localStorage.getItem("kleostro"));
     if (LS.sound) {
       this.soundOnOff = LS.sound;
@@ -331,8 +422,8 @@ class AudioModel {
     this.soundOnOff = value;
   }
   /**
-  * @param {string} value
-  */
+   * @param {string} value
+   */
   setBgSoundOnOff(value) {
     this.BgOnOff = value;
   }
@@ -376,13 +467,33 @@ class AudioModel {
 }
 _createHTML3 = new WeakSet();
 createHTML_fn3 = function() {
-  this.soundBox = new CreateElement({ classes: ["sound-box", "visually-hidden"] });
-  this.fieldSound = new CreateElement({ tag: "audio", attrs: { src: fieldSound } });
-  this.crossedSound = new CreateElement({ tag: "audio", attrs: { src: crossedSound } });
-  this.emptySound = new CreateElement({ tag: "audio", attrs: { src: emptySound } });
-  this.winSound = new CreateElement({ tag: "audio", attrs: { src: winSound } });
-  this.settingsGameSound = new CreateElement({ tag: "audio", attrs: { src: settingsGameClick } });
-  this.bgSound = new CreateElement({ tag: "audio", attrs: { src: bgSound, loop: "" } });
+  this.soundBox = new CreateElement({
+    classes: ["sound-box", "visually-hidden"]
+  });
+  this.fieldSound = new CreateElement({
+    tag: "audio",
+    attrs: { src: fieldSound }
+  });
+  this.crossedSound = new CreateElement({
+    tag: "audio",
+    attrs: { src: crossedSound }
+  });
+  this.emptySound = new CreateElement({
+    tag: "audio",
+    attrs: { src: emptySound }
+  });
+  this.winSound = new CreateElement({
+    tag: "audio",
+    attrs: { src: winSound }
+  });
+  this.settingsGameSound = new CreateElement({
+    tag: "audio",
+    attrs: { src: settingsGameClick }
+  });
+  this.bgSound = new CreateElement({
+    tag: "audio",
+    attrs: { src: bgSound, loop: "" }
+  });
   this.soundBox.append(
     this.winSound,
     this.fieldSound,
@@ -419,8 +530,8 @@ class CellView {
      */
     __privateAdd(this, _setEmpty);
     /**
-    * create HTML cell
-    */
+     * create HTML cell
+     */
     __privateAdd(this, _createHTML4);
     this.audio = audio2;
     this.cellValue = cellValue;
@@ -2650,27 +2761,27 @@ const [firstGame] = data;
 class GameFieldView {
   constructor(modal, timer, winners, audio2) {
     /**
-    * removes cell and row highlighting
-    */
+     * removes cell and row highlighting
+     */
     __privateAdd(this, _removeHighlightCells);
     /**
-    * adds cell and row highlighting
-    * @param {target} - current cell
-    */
+     * adds cell and row highlighting
+     * @param {target} - current cell
+     */
     __privateAdd(this, _highlightCurrentColumnAndRow);
     /**
-    * fills the array of cells with field
-    */
+     * fills the array of cells with field
+     */
     __privateAdd(this, _cellHasClicked);
     /**
-    * checks the outcome of the game
-    * @param {number[][]} cellValues - two-dimensional array of current cell values
-    * @param {number[][]} matrix - two-dimensional array of the original matrix
-    */
+     * checks the outcome of the game
+     * @param {number[][]} cellValues - two-dimensional array of current cell values
+     * @param {number[][]} matrix - two-dimensional array of the original matrix
+     */
     __privateAdd(this, _isWin);
     /**
-    * create HTML gameField
-    */
+     * create HTML gameField
+     */
     __privateAdd(this, _createHTML5);
     this.modal = modal;
     this.timer = timer;
@@ -2710,9 +2821,9 @@ class GameFieldView {
     });
   }
   /**
-  * get HTML cell
-  * @returns {Element} HTML-Element cell
-  */
+   * get HTML cell
+   * @returns {Element} HTML-Element cell
+   */
   getHTML() {
     return this.gameFieldSection;
   }
@@ -2728,7 +2839,9 @@ class GameFieldView {
       for (let row = 0; row < matrix.length; row += 1) {
         const hints = [];
         let hintValue = 0;
-        const hintRow = new CreateElement({ classes: [`${direction}-hints__row`] });
+        const hintRow = new CreateElement({
+          classes: [`${direction}-hints__row`]
+        });
         hintsBox.append(hintRow);
         for (let column = 0; column < matrix[row].length; column += 1) {
           if (direction === DIRECTIONS[0] && matrix[row][column] === 1) {
@@ -2760,7 +2873,10 @@ class GameFieldView {
   createCells(matrix) {
     this.playground.innerHTML = "";
     for (let row = 0; row < matrix.length; row += 1) {
-      const rowElem = new CreateElement({ classes: ["playground__row"], attrs: { "data-row": row } });
+      const rowElem = new CreateElement({
+        classes: ["playground__row"],
+        attrs: { "data-row": row }
+      });
       this.cellElements[row] = [];
       for (let column = 0; column < matrix[0].length; column += 1) {
         const cell = new CellView(matrix[row][column], this.audio);
@@ -2810,8 +2926,8 @@ class GameFieldView {
     this.isEndGame = false;
   }
   /**
-  * changes the locking of the playground
-  */
+   * changes the locking of the playground
+   */
   lockPlayground() {
     if (!this.isLockPlayground) {
       this.playground.classList.remove("lock");
@@ -2871,19 +2987,32 @@ cellHasClicked_fn = function() {
 };
 _isWin = new WeakSet();
 isWin_fn = function(cellValues, matrix) {
-  if (cellValues.every((_, rowIndex) => cellValues[rowIndex].every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))) {
+  if (cellValues.every(
+    (_, rowIndex) => cellValues[rowIndex].every(
+      (elem, cellIndex) => elem === matrix[rowIndex][cellIndex]
+    )
+  )) {
     this.timer.stopTimer();
     this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
     this.lockPlayground();
     this.isEndGame = true;
-    this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
+    this.winners.addWinner(
+      this.originalTitle,
+      this.originalSize,
+      this.timer.getTime()
+    );
     this.audio.playModal();
   }
 };
 _createHTML5 = new WeakSet();
 createHTML_fn5 = function() {
-  this.gameFieldSection = new CreateElement({ tag: "section", classes: ["game"] });
-  this.gameFieldContainer = new CreateElement({ classes: ["container", "game__container"] });
+  this.gameFieldSection = new CreateElement({
+    tag: "section",
+    classes: ["game"]
+  });
+  this.gameFieldContainer = new CreateElement({
+    classes: ["container", "game__container"]
+  });
   this.gameField = new CreateElement({ classes: ["game__field"] });
   this.playground = new CreateElement({ classes: ["playground"] });
   this.leftHintsBox = new CreateElement({ classes: ["left-hints"] });
@@ -2901,14 +3030,17 @@ const modalView = "";
 class ModalView {
   constructor() {
     /**
-    * create HTML modal
-    */
+     * create HTML modal
+     */
     __privateAdd(this, _createHTML6);
     this.message = null;
     this.name = null;
     this.time = null;
     __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
-    this.closeBtn.addEventListener("click", () => this.show(this.message, this.name, this.time));
+    this.closeBtn.addEventListener(
+      "click",
+      () => this.show(this.message, this.name, this.time)
+    );
     this.overlay.addEventListener("click", ({ target }) => {
       if (target === this.overlay) {
         this.show(this.message, this.name, this.time);
@@ -2916,18 +3048,18 @@ class ModalView {
     });
   }
   /**
-  * get HTML modal
-  * @returns {Element} HTML-Element modal
-  */
+   * get HTML modal
+   * @returns {Element} HTML-Element modal
+   */
   getHTML() {
     return this.modalBox;
   }
   /**
-  * show modal
-  * @param {string} message - modal message
-  * @param {string} name - modal name
-  * @param {number} time - modal time
-  */
+   * show modal
+   * @param {string} message - modal message
+   * @param {string} name - modal name
+   * @param {number} time - modal time
+   */
   show(message, name, time) {
     this.message = message;
     this.name = name;
@@ -2947,8 +3079,14 @@ createHTML_fn6 = function() {
   this.overlay = new CreateElement({ classes: ["modal__overlay"] });
   this.content = new CreateElement({ classes: ["modal__content"] });
   this.title = new CreateElement({ tag: "h3", classes: ["modal__title"] });
-  this.subtitle = new CreateElement({ tag: "h3", classes: ["modal__subtitle"] });
-  this.closeBtn = new CreateElement({ tag: "btn", classes: ["btn-reset", "modal__close-btn"] });
+  this.subtitle = new CreateElement({
+    tag: "h3",
+    classes: ["modal__subtitle"]
+  });
+  this.closeBtn = new CreateElement({
+    tag: "btn",
+    classes: ["btn-reset", "modal__close-btn"]
+  });
   this.content.append(this.title, this.subtitle, this.closeBtn);
   this.overlay.append(this.content);
   this.modalBox.append(this.overlay);
@@ -3023,8 +3161,8 @@ class SettingsGameView {
     __privateAdd(this, _showDropListNames);
     __privateAdd(this, _hiddenDropListNames);
     /**
-    * create HTML settings game
-    */
+     * create HTML settings game
+     */
     // eslint-disable-next-line max-lines-per-function
     __privateAdd(this, _createHTML7);
     this.gameField = gameField;
@@ -3037,8 +3175,18 @@ class SettingsGameView {
     this.isLockListSizes = false;
     this.isLockListNames = false;
     __privateMethod(this, _createHTML7, createHTML_fn7).call(this);
-    this.sizeBtnsArr.forEach((btn) => btn.addEventListener("click", ({ target }) => __privateMethod(this, _updateBtnsSizeContent, updateBtnsSizeContent_fn).call(this, target)));
-    this.nameBtnsArr.forEach((btn) => btn.addEventListener("click", ({ target }) => __privateMethod(this, _updateBtnsNameContent, updateBtnsNameContent_fn).call(this, target)));
+    this.sizeBtnsArr.forEach(
+      (btn) => btn.addEventListener(
+        "click",
+        ({ target }) => __privateMethod(this, _updateBtnsSizeContent, updateBtnsSizeContent_fn).call(this, target)
+      )
+    );
+    this.nameBtnsArr.forEach(
+      (btn) => btn.addEventListener(
+        "click",
+        ({ target }) => __privateMethod(this, _updateBtnsNameContent, updateBtnsNameContent_fn).call(this, target)
+      )
+    );
     const LS = JSON.parse(localStorage.getItem("kleostro"));
     if (!LS["current-game"]) {
       this.continueGameBtn.disabled = true;
@@ -3082,7 +3230,10 @@ showSolutionHandler_fn = function(matrix, cellElements) {
   this.audio.playSettingsGameClick();
   matrix.forEach((row, rowIndex) => {
     row.forEach((_, columnIndex) => {
-      cellElements[rowIndex][columnIndex].cell.classList.remove("field", "crossed");
+      cellElements[rowIndex][columnIndex].cell.classList.remove(
+        "field",
+        "crossed"
+      );
       if (cellElements[rowIndex][columnIndex].cellValue === 1 && !this.isShowSolution) {
         cellElements[rowIndex][columnIndex].cell.classList.add("field");
       }
@@ -3133,11 +3284,15 @@ continueGameHandler_fn = function() {
   __privateMethod(this, _createCellsToLS, createCellsToLS_fn).call(this, savedCells);
   this.gameField.leftHintsBox.innerHTML = LS["left-hints"];
   this.gameField.topHintsBox.innerHTML = LS["top-hints"];
-  this.gameField.originalMatrix = JSON.parse(LS["current-game"]).originalMatrix;
+  this.gameField.originalMatrix = JSON.parse(
+    LS["current-game"]
+  ).originalMatrix;
   this.gameField.originalTitle = JSON.parse(LS["current-game"]).originalTitle;
   this.gameField.originalSize = JSON.parse(LS["current-game"]).originalSize;
   __privateMethod(this, _updateSizeGameField, updateSizeGameField_fn).call(this);
-  this.settingsSizeSubtitle.textContent = JSON.parse(LS["current-game"]).originalSize;
+  this.settingsSizeSubtitle.textContent = JSON.parse(
+    LS["current-game"]
+  ).originalSize;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.sizeBtnsArr);
   this.sizeBtnsArr.forEach((btn) => {
     const currentBtn = btn;
@@ -3146,7 +3301,9 @@ continueGameHandler_fn = function() {
     }
   });
   __privateMethod(this, _updateListNames, updateListNames_fn).call(this);
-  this.settingsNameSubtitle.textContent = JSON.parse(LS["current-game"]).originalTitle;
+  this.settingsNameSubtitle.textContent = JSON.parse(
+    LS["current-game"]
+  ).originalTitle;
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
   this.nameBtnsArr.forEach((btn) => {
     const currentBtn = btn;
@@ -3164,12 +3321,19 @@ createCellsToLS_fn = function(savedCells) {
     this.gameField.cellValues = [];
     this.gameField.playground.innerHTML = "";
     for (let row = 0; row < savedCells.length; row += 1) {
-      const rowElem = new CreateElement({ classes: ["playground__row"], attrs: { "data-row": row } });
+      const rowElem = new CreateElement({
+        classes: ["playground__row"],
+        attrs: { "data-row": row }
+      });
       this.gameField.cellElements[row] = [];
       this.gameField.cellValues[row] = [];
       for (let column = 0; column < savedCells[0].length; column += 1) {
         const cellParse = JSON.parse(savedCells[row][column]);
-        const cell = new CellView(cellParse.cellValue, this.audio, cellParse.state);
+        const cell = new CellView(
+          cellParse.cellValue,
+          this.audio,
+          cellParse.state
+        );
         const cellElem = cell.getHTML();
         cellElem.setAttribute("data-cell", column);
         rowElem.append(cellElem);
@@ -3261,7 +3425,10 @@ updateBtnsNameContent_fn = function(target) {
   currentBtn.disabled = true;
   this.currentName = target.textContent;
   if (target.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
-    const formattedSubtitle = target.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
+    const formattedSubtitle = target.textContent.slice(
+      0,
+      MAX_LETTERS_IN_SUBTITLE
+    );
     this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
   } else {
     this.settingsNameSubtitle.textContent = target.textContent;
@@ -3273,7 +3440,9 @@ updateCurrentMatrix_fn = function() {
 };
 _updateListNames = new WeakSet();
 updateListNames_fn = function() {
-  const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
+  const filteredData = data.filter(
+    (item) => item.size === this.settingsSizeSubtitle.textContent
+  );
   __privateMethod(this, _undisabledBtns, undisabledBtns_fn).call(this, this.nameBtnsArr);
   filteredData.forEach((item, index) => {
     if (index === 0) {
@@ -3290,10 +3459,20 @@ createDropListSizes_fn = function() {
     uniqueDataObj.add(item.size);
   });
   const uniqueDataArr = Array.from(uniqueDataObj);
-  const dropList = new CreateElement({ tag: "ul", classes: ["size__drop", "list-reset", "hidden"] });
+  const dropList = new CreateElement({
+    tag: "ul",
+    classes: ["size__drop", "list-reset", "hidden"]
+  });
   uniqueDataArr.forEach((item, index) => {
-    const listItem = new CreateElement({ tag: "li", classes: ["size__drop-item"] });
-    const btn = new CreateElement({ tag: "button", classes: ["size__drop-btn", "btn-reset"], textContent: item });
+    const listItem = new CreateElement({
+      tag: "li",
+      classes: ["size__drop-item"]
+    });
+    const btn = new CreateElement({
+      tag: "button",
+      classes: ["size__drop-btn", "btn-reset"],
+      textContent: item
+    });
     if (index === 0) {
       btn.disabled = true;
     }
@@ -3307,11 +3486,23 @@ createDropListSizes_fn = function() {
 };
 _createDropListNames = new WeakSet();
 createDropListNames_fn = function() {
-  const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
-  const dropList = new CreateElement({ tag: "ul", classes: ["name__drop", "list-reset", "hidden"] });
+  const filteredData = data.filter(
+    (item) => item.size === this.settingsSizeSubtitle.textContent
+  );
+  const dropList = new CreateElement({
+    tag: "ul",
+    classes: ["name__drop", "list-reset", "hidden"]
+  });
   filteredData.forEach((item, index) => {
-    const listItem = new CreateElement({ tag: "li", classes: ["name__drop-item"] });
-    const btn = new CreateElement({ tag: "button", classes: ["name__drop-btn", "btn-reset"], textContent: item.title });
+    const listItem = new CreateElement({
+      tag: "li",
+      classes: ["name__drop-item"]
+    });
+    const btn = new CreateElement({
+      tag: "button",
+      classes: ["name__drop-btn", "btn-reset"],
+      textContent: item.title
+    });
     if (index === 0) {
       btn.disabled = true;
       this.currentName = btn.textContent;
@@ -3347,23 +3538,63 @@ hiddenDropListNames_fn = function() {
 _createHTML7 = new WeakSet();
 createHTML_fn7 = function() {
   this.settings = new CreateElement({ classes: ["game__settings"] });
-  this.settingsContainer = new CreateElement({ classes: ["game__settings-container"] });
+  this.settingsContainer = new CreateElement({
+    classes: ["game__settings-container"]
+  });
   this.settingsSizeBox = new CreateElement({ classes: ["size"] });
   this.settingsSizeTop = new CreateElement({ classes: ["size__top"] });
-  this.settingsSizeTitle = new CreateElement({ tag: "h3", classes: ["size__title"], textContent: "Size: " });
-  this.settingsSizeSubtitle = new CreateElement({ tag: "span", classes: ["size__subtitle"] });
+  this.settingsSizeTitle = new CreateElement({
+    tag: "h3",
+    classes: ["size__title"],
+    textContent: "Size: "
+  });
+  this.settingsSizeSubtitle = new CreateElement({
+    tag: "span",
+    classes: ["size__subtitle"]
+  });
   this.settingsSizeDrop = __privateMethod(this, _createDropListSizes, createDropListSizes_fn).call(this);
   this.settingsNameBox = new CreateElement({ classes: ["name"] });
   this.settingsNameTop = new CreateElement({ classes: ["name__top"] });
-  this.settingsNameTitle = new CreateElement({ tag: "h3", classes: ["name__title"], textContent: "Selected: " });
-  this.settingsNameSubtitle = new CreateElement({ tag: "span", classes: ["name__subtitle"] });
+  this.settingsNameTitle = new CreateElement({
+    tag: "h3",
+    classes: ["name__title"],
+    textContent: "Selected: "
+  });
+  this.settingsNameSubtitle = new CreateElement({
+    tag: "span",
+    classes: ["name__subtitle"]
+  });
   this.settingsNameDrop = __privateMethod(this, _createDropListNames, createDropListNames_fn).call(this);
-  this.startGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "start-game"], textContent: "Play" });
-  this.showSolutionBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "show-solution"], textContent: "Show Solution" });
-  this.resetGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "reset-game"], textContent: "Reset" });
-  this.saveGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "save-game"], textContent: "Save game" });
-  this.continueGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "continue-game"], textContent: "Continue last game" });
-  this.randomGameBtn = new CreateElement({ tag: "button", classes: ["btn-reset", "random-game"], textContent: "Random game" });
+  this.startGameBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "start-game"],
+    textContent: "Play"
+  });
+  this.showSolutionBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "show-solution"],
+    textContent: "Show Solution"
+  });
+  this.resetGameBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "reset-game"],
+    textContent: "Reset"
+  });
+  this.saveGameBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "save-game"],
+    textContent: "Save game"
+  });
+  this.continueGameBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "continue-game"],
+    textContent: "Continue last game"
+  });
+  this.randomGameBtn = new CreateElement({
+    tag: "button",
+    classes: ["btn-reset", "random-game"],
+    textContent: "Random game"
+  });
   this.settingsSizeTitle.append(this.settingsSizeSubtitle);
   this.settingsSizeTop.append(this.settingsSizeTitle);
   this.settingsSizeBox.append(this.settingsSizeTop, this.settingsSizeDrop);
@@ -3428,7 +3659,10 @@ createHTML_fn7 = function() {
   });
   this.showSolutionBtn.addEventListener("click", () => {
     if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
-      __privateMethod(this, _showSolutionHandler, showSolutionHandler_fn).apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
+      __privateMethod(this, _showSolutionHandler, showSolutionHandler_fn).apply(this, [
+        this.gameField.originalMatrix,
+        this.gameField.cellElements
+      ]);
       this.gameField.lockPlayground();
     }
     this.showSolutionBtn.disabled = true;
@@ -3436,8 +3670,14 @@ createHTML_fn7 = function() {
     this.resetGameBtn.disabled = true;
     this.continueGameBtn.disabled = true;
   });
-  this.resetGameBtn.addEventListener("click", __privateMethod(this, _resetGameHandler, resetGameHandler_fn).bind(this));
-  this.saveGameBtn.addEventListener("click", __privateMethod(this, _saveGameHandler, saveGameHandler_fn).bind(this));
+  this.resetGameBtn.addEventListener(
+    "click",
+    __privateMethod(this, _resetGameHandler, resetGameHandler_fn).bind(this)
+  );
+  this.saveGameBtn.addEventListener(
+    "click",
+    __privateMethod(this, _saveGameHandler, saveGameHandler_fn).bind(this)
+  );
   this.continueGameBtn.addEventListener("click", () => {
     this.showSolutionBtn.disabled = false;
     this.resetGameBtn.disabled = false;
@@ -3451,7 +3691,10 @@ createHTML_fn7 = function() {
     const { formattedMin, formattedSec } = this.timer.formattedTime();
     this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
   });
-  this.randomGameBtn.addEventListener("click", __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this));
+  this.randomGameBtn.addEventListener(
+    "click",
+    __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this)
+  );
 };
 const timerView = "";
 const TIMER_INTERVAL = 1e3;
@@ -3460,8 +3703,8 @@ const MAX_SEC_IN_MIN$1 = 60;
 class TimerView {
   constructor() {
     /**
-    * create HTML timer
-    */
+     * create HTML timer
+     */
     __privateAdd(this, _createHTML8);
     this.intervalID = null;
     this.currentTime = 0;
@@ -3469,16 +3712,16 @@ class TimerView {
     __privateMethod(this, _createHTML8, createHTML_fn8).call(this);
   }
   /**
-  * get HTML timer
-  * @returns {Element} HTML-Element timer
-  */
+   * get HTML timer
+   * @returns {Element} HTML-Element timer
+   */
   getHTML() {
     return this.timer;
   }
   /**
-  * start timer
-  * @returns {number} - ID timer
-  */
+   * start timer
+   * @returns {number} - ID timer
+   */
   startTimer() {
     this.isStart = true;
     this.intervalID = setInterval(() => {
@@ -3489,23 +3732,23 @@ class TimerView {
     return this.intervalID;
   }
   /**
-  * stop timer
-  */
+   * stop timer
+   */
   stopTimer() {
     clearInterval(this.intervalID);
     this.isStart = false;
   }
   /**
-  * get current time
-  * @returns {number} - current time
-  */
+   * get current time
+   * @returns {number} - current time
+   */
   getTime() {
     return this.currentTime;
   }
   /**
-  * formatted time
-  * @returns {object} - formatted time
-  */
+   * formatted time
+   * @returns {object} - formatted time
+   */
   formattedTime() {
     const formattedMin = Math.floor(this.currentTime / MAX_SEC_IN_MIN$1).toString().padStart(2, "0");
     const formattedSec = (this.currentTime % MAX_MS_IN_SEC$1).toString().padStart(2, "0");
@@ -3514,7 +3757,11 @@ class TimerView {
 }
 _createHTML8 = new WeakSet();
 createHTML_fn8 = function() {
-  this.timer = new CreateElement({ tag: "span", classes: ["timer"], textContent: "00:00" });
+  this.timer = new CreateElement({
+    tag: "span",
+    classes: ["timer"],
+    textContent: "00:00"
+  });
 };
 const winnersView = "";
 const MAX_MS_IN_SEC = 60;
@@ -3570,20 +3817,55 @@ class WinnersView {
       this.winnersList.textContent = "List is empty...";
       return;
     }
-    const listIndex = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "№" });
-    const listTitle = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "Name" });
-    const listSize = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "Size" });
-    const listTime = new CreateElement({ tag: "li", classes: ["winners-modal__list-header"], textContent: "Time" });
+    const listIndex = new CreateElement({
+      tag: "li",
+      classes: ["winners-modal__list-header"],
+      textContent: "№"
+    });
+    const listTitle = new CreateElement({
+      tag: "li",
+      classes: ["winners-modal__list-header"],
+      textContent: "Name"
+    });
+    const listSize = new CreateElement({
+      tag: "li",
+      classes: ["winners-modal__list-header"],
+      textContent: "Size"
+    });
+    const listTime = new CreateElement({
+      tag: "li",
+      classes: ["winners-modal__list-header"],
+      textContent: "Time"
+    });
     this.winnersList.append(listIndex, listTitle, listSize, listTime);
     sortedListWinners.forEach((winner, index) => {
       const formattedMin = Math.floor(winner.time / MAX_SEC_IN_MIN).toString().padStart(2, "0");
       const formattedSec = (winner.time % MAX_MS_IN_SEC).toString().padStart(2, "0");
       const currentIndex = index + 1;
-      const listItem = new CreateElement({ tag: "li", classes: ["winners-modal__list-item"] });
-      const winnerIndex = new CreateElement({ tag: "span", classes: ["winners-modal__list-index"], textContent: currentIndex });
-      const winnerTitle = new CreateElement({ tag: "span", classes: ["winners-modal__list-title"], textContent: winner.title });
-      const winnerSize = new CreateElement({ tag: "span", classes: ["winners-modal__list-size"], textContent: winner.size });
-      const winnerTime = new CreateElement({ tag: "span", classes: ["winners-modal__list-time"], textContent: `${formattedMin}:${formattedSec}` });
+      const listItem = new CreateElement({
+        tag: "li",
+        classes: ["winners-modal__list-item"]
+      });
+      const winnerIndex = new CreateElement({
+        tag: "span",
+        classes: ["winners-modal__list-index"],
+        textContent: currentIndex
+      });
+      const winnerTitle = new CreateElement({
+        tag: "span",
+        classes: ["winners-modal__list-title"],
+        textContent: winner.title
+      });
+      const winnerSize = new CreateElement({
+        tag: "span",
+        classes: ["winners-modal__list-size"],
+        textContent: winner.size
+      });
+      const winnerTime = new CreateElement({
+        tag: "span",
+        classes: ["winners-modal__list-time"],
+        textContent: `${formattedMin}:${formattedSec}`
+      });
       listItem.append(winnerIndex, winnerTitle, winnerSize, winnerTime);
       this.winnersList.append(listItem);
     });
@@ -3594,9 +3876,19 @@ createHTML_fn9 = function() {
   this.winnersBox = new CreateElement({ classes: ["winners-modal"] });
   this.overlay = new CreateElement({ classes: ["winners-modal__overlay"] });
   this.content = new CreateElement({ classes: ["winners-modal__content"] });
-  this.title = new CreateElement({ tag: "h3", classes: ["winners-modal__title"], textContent: "List of winners" });
-  this.closeBtn = new CreateElement({ tag: "btn", classes: ["btn-reset", "winners-modal__close-btn"] });
-  this.winnersList = new CreateElement({ tag: "ul", classes: ["list-reset", "winners-modal__list"] });
+  this.title = new CreateElement({
+    tag: "h3",
+    classes: ["winners-modal__title"],
+    textContent: "List of winners"
+  });
+  this.closeBtn = new CreateElement({
+    tag: "btn",
+    classes: ["btn-reset", "winners-modal__close-btn"]
+  });
+  this.winnersList = new CreateElement({
+    tag: "ul",
+    classes: ["list-reset", "winners-modal__list"]
+  });
   this.content.append(this.title, this.winnersList, this.closeBtn);
   this.overlay.append(this.content);
   this.winnersBox.append(this.overlay);
@@ -3605,16 +3897,16 @@ const mainView = "";
 class MainView {
   constructor(mediator) {
     /**
-    * create HTML main
-    */
+     * create HTML main
+     */
     __privateAdd(this, _createHTML10);
     this.mediator = mediator;
     __privateMethod(this, _createHTML10, createHTML_fn10).call(this);
   }
   /**
-  * get HTML main
-  * @returns {Element} HTML-Element main
-  */
+   * get HTML main
+   * @returns {Element} HTML-Element main
+   */
   getHTML() {
     return this.main;
   }
@@ -3626,8 +3918,17 @@ createHTML_fn10 = function() {
   this.modal = new ModalView();
   this.timer = new TimerView();
   this.winners = new WinnersView();
-  this.gameField = new GameFieldView(this.modal, this.timer, this.winners, this.audio);
-  this.settingsBox = new SettingsGameView(this.gameField, this.timer, this.audio);
+  this.gameField = new GameFieldView(
+    this.modal,
+    this.timer,
+    this.winners,
+    this.audio
+  );
+  this.settingsBox = new SettingsGameView(
+    this.gameField,
+    this.timer,
+    this.audio
+  );
   this.main.append(
     this.gameField.getHTML(),
     this.modal.getHTML(),
@@ -3640,14 +3941,10 @@ class App {
     if (!localStorage.getItem("kleostro")) {
       localStorage.setItem("kleostro", JSON.stringify({}));
     }
-    this.mediator = new Mediator();
     this.main = new MainView();
     this.header = new HeaderView(this.main.winners);
-    document.body.prepend(
-      this.header.getHTML(),
-      this.main.getHTML()
-    );
+    document.body.prepend(this.header.getHTML(), this.main.getHTML());
   }
 }
 new App();
-//# sourceMappingURL=main-0fd20398.js.map
+//# sourceMappingURL=main-06009cd6.js.map
