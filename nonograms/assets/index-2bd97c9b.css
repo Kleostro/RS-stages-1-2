@@ -20,7 +20,8 @@ html {
   /* 2. Prevent adjustments of font size after orientation changes in iOS. */
   -moz-tab-size: 4;
   /* 3. Use a more readable tab size (opinionated). */
-  tab-size: 4;
+  -o-tab-size: 4;
+     tab-size: 4;
   /* 3 */
 }
 /*
@@ -53,7 +54,8 @@ Text-level semantics
 Add the correct text decoration in Chrome, Edge, and Safari.
 */
 abbr[title] {
-  text-decoration: underline dotted;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
 }
 /**
 Add the correct font weight in Edge and Safari.
@@ -260,7 +262,9 @@ textarea {
 }
 .lock {
   pointer-events: none;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .stop-scroll {
   overflow-x: hidden;
@@ -505,6 +509,7 @@ img {
   align-items: center;
   justify-content: center;
   padding: var(--little-offset) var(--small-offset);
+  height: -moz-max-content;
   height: max-content;
   letter-spacing: 1px;
   text-transform: capitalize;
@@ -551,7 +556,8 @@ img {
     font-size: 25px;
     background-color: var(--burger-bg);
     transform: translateX(100%);
-    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
     gap: var(--medium-offset);
   }
 }
@@ -624,7 +630,9 @@ img {
 .game__field {
   display: grid;
   margin-bottom: var(--small-offset);
+  height: -moz-max-content;
   height: max-content;
+  max-width: -moz-max-content;
   max-width: max-content;
 }
 .game__field.small {
@@ -660,7 +668,9 @@ img {
   border: 2px solid var(--playground-border);
   background-color: var(--playground-bg);
   transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .playground__row {
   display: flex;
@@ -745,7 +755,8 @@ img {
   visibility: hidden;
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
   cursor: pointer;
-  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
   inset: 0;
 }
 .modal__overlay.hidden {
@@ -829,6 +840,7 @@ img {
   position: relative;
   grid-column: 1 span;
   grid-row: 4;
+  height: -moz-max-content;
   height: max-content;
 }
 .game__settings-container .size__top,
@@ -843,7 +855,9 @@ img {
   background-color: var(--settings-game-bg);
   transition: border-radius 0.2s ease-in-out;
   cursor: pointer;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .game__settings-container .size__top::before,
 .game__settings-container .name__top::before {
@@ -1021,7 +1035,8 @@ img {
   visibility: hidden;
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
   cursor: pointer;
-  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
   inset: 0;
 }
 .winners-modal__overlay.hidden {
