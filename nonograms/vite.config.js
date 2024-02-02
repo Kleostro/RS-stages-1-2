@@ -2,6 +2,7 @@
 import Inspect from 'vite-plugin-inspect';
 import { resolve } from 'path';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import autoprefixer from 'autoprefixer';
 
 export default {
   publicDir: 'assets',
@@ -29,5 +30,12 @@ export default {
     minify: false,
     compact: false,
     sourcemap: true,
+  },
+  css: {
+    postcss: {
+      plugins: [
+        autoprefixer(),
+      ],
+    },
   },
 };
