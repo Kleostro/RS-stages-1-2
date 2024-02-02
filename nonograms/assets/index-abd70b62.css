@@ -853,7 +853,7 @@ img {
   padding: var(--little-offset) var(--little-offset);
   min-width: 160px;
   background-color: var(--settings-game-bg);
-  transition: border-radius 0.2s ease-in-out;
+  transition: border-radius 0.2s ease-in-out, background-color 0.2s ease-in-out;
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -890,6 +890,12 @@ img {
 .game__settings-container .size__top.active::after,
 .game__settings-container .name__top.active::after {
   transform: rotate(-135deg);
+}
+@media (hover: hover) {
+  .game__settings-container .size__top:hover,
+  .game__settings-container .name__top:hover {
+    background-color: var(--settings-app-btn-bg-hover);
+  }
 }
 .game__settings-container .size__title,
 .game__settings-container .name__title {
