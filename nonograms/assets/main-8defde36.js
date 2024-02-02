@@ -282,9 +282,19 @@ class HeaderView {
 _createHTML2 = new WeakSet();
 createHTML_fn2 = function() {
   this.header = new CreateElement({ tag: "header", classes: ["header"] });
-  this.headerContainer = new CreateElement({ tag: "div", classes: ["header__container", "container"] });
   this.title = new CreateElement({ tag: "h1", classes: ["header__title"], textContent: "Nonograms" });
-  this.headerContainer.append(this.title, this.settingsApp.getHTML());
+  this.headerContainer = new CreateElement({ tag: "div", classes: ["header__container", "container"] });
+  this.burger = new CreateElement({ tag: "button", classes: ["btn-reset", "burger"] });
+  this.burgerLineOne = new CreateElement({ tag: "span", classes: ["burger__line"] });
+  this.burgerLineTwo = new CreateElement({ tag: "span", classes: ["burger__line"] });
+  this.burgerLineThree = new CreateElement({ tag: "span", classes: ["burger__line"] });
+  this.burger.addEventListener("click", () => {
+    this.burger.classList.toggle("open");
+    this.burger.previousSibling.classList.toggle("open");
+    document.body.classList.toggle("stop-scroll");
+  });
+  this.burger.append(this.burgerLineOne, this.burgerLineTwo, this.burgerLineThree);
+  this.headerContainer.append(this.title, this.settingsApp.getHTML(), this.burger);
   this.header.append(this.headerContainer);
 };
 const audio = "";
@@ -3015,6 +3025,7 @@ class SettingsGameView {
     /**
     * create HTML settings game
     */
+    // eslint-disable-next-line max-lines-per-function
     __privateAdd(this, _createHTML7);
     this.gameField = gameField;
     this.timer = timer;
@@ -3359,9 +3370,28 @@ createHTML_fn7 = function() {
   this.settingsNameTitle.append(this.settingsNameSubtitle);
   this.settingsNameTop.append(this.settingsNameTitle);
   this.settingsNameBox.append(this.settingsNameTop, this.settingsNameDrop);
-  this.settingsContainer.append(this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn, this.settingsSizeBox, this.settingsNameBox);
+  this.settingsContainer.append(
+    this.startGameBtn,
+    this.showSolutionBtn,
+    this.resetGameBtn,
+    this.saveGameBtn,
+    this.continueGameBtn,
+    this.randomGameBtn,
+    this.settingsSizeBox,
+    this.settingsNameBox
+  );
   this.settings.append(this.settingsContainer);
   this.gameField.gameFieldContainer.append(this.settings);
+  document.addEventListener("click", ({ target }) => {
+    if (this.settingsSizeTop.classList.contains("active") && !this.settingsSizeBox.contains(target) && !this.settingsNameBox.contains(target)) {
+      this.isLockListSizes = !this.isLockListSizes;
+      __privateMethod(this, _hiddenSizesDropList, hiddenSizesDropList_fn).call(this);
+    }
+    if (this.settingsNameTop.classList.contains("active") && !this.settingsNameBox.contains(target) && !this.settingsSizeBox.contains(target)) {
+      this.isLockListNames = !this.isLockListNames;
+      __privateMethod(this, _hiddenDropListNames, hiddenDropListNames_fn).call(this);
+    }
+  });
   this.settingsSizeTop.addEventListener("mouseover", () => {
     if (!this.isLockListSizes) {
       __privateMethod(this, _showSizesDropList, showSizesDropList_fn).call(this);
@@ -3620,4 +3650,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-65bdf7cb.js.map
+//# sourceMappingURL=main-8defde36.js.map
