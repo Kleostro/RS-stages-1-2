@@ -8,8 +8,8 @@ import WinnersView from './winners/WinnersView';
 import './mainView.scss';
 
 /** Create a main
-* @class
-*/
+ * @class
+ */
 class MainView {
   constructor(mediator) {
     this.mediator = mediator;
@@ -17,24 +17,33 @@ class MainView {
   }
 
   /**
-  * get HTML main
-  * @returns {Element} HTML-Element main
-  */
+   * get HTML main
+   * @returns {Element} HTML-Element main
+   */
   getHTML() {
     return this.main;
   }
 
   /**
-  * create HTML main
-  */
+   * create HTML main
+   */
   #createHTML() {
     this.main = new CreateElement({ tag: 'main', classes: ['main'] });
     this.audio = new AudioModel();
     this.modal = new ModalView();
     this.timer = new TimerView();
     this.winners = new WinnersView();
-    this.gameField = new GameFieldView(this.modal, this.timer, this.winners, this.audio);
-    this.settingsBox = new SettingsGameView(this.gameField, this.timer, this.audio);
+    this.gameField = new GameFieldView(
+      this.modal,
+      this.timer,
+      this.winners,
+      this.audio,
+    );
+    this.settingsBox = new SettingsGameView(
+      this.gameField,
+      this.timer,
+      this.audio,
+    );
 
     this.main.append(
       this.gameField.getHTML(),

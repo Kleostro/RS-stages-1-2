@@ -34,10 +34,6 @@ class Mediator {
     }
   }
 
-  // unsubscribe(nameEvent, listener) {
-
-  // }
-
   /**
    * @param {string} nameEvent
    * @param {string} params
@@ -46,6 +42,21 @@ class Mediator {
     const eventListeners = this.listeners.get(nameEvent);
     if (eventListeners) {
       eventListeners.forEach((listener) => listener(params));
+    }
+  }
+
+  /**
+   * @param {string} nameEvent
+   * @param {function} listener
+   */
+  unsubscribe(nameEvent, listener) {
+    if (this.listeners.has(nameEvent)) {
+      const listeners = this.listeners.get(nameEvent);
+      const index = listeners.indexOf(listener);
+
+      if (index !== -1) {
+        listeners.splice(index, 1);
+      }
     }
   }
 }

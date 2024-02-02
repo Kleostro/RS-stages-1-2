@@ -15,17 +15,17 @@ class TimerView {
   }
 
   /**
-  * get HTML timer
-  * @returns {Element} HTML-Element timer
-  */
+   * get HTML timer
+   * @returns {Element} HTML-Element timer
+   */
   getHTML() {
     return this.timer;
   }
 
   /**
-  * start timer
-  * @returns {number} - ID timer
-  */
+   * start timer
+   * @returns {number} - ID timer
+   */
   startTimer() {
     this.isStart = true;
     this.intervalID = setInterval(() => {
@@ -38,37 +38,45 @@ class TimerView {
   }
 
   /**
-  * stop timer
-  */
+   * stop timer
+   */
   stopTimer() {
     clearInterval(this.intervalID);
     this.isStart = false;
   }
 
   /**
-  * get current time
-  * @returns {number} - current time
-  */
+   * get current time
+   * @returns {number} - current time
+   */
   getTime() {
     return this.currentTime;
   }
 
   /**
-  * formatted time
-  * @returns {object} - formatted time
-  */
+   * formatted time
+   * @returns {object} - formatted time
+   */
   formattedTime() {
-    const formattedMin = Math.floor(this.currentTime / MAX_SEC_IN_MIN).toString().padStart(2, '0');
-    const formattedSec = (this.currentTime % MAX_MS_IN_SEC).toString().padStart(2, '0');
+    const formattedMin = Math.floor(this.currentTime / MAX_SEC_IN_MIN)
+      .toString()
+      .padStart(2, '0');
+    const formattedSec = (this.currentTime % MAX_MS_IN_SEC)
+      .toString()
+      .padStart(2, '0');
 
     return { formattedMin, formattedSec };
   }
 
   /**
-  * create HTML timer
-  */
+   * create HTML timer
+   */
   #createHTML() {
-    this.timer = new CreateElement({ tag: 'span', classes: ['timer'], textContent: '00:00' });
+    this.timer = new CreateElement({
+      tag: 'span',
+      classes: ['timer'],
+      textContent: '00:00',
+    });
   }
 }
 

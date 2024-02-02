@@ -16,11 +16,23 @@ class AudioModel {
     this.BgOnOff = SOUND_ON;
     this.#createHTML();
 
-    const singletonMediator = Mediator.getInstance();
-    singletonMediator.subscribe(AppEvent.toggleSettingsSound, this.setSettingsSoundOnOff.bind(this));
-    singletonMediator.subscribe(AppEvent.toggleSoundBg, this.setBgSoundOnOff.bind(this));
-    singletonMediator.subscribe(AppEvent.settingsClick, this.playSettingsGameClick.bind(this));
-    singletonMediator.subscribe(AppEvent.soundBg, this.playBgSound.bind(this));
+    this.singletonMediator = Mediator.getInstance();
+    this.singletonMediator.subscribe(
+      AppEvent.toggleSettingsSound,
+      this.setSettingsSoundOnOff.bind(this),
+    );
+    this.singletonMediator.subscribe(
+      AppEvent.toggleSoundBg,
+      this.setBgSoundOnOff.bind(this),
+    );
+    this.singletonMediator.subscribe(
+      AppEvent.settingsClick,
+      this.playSettingsGameClick.bind(this),
+    );
+    this.singletonMediator.subscribe(
+      AppEvent.soundBg,
+      this.playBgSound.bind(this),
+    );
 
     const LS = JSON.parse(localStorage.getItem('kleostro'));
 
@@ -41,8 +53,8 @@ class AudioModel {
   }
 
   /**
-  * @param {string} value
-  */
+   * @param {string} value
+   */
   setBgSoundOnOff(value) {
     this.BgOnOff = value;
   }
@@ -91,13 +103,33 @@ class AudioModel {
   }
 
   #createHTML() {
-    this.soundBox = new CreateElement({ classes: ['sound-box', 'visually-hidden'] });
-    this.fieldSound = new CreateElement({ tag: 'audio', attrs: { src: fieldSound } });
-    this.crossedSound = new CreateElement({ tag: 'audio', attrs: { src: crossedSound } });
-    this.emptySound = new CreateElement({ tag: 'audio', attrs: { src: emptySound } });
-    this.winSound = new CreateElement({ tag: 'audio', attrs: { src: winSound } });
-    this.settingsGameSound = new CreateElement({ tag: 'audio', attrs: { src: settingsGameClick } });
-    this.bgSound = new CreateElement({ tag: 'audio', attrs: { src: bgSound, loop: '' } });
+    this.soundBox = new CreateElement({
+      classes: ['sound-box', 'visually-hidden'],
+    });
+    this.fieldSound = new CreateElement({
+      tag: 'audio',
+      attrs: { src: fieldSound },
+    });
+    this.crossedSound = new CreateElement({
+      tag: 'audio',
+      attrs: { src: crossedSound },
+    });
+    this.emptySound = new CreateElement({
+      tag: 'audio',
+      attrs: { src: emptySound },
+    });
+    this.winSound = new CreateElement({
+      tag: 'audio',
+      attrs: { src: winSound },
+    });
+    this.settingsGameSound = new CreateElement({
+      tag: 'audio',
+      attrs: { src: settingsGameClick },
+    });
+    this.bgSound = new CreateElement({
+      tag: 'audio',
+      attrs: { src: bgSound, loop: '' },
+    });
 
     this.soundBox.append(
       this.winSound,

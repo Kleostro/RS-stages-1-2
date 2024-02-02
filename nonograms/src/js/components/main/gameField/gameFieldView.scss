@@ -1,4 +1,4 @@
-@import "../../../../scss/breakpoints";
+@import '../../../../scss/breakpoints';
 
 .game {
   &__container {
@@ -14,7 +14,7 @@
 
   &__field {
     display: grid;
-    margin-bottom: var(--small-offset);
+    margin: 0 auto var(--small-offset);
     height: max-content;
     max-width: max-content;
 
@@ -59,7 +59,9 @@
   grid-row: 2;
   border: 2px solid var(--playground-border);
   background-color: var(--playground-bg);
-  transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  transition:
+    border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
   user-select: none;
 
   &__row {
@@ -89,7 +91,9 @@
 .top-hints {
   border: 2px solid var(--hints-border);
   background-color: var(--hints-bg);
-  transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  transition:
+    border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
 
   &__cell {
     display: flex;
@@ -99,7 +103,9 @@
     height: var(--cell-size);
     font-size: var(--cell-text);
     color: var(--hints-color);
-    transition: border 0.3s ease-in-out, color 0.3s ease-in-out;
+    transition:
+      border 0.3s ease-in-out,
+      color 0.3s ease-in-out;
   }
 }
 

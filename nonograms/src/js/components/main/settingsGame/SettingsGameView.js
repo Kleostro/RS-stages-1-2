@@ -5,11 +5,13 @@ import CellView from '../gameField/cell/CellView';
 
 const MAX_LETTERS_IN_SUBTITLE = 10;
 
+
 /** Create a settings
-* @class
-* @param {object} gameField - gameField class instance
-* @param {object} timer - timer class instance
-*/
+ * @class
+ * @param {object} gameField - gameField class instance
+ * @param {object} timer - timer class instance
+ * @param {object} audio - audio class instance
+ */
 class SettingsGameView {
   constructor(gameField, timer, audio) {
     this.gameField = gameField;
@@ -27,8 +29,16 @@ class SettingsGameView {
 
     this.#createHTML();
 
-    this.sizeBtnsArr.forEach((btn) => btn.addEventListener('click', ({ target }) => this.#updateBtnsSizeContent(target)));
-    this.nameBtnsArr.forEach((btn) => btn.addEventListener('click', ({ target }) => this.#updateBtnsNameContent(target)));
+    this.sizeBtnsArr.forEach((btn) =>
+      btn.addEventListener('click', ({ target }) =>
+        this.#updateBtnsSizeContent(target),
+      ),
+    );
+    this.nameBtnsArr.forEach((btn) =>
+      btn.addEventListener('click', ({ target }) =>
+        this.#updateBtnsNameContent(target),
+      ),
+    );
 
     const LS = JSON.parse(localStorage.getItem('kleostro'));
     if (!LS['current-game']) {
@@ -82,8 +92,14 @@ class SettingsGameView {
     this.audio.playSettingsGameClick();
     matrix.forEach((row, rowIndex) => {
       row.forEach((_, columnIndex) => {
-        cellElements[rowIndex][columnIndex].cell.classList.remove('field', 'crossed');
-        if (cellElements[rowIndex][columnIndex].cellValue === 1 && !this.isShowSolution) {
+        cellElements[rowIndex][columnIndex].cell.classList.remove(
+          'field',
+          'crossed',
+        );
+        if (
+          cellElements[rowIndex][columnIndex].cellValue === 1 &&
+          !this.isShowSolution
+        ) {
           cellElements[rowIndex][columnIndex].cell.classList.add('field');
         }
       });
@@ -150,13 +166,17 @@ class SettingsGameView {
     this.gameField.leftHintsBox.innerHTML = LS['left-hints'];
     this.gameField.topHintsBox.innerHTML = LS['top-hints'];
 
-    this.gameField.originalMatrix = JSON.parse(LS['current-game']).originalMatrix;
+    this.gameField.originalMatrix = JSON.parse(
+      LS['current-game'],
+    ).originalMatrix;
     this.gameField.originalTitle = JSON.parse(LS['current-game']).originalTitle;
     this.gameField.originalSize = JSON.parse(LS['current-game']).originalSize;
 
     this.#updateSizeGameField();
 
-    this.settingsSizeSubtitle.textContent = JSON.parse(LS['current-game']).originalSize;
+    this.settingsSizeSubtitle.textContent = JSON.parse(
+      LS['current-game'],
+    ).originalSize;
     this.#undisabledBtns(this.sizeBtnsArr);
     this.sizeBtnsArr.forEach((btn) => {
       const currentBtn = btn;
@@ -166,7 +186,9 @@ class SettingsGameView {
     });
 
     this.#updateListNames();
-    this.settingsNameSubtitle.textContent = JSON.parse(LS['current-game']).originalTitle;
+    this.settingsNameSubtitle.textContent = JSON.parse(
+      LS['current-game'],
+    ).originalTitle;
     this.#undisabledBtns(this.nameBtnsArr);
     this.nameBtnsArr.forEach((btn) => {
       const currentBtn = btn;
@@ -189,14 +211,21 @@ class SettingsGameView {
       this.gameField.playground.innerHTML = '';
 
       for (let row = 0; row < savedCells.length; row += 1) {
-        const rowElem = new CreateElement({ classes: ['playground__row'], attrs: { 'data-row': row } });
+        const rowElem = new CreateElement({
+          classes: ['playground__row'],
+          attrs: { 'data-row': row },
+        });
         this.gameField.cellElements[row] = [];
         this.gameField.cellValues[row] = [];
 
         for (let column = 0; column < savedCells[0].length; column += 1) {
           const cellParse = JSON.parse(savedCells[row][column]);
 
-          const cell = new CellView(cellParse.cellValue, this.audio, cellParse.state);
+          const cell = new CellView(
+            cellParse.cellValue,
+            this.audio,
+            cellParse.state,
+          );
 
           const cellElem = cell.getHTML();
           cellElem.setAttribute('data-cell', column);
@@ -283,6 +312,8 @@ class SettingsGameView {
         this.gameField.gameField.classList.add('large');
         break;
       }
+      default:
+        break;
     }
   }
 
@@ -309,7 +340,10 @@ class SettingsGameView {
     this.currentName = target.textContent;
 
     if (target.textContent.length > MAX_LETTERS_IN_SUBTITLE) {
-      const formattedSubtitle = target.textContent.slice(0, MAX_LETTERS_IN_SUBTITLE);
+      const formattedSubtitle = target.textContent.slice(
+        0,
+        MAX_LETTERS_IN_SUBTITLE,
+      );
       this.settingsNameSubtitle.textContent = `${formattedSubtitle}...`;
     } else {
       this.settingsNameSubtitle.textContent = target.textContent;
@@ -328,7 +362,9 @@ class SettingsGameView {
    * update the list of current titles
    */
   #updateListNames() {
-    const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
+    const filteredData = data.filter(
+      (item) => item.size === this.settingsSizeSubtitle.textContent,
+    );
 
     this.#undisabledBtns(this.nameBtnsArr);
 
@@ -353,10 +389,20 @@ class SettingsGameView {
 
     const uniqueDataArr = Array.from(uniqueDataObj);
 
-    const dropList = new CreateElement({ tag: 'ul', classes: ['size__drop', 'list-reset', 'hidden'] });
+    const dropList = new CreateElement({
+      tag: 'ul',
+      classes: ['size__drop', 'list-reset', 'hidden'],
+    });
     uniqueDataArr.forEach((item, index) => {
-      const listItem = new CreateElement({ tag: 'li', classes: ['size__drop-item'] });
-      const btn = new CreateElement({ tag: 'button', classes: ['size__drop-btn', 'btn-reset'], textContent: item });
+      const listItem = new CreateElement({
+        tag: 'li',
+        classes: ['size__drop-item'],
+      });
+      const btn = new CreateElement({
+        tag: 'button',
+        classes: ['size__drop-btn', 'btn-reset'],
+        textContent: item,
+      });
 
       if (index === 0) {
         btn.disabled = true;
@@ -376,12 +422,24 @@ class SettingsGameView {
    * create list names
    */
   #createDropListNames() {
-    const filteredData = data.filter((item) => item.size === this.settingsSizeSubtitle.textContent);
+    const filteredData = data.filter(
+      (item) => item.size === this.settingsSizeSubtitle.textContent,
+    );
 
-    const dropList = new CreateElement({ tag: 'ul', classes: ['name__drop', 'list-reset', 'hidden'] });
+    const dropList = new CreateElement({
+      tag: 'ul',
+      classes: ['name__drop', 'list-reset', 'hidden'],
+    });
     filteredData.forEach((item, index) => {
-      const listItem = new CreateElement({ tag: 'li', classes: ['name__drop-item'] });
-      const btn = new CreateElement({ tag: 'button', classes: ['name__drop-btn', 'btn-reset'], textContent: item.title });
+      const listItem = new CreateElement({
+        tag: 'li',
+        classes: ['name__drop-item'],
+      });
+      const btn = new CreateElement({
+        tag: 'button',
+        classes: ['name__drop-btn', 'btn-reset'],
+        textContent: item.title,
+      });
 
       if (index === 0) {
         btn.disabled = true;
@@ -419,28 +477,68 @@ class SettingsGameView {
   }
 
   /**
-  * create HTML settings game
-  */
+   * create HTML settings game
+   */
   // eslint-disable-next-line max-lines-per-function
   #createHTML() {
     this.settings = new CreateElement({ classes: ['game__settings'] });
-    this.settingsContainer = new CreateElement({ classes: ['game__settings-container'] });
+    this.settingsContainer = new CreateElement({
+      classes: ['game__settings-container'],
+    });
     this.settingsSizeBox = new CreateElement({ classes: ['size'] });
     this.settingsSizeTop = new CreateElement({ classes: ['size__top'] });
-    this.settingsSizeTitle = new CreateElement({ tag: 'h3', classes: ['size__title'], textContent: 'Size: ' });
-    this.settingsSizeSubtitle = new CreateElement({ tag: 'span', classes: ['size__subtitle'] });
+    this.settingsSizeTitle = new CreateElement({
+      tag: 'h3',
+      classes: ['size__title'],
+      textContent: 'Size: ',
+    });
+    this.settingsSizeSubtitle = new CreateElement({
+      tag: 'span',
+      classes: ['size__subtitle'],
+    });
     this.settingsSizeDrop = this.#createDropListSizes();
     this.settingsNameBox = new CreateElement({ classes: ['name'] });
     this.settingsNameTop = new CreateElement({ classes: ['name__top'] });
-    this.settingsNameTitle = new CreateElement({ tag: 'h3', classes: ['name__title'], textContent: 'Selected: ' });
-    this.settingsNameSubtitle = new CreateElement({ tag: 'span', classes: ['name__subtitle'] });
+    this.settingsNameTitle = new CreateElement({
+      tag: 'h3',
+      classes: ['name__title'],
+      textContent: 'Selected: ',
+    });
+    this.settingsNameSubtitle = new CreateElement({
+      tag: 'span',
+      classes: ['name__subtitle'],
+    });
     this.settingsNameDrop = this.#createDropListNames();
-    this.startGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'start-game'], textContent: 'Play' });
-    this.showSolutionBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'show-solution'], textContent: 'Show Solution' });
-    this.resetGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'reset-game'], textContent: 'Reset' });
-    this.saveGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'save-game'], textContent: 'Save game' });
-    this.continueGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'continue-game'], textContent: 'Continue last game' });
-    this.randomGameBtn = new CreateElement({ tag: 'button', classes: ['btn-reset', 'random-game'], textContent: 'Random game' });
+    this.startGameBtn = new CreateElement({
+      tag: 'button',
+      classes: ['btn-reset', 'start-game'],
+      textContent: 'Play',
+    });
+    this.showSolutionBtn = new CreateElement({
+      tag: 'button',
+      classes: ['btn-reset', 'show-solution'],
+      textContent: 'Show Solution',
+    });
+    this.resetGameBtn = new CreateElement({
+      tag: 'button',
+      classes: ['btn-reset', 'reset-game'],
+      textContent: 'Reset',
+    });
+    this.saveGameBtn = new CreateElement({
+      tag: 'button',
+      classes: ['btn-reset', 'save-game'],
+      textContent: 'Save game',
+    });
+    this.continueGameBtn = new CreateElement({
+      tag: 'button',
+      classes: ['btn-reset', 'continue-game'],
+      textContent: 'Continue last game',
+    });
+    this.randomGameBtn = new CreateElement({
+      tag: 'button',
+      classes: ['btn-reset', 'random-game'],
+      textContent: 'Random game',
+    });
     this.settingsSizeTitle.append(this.settingsSizeSubtitle);
     this.settingsSizeTop.append(this.settingsSizeTitle);
     this.settingsSizeBox.append(this.settingsSizeTop, this.settingsSizeDrop);
@@ -461,12 +559,20 @@ class SettingsGameView {
     this.gameField.gameFieldContainer.append(this.settings);
 
     document.addEventListener('click', ({ target }) => {
-      if (this.settingsSizeTop.classList.contains('active') && !this.settingsSizeBox.contains(target) && !this.settingsNameBox.contains(target)) {
+      if (
+        this.settingsSizeTop.classList.contains('active') &&
+        !this.settingsSizeBox.contains(target) &&
+        !this.settingsNameBox.contains(target)
+      ) {
         this.isLockListSizes = !this.isLockListSizes;
         this.#hiddenSizesDropList();
       }
 
-      if (this.settingsNameTop.classList.contains('active') && !this.settingsNameBox.contains(target) && !this.settingsSizeBox.contains(target)) {
+      if (
+        this.settingsNameTop.classList.contains('active') &&
+        !this.settingsNameBox.contains(target) &&
+        !this.settingsSizeBox.contains(target)
+      ) {
         this.isLockListNames = !this.isLockListNames;
         this.#hiddenDropListNames();
       }
@@ -508,7 +614,10 @@ class SettingsGameView {
     });
     this.showSolutionBtn.addEventListener('click', () => {
       if (!this.gameField.isShowSolution && !this.gameField.isEndGame) {
-        this.#showSolutionHandler.apply(this, [this.gameField.originalMatrix, this.gameField.cellElements]);
+        this.#showSolutionHandler.apply(this, [
+          this.gameField.originalMatrix,
+          this.gameField.cellElements,
+        ]);
         this.gameField.lockPlayground();
       }
       this.showSolutionBtn.disabled = true;
@@ -516,8 +625,14 @@ class SettingsGameView {
       this.resetGameBtn.disabled = true;
       this.continueGameBtn.disabled = true;
     });
-    this.resetGameBtn.addEventListener('click', this.#resetGameHandler.bind(this));
-    this.saveGameBtn.addEventListener('click', this.#saveGameHandler.bind(this));
+    this.resetGameBtn.addEventListener(
+      'click',
+      this.#resetGameHandler.bind(this),
+    );
+    this.saveGameBtn.addEventListener(
+      'click',
+      this.#saveGameHandler.bind(this),
+    );
     this.continueGameBtn.addEventListener('click', () => {
       this.showSolutionBtn.disabled = false;
       this.resetGameBtn.disabled = false;
@@ -531,7 +646,10 @@ class SettingsGameView {
       const { formattedMin, formattedSec } = this.timer.formattedTime();
       this.timer.timer.textContent = `${formattedMin}:${formattedSec}`;
     });
-    this.randomGameBtn.addEventListener('click', this.#randomGameHandler.bind(this));
+    this.randomGameBtn.addEventListener(
+      'click',
+      this.#randomGameHandler.bind(this),
+    );
   }
 }
 

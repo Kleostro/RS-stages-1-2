@@ -3,10 +3,9 @@ module.exports = {
     commonjs: true,
     es6: true,
     node: true,
-    mocha: true,
     browser: true,
   },
-  extends: ['airbnb-base'],
+  extends: ['airbnb-base', 'prettier'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
@@ -15,6 +14,6 @@ module.exports = {
     ecmaVersion: 13,
   },
   rules: {
-    'max-lines-per-function': ['error', { max: 40, skipBlankLines: true }],
+    'max-lines-per-function': ['error', { max: 100, skipBlankLines: true }],
   },
 };

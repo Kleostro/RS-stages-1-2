@@ -7,12 +7,7 @@
  * @param {string} options.textContent - The text content of the element.
  * @returns {Element} - The DOM element created.
  */
-function CreateElement({
-  tag = 'div',
-  classes = [],
-  attrs = {},
-  textContent,
-}) {
+function CreateElement({ tag = 'div', classes = [], attrs = {}, textContent }) {
   this.tag = tag;
   this.classes = classes;
   this.attrs = attrs;

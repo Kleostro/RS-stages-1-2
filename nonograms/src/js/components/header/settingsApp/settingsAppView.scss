@@ -1,4 +1,4 @@
-@import "../../../../scss/breakpoints";
+@import '../../../../scss/breakpoints';
 
 .header__settings {
   display: flex;
@@ -47,7 +47,9 @@
     text-transform: capitalize;
     color: var(--settings-app-btn-color);
     background-color: var(--settings-app-btn-bg);
-    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
+    transition:
+      transform 0.1s ease-in,
+      background-color 0.2s ease-in;
 
     @media (hover: hover) {
       &:hover {

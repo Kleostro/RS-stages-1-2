@@ -2,10 +2,10 @@ import CreateElement from '../../../../CreateElement';
 import './cellView.scss';
 
 /** Create a cell
-* @class
-* @param {number} cellValue - Cell value: 0 - unpainted, 1 - painted
-* @param {string} state - Cell state (default is 'empty')
-*/
+ * @class
+ * @param {number} cellValue - Cell value: 0 - unpainted, 1 - painted
+ * @param {string} state - Cell state (default is 'empty')
+ */
 class CellView {
   constructor(cellValue, audio, state = 'empty') {
     this.audio = audio;
@@ -27,7 +27,8 @@ class CellView {
         case 'crossed':
           this.#setEmpty(event);
           break;
-        default: break;
+        default:
+          break;
       }
     });
 
@@ -109,8 +110,8 @@ class CellView {
   }
 
   /**
-  * create HTML cell
-  */
+   * create HTML cell
+   */
   #createHTML() {
     this.cell = new CreateElement({ classes: ['cell'] });
   }

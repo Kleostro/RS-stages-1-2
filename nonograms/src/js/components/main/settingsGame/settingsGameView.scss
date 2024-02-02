@@ -1,4 +1,4 @@
-@import "../../../../scss/breakpoints";
+@import '../../../../scss/breakpoints';
 
 .game__settings {
   &-container {
@@ -26,7 +26,7 @@
         user-select: none;
 
         &::before {
-          content: "";
+          content: '';
           position: absolute;
           right: 11px;
           top: 15px;
@@ -38,7 +38,7 @@
         }
 
         &::after {
-          content: "";
+          content: '';
           position: absolute;
           right: 5px;
           top: 15px;
@@ -88,7 +88,10 @@
         width: 100%;
         background-color: var(--settings-game-bg);
         transform: none;
-        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, transform 0.2s ease-in-out;
+        transition:
+          opacity 0.2s ease-in-out,
+          visibility 0.2s ease-in-out,
+          transform 0.2s ease-in-out;
 
         &-item {
           width: 100%;
@@ -99,7 +102,9 @@
           width: 100%;
           font-size: 16px;
           color: var(--settings-game-text);
-          transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+          transition:
+            background-color 0.2s ease-in-out,
+            color 0.2s ease-in-out;
 
           &:disabled {
             color: var(--settings-game-text-accent);
@@ -136,7 +141,10 @@
       text-transform: capitalize;
       color: var(--settings-app-btn-color);
       background-color: var(--settings-app-btn-bg);
-      transition: transform 0.1s ease-in, background-color 0.2s ease-in, opacity 0.2s ease-in;
+      transition:
+        transform 0.1s ease-in,
+        background-color 0.2s ease-in,
+        opacity 0.2s ease-in;
 
       @media (hover: hover) {
         &:hover {

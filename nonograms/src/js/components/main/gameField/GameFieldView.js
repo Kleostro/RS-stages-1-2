@@ -64,16 +64,16 @@ class GameFieldView {
   }
 
   /**
-  * get HTML cell
-  * @returns {Element} HTML-Element cell
-  */
+   * get HTML cell
+   * @returns {Element} HTML-Element cell
+   */
   getHTML() {
     return this.gameFieldSection;
   }
 
   /**
-  * removes cell and row highlighting
-  */
+   * removes cell and row highlighting
+   */
   #removeHighlightCells() {
     this.cellElements.forEach((row) => {
       row.forEach((cell) => {
@@ -85,9 +85,9 @@ class GameFieldView {
   }
 
   /**
-  * adds cell and row highlighting
-  * @param {target} - current cell
-  */
+   * adds cell and row highlighting
+   * @param {target} - current cell
+   */
   #highlightCurrentColumnAndRow(target) {
     let currentTarget = target;
 
@@ -126,14 +126,17 @@ class GameFieldView {
    */
   createHints(matrix) {
     DIRECTIONS.forEach((direction) => {
-      const hintsBox = direction === DIRECTIONS[0] ? this.leftHintsBox : this.topHintsBox;
+      const hintsBox =
+        direction === DIRECTIONS[0] ? this.leftHintsBox : this.topHintsBox;
       hintsBox.innerHTML = '';
 
       for (let row = 0; row < matrix.length; row += 1) {
         const hints = [];
         let hintValue = 0;
 
-        const hintRow = new CreateElement({ classes: [`${direction}-hints__row`] });
+        const hintRow = new CreateElement({
+          classes: [`${direction}-hints__row`],
+        });
         hintsBox.append(hintRow);
 
         for (let column = 0; column < matrix[row].length; column += 1) {
@@ -153,7 +156,8 @@ class GameFieldView {
 
         hints.forEach((hint) => {
           const hintCell = new CreateElement({
-            classes: [`${direction}-hints__cell`], textContent: hint,
+            classes: [`${direction}-hints__cell`],
+            textContent: hint,
           });
           hintRow.append(hintCell);
         });
@@ -169,7 +173,10 @@ class GameFieldView {
     this.playground.innerHTML = '';
 
     for (let row = 0; row < matrix.length; row += 1) {
-      const rowElem = new CreateElement({ classes: ['playground__row'], attrs: { 'data-row': row } });
+      const rowElem = new CreateElement({
+        classes: ['playground__row'],
+        attrs: { 'data-row': row },
+      });
       this.cellElements[row] = [];
 
       for (let column = 0; column < matrix[0].length; column += 1) {
@@ -209,7 +216,8 @@ class GameFieldView {
         this.gameField.classList.add('large');
         break;
       }
-      default: break;
+      default:
+        break;
     }
 
     this.cellElements.length = 0;
@@ -229,8 +237,8 @@ class GameFieldView {
   }
 
   /**
-  * changes the locking of the playground
-  */
+   * changes the locking of the playground
+   */
   lockPlayground() {
     if (!this.isLockPlayground) {
       this.playground.classList.remove('lock');
@@ -241,8 +249,8 @@ class GameFieldView {
   }
 
   /**
-  * fills the array of cells with field
-  */
+   * fills the array of cells with field
+   */
   #cellHasClicked() {
     this.cellElements.forEach((row, rowIndex) => {
       this.cellValues[rowIndex] = [];
@@ -257,30 +265,42 @@ class GameFieldView {
   }
 
   /**
-  * checks the outcome of the game
-  * @param {number[][]} cellValues - two-dimensional array of current cell values
-  * @param {number[][]} matrix - two-dimensional array of the original matrix
-  */
+   * checks the outcome of the game
+   * @param {number[][]} cellValues - two-dimensional array of current cell values
+   * @param {number[][]} matrix - two-dimensional array of the original matrix
+   */
   #isWin(cellValues, matrix) {
-    if (cellValues
-      .every((_, rowIndex) => cellValues[rowIndex]
-        .every((elem, cellIndex) => elem === matrix[rowIndex][cellIndex]))
+    if (
+      cellValues.every((_, rowIndex) =>
+        cellValues[rowIndex].every(
+          (elem, cellIndex) => elem === matrix[rowIndex][cellIndex],
+        ),
+      )
     ) {
       this.timer.stopTimer();
       this.modal.show(MESSAGE, this.originalTitle, this.timer.formattedTime());
       this.lockPlayground();
       this.isEndGame = true;
-      this.winners.addWinner(this.originalTitle, this.originalSize, this.timer.getTime());
+      this.winners.addWinner(
+        this.originalTitle,
+        this.originalSize,
+        this.timer.getTime(),
+      );
       this.audio.playModal();
     }
   }
 
   /**
-  * create HTML gameField
-  */
+   * create HTML gameField
+   */
   #createHTML() {
-    this.gameFieldSection = new CreateElement({ tag: 'section', classes: ['game'] });
-    this.gameFieldContainer = new CreateElement({ classes: ['container', 'game__container'] });
+    this.gameFieldSection = new CreateElement({
+      tag: 'section',
+      classes: ['game'],
+    });
+    this.gameFieldContainer = new CreateElement({
+      classes: ['container', 'game__container'],
+    });
     this.gameField = new CreateElement({ classes: ['game__field'] });
     this.playground = new CreateElement({ classes: ['playground'] });
     this.leftHintsBox = new CreateElement({ classes: ['left-hints'] });

@@ -33,9 +33,7 @@ export default {
   },
   css: {
     postcss: {
-      plugins: [
-        autoprefixer(),
-      ],
+      plugins: [autoprefixer()],
     },
   },
 };

@@ -65,23 +65,62 @@ class WinnersView {
       return;
     }
 
-    const listIndex = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: '№' });
-    const listTitle = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Name' });
-    const listSize = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Size' });
-    const listTime = new CreateElement({ tag: 'li', classes: ['winners-modal__list-header'], textContent: 'Time' });
+    const listIndex = new CreateElement({
+      tag: 'li',
+      classes: ['winners-modal__list-header'],
+      textContent: '№',
+    });
+    const listTitle = new CreateElement({
+      tag: 'li',
+      classes: ['winners-modal__list-header'],
+      textContent: 'Name',
+    });
+    const listSize = new CreateElement({
+      tag: 'li',
+      classes: ['winners-modal__list-header'],
+      textContent: 'Size',
+    });
+    const listTime = new CreateElement({
+      tag: 'li',
+      classes: ['winners-modal__list-header'],
+      textContent: 'Time',
+    });
 
     this.winnersList.append(listIndex, listTitle, listSize, listTime);
 
     sortedListWinners.forEach((winner, index) => {
-      const formattedMin = Math.floor(winner.time / MAX_SEC_IN_MIN).toString().padStart(2, '0');
-      const formattedSec = (winner.time % MAX_MS_IN_SEC).toString().padStart(2, '0');
+      const formattedMin = Math.floor(winner.time / MAX_SEC_IN_MIN)
+        .toString()
+        .padStart(2, '0');
+      const formattedSec = (winner.time % MAX_MS_IN_SEC)
+        .toString()
+        .padStart(2, '0');
       const currentIndex = index + 1;
 
-      const listItem = new CreateElement({ tag: 'li', classes: ['winners-modal__list-item'] });
-      const winnerIndex = new CreateElement({ tag: 'span', classes: ['winners-modal__list-index'], textContent: currentIndex });
-      const winnerTitle = new CreateElement({ tag: 'span', classes: ['winners-modal__list-title'], textContent: winner.title });
-      const winnerSize = new CreateElement({ tag: 'span', classes: ['winners-modal__list-size'], textContent: winner.size });
-      const winnerTime = new CreateElement({ tag: 'span', classes: ['winners-modal__list-time'], textContent: `${formattedMin}:${formattedSec}` });
+      const listItem = new CreateElement({
+        tag: 'li',
+        classes: ['winners-modal__list-item'],
+      });
+      const winnerIndex = new CreateElement({
+        tag: 'span',
+        classes: ['winners-modal__list-index'],
+        textContent: currentIndex,
+      });
+      const winnerTitle = new CreateElement({
+        tag: 'span',
+        classes: ['winners-modal__list-title'],
+        textContent: winner.title,
+      });
+      const winnerSize = new CreateElement({
+        tag: 'span',
+        classes: ['winners-modal__list-size'],
+        textContent: winner.size,
+      });
+      const winnerTime = new CreateElement({
+        tag: 'span',
+        classes: ['winners-modal__list-time'],
+        textContent: `${formattedMin}:${formattedSec}`,
+      });
 
       listItem.append(winnerIndex, winnerTitle, winnerSize, winnerTime);
       this.winnersList.append(listItem);
@@ -92,10 +131,20 @@ class WinnersView {
     this.winnersBox = new CreateElement({ classes: ['winners-modal'] });
     this.overlay = new CreateElement({ classes: ['winners-modal__overlay'] });
     this.content = new CreateElement({ classes: ['winners-modal__content'] });
-    this.title = new CreateElement({ tag: 'h3', classes: ['winners-modal__title'], textContent: 'List of winners' });
-    this.closeBtn = new CreateElement({ tag: 'btn', classes: ['btn-reset', 'winners-modal__close-btn'] });
+    this.title = new CreateElement({
+      tag: 'h3',
+      classes: ['winners-modal__title'],
+      textContent: 'List of winners',
+    });
+    this.closeBtn = new CreateElement({
+      tag: 'btn',
+      classes: ['btn-reset', 'winners-modal__close-btn'],
+    });
 
-    this.winnersList = new CreateElement({ tag: 'ul', classes: ['list-reset', 'winners-modal__list'] });
+    this.winnersList = new CreateElement({
+      tag: 'ul',
+      classes: ['list-reset', 'winners-modal__list'],
+    });
 
     this.content.append(this.title, this.winnersList, this.closeBtn);
     this.overlay.append(this.content);
