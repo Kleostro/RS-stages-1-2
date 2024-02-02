@@ -629,7 +629,7 @@ img {
 }
 .game__field {
   display: grid;
-  margin-bottom: var(--small-offset);
+  margin: 0 auto var(--small-offset);
   height: -moz-max-content;
   height: max-content;
   max-width: -moz-max-content;
