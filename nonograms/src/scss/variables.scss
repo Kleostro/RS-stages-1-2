@@ -5,7 +5,7 @@
   --little-offset: 5px;
   --small-offset: 10px;
   --medium-offset: 30px;
-  --large-offset: 60px;
+  --large-offset: 100px;
 
   // size
   --cell-size: 20px;
@@ -17,6 +17,8 @@
   body.light {
     --body-bg: #b2b5e1;
     --header-title-color: #3f2a7e;
+    --burger-line-color: #fff;
+    --burger-bg: #aa9cd2bd;
     --settings-sounds-color: #3b3180;
     --settings-app-btn-bg: #7655d2;
     --settings-app-btn-bg-hover: #8669d6;
@@ -52,6 +54,8 @@
   body.dark {
     --body-bg: #1c1c1c;
     --header-title-color: #be6600;
+    --burger-line-color: #be6600;
+    --burger-bg: #363636bd;
     --settings-sounds-color: #b3b3b3;
     --settings-app-btn-bg: #c47809;
     --settings-app-btn-bg-hover: #e2a425;

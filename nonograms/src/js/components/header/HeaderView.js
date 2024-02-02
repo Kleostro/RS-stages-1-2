@@ -26,12 +26,23 @@ class HeaderView {
   */
   #createHTML() {
     this.header = new CreateElement({ tag: 'header', classes: ['header'] });
-    this.headerContainer = new CreateElement({ tag: 'div', classes: ['header__container', 'container'] });
     this.title = new CreateElement({ tag: 'h1', classes: ['header__title'], textContent: 'Nonograms' });
+    this.headerContainer = new CreateElement({ tag: 'div', classes: ['header__container', 'container'] });
+    this.burger = new CreateElement({ tag: 'button', classes: ['btn-reset', 'burger'] });
+    this.burgerLineOne = new CreateElement({ tag: 'span', classes: ['burger__line'] });
+    this.burgerLineTwo = new CreateElement({ tag: 'span', classes: ['burger__line'] });
+    this.burgerLineThree = new CreateElement({ tag: 'span', classes: ['burger__line'] });
 
-    this.headerContainer.append(this.title, this.settingsApp.getHTML());
+    this.burger.addEventListener('click', () => {
+      this.burger.classList.toggle('open');
+      this.burger.previousSibling.classList.toggle('open');
+      document.body.classList.toggle('stop-scroll');
+    });
+
+    this.burger.append(this.burgerLineOne, this.burgerLineTwo, this.burgerLineThree);
+
+    this.headerContainer.append(this.title, this.settingsApp.getHTML(), this.burger);
     this.header.append(this.headerContainer);
   }
 }
-
 export default HeaderView;

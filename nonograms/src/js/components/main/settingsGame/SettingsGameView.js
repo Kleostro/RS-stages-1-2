@@ -421,6 +421,7 @@ class SettingsGameView {
   /**
   * create HTML settings game
   */
+  // eslint-disable-next-line max-lines-per-function
   #createHTML() {
     this.settings = new CreateElement({ classes: ['game__settings'] });
     this.settingsContainer = new CreateElement({ classes: ['game__settings-container'] });
@@ -446,9 +447,31 @@ class SettingsGameView {
     this.settingsNameTitle.append(this.settingsNameSubtitle);
     this.settingsNameTop.append(this.settingsNameTitle);
     this.settingsNameBox.append(this.settingsNameTop, this.settingsNameDrop);
-    this.settingsContainer.append(this.startGameBtn, this.showSolutionBtn, this.resetGameBtn, this.saveGameBtn, this.continueGameBtn, this.randomGameBtn, this.settingsSizeBox, this.settingsNameBox);
+    this.settingsContainer.append(
+      this.startGameBtn,
+      this.showSolutionBtn,
+      this.resetGameBtn,
+      this.saveGameBtn,
+      this.continueGameBtn,
+      this.randomGameBtn,
+      this.settingsSizeBox,
+      this.settingsNameBox,
+    );
     this.settings.append(this.settingsContainer);
     this.gameField.gameFieldContainer.append(this.settings);
+
+    document.addEventListener('click', ({ target }) => {
+      if (this.settingsSizeTop.classList.contains('active') && !this.settingsSizeBox.contains(target) && !this.settingsNameBox.contains(target)) {
+        this.isLockListSizes = !this.isLockListSizes;
+        this.#hiddenSizesDropList();
+      }
+
+      if (this.settingsNameTop.classList.contains('active') && !this.settingsNameBox.contains(target) && !this.settingsSizeBox.contains(target)) {
+        this.isLockListNames = !this.isLockListNames;
+        this.#hiddenDropListNames();
+      }
+    });
+
     this.settingsSizeTop.addEventListener('mouseover', () => {
       if (!this.isLockListSizes) {
         this.#showSizesDropList();
