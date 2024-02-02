@@ -1,12 +1,12 @@
-@import '../../../../scss/breakpoints';
+@import "../../../../scss/breakpoints";
 
 .header__settings {
   display: flex;
+  transition: transform 0.3s ease-in-out;
   gap: var(--small-offset);
 
   &.open {
-    transform: none;
-    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
   }
 
   &-sounds-bg-box,
@@ -78,7 +78,7 @@
 
   @include tablet {
     position: fixed;
-    left: 0;
+    right: -100%;
     top: 0;
     z-index: 5;
     display: grid;
@@ -89,7 +89,7 @@
     height: 100%;
     font-size: 25px;
     background-color: var(--burger-bg);
-    transform: translateX(100%);
+    transform: none;
     backdrop-filter: blur(10px);
     gap: var(--medium-offset);
   }

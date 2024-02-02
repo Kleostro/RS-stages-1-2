@@ -21,7 +21,7 @@
         padding: var(--little-offset) var(--little-offset);
         min-width: 160px;
         background-color: var(--settings-game-bg);
-        transition: border-radius 0.2s ease-in-out;
+        transition: border-radius 0.2s ease-in-out, background-color 0.2s ease-in-out;
         cursor: pointer;
         user-select: none;
 
@@ -56,6 +56,12 @@
 
           &::after {
             transform: rotate(-135deg);
+          }
+        }
+
+        @media (hover: hover) {
+          &:hover {
+            background-color: var(--settings-app-btn-bg-hover);
           }
         }
       }

@@ -58,6 +58,14 @@ class HeaderView {
       document.body.classList.toggle('stop-scroll');
     });
 
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1000 && window.innerWidth < 1050) {
+        this.burger.classList.remove('open');
+        this.burger.previousSibling.classList.remove('open');
+        document.body.classList.remove('stop-scroll');
+      }
+    })
+
     this.burger.append(
       this.burgerLineOne,
       this.burgerLineTwo,
