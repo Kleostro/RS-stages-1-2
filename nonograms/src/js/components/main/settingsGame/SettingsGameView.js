@@ -5,7 +5,6 @@ import CellView from '../gameField/cell/CellView';
 
 const MAX_LETTERS_IN_SUBTITLE = 10;
 
-
 /** Create a settings
  * @class
  * @param {object} gameField - gameField class instance
@@ -28,17 +27,6 @@ class SettingsGameView {
     this.isLockListNames = false;
 
     this.#createHTML();
-
-    this.sizeBtnsArr.forEach((btn) =>
-      btn.addEventListener('click', ({ target }) =>
-        this.#updateBtnsSizeContent(target),
-      ),
-    );
-    this.nameBtnsArr.forEach((btn) =>
-      btn.addEventListener('click', ({ target }) =>
-        this.#updateBtnsNameContent(target),
-      ),
-    );
 
     const LS = JSON.parse(localStorage.getItem('kleostro'));
     if (!LS['current-game']) {
@@ -649,6 +637,16 @@ class SettingsGameView {
     this.randomGameBtn.addEventListener(
       'click',
       this.#randomGameHandler.bind(this),
+    );
+    this.sizeBtnsArr.forEach((btn) =>
+      btn.addEventListener('click', ({ target }) =>
+        this.#updateBtnsSizeContent(target),
+      ),
+    );
+    this.nameBtnsArr.forEach((btn) =>
+      btn.addEventListener('click', ({ target }) =>
+        this.#updateBtnsNameContent(target),
+      ),
     );
   }
 }

@@ -15,32 +15,6 @@ class CellView {
     this.#createHTML();
     this.#getField();
     this.#getCrossed();
-
-    this.cell.addEventListener('click', (event) => {
-      switch (this.state) {
-        case 'empty':
-          this.#setField(event);
-          break;
-        case 'field':
-          this.#setEmpty(event);
-          break;
-        case 'crossed':
-          this.#setEmpty(event);
-          break;
-        default:
-          break;
-      }
-    });
-
-    this.cell.addEventListener('contextmenu', (event) => {
-      event.preventDefault();
-
-      if (this.cell.classList.contains('crossed')) {
-        this.#setEmpty(event);
-      } else {
-        this.#setCrossed(event);
-      }
-    });
   }
 
   /**
@@ -114,6 +88,31 @@ class CellView {
    */
   #createHTML() {
     this.cell = new CreateElement({ classes: ['cell'] });
+    this.cell.addEventListener('click', (event) => {
+      switch (this.state) {
+        case 'empty':
+          this.#setField(event);
+          break;
+        case 'field':
+          this.#setEmpty(event);
+          break;
+        case 'crossed':
+          this.#setEmpty(event);
+          break;
+        default:
+          break;
+      }
+    });
+
+    this.cell.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+
+      if (this.cell.classList.contains('crossed')) {
+        this.#setEmpty(event);
+      } else {
+        this.#setCrossed(event);
+      }
+    });
   }
 }
 

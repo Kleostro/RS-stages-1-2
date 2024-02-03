@@ -15,14 +15,6 @@ class WinnersView {
       LS.winners = [];
       localStorage.setItem('kleostro', JSON.stringify(LS));
     }
-
-    this.closeBtn.addEventListener('click', () => this.show());
-
-    this.overlay.addEventListener('click', ({ target }) => {
-      if (target === this.overlay) {
-        this.show();
-      }
-    });
   }
 
   getHTML() {
@@ -149,6 +141,14 @@ class WinnersView {
     this.content.append(this.title, this.winnersList, this.closeBtn);
     this.overlay.append(this.content);
     this.winnersBox.append(this.overlay);
+
+    this.closeBtn.addEventListener('click', () => this.show());
+
+    this.overlay.addEventListener('click', ({ target }) => {
+      if (target === this.overlay) {
+        this.show();
+      }
+    });
   }
 }
 

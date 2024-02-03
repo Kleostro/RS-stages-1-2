@@ -35,32 +35,6 @@ class GameFieldView {
 
     this.#createHTML();
     this.startGame(this.currentNonogramObj);
-
-    this.playground.addEventListener('click', () => {
-      if (!this.timer.isStart) {
-        this.timer.startTimer();
-      }
-
-      this.#cellHasClicked();
-      this.#isWin(this.cellValues, this.originalMatrix);
-    });
-
-    this.playground.addEventListener('contextmenu', (event) => {
-      event.preventDefault();
-      if (!this.timer.isStart) {
-        this.timer.startTimer();
-      }
-    });
-
-    this.playground.addEventListener('mousemove', ({ target }) => {
-      if (target !== this.playground) {
-        this.#highlightCurrentColumnAndRow(target);
-      }
-    });
-
-    this.playground.addEventListener('mouseleave', () => {
-      this.#removeHighlightCells();
-    });
   }
 
   /**
@@ -314,6 +288,32 @@ class GameFieldView {
     );
     this.gameFieldContainer.append(this.gameField);
     this.gameFieldSection.append(this.gameFieldContainer);
+
+    this.playground.addEventListener('click', () => {
+      if (!this.timer.isStart) {
+        this.timer.startTimer();
+      }
+
+      this.#cellHasClicked();
+      this.#isWin(this.cellValues, this.originalMatrix);
+    });
+
+    this.playground.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      if (!this.timer.isStart) {
+        this.timer.startTimer();
+      }
+    });
+
+    this.playground.addEventListener('mousemove', ({ target }) => {
+      if (target !== this.playground) {
+        this.#highlightCurrentColumnAndRow(target);
+      }
+    });
+
+    this.playground.addEventListener('mouseleave', () => {
+      this.#removeHighlightCells();
+    });
   }
 }
 

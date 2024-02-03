@@ -64,7 +64,7 @@ class HeaderView {
         this.burger.previousSibling.classList.remove('open');
         document.body.classList.remove('stop-scroll');
       }
-    })
+    });
 
     this.burger.append(
       this.burgerLineOne,

@@ -8,16 +8,6 @@ class ModalView {
     this.time = null;
 
     this.#createHTML();
-
-    this.closeBtn.addEventListener('click', () =>
-      this.show(this.message, this.name, this.time),
-    );
-
-    this.overlay.addEventListener('click', ({ target }) => {
-      if (target === this.overlay) {
-        this.show(this.message, this.name, this.time);
-      }
-    });
   }
 
   /**
@@ -70,6 +60,16 @@ class ModalView {
     this.content.append(this.title, this.subtitle, this.closeBtn);
     this.overlay.append(this.content);
     this.modalBox.append(this.overlay);
+
+    this.closeBtn.addEventListener('click', () =>
+      this.show(this.message, this.name, this.time),
+    );
+
+    this.overlay.addEventListener('click', ({ target }) => {
+      if (target === this.overlay) {
+        this.show(this.message, this.name, this.time);
+      }
+    });
   }
 }
 
