@@ -539,27 +539,6 @@ class CellView {
     __privateMethod(this, _createHTML4, createHTML_fn4).call(this);
     __privateMethod(this, _getField, getField_fn).call(this);
     __privateMethod(this, _getCrossed, getCrossed_fn).call(this);
-    this.cell.addEventListener("click", (event) => {
-      switch (this.state) {
-        case "empty":
-          __privateMethod(this, _setField, setField_fn).call(this, event);
-          break;
-        case "field":
-          __privateMethod(this, _setEmpty, setEmpty_fn).call(this, event);
-          break;
-        case "crossed":
-          __privateMethod(this, _setEmpty, setEmpty_fn).call(this, event);
-          break;
-      }
-    });
-    this.cell.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-      if (this.cell.classList.contains("crossed")) {
-        __privateMethod(this, _setEmpty, setEmpty_fn).call(this, event);
-      } else {
-        __privateMethod(this, _setCrossed, setCrossed_fn).call(this, event);
-      }
-    });
   }
   /**
    * get HTML cell
@@ -611,6 +590,27 @@ setEmpty_fn = function(event) {
 _createHTML4 = new WeakSet();
 createHTML_fn4 = function() {
   this.cell = new CreateElement({ classes: ["cell"] });
+  this.cell.addEventListener("click", (event) => {
+    switch (this.state) {
+      case "empty":
+        __privateMethod(this, _setField, setField_fn).call(this, event);
+        break;
+      case "field":
+        __privateMethod(this, _setEmpty, setEmpty_fn).call(this, event);
+        break;
+      case "crossed":
+        __privateMethod(this, _setEmpty, setEmpty_fn).call(this, event);
+        break;
+    }
+  });
+  this.cell.addEventListener("contextmenu", (event) => {
+    event.preventDefault();
+    if (this.cell.classList.contains("crossed")) {
+      __privateMethod(this, _setEmpty, setEmpty_fn).call(this, event);
+    } else {
+      __privateMethod(this, _setCrossed, setCrossed_fn).call(this, event);
+    }
+  });
 };
 const gameFieldView = "";
 const data = [
@@ -2798,27 +2798,6 @@ class GameFieldView {
     this.isEndGame = false;
     __privateMethod(this, _createHTML5, createHTML_fn5).call(this);
     this.startGame(this.currentNonogramObj);
-    this.playground.addEventListener("click", () => {
-      if (!this.timer.isStart) {
-        this.timer.startTimer();
-      }
-      __privateMethod(this, _cellHasClicked, cellHasClicked_fn).call(this);
-      __privateMethod(this, _isWin, isWin_fn).call(this, this.cellValues, this.originalMatrix);
-    });
-    this.playground.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-      if (!this.timer.isStart) {
-        this.timer.startTimer();
-      }
-    });
-    this.playground.addEventListener("mousemove", ({ target }) => {
-      if (target !== this.playground) {
-        __privateMethod(this, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn).call(this, target);
-      }
-    });
-    this.playground.addEventListener("mouseleave", () => {
-      __privateMethod(this, _removeHighlightCells, removeHighlightCells_fn).call(this);
-    });
   }
   /**
    * get HTML cell
@@ -3025,6 +3004,27 @@ createHTML_fn5 = function() {
   );
   this.gameFieldContainer.append(this.gameField);
   this.gameFieldSection.append(this.gameFieldContainer);
+  this.playground.addEventListener("click", () => {
+    if (!this.timer.isStart) {
+      this.timer.startTimer();
+    }
+    __privateMethod(this, _cellHasClicked, cellHasClicked_fn).call(this);
+    __privateMethod(this, _isWin, isWin_fn).call(this, this.cellValues, this.originalMatrix);
+  });
+  this.playground.addEventListener("contextmenu", (event) => {
+    event.preventDefault();
+    if (!this.timer.isStart) {
+      this.timer.startTimer();
+    }
+  });
+  this.playground.addEventListener("mousemove", ({ target }) => {
+    if (target !== this.playground) {
+      __privateMethod(this, _highlightCurrentColumnAndRow, highlightCurrentColumnAndRow_fn).call(this, target);
+    }
+  });
+  this.playground.addEventListener("mouseleave", () => {
+    __privateMethod(this, _removeHighlightCells, removeHighlightCells_fn).call(this);
+  });
 };
 const modalView = "";
 class ModalView {
@@ -3037,15 +3037,6 @@ class ModalView {
     this.name = null;
     this.time = null;
     __privateMethod(this, _createHTML6, createHTML_fn6).call(this);
-    this.closeBtn.addEventListener(
-      "click",
-      () => this.show(this.message, this.name, this.time)
-    );
-    this.overlay.addEventListener("click", ({ target }) => {
-      if (target === this.overlay) {
-        this.show(this.message, this.name, this.time);
-      }
-    });
   }
   /**
    * get HTML modal
@@ -3090,6 +3081,15 @@ createHTML_fn6 = function() {
   this.content.append(this.title, this.subtitle, this.closeBtn);
   this.overlay.append(this.content);
   this.modalBox.append(this.overlay);
+  this.closeBtn.addEventListener(
+    "click",
+    () => this.show(this.message, this.name, this.time)
+  );
+  this.overlay.addEventListener("click", ({ target }) => {
+    if (target === this.overlay) {
+      this.show(this.message, this.name, this.time);
+    }
+  });
 };
 const settingsGameView = "";
 const MAX_LETTERS_IN_SUBTITLE = 10;
@@ -3175,18 +3175,6 @@ class SettingsGameView {
     this.isLockListSizes = false;
     this.isLockListNames = false;
     __privateMethod(this, _createHTML7, createHTML_fn7).call(this);
-    this.sizeBtnsArr.forEach(
-      (btn) => btn.addEventListener(
-        "click",
-        ({ target }) => __privateMethod(this, _updateBtnsSizeContent, updateBtnsSizeContent_fn).call(this, target)
-      )
-    );
-    this.nameBtnsArr.forEach(
-      (btn) => btn.addEventListener(
-        "click",
-        ({ target }) => __privateMethod(this, _updateBtnsNameContent, updateBtnsNameContent_fn).call(this, target)
-      )
-    );
     const LS = JSON.parse(localStorage.getItem("kleostro"));
     if (!LS["current-game"]) {
       this.continueGameBtn.disabled = true;
@@ -3695,6 +3683,18 @@ createHTML_fn7 = function() {
     "click",
     __privateMethod(this, _randomGameHandler, randomGameHandler_fn).bind(this)
   );
+  this.sizeBtnsArr.forEach(
+    (btn) => btn.addEventListener(
+      "click",
+      ({ target }) => __privateMethod(this, _updateBtnsSizeContent, updateBtnsSizeContent_fn).call(this, target)
+    )
+  );
+  this.nameBtnsArr.forEach(
+    (btn) => btn.addEventListener(
+      "click",
+      ({ target }) => __privateMethod(this, _updateBtnsNameContent, updateBtnsNameContent_fn).call(this, target)
+    )
+  );
 };
 const timerView = "";
 const TIMER_INTERVAL = 1e3;
@@ -3776,12 +3776,6 @@ class WinnersView {
       LS.winners = [];
       localStorage.setItem("kleostro", JSON.stringify(LS));
     }
-    this.closeBtn.addEventListener("click", () => this.show());
-    this.overlay.addEventListener("click", ({ target }) => {
-      if (target === this.overlay) {
-        this.show();
-      }
-    });
   }
   getHTML() {
     return this.winnersBox;
@@ -3892,6 +3886,12 @@ createHTML_fn9 = function() {
   this.content.append(this.title, this.winnersList, this.closeBtn);
   this.overlay.append(this.content);
   this.winnersBox.append(this.overlay);
+  this.closeBtn.addEventListener("click", () => this.show());
+  this.overlay.addEventListener("click", ({ target }) => {
+    if (target === this.overlay) {
+      this.show();
+    }
+  });
 };
 const mainView = "";
 class MainView {
@@ -3947,4 +3947,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-7cca73f2.js.map
+//# sourceMappingURL=main-a9d6503e.js.map
