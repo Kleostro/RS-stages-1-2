@@ -3179,6 +3179,13 @@ class SettingsGameView {
     if (!LS["current-game"]) {
       this.continueGameBtn.disabled = true;
     }
+    this.gameField.playground.addEventListener("click", () => {
+      if (this.gameField.playground.classList.contains("lock")) {
+        this.resetGameBtn.disabled = true;
+        this.saveGameBtn.disabled = true;
+        this.showSolutionBtn.disabled = true;
+      }
+    });
   }
   /**
    * get HTML settings section
@@ -3231,6 +3238,9 @@ showSolutionHandler_fn = function(matrix, cellElements) {
 _resetGameHandler = new WeakSet();
 resetGameHandler_fn = function() {
   this.audio.playSettingsGameClick();
+  this.timer.stopTimer();
+  this.timer.timer.textContent = "00:00";
+  this.timer.currentTime = 0;
   this.gameField.cellElements.forEach((row) => {
     row.forEach((cell) => {
       const currentCell = cell;
@@ -3947,4 +3957,4 @@ class App {
   }
 }
 new App();
-//# sourceMappingURL=main-a9d6503e.js.map
+//# sourceMappingURL=main-449d802f.js.map
