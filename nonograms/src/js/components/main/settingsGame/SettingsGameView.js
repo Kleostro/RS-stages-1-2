@@ -32,6 +32,14 @@ class SettingsGameView {
     if (!LS['current-game']) {
       this.continueGameBtn.disabled = true;
     }
+
+    this.gameField.playground.addEventListener('click', () => {
+      if (this.gameField.playground.classList.contains('lock')) {
+        this.resetGameBtn.disabled = true;
+        this.saveGameBtn.disabled = true;
+        this.showSolutionBtn.disabled = true;
+      }
+    })
   }
 
   /**
@@ -99,6 +107,9 @@ class SettingsGameView {
    */
   #resetGameHandler() {
     this.audio.playSettingsGameClick();
+    this.timer.stopTimer();
+    this.timer.timer.textContent = '00:00';
+    this.timer.currentTime = 0;
     this.gameField.cellElements.forEach((row) => {
       row.forEach((cell) => {
         const currentCell = cell;
