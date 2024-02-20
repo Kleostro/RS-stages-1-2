@@ -1,17 +1,17 @@
 import './sources.css';
-import { type News } from '../../../types/index';
+import { type Data } from '../../../types/index';
 
 class Sources {
-  public draw(data: News[]): void {
+  public draw(data: Data[]): void {
     const sources = document.querySelector('.sources');
     if (sources) {
-      data.forEach((item: News) => {
+      data.forEach((item: Data) => {
         this._createSourceItem(sources, item);
       });
     }
   }
 
-  private _createSourceItem(wrapper: Element, item: News): void {
+  private _createSourceItem(wrapper: Element, item: Data): void {
     const sourceItem = document.createElement('div');
     sourceItem.classList.add('source__item');
     sourceItem.setAttribute('data-source-id', item.id);

@@ -56,7 +56,7 @@ type Country =
   | 've'
   | 'za';
 
-export interface News {
+export interface Data {
   id: string;
   name: string;
   description: string;
@@ -64,4 +64,13 @@ export interface News {
   category: Category;
   language: Language;
   country: Country;
+  urlToImage: string;
+  publishedAt: string;
+  author: string;
+  title: string;
+  source: {
+    id: string;
+    name: string;
+  };
+  content: string;
 }
