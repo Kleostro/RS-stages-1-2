@@ -1,12 +1,13 @@
 import './news.css';
 import { type Data } from '../../../types/index';
 
+const MAX_NEWS = 10;
 const EVEN = 2;
 
 class News {
   public draw(data: Data[]): void {
     const newsElementWrapper = document.querySelector('.news');
-    const news = data.splice(0, 10);
+    const news = data.splice(0, MAX_NEWS);
 
     if (newsElementWrapper) {
       newsElementWrapper.innerHTML = '';
@@ -47,7 +48,7 @@ class News {
 
     const newsMetaDate = document.createElement('li');
     newsMetaDate.classList.add('news__meta-date');
-    newsMetaDate.textContent = item.publishedAt.slice(0, 10).split('-').reverse().join('-');
+    newsMetaDate.textContent = item.publishedAt.slice(0, MAX_NEWS).split('-').reverse().join('-');
 
     newsMetaList.append(newsMetaAuthor, newsMetaDate);
     newsMetaItemWrapper.append(newsMetaPhoto, newsMetaList);
