@@ -74,3 +74,10 @@ export interface Data {
   };
   content: string;
 }
+
+export interface Response {
+  status: string;
+  totalResults: number;
+  articles: Data[];
+  sources: Data[];
+}
