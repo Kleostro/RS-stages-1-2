@@ -90,3 +90,15 @@ export interface ResponseSourcesInterface {
   status: string;
   sources: SourcesDataInterface[];
 }
+
+export interface getRespInterface {
+  endpoint: string;
+  options?: Record<string, string>;
+}
+
+export interface Response {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  json: () => Promise<Response>;
+}

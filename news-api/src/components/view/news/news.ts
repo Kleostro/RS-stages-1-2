@@ -24,10 +24,10 @@ class News implements NewsClassInterface {
         newsElement.classList.add('alt');
       }
 
-      const newsTop = this._createNewsItemMeta(item);
-      const newsBottom = this._createNewsItemDescription(item);
+      const newsItemMeta = this._createNewsItemMeta(item);
+      const newsItemDescription = this._createNewsItemDescription(item);
 
-      newsElement.append(newsTop, newsBottom);
+      newsElement.append(newsItemMeta, newsItemDescription);
 
       if (newsElementWrapper) {
         newsElementWrapper.append(newsElement);
@@ -39,7 +39,7 @@ class News implements NewsClassInterface {
     const newsMetaItemWrapper = Utilities.createElement('div', ['news__meta']);
 
     const newsMetaPhoto = Utilities.createElement('div', ['news__meta-photo']);
-    newsMetaPhoto.style.backgroundImage = `url(${item.urlToImage || 'img/news_placeholder.jpg'})`;
+    newsMetaPhoto.style.backgroundImage = `url(${item?.urlToImage || 'img/news_placeholder.jpg'})`;
 
     const newsMetaList = Utilities.createElement('ul', ['news__meta-details']);
 
