@@ -79,3 +79,14 @@ export interface NewsDataInterface {
   publishedAt: string;
   content: string;
 }
+
+export interface ResponseNewsInterface {
+  status: string;
+  totalResults: number;
+  articles: NewsDataInterface[];
+}
+
+export interface ResponseSourcesInterface {
+  status: string;
+  sources: SourcesDataInterface[];
+}

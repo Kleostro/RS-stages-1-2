@@ -11,7 +11,6 @@ interface NewsClassInterface {
 
 class News implements NewsClassInterface {
   public draw(data: NewsDataInterface[]): void {
-    console.log(data);
     const news = data.splice(0, MAX_NEWS);
     const newsElementWrapper = document.querySelector('.news');
 
