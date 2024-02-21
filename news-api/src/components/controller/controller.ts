@@ -1,7 +1,13 @@
+import type { EventNews } from '@/types';
 import AppLoader from './appLoader';
 
-class AppController extends AppLoader {
-  getSources(callback) {
+interface AppControllerInterface {
+  getSources(callback: () => void): void;
+  getNews(e: EventNews, callback: () => void): void;
+}
+
+class AppController extends AppLoader implements AppControllerInterface {
+  public getSources(callback: () => void): void {
     super.getResp(
       {
         endpoint: 'sources',
@@ -10,14 +16,14 @@ class AppController extends AppLoader {
     );
   }
 
-  getNews(e, callback) {
-    let target = e.target;
+  public getNews(e: EventNews, callback: () => void): void {
+    let { target } = e;
     const newsContainer = e.currentTarget;
 
-    while (target !== newsContainer) {
+    while (target !== newsContainer && target instanceof HTMLElement) {
       if (target.classList.contains('source__item')) {
         const sourceId = target.getAttribute('data-source-id');
-        if (newsContainer.getAttribute('data-source') !== sourceId) {
+        if (newsContainer.getAttribute('data-source') !== sourceId && sourceId) {
           newsContainer.setAttribute('data-source', sourceId);
           super.getResp(
             {
@@ -31,7 +37,7 @@ class AppController extends AppLoader {
         }
         return;
       }
-      target = target.parentNode;
+      target = target.parentNode ? target.parentNode : target;
     }
   }
 }

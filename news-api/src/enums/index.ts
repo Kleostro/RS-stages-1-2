@@ -13,3 +13,5 @@ export enum RequestsErrors {
   NOT_FOUND = 404,
   SERVER_ERROR = 500,
 }
+
+

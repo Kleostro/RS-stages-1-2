@@ -102,3 +102,8 @@ export interface Response {
   statusText: string;
   json: () => Promise<Response>;
 }
+
+export interface EventNews {
+  target: Node;
+  currentTarget: HTMLElement;
+}
