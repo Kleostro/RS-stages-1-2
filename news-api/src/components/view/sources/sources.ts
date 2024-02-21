@@ -1,17 +1,17 @@
 import './sources.css';
-import { type Data } from '../../../types/index';
+import type { SourcesDataInterface } from '@/types';
 
-class Sources {
-  public draw(data: Data[]): void {
-    const sources = document.querySelector('.sources');
-    if (sources) {
-      data.forEach((item: Data) => {
-        this._createSourceItem(sources, item);
-      });
-    }
+interface SourcesClassInterface {
+  draw(data: SourcesDataInterface[]): void;
+}
+
+class Sources implements SourcesClassInterface {
+  public draw(data: SourcesDataInterface[]): void {
+    data.forEach((item: SourcesDataInterface) => this._createSourceItem(item));
   }
 
-  private _createSourceItem(wrapper: Element, item: Data): void {
+  private _createSourceItem(item: SourcesDataInterface): void {
+    const sourcesWrapper = document.querySelector('.sources');
     const sourceItem = document.createElement('div');
     sourceItem.classList.add('source__item');
     sourceItem.setAttribute('data-source-id', item.id);
@@ -22,8 +22,8 @@ class Sources {
 
     sourceItem.append(sourceItemName);
 
-    if (wrapper) {
-      wrapper.append(sourceItem);
+    if (sourcesWrapper) {
+      sourcesWrapper.append(sourceItem);
     }
   }
 }
