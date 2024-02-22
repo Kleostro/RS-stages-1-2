@@ -1,5 +1,5 @@
 import './sources.css';
-import type { SourcesDataInterface } from '@/types';
+import type { SourcesDataInterface } from '@/types/interfaces';
 import * as Utilities from '@/utilities';
 
 interface SourcesClassInterface {

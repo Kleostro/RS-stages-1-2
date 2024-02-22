@@ -1,7 +1,7 @@
 import * as Utilities from '@/utilities';
 import AppController from '../controller/controller';
 import { AppView } from '../view/appView';
-import type { ResponseNewsInterface, ResponseSourcesInterface } from '@/types';
+import type { ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
 
 class App {
   private controller: AppController;

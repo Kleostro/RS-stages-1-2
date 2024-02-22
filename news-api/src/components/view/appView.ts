@@ -1,6 +1,6 @@
 import News from './news/news';
 import Sources from './sources/sources';
-import type { ResponseNewsInterface, ResponseSourcesInterface } from '@/types';
+import type { ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
 
 interface AppViewInterface {
   drawNews(data: ResponseNewsInterface): void;

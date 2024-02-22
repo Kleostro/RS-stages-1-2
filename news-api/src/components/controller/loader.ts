@@ -1,5 +1,5 @@
-import { Requests, RequestsErrors } from '@/enums';
-import type { getRespInterface, ResponseNewsInterface, ResponseSourcesInterface } from '@/types';
+import { Requests, RequestsErrors } from '@/types/enums';
+import type { getRespInterface, ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
 
 interface LoaderInterface {
   getResp(
@@ -16,8 +16,8 @@ interface LoaderInterface {
 }
 
 class Loader implements LoaderInterface {
-  private baseLink: string;
-  private options: Record<string, string>;
+  private baseLink;
+  private options;
   constructor(baseLink: string, options: Record<string, string>) {
     this.baseLink = baseLink;
     this.options = options;
@@ -48,7 +48,7 @@ class Loader implements LoaderInterface {
     const urlOptions = { ...this.options, ...options };
     let url = `${this.baseLink}${endpoint}?`;
 
-    Object.keys(urlOptions).forEach((key) => {
+    Object.keys(urlOptions).forEach((key): void => {
       url += `${key}=${urlOptions[key]}&`;
     });
 

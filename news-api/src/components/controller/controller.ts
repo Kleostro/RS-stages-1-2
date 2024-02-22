@@ -1,4 +1,4 @@
-import type { EventNews, ResponseNewsInterface, ResponseSourcesInterface } from '@/types';
+import type { EventNews, ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
 import AppLoader from './appLoader';
 
 interface AppControllerInterface {

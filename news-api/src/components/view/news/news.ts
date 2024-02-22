@@ -1,5 +1,5 @@
 import './news.css';
-import type { NewsDataInterface } from '@/types';
+import type { NewsDataInterface } from '@/types/interfaces';
 import * as Utilities from '@/utilities';
 
 const MAX_NEWS = 10;
