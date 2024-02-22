@@ -38,7 +38,7 @@ export default (env: Record<string, string | boolean>, argv: Record<string, stri
   const webpackConfig: Configuration = {
     mode: config.mode,
     context: path.join(projectDirname, 'src'),
-    entry: { bundle: './index.js' },
+    entry: { bundle: './index.ts' },
     output: {
       filename: '[name]-[contenthash].js',
       clean: true,

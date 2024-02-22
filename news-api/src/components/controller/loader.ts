@@ -1,11 +1,18 @@
 import { Requests, RequestsErrors } from '@/enums';
-import type { getRespInterface, Response } from '@/types';
+import type { getRespInterface, ResponseNewsInterface, ResponseSourcesInterface } from '@/types';
 
 interface LoaderInterface {
-  getResp({ endpoint, options }: getRespInterface, callback: () => void): void;
+  getResp(
+    { endpoint, options }: getRespInterface,
+    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void,
+  ): void;
   errorHandler(res: Response): Response;
   makeUrl(options: getRespInterface['options'], endpoint: getRespInterface['endpoint']): string;
-  load(method: Requests, endpoint: getRespInterface['endpoint'], callback: (data: Response) => void): void;
+  load(
+    method: Requests,
+    endpoint: getRespInterface['endpoint'],
+    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void,
+  ): void;
 }
 
 class Loader implements LoaderInterface {
@@ -18,7 +25,7 @@ class Loader implements LoaderInterface {
 
   public getResp(
     { endpoint, options = {} }: getRespInterface,
-    callback = (): void => {
+    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void = (): void => {
       console.error('No callback for GET response');
     },
   ): void {
@@ -51,13 +58,13 @@ class Loader implements LoaderInterface {
   public load(
     method: Requests,
     endpoint: getRespInterface['endpoint'],
-    callback: (data: Response) => void,
+    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void,
     options: getRespInterface['options'] = {},
   ): void {
     fetch(this.makeUrl(options, endpoint), { method })
       .then(this.errorHandler.bind(this))
-      .then((res) => res.json())
-      .then((data: Response) => callback(data))
+      .then((res): Promise<ResponseSourcesInterface | ResponseNewsInterface> => res.json())
+      .then((data: ResponseSourcesInterface | ResponseNewsInterface) => callback(data))
       .catch((err) => console.error(err));
   }
 }

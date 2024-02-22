@@ -1,13 +1,13 @@
-import type { EventNews } from '@/types';
+import type { EventNews, ResponseNewsInterface, ResponseSourcesInterface } from '@/types';
 import AppLoader from './appLoader';
 
 interface AppControllerInterface {
-  getSources(callback: () => void): void;
-  getNews(e: EventNews, callback: () => void): void;
+  getSources(callback: (data: ResponseSourcesInterface) => void): void;
+  getNews(e: EventNews, callback: (data: ResponseNewsInterface) => void): void;
 }
 
 class AppController extends AppLoader implements AppControllerInterface {
-  public getSources(callback: () => void): void {
+  public getSources(callback: (data: ResponseSourcesInterface) => void): void {
     super.getResp(
       {
         endpoint: 'sources',
@@ -16,14 +16,22 @@ class AppController extends AppLoader implements AppControllerInterface {
     );
   }
 
-  public getNews(e: EventNews, callback: () => void): void {
+  public getNews(e: EventNews, callback: (data: ResponseNewsInterface) => void): void {
     let { target } = e;
     const newsContainer = e.currentTarget;
+
+    if (!target || !newsContainer) {
+      return;
+    }
 
     while (target !== newsContainer && target instanceof HTMLElement) {
       if (target.classList.contains('source__item')) {
         const sourceId = target.getAttribute('data-source-id');
-        if (newsContainer.getAttribute('data-source') !== sourceId && sourceId) {
+        if (
+          newsContainer instanceof HTMLElement &&
+          newsContainer.getAttribute('data-source') !== sourceId &&
+          sourceId
+        ) {
           newsContainer.setAttribute('data-source', sourceId);
           super.getResp(
             {

@@ -82,13 +82,16 @@ export interface NewsDataInterface {
 
 export interface ResponseNewsInterface {
   status: string;
-  totalResults: number;
-  articles: NewsDataInterface[];
+  totalResults?: number;
+  articles?: NewsDataInterface[];
+  sources?: SourcesDataInterface[];
 }
 
 export interface ResponseSourcesInterface {
   status: string;
-  sources: SourcesDataInterface[];
+  totalResults?: number;
+  sources?: SourcesDataInterface[];
+  articles?: NewsDataInterface[];
 }
 
 export interface getRespInterface {
@@ -96,14 +99,7 @@ export interface getRespInterface {
   options?: Record<string, string>;
 }
 
-export interface Response {
-  ok: boolean;
-  status: number;
-  statusText: string;
-  json: () => Promise<Response>;
-}
-
 export interface EventNews {
-  target: Node;
-  currentTarget: HTMLElement;
+  target: EventTarget | null;
+  currentTarget: EventTarget | null;
 }
