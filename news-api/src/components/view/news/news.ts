@@ -2,6 +2,8 @@ import './news.css';
 import type { NewsDataInterface } from '@/types/interfaces';
 import * as Utilities from '@/utilities';
 
+const IMG_PLACEHOLDER_PATH = '../../../assets/image-placeholder.jpeg';
+
 const MAX_NEWS = 10;
 const EVEN = 2;
 
@@ -39,7 +41,7 @@ class News implements NewsClassInterface {
     const newsMetaItemWrapper = Utilities.createElement('div', ['news__meta']);
 
     const newsMetaPhoto = Utilities.createElement('div', ['news__meta-photo']);
-    newsMetaPhoto.style.backgroundImage = `url(${item?.urlToImage || 'img/news_placeholder.jpg'})`;
+    newsMetaPhoto.style.backgroundImage = `url(${item?.urlToImage || IMG_PLACEHOLDER_PATH})`;
 
     const newsMetaList = Utilities.createElement('ul', ['news__meta-details']);
 

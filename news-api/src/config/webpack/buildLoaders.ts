@@ -45,7 +45,7 @@ export const buildLoaders = (config: WebpackConfig): RuleSetRule[] => {
     },
     {
       test: /\.(avif|gif|jpe?g|png|svg|webp)$/i,
-      type: 'asset/resource',
+      type: 'assets/',
       generator: {
         filename: 'images/[hash][ext][query]',
       },
