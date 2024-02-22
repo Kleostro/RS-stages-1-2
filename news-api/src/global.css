@@ -6,6 +6,7 @@ body {
 
 header {
   padding: 10px 30px;
+  text-align: center;
 }
 
 header h1 {
@@ -16,8 +17,9 @@ header h1 {
 footer {
   height: 100px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 footer .copyright {
   font-size: 14px;
@@ -32,4 +34,19 @@ footer .copyright a:hover {
 }
 footer .copyright:before {
   content: '©';
+}
+
+footer .github-link {
+  font-size: 14px;
+  color: #6730ab;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+footer .github-link:hover {
+  color: #9063c7;
+}
+
+footer .rss-link-img {
+  width: 10rem;
 }
