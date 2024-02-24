@@ -1,9 +1,9 @@
-import type { EventNews, ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
+import type { EventNews, ResponseSourcesInterface } from '@/types/interfaces';
 import AppLoader from './appLoader';
 
 interface AppControllerInterface {
   getSources(callback: (data: ResponseSourcesInterface) => void): void;
-  getNews(e: EventNews, callback: (data: ResponseNewsInterface) => void): void;
+  getNews(e: EventNews, callback: (data: ResponseSourcesInterface) => void): void;
 }
 
 class AppController extends AppLoader implements AppControllerInterface {
@@ -16,7 +16,7 @@ class AppController extends AppLoader implements AppControllerInterface {
     );
   }
 
-  public getNews(e: EventNews, callback: (data: ResponseNewsInterface) => void): void {
+  public getNews(e: EventNews, callback: (data: ResponseSourcesInterface) => void): void {
     let { target } = e;
     const newsContainer = e.currentTarget;
 

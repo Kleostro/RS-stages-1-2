@@ -24,13 +24,6 @@ export interface NewsDataInterface {
   content: string;
 }
 
-export interface ResponseNewsInterface {
-  status: string;
-  totalResults?: number;
-  articles?: NewsDataInterface[];
-  sources?: SourcesDataInterface[];
-}
-
 export interface ResponseSourcesInterface {
   status: string;
   totalResults?: number;

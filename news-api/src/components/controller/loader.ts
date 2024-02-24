@@ -1,17 +1,14 @@
 import { Requests, RequestsErrors } from '@/types/enums';
-import type { getRespInterface, ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
+import type { getRespInterface, ResponseSourcesInterface } from '@/types/interfaces';
 
 interface LoaderInterface {
-  getResp(
-    { endpoint, options }: getRespInterface,
-    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void,
-  ): void;
+  getResp({ endpoint, options }: getRespInterface, callback: (data: ResponseSourcesInterface) => void): void;
   errorHandler(res: Response): Response;
   makeUrl(options: getRespInterface['options'], endpoint: getRespInterface['endpoint']): string;
   load(
     method: Requests,
     endpoint: getRespInterface['endpoint'],
-    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void,
+    callback: (data: ResponseSourcesInterface) => void,
   ): void;
 }
 
@@ -25,7 +22,7 @@ class Loader implements LoaderInterface {
 
   public getResp(
     { endpoint, options = {} }: getRespInterface,
-    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void = (): void => {
+    callback: (data: ResponseSourcesInterface) => void = (): void => {
       console.error('No callback for GET response');
     },
   ): void {
@@ -58,13 +55,13 @@ class Loader implements LoaderInterface {
   public load(
     method: Requests,
     endpoint: getRespInterface['endpoint'],
-    callback: (data: ResponseSourcesInterface | ResponseNewsInterface) => void,
+    callback: (data: ResponseSourcesInterface) => void,
     options: getRespInterface['options'] = {},
   ): void {
     fetch(this.makeUrl(options, endpoint), { method })
       .then(this.errorHandler.bind(this))
-      .then((res): Promise<ResponseSourcesInterface | ResponseNewsInterface> => res.json())
-      .then((data: ResponseSourcesInterface | ResponseNewsInterface) => callback(data))
+      .then((res): Promise<ResponseSourcesInterface> => res.json())
+      .then((data: ResponseSourcesInterface) => callback(data))
       .catch((err) => console.error(err));
   }
 }

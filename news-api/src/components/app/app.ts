@@ -1,7 +1,7 @@
 import * as Utilities from '@/utilities';
 import AppController from '../controller/controller';
 import { AppView } from '../view/appView';
-import type { ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
+import type { ResponseSourcesInterface } from '@/types/interfaces';
 
 class App {
   private controller: AppController;
@@ -14,7 +14,7 @@ class App {
   public start(): void {
     const sourcesElement = Utilities.safeQuerySelector('.sources');
     sourcesElement.addEventListener('click', (e) => {
-      this.controller.getNews(e, (data: ResponseNewsInterface) => this.view.drawNews(data));
+      this.controller.getNews(e, (data: ResponseSourcesInterface) => this.view.drawNews(data));
     });
 
     this.controller.getSources((data: ResponseSourcesInterface): void => {

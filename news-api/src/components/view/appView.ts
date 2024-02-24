@@ -1,9 +1,9 @@
 import News from './news/news';
 import Sources from './sources/sources';
-import type { ResponseNewsInterface, ResponseSourcesInterface } from '@/types/interfaces';
+import type { ResponseSourcesInterface } from '@/types/interfaces';
 
 interface AppViewInterface {
-  drawNews(data: ResponseNewsInterface): void;
+  drawNews(data: ResponseSourcesInterface): void;
   drawSources(data: ResponseSourcesInterface): void;
 }
 
@@ -16,7 +16,7 @@ export class AppView implements AppViewInterface {
     this.sources = new Sources();
   }
 
-  public drawNews(data: ResponseNewsInterface): void {
+  public drawNews(data: ResponseSourcesInterface): void {
     const values = data.articles ? data.articles : [];
     this.news.draw(values);
   }
