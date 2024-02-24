@@ -14,9 +14,9 @@ class Sources implements SourcesClassInterface {
   private _createSourceItem(item: SourcesDataInterface): void {
     try {
       const sourcesWrapper = Utilities.safeQuerySelector('.sources');
-      const sourceItem = Utilities.createElement('div', ['source__item'], { 'data-source-id': item.id });
+      const sourceItem = Utilities.createBaseElement('div', ['source__item'], { 'data-source-id': item.id });
 
-      const sourceItemName = Utilities.createElement('span', ['source__item-name']);
+      const sourceItemName = Utilities.createBaseElement('span', ['source__item-name']);
       sourceItemName.textContent = item.name;
 
       sourceItem.append(sourceItemName);

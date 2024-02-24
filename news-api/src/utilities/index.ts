@@ -8,7 +8,7 @@ export const safeQuerySelector = <E extends HTMLElement>(selector: string): E =>
   return elem;
 };
 
-export const createElement = <T extends keyof HTMLElementTagNameMap>(
+export const createBaseElement = <T extends keyof HTMLElementTagNameMap>(
   tag: T,
   cssClasses: string[] = [],
   attributes?: Record<string, string>,
