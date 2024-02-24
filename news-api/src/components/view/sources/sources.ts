@@ -12,14 +12,18 @@ class Sources implements SourcesClassInterface {
   }
 
   private _createSourceItem(item: SourcesDataInterface): void {
-    const sourcesWrapper = Utilities.safeQuerySelector('.sources');
-    const sourceItem = Utilities.createElement('div', ['source__item'], { 'data-source-id': item.id });
+    try {
+      const sourcesWrapper = Utilities.safeQuerySelector('.sources');
+      const sourceItem = Utilities.createElement('div', ['source__item'], { 'data-source-id': item.id });
 
-    const sourceItemName = Utilities.createElement('span', ['source__item-name']);
-    sourceItemName.textContent = item.name;
+      const sourceItemName = Utilities.createElement('span', ['source__item-name']);
+      sourceItemName.textContent = item.name;
 
-    sourceItem.append(sourceItemName);
-    sourcesWrapper.append(sourceItem);
+      sourceItem.append(sourceItemName);
+      sourcesWrapper.append(sourceItem);
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 

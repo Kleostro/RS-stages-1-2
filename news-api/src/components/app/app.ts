@@ -12,10 +12,14 @@ class App {
   }
 
   public start(): void {
-    const sourcesElement = Utilities.safeQuerySelector('.sources');
-    sourcesElement.addEventListener('click', (e) => {
-      this.controller.getNews(e, (data: ResponseSourcesInterface) => this.view.drawNews(data));
-    });
+    try {
+      const sourcesElement = Utilities.safeQuerySelector('.sources');
+      sourcesElement.addEventListener('click', (e) => {
+        this.controller.getNews(e, (data: ResponseSourcesInterface) => this.view.drawNews(data));
+      });
+    } catch (error) {
+      console.error(error);
+    }
 
     this.controller.getSources((data: ResponseSourcesInterface): void => {
       this.view.drawSources(data);

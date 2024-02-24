@@ -26,7 +26,7 @@ export interface NewsDataInterface {
 
 export interface ResponseSourcesInterface {
   status: string;
-  totalResults?: number;
+  totalResults: number;
   sources?: SourcesDataInterface[];
   articles?: NewsDataInterface[];
 }
