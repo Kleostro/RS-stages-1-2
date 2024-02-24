@@ -1,6 +1,7 @@
 body {
   color: #fff;
-  background: #17181c;
+  height: 100vh;
+  background: linear-gradient(-32deg, rgba(74, 57, 97, 1) 0%, rgba(0, 8, 8, 1) 50%, rgb(47, 66, 156) 100%);
   font-family: sans-serif;
 }
 
@@ -23,14 +24,14 @@ footer {
 }
 footer .copyright {
   font-size: 14px;
-  color: #333;
+  color: #4bcec3;
   text-align: center;
 }
 footer .copyright a {
-  color: #444;
+  color: #4bcec3;
 }
 footer .copyright a:hover {
-  color: #555;
+  color: #a2e6e0;
 }
 footer .copyright:before {
   content: '©';
@@ -38,13 +39,13 @@ footer .copyright:before {
 
 footer .github-link {
   font-size: 14px;
-  color: #6730ab;
+  color: #91e2b4;
   text-align: center;
   transition: color 0.3s ease;
 }
 
 footer .github-link:hover {
-  color: #9063c7;
+  color: #269345;
 }
 
 footer .rss-link-img {
