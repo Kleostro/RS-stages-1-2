@@ -31,7 +31,7 @@ export interface ResponseSourcesInterface {
   articles?: NewsDataInterface[];
 }
 
-export interface getRespInterface {
+export interface GetRespInterface {
   endpoint: string;
   options?: Record<string, string>;
 }

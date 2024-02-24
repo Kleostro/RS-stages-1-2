@@ -1,13 +1,13 @@
 import { Requests, RequestsErrors } from '@/types/enums';
-import type { getRespInterface, ResponseSourcesInterface } from '@/types/interfaces';
+import type { GetRespInterface, ResponseSourcesInterface } from '@/types/interfaces';
 
 interface LoaderInterface {
-  getResp({ endpoint, options }: getRespInterface, callback: (data: ResponseSourcesInterface) => void): void;
+  getResp({ endpoint, options }: GetRespInterface, callback: (data: ResponseSourcesInterface) => void): void;
   errorHandler(res: Response): Response;
-  makeUrl(options: getRespInterface['options'], endpoint: getRespInterface['endpoint']): string;
+  makeUrl(options: GetRespInterface['options'], endpoint: GetRespInterface['endpoint']): string;
   load(
     method: Requests,
-    endpoint: getRespInterface['endpoint'],
+    endpoint: GetRespInterface['endpoint'],
     callback: (data: ResponseSourcesInterface) => void,
   ): void;
 }
@@ -21,7 +21,7 @@ class Loader implements LoaderInterface {
   }
 
   public getResp(
-    { endpoint, options = {} }: getRespInterface,
+    { endpoint, options = {} }: GetRespInterface,
     callback: (data: ResponseSourcesInterface) => void = (): void => {
       console.error('No callback for GET response');
     },
@@ -41,7 +41,7 @@ class Loader implements LoaderInterface {
     return res;
   }
 
-  public makeUrl(options: getRespInterface['options'], endpoint: getRespInterface['endpoint']): string {
+  public makeUrl(options: GetRespInterface['options'], endpoint: GetRespInterface['endpoint']): string {
     const urlOptions = { ...this.options, ...options };
     let url = `${this.baseLink}${endpoint}?`;
 
@@ -54,9 +54,9 @@ class Loader implements LoaderInterface {
 
   public load(
     method: Requests,
-    endpoint: getRespInterface['endpoint'],
+    endpoint: GetRespInterface['endpoint'],
     callback: (data: ResponseSourcesInterface) => void,
-    options: getRespInterface['options'] = {},
+    options: GetRespInterface['options'] = {},
   ): void {
     fetch(this.makeUrl(options, endpoint), { method })
       .then(this.errorHandler.bind(this))
