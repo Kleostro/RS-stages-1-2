@@ -1,10 +1,10 @@
 import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
-import LoginForm from '../../widgets/loginForm/LoginForm.ts';
 import type StorageComponent from '../../app/Storage/Storage.ts';
 import type PageInterface from '../types/interfaces.ts';
+import ButtonComponent from '../../shared/button/Button.ts';
 
-class LogInPage implements PageInterface {
+class StartPage implements PageInterface {
   public storage: StorageComponent;
 
   private parent: HTMLDivElement;
@@ -15,6 +15,7 @@ class LogInPage implements PageInterface {
     this.parent = parent;
     this.storage = storage;
     this.page = this.createHTML(id);
+    this.hidden();
   }
 
   public getHTML(): HTMLDivElement {
@@ -36,12 +37,28 @@ class LogInPage implements PageInterface {
       attributes: { id },
     });
 
-    const loginForm = new LoginForm(this);
+    const title = createBaseElement({
+      tag: 'h1',
+      cssClasses: [styles.page__title],
+      innerContent: 'RSS Puzzle',
+    });
 
-    this.page.append(loginForm.getHTML());
+    const descr = createBaseElement({
+      tag: 'p',
+      cssClasses: [styles.page__descr],
+      innerContent: 'Your RSS reader',
+    });
+
+    const startBtn = new ButtonComponent('Start', [
+      styles.page__btn,
+      'btn-reset',
+    ]);
+
+    this.page.append(title, descr, startBtn.getHTML());
+
     this.parent.append(this.page);
     return this.page;
   }
 }
 
-export default LogInPage;
+export default StartPage;

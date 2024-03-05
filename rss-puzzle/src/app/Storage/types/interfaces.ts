@@ -1,10 +1,9 @@
 export interface Data {
-  [key: string]: unknown;
+  [key: string]: string;
 }
 
 export interface StorageComponentInterface {
-  loadStorage(): Data;
-  add(key: string, value: string): void;
+  add(key: string, value: string): Data;
   get(key: string): unknown;
   remove(key: string): void;
   clear(): void;

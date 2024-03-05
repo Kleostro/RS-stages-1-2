@@ -6,6 +6,8 @@ import FormValidation from '../../features/formValidation/FormValidation.ts';
 import FIELD_NAMES from './types/enum.ts';
 import type { StorageComponentInterface } from '../../app/Storage/types/interfaces.ts';
 import STORE_KEYS from '../../app/Storage/types/enums.ts';
+import type PageInterface from '../../pages/types/interfaces.ts';
+import PAGES_IDS from '../../app/types/enums.ts';
 
 class LoginForm {
   private form: HTMLFormElement;
@@ -24,11 +26,13 @@ class LoginForm {
 
   private storage: StorageComponentInterface;
 
-  constructor(storage: StorageComponentInterface) {
-    this.storage = storage;
+  private page: PageInterface;
+
+  constructor(page: PageInterface) {
+    this.page = page;
+    this.storage = this.page.storage;
     this.submitBtn = this.createSubmitBtn();
     this.form = this.createHTML();
-    this.form.addEventListener('submit', this.submit.bind(this));
     this.formValidation = new FormValidation(
       this.inputFields,
       this.fieldErrors,
@@ -49,7 +53,17 @@ class LoginForm {
     this.userData.name = nameData;
     this.userData.surname = surnameData;
 
+    window.location.hash = PAGES_IDS.START;
+
     this.storage.add(STORE_KEYS.USER, JSON.stringify(this.userData));
+
+    const newLoginForm = new LoginForm(this.page);
+    const currentForm = this.getHTML();
+    const { parentElement } = currentForm;
+
+    if (parentElement) {
+      parentElement.replaceChild(newLoginForm.getHTML(), currentForm);
+    }
   }
 
   private createFieldBox(input: HTMLInputElement): HTMLLabelElement {
@@ -119,7 +133,7 @@ class LoginForm {
   }
 
   private createHTML(): HTMLFormElement {
-    const form = createBaseElement({
+    this.form = createBaseElement({
       tag: 'form',
       cssClasses: [styles.form],
       attributes: {
@@ -132,11 +146,12 @@ class LoginForm {
 
     this.inputFieldsHTML.forEach((input) => {
       const fieldBox = this.createFieldBox(input);
-      form.append(fieldBox);
+      this.form.append(fieldBox);
     });
 
-    form.append(this.submitBtn.getHTML());
-    return form;
+    this.form.addEventListener('submit', this.submit.bind(this));
+    this.form.append(this.submitBtn.getHTML());
+    return this.form;
   }
 }
 
