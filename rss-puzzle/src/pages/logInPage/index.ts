@@ -1,14 +1,18 @@
 import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import LoginForm from '../../widgets/loginForm/LoginForm.ts';
+import type StorageComponent from '../../app/Storage/Storage.ts';
 
 class LogInPage {
   private parent: HTMLDivElement;
 
   private page: HTMLDivElement;
 
-  constructor(id: string, parent: HTMLDivElement) {
+  public storage: StorageComponent;
+
+  constructor(id: string, parent: HTMLDivElement, storage: StorageComponent) {
     this.parent = parent;
+    this.storage = storage;
     this.page = this.createHTML(id);
   }
 
@@ -23,7 +27,7 @@ class LogInPage {
       attributes: { id },
     });
 
-    const loginForm = new LoginForm();
+    const loginForm = new LoginForm(this.storage);
     this.page.append(loginForm.getHTML());
 
     this.parent.append(this.page);

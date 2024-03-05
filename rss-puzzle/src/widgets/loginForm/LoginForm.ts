@@ -4,6 +4,8 @@ import InputFieldComponent from '../../entities/inputField/InputField.ts';
 import SubmitButtonComponent from '../../entities/submitBtn/SubmitBtn.ts';
 import FormValidation from '../../features/formValidation/FormValidation.ts';
 import FIELD_NAMES from './types/enum.ts';
+import type { StorageComponentInterface } from '../../app/Storage/types/interfaces.ts';
+import STORE_KEYS from '../../app/Storage/types/enums.ts';
 
 class LoginForm {
   private form: HTMLFormElement;
@@ -20,7 +22,10 @@ class LoginForm {
 
   private formValidation: FormValidation;
 
-  constructor() {
+  private storage: StorageComponentInterface;
+
+  constructor(storage: StorageComponentInterface) {
+    this.storage = storage;
     this.submitBtn = this.createSubmitBtn();
     this.form = this.createHTML();
     this.form.addEventListener('submit', this.submit.bind(this));
@@ -43,6 +48,8 @@ class LoginForm {
     const surnameData = formData.get(FIELD_NAMES.SURNAME);
     this.userData.name = nameData;
     this.userData.surname = surnameData;
+
+    this.storage.add(STORE_KEYS.USER, JSON.stringify(this.userData));
   }
 
   private createFieldBox(input: HTMLInputElement): HTMLLabelElement {
