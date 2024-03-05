@@ -1,0 +1,4 @@
+{
+  "pattern": "^(master|main|develop|rss-puzzle){1}$|^(feat|fix|hotfix|release|chore)/RSS-PZ-\\d{2}_[a-z]+[a-zA-Z0-9]*$",
+  "errorMsg": "Please use correct branch name"
+}
