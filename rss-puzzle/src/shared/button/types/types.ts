@@ -1,4 +1,4 @@
 type Actions = 'click' | 'submit' | 'focus' | 'blur';
 
-type ButtonAction = { key: Actions; value: (event: Event) => void };
+type ButtonAction = { key: Actions; value: () => void };
 export default ButtonAction;

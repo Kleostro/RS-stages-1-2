@@ -5,7 +5,7 @@ import type PageInterface from '../types/interfaces.ts';
 import ButtonComponent from '../../shared/button/Button.ts';
 import STORE_KEYS from '../../app/Storage/types/enums.ts';
 import { type UserDataInterface } from '../../app/Storage/types/interfaces.ts';
-import PAGES_IDS from '../../app/types/enums.ts';
+import { PAGES_IDS, PAGES_STATE } from '../types/enums.ts';
 
 class StartPage implements PageInterface {
   public storage: StorageComponent;
@@ -35,26 +35,18 @@ class StartPage implements PageInterface {
     this.logOutBtn = null;
 
     this.page = this.createHTML(id);
-    this.hidden();
   }
 
   public getHTML(): HTMLDivElement {
     return this.page;
   }
 
-  public hidden(): void {
-    this.page.style.opacity = '0';
-  }
-
-  public visible(): void {
-    this.page.style.opacity = '1';
-  }
-
   public greeting(): void {
     const userData: UserDataInterface = this.storage.get(STORE_KEYS.USER);
     if (this.subtitle) {
       const { name, surname } = userData;
-      this.subtitle.innerText = `Hello, ${name} ${surname}!`;
+      const greeting = `Hello, ${name} ${surname}!`;
+      this.subtitle.innerText = greeting;
     }
   }
 
@@ -120,6 +112,8 @@ class StartPage implements PageInterface {
       cssClasses: [styles.page],
       attributes: { id },
     });
+
+    this.page.style.display = PAGES_STATE.HIDDEN;
 
     this.title = this.createTitle();
     this.subtitle = this.createSubtitle();

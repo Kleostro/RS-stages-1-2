@@ -4,7 +4,7 @@ import createBaseElement from '../../utils/createBaseElement.ts';
 import StorageComponent from '../Storage/Storage.ts';
 import StartPage from '../../pages/startPage/index.ts';
 import Router from '../Router/Router.ts';
-import PAGES_IDS from '../types/enums.ts';
+import { PAGES_IDS } from '../../pages/types/enums.ts';
 
 class App {
   public pagesContainer: HTMLDivElement;

@@ -1,12 +1,10 @@
-import PAGES_IDS from '../types/enums.ts';
+import { PAGES_IDS, PAGES_STATE } from '../../pages/types/enums.ts';
 import type PageInterface from '../../pages/types/interfaces.ts';
 import type { StorageComponentInterface } from '../Storage/types/interfaces.ts';
 import STORE_KEYS from '../Storage/types/enums.ts';
 
 const PAGE_DELAY = 500;
 const maxOpacity = 1;
-const visible = 'flex';
-const hidden = 'none';
 
 class Router {
   private pages: Record<string, PageInterface>;
@@ -41,6 +39,7 @@ class Router {
 
   public checkLoginUser(): void {
     const user = this.storage.get(STORE_KEYS.USER);
+
     if (!user.name) {
       window.location.hash = PAGES_IDS.LOG_IN;
       this.renderNewPage(PAGES_IDS.LOG_IN);
@@ -76,10 +75,10 @@ class Router {
     const fadeIn = (timestamp: number): void => {
       const elapsed = timestamp - start;
       const progress = Math.min(elapsed / duration, maxOpacity);
+      const page = nextPage.getHTML();
 
-      const nextPageHTML = nextPage.getHTML();
-      nextPageHTML.style.display = visible;
-      nextPageHTML.style.opacity = `${progress}`;
+      page.style.opacity = `${progress}`;
+      page.style.display = PAGES_STATE.VISIBLE;
 
       if (elapsed < duration) {
         window.requestAnimationFrame(fadeIn);
@@ -90,8 +89,8 @@ class Router {
       const elapsed = timestamp - start;
       const progress = Math.min(elapsed / duration, maxOpacity);
 
-      const currentPageHTML = currentPage.getHTML();
-      currentPageHTML.style.opacity = `${maxOpacity - progress}`;
+      const page = currentPage.getHTML();
+      page.style.opacity = `${maxOpacity - progress}`;
 
       if (elapsed < duration) {
         window.requestAnimationFrame(fadeOut);
@@ -99,9 +98,10 @@ class Router {
         Object.entries(this.pages)
           .filter(([key]) => key !== this.currentPage.getHTML().id)
           .forEach(([key]) => {
-            this.pages[key].getHTML().style.display = hidden;
+            this.pages[key].getHTML().style.display = PAGES_STATE.HIDDEN;
           });
-        currentPageHTML.style.display = hidden;
+
+        page.style.display = PAGES_STATE.HIDDEN;
         start = performance.now();
         window.requestAnimationFrame(fadeIn);
       }

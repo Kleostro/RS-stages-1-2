@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import STORE_KEYS from './types/enums.ts';
-import type { Data, StorageComponentInterface } from './types/interfaces';
+import type {
+  Data,
+  StorageComponentInterface,
+  UserDataInterface,
+} from './types/interfaces';
 
 class StorageComponent implements StorageComponentInterface {
   private storage: Data;
@@ -9,16 +13,17 @@ class StorageComponent implements StorageComponentInterface {
     this.storage = this.init();
   }
 
-  public get(key: string): unknown {
-    const data: Data = this.init();
-    return data[key];
+  public get(key: string): UserDataInterface {
+    let result: UserDataInterface = { name: '', surname: '' };
+    if (key in this.storage) {
+      result = JSON.parse(this.storage[key]);
+    }
+    return result;
   }
 
-  public add(key: string, value: string): Data {
-    const data: Data = this.init();
-    data[key] = JSON.parse(value);
-    this.save(data);
-    return data;
+  public add(key: string, value: string): void {
+    this.storage[key] = value;
+    this.save(this.storage);
   }
 
   public remove(key: string): void {

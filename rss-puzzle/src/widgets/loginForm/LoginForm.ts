@@ -7,7 +7,7 @@ import FIELD_NAMES from './types/enum.ts';
 import type { StorageComponentInterface } from '../../app/Storage/types/interfaces.ts';
 import STORE_KEYS from '../../app/Storage/types/enums.ts';
 import type PageInterface from '../../pages/types/interfaces.ts';
-import PAGES_IDS from '../../app/types/enums.ts';
+import { PAGES_IDS } from '../../pages/types/enums.ts';
 
 class LoginForm {
   private form: HTMLFormElement;
