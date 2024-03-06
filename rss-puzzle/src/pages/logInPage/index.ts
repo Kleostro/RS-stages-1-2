@@ -15,6 +15,7 @@ class LogInPage implements PageInterface {
     this.parent = parent;
     this.storage = storage;
     this.page = this.createHTML(id);
+    this.hidden();
   }
 
   public getHTML(): HTMLDivElement {

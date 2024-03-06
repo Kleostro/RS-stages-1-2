@@ -27,8 +27,8 @@ class App {
       start: new StartPage(PAGES_IDS.START, this.pagesContainer, this.storage),
     };
 
-    this.router = new Router(this.pages);
-    this.router.renderNewPage(PAGES_IDS.LOG_IN);
+    this.router = new Router(this.storage, this.pages);
+    this.router.checkLoginUser();
   }
 
   private createHTML(): HTMLDivElement {

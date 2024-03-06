@@ -1,7 +1,12 @@
 import PAGES_IDS from '../types/enums.ts';
 import type PageInterface from '../../pages/types/interfaces.ts';
+import type { StorageComponentInterface } from '../Storage/types/interfaces.ts';
+import STORE_KEYS from '../Storage/types/enums.ts';
 
 const PAGE_DELAY = 500;
+const maxOpacity = 1;
+const visible = 'flex';
+const hidden = 'none';
 
 class Router {
   private pages: Record<string, PageInterface>;
@@ -10,17 +15,51 @@ class Router {
 
   private duration: number;
 
-  constructor(pages: Record<string, PageInterface>) {
+  private storage: StorageComponentInterface;
+
+  constructor(
+    storage: StorageComponentInterface,
+    pages: Record<string, PageInterface>,
+  ) {
+    this.storage = storage;
     this.pages = pages;
-    this.currentPage = pages[PAGES_IDS.LOG_IN];
+    this.currentPage = this.setCurrentPage();
     this.duration = PAGE_DELAY;
-    window.location.hash = '';
     window.addEventListener('hashchange', this.hashChangeHandler.bind(this));
+  }
+
+  private setCurrentPage(): PageInterface {
+    const currentHash = window.location.hash.slice(1);
+    if (currentHash in this.pages) {
+      this.currentPage = this.pages[currentHash];
+    } else if (currentHash === '') {
+      this.currentPage = this.pages[PAGES_IDS.LOG_IN];
+    }
+
+    return this.currentPage;
+  }
+
+  public checkLoginUser(): void {
+    const user = this.storage.get(STORE_KEYS.USER);
+    if (!user.name) {
+      window.location.hash = PAGES_IDS.LOG_IN;
+      this.renderNewPage(PAGES_IDS.LOG_IN);
+    } else {
+      window.location.hash = PAGES_IDS.START;
+      this.renderNewPage(PAGES_IDS.START);
+    }
   }
 
   public renderNewPage(pageID: string): void {
     const formattedTitle = pageID[0].toUpperCase() + pageID.slice(1);
     document.title = formattedTitle;
+
+    if (pageID === PAGES_IDS.START) {
+      const page = this.pages[pageID];
+      if (page.greeting) {
+        page.greeting();
+      }
+    }
 
     this.fadeOutAndIn(this.currentPage, this.pages[pageID]);
 
@@ -32,10 +71,6 @@ class Router {
     nextPage: PageInterface,
     duration = this.duration,
   ): void {
-    const maxOpacity = 1;
-    const visible = 'flex';
-    const hidden = 'none';
-
     let start = performance.now();
 
     const fadeIn = (timestamp: number): void => {
@@ -61,6 +96,11 @@ class Router {
       if (elapsed < duration) {
         window.requestAnimationFrame(fadeOut);
       } else {
+        Object.entries(this.pages)
+          .filter(([key]) => key !== this.currentPage.getHTML().id)
+          .forEach(([key]) => {
+            this.pages[key].getHTML().style.display = hidden;
+          });
         currentPageHTML.style.display = hidden;
         start = performance.now();
         window.requestAnimationFrame(fadeIn);
@@ -71,14 +111,7 @@ class Router {
   }
 
   private hashChangeHandler(): void {
-    const hash = window.location.hash.substring(1);
-
-    if (hash === '') {
-      this.renderNewPage(PAGES_IDS.LOG_IN);
-      return;
-    }
-
-    this.renderNewPage(hash);
+    this.checkLoginUser();
   }
 }
 

@@ -5,6 +5,7 @@ interface PageInterface {
   getHTML(): HTMLDivElement;
   hidden(): void;
   visible(): void;
+  greeting?(): void;
 }
 
 export default PageInterface;
