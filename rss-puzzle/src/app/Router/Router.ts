@@ -21,6 +21,7 @@ class Router {
   ) {
     this.storage = storage;
     this.pages = pages;
+
     this.currentPage = this.setCurrentPage();
     this.duration = PAGE_DELAY;
     window.addEventListener('hashchange', this.hashChangeHandler.bind(this));
@@ -28,6 +29,7 @@ class Router {
 
   private setCurrentPage(): PageInterface {
     const currentHash = window.location.hash.slice(1);
+
     if (currentHash in this.pages) {
       this.currentPage = this.pages[currentHash];
     } else if (currentHash === '') {
@@ -52,13 +54,6 @@ class Router {
   public renderNewPage(pageID: string): void {
     const formattedTitle = pageID[0].toUpperCase() + pageID.slice(1);
     document.title = formattedTitle;
-
-    if (pageID === PAGES_IDS.START) {
-      const page = this.pages[pageID];
-      if (page.greeting) {
-        page.greeting();
-      }
-    }
 
     this.fadeOutAndIn(this.currentPage, this.pages[pageID]);
 
@@ -111,7 +106,19 @@ class Router {
   }
 
   private hashChangeHandler(): void {
-    this.checkLoginUser();
+    const loginPage = this.pages[PAGES_IDS.LOG_IN];
+
+    if (loginPage.checkAuthUser) {
+      loginPage.checkAuthUser();
+    }
+
+    const hash = window.location.hash.slice(1);
+
+    if (hash === '') {
+      this.renderNewPage(PAGES_IDS.START);
+    } else {
+      this.renderNewPage(hash);
+    }
   }
 }
 

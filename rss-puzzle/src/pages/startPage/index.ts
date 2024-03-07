@@ -6,6 +6,8 @@ import ButtonComponent from '../../shared/button/Button.ts';
 import STORE_KEYS from '../../app/Storage/types/enums.ts';
 import { type UserDataInterface } from '../../app/Storage/types/interfaces.ts';
 import { PAGES_IDS, PAGES_STATE } from '../types/enums.ts';
+import Mediator from '../core/mediator/mediator.ts';
+import AppEvents from '../core/mediator/types/enums.ts';
 
 class StartPage implements PageInterface {
   public storage: StorageComponent;
@@ -16,7 +18,7 @@ class StartPage implements PageInterface {
 
   private title: HTMLHeadingElement | null;
 
-  private subtitle: HTMLHeadingElement | null;
+  private subtitle: HTMLHeadingElement;
 
   private descr: HTMLDivElement | null;
 
@@ -24,15 +26,23 @@ class StartPage implements PageInterface {
 
   private logOutBtn: ButtonComponent | null;
 
+  private singletonMediator: Mediator;
+
   constructor(id: string, parent: HTMLDivElement, storage: StorageComponent) {
     this.parent = parent;
     this.storage = storage;
 
     this.title = null;
-    this.subtitle = null;
+    this.subtitle = createBaseElement({ tag: 'h2' });
     this.descr = null;
     this.startBtn = null;
     this.logOutBtn = null;
+
+    this.singletonMediator = Mediator.getInstance();
+    this.singletonMediator.subscribe(
+      AppEvents.newUser,
+      this.greeting.bind(this),
+    );
 
     this.page = this.createHTML(id);
   }
@@ -41,13 +51,12 @@ class StartPage implements PageInterface {
     return this.page;
   }
 
-  public greeting(): void {
+  public greeting(): string {
     const userData: UserDataInterface = this.storage.get(STORE_KEYS.USER);
-    if (this.subtitle) {
-      const { name, surname } = userData;
-      const greeting = `Hello, ${name} ${surname}!`;
-      this.subtitle.innerText = greeting;
-    }
+    const { name, surname } = userData;
+    const greeting = `Hello, ${name} ${surname}!`;
+    this.subtitle.textContent = greeting;
+    return greeting;
   }
 
   private logOut(): void {
@@ -68,6 +77,7 @@ class StartPage implements PageInterface {
     this.subtitle = createBaseElement({
       tag: 'h2',
       cssClasses: [styles.page__subtitle],
+      innerContent: this.greeting(),
     });
     return this.subtitle;
   }

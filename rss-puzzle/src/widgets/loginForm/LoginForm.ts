@@ -4,10 +4,8 @@ import InputFieldComponent from '../../entities/inputField/InputField.ts';
 import SubmitButtonComponent from '../../entities/submitBtn/SubmitBtn.ts';
 import FormValidation from '../../features/formValidation/FormValidation.ts';
 import FIELD_NAMES from './types/enum.ts';
-import type { StorageComponentInterface } from '../../app/Storage/types/interfaces.ts';
-import STORE_KEYS from '../../app/Storage/types/enums.ts';
-import type PageInterface from '../../pages/types/interfaces.ts';
 import { PAGES_IDS } from '../../pages/types/enums.ts';
+import type PageInterface from '../../pages/types/interfaces.ts';
 
 class LoginForm {
   private form: HTMLFormElement;
@@ -24,13 +22,10 @@ class LoginForm {
 
   private formValidation: FormValidation;
 
-  private storage: StorageComponentInterface;
-
   private page: PageInterface;
 
   constructor(page: PageInterface) {
     this.page = page;
-    this.storage = this.page.storage;
     this.submitBtn = this.createSubmitBtn();
     this.form = this.createHTML();
     this.formValidation = new FormValidation(
@@ -55,7 +50,9 @@ class LoginForm {
 
     window.location.hash = PAGES_IDS.START;
 
-    this.storage.add(STORE_KEYS.USER, JSON.stringify(this.userData));
+    if (this.page.saveAuthUser) {
+      this.page.saveAuthUser(this.userData);
+    }
 
     const newLoginForm = new LoginForm(this.page);
     const currentForm = this.getHTML();
