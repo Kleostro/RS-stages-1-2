@@ -5,6 +5,7 @@ import StorageComponent from '../Storage/Storage.ts';
 import StartPage from '../../pages/startPage/index.ts';
 import Router from '../Router/Router.ts';
 import { PAGES_IDS } from '../../pages/types/enums.ts';
+import MainPage from '../../pages/mainPage/index.ts';
 
 class App {
   public pagesContainer: HTMLDivElement;
@@ -14,6 +15,7 @@ class App {
   public pages: {
     logIn: LogInPage;
     start: StartPage;
+    main: MainPage;
   };
 
   private router: Router;
@@ -25,10 +27,11 @@ class App {
     this.pages = {
       logIn: new LogInPage(PAGES_IDS.LOG_IN, this.pagesContainer, this.storage),
       start: new StartPage(PAGES_IDS.START, this.pagesContainer, this.storage),
+      main: new MainPage(PAGES_IDS.MAIN, this.pagesContainer, this.storage),
     };
 
-    this.router = new Router(this.storage, this.pages);
-    this.router.checkLoginUser();
+    this.router = new Router(this.pages);
+    this.router.init();
   }
 
   private createHTML(): HTMLDivElement {

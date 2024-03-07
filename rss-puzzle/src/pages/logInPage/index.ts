@@ -3,7 +3,7 @@ import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import LoginForm from '../../widgets/loginForm/LoginForm.ts';
 import type StorageComponent from '../../app/Storage/Storage.ts';
-import { PAGES_IDS, PAGES_STATE } from '../types/enums.ts';
+import { PAGES_STATE } from '../types/enums.ts';
 import Mediator from '../core/mediator/mediator.ts';
 import STORE_KEYS from '../../app/Storage/types/enums.ts';
 import type PageInterface from '../types/interfaces.ts';
@@ -12,6 +12,8 @@ import AppEvents from '../core/mediator/types/enums.ts';
 class LogInPage implements PageInterface {
   public storage: StorageComponent;
 
+  public id: string;
+
   private parent: HTMLDivElement;
 
   private singletonMediator: Mediator;
@@ -19,24 +21,25 @@ class LogInPage implements PageInterface {
   private page: HTMLDivElement;
 
   constructor(id: string, parent: HTMLDivElement, storage: StorageComponent) {
+    this.id = id;
     this.parent = parent;
     this.storage = storage;
     this.singletonMediator = Mediator.getInstance();
-    this.page = this.createHTML(id);
+    this.page = this.createHTML(this.id);
   }
 
   public getHTML(): HTMLDivElement {
     return this.page;
   }
 
-  public checkAuthUser(): void {
+  public checkAuthUser(): boolean {
     const userData = this.storage.get(STORE_KEYS.USER);
     if (userData.name !== '') {
       this.singletonMediator.notify(AppEvents.newUser, userData);
-      window.location.hash = PAGES_IDS.START;
     } else {
-      window.location.hash = PAGES_IDS.LOG_IN;
+      return false;
     }
+    return true;
   }
 
   public saveAuthUser(userData: {

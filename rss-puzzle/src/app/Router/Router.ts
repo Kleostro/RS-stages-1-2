@@ -1,7 +1,5 @@
 import { PAGES_IDS, PAGES_STATE } from '../../pages/types/enums.ts';
 import type PageInterface from '../../pages/types/interfaces.ts';
-import type { StorageComponentInterface } from '../Storage/types/interfaces.ts';
-import STORE_KEYS from '../Storage/types/enums.ts';
 
 const PAGE_DELAY = 500;
 const maxOpacity = 1;
@@ -13,18 +11,16 @@ class Router {
 
   private duration: number;
 
-  private storage: StorageComponentInterface;
-
-  constructor(
-    storage: StorageComponentInterface,
-    pages: Record<string, PageInterface>,
-  ) {
-    this.storage = storage;
+  constructor(pages: Record<string, PageInterface>) {
     this.pages = pages;
 
     this.currentPage = this.setCurrentPage();
     this.duration = PAGE_DELAY;
     window.addEventListener('hashchange', this.hashChangeHandler.bind(this));
+  }
+
+  public init(): void {
+    this.hashChangeHandler();
   }
 
   private setCurrentPage(): PageInterface {
@@ -39,19 +35,7 @@ class Router {
     return this.currentPage;
   }
 
-  public checkLoginUser(): void {
-    const user = this.storage.get(STORE_KEYS.USER);
-
-    if (!user.name) {
-      window.location.hash = PAGES_IDS.LOG_IN;
-      this.renderNewPage(PAGES_IDS.LOG_IN);
-    } else {
-      window.location.hash = PAGES_IDS.START;
-      this.renderNewPage(PAGES_IDS.START);
-    }
-  }
-
-  public renderNewPage(pageID: string): void {
+  private renderNewPage(pageID: string): void {
     const formattedTitle = pageID[0].toUpperCase() + pageID.slice(1);
     document.title = formattedTitle;
 
@@ -109,15 +93,24 @@ class Router {
     const loginPage = this.pages[PAGES_IDS.LOG_IN];
 
     if (loginPage.checkAuthUser) {
-      loginPage.checkAuthUser();
-    }
+      if (loginPage.checkAuthUser()) {
+        const hash = window.location.hash.slice(1);
 
-    const hash = window.location.hash.slice(1);
-
-    if (hash === '') {
-      this.renderNewPage(PAGES_IDS.START);
-    } else {
-      this.renderNewPage(hash);
+        if (hash === '' || hash === PAGES_IDS.LOG_IN) {
+          window.location.hash = PAGES_IDS.START;
+          this.renderNewPage(PAGES_IDS.START);
+        } else if (hash !== this.pages[hash]?.id) {
+          // TBD add 404 page
+          window.location.hash = PAGES_IDS.START;
+          this.renderNewPage(PAGES_IDS.START);
+          throw new Error('Wrong hash');
+        } else {
+          this.renderNewPage(hash);
+        }
+      } else {
+        window.location.hash = PAGES_IDS.LOG_IN;
+        this.renderNewPage(PAGES_IDS.LOG_IN);
+      }
     }
   }
 }

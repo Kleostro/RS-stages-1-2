@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import type StorageComponent from '../../app/Storage/Storage.ts';
@@ -10,6 +11,8 @@ import Mediator from '../core/mediator/mediator.ts';
 import AppEvents from '../core/mediator/types/enums.ts';
 
 class StartPage implements PageInterface {
+  public id: string;
+
   public storage: StorageComponent;
 
   private parent: HTMLDivElement;
@@ -29,6 +32,7 @@ class StartPage implements PageInterface {
   private singletonMediator: Mediator;
 
   constructor(id: string, parent: HTMLDivElement, storage: StorageComponent) {
+    this.id = id;
     this.parent = parent;
     this.storage = storage;
 
@@ -44,7 +48,7 @@ class StartPage implements PageInterface {
       this.greeting.bind(this),
     );
 
-    this.page = this.createHTML(id);
+    this.page = this.createHTML(this.id);
   }
 
   public getHTML(): HTMLDivElement {
@@ -91,11 +95,21 @@ class StartPage implements PageInterface {
     return this.descr;
   }
 
+  private moveToMainPage(): void {
+    window.location.hash = PAGES_IDS.MAIN;
+  }
+
   private createStartBtn(): ButtonComponent {
     this.startBtn = new ButtonComponent(
       'Start',
       [styles.page__btn, 'btn-reset'],
-      { type: 'submit' },
+      {},
+      {
+        key: 'click',
+        value: (): void => {
+          this.moveToMainPage();
+        },
+      },
     );
     return this.startBtn;
   }
