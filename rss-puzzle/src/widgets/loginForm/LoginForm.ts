@@ -6,6 +6,7 @@ import FormValidation from '../../features/formValidation/FormValidation.ts';
 import FIELD_NAMES from './types/enum.ts';
 import { PAGES_IDS } from '../../pages/types/enums.ts';
 import type PageInterface from '../../pages/types/interfaces.ts';
+import { type UserDataInterface } from '../../app/Storage/types/interfaces.ts';
 
 class LoginForm {
   private form: HTMLFormElement;
@@ -17,8 +18,6 @@ class LoginForm {
   protected fieldErrors: HTMLSpanElement[] = [];
 
   protected submitBtn: SubmitButtonComponent;
-
-  private userData: { [key: string]: FormDataEntryValue | null } = {};
 
   private formValidation: FormValidation;
 
@@ -40,27 +39,38 @@ class LoginForm {
     return this.form;
   }
 
-  private submit(event: Event): void {
-    event.preventDefault();
-    const formData = new FormData(this.form);
-    const nameData = formData.get(FIELD_NAMES.NAME);
-    const surnameData = formData.get(FIELD_NAMES.SURNAME);
-    this.userData.name = nameData;
-    this.userData.surname = surnameData;
-
-    window.location.hash = PAGES_IDS.START;
-
-    if (this.page.saveAuthUser) {
-      this.page.saveAuthUser(this.userData);
-    }
-
+  private redrawForm(): void {
+    const currentForm = this.form;
     const newLoginForm = new LoginForm(this.page);
-    const currentForm = this.getHTML();
     const { parentElement } = currentForm;
 
     if (parentElement) {
       parentElement.replaceChild(newLoginForm.getHTML(), currentForm);
     }
+  }
+
+  private getData(): UserDataInterface {
+    const userData: UserDataInterface = {};
+
+    this.inputFields.forEach((input) => {
+      const key = input.name;
+      const value = input.getData();
+      userData[key] = value;
+    });
+
+    return userData;
+  }
+
+  private submit(event: Event): void {
+    event.preventDefault();
+
+    window.location.hash = PAGES_IDS.START;
+
+    if (this.page.saveAuthUser) {
+      this.page.saveAuthUser(this.getData());
+    }
+
+    this.redrawForm();
   }
 
   private createFieldBox(input: HTMLInputElement): HTMLLabelElement {

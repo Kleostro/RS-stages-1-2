@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import type StorageComponent from '../../app/Storage/Storage.ts';

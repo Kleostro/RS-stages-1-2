@@ -26,11 +26,10 @@ export default {
     }),
   ],
   base: './',
-  root: 'src',
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, './src/index.html'),
+        main: resolve(__dirname, './index.html'),
       },
     },
     minify: false,

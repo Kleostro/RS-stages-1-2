@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import type StorageComponent from '../../app/Storage/Storage.ts';
@@ -56,9 +55,8 @@ class StartPage implements PageInterface {
   }
 
   public greeting(): string {
-    const userData: UserDataInterface = this.storage.get(STORE_KEYS.USER);
-    const { name, surname } = userData;
-    const greeting = `Hello, ${name} ${surname}!`;
+    const userData = this.storage.get<UserDataInterface>(STORE_KEYS.USER);
+    const greeting = `Hello, ${userData?.name} ${userData?.surname}!`;
     this.subtitle.textContent = greeting;
     return greeting;
   }
@@ -95,10 +93,6 @@ class StartPage implements PageInterface {
     return this.descr;
   }
 
-  private moveToMainPage(): void {
-    window.location.hash = PAGES_IDS.MAIN;
-  }
-
   private createStartBtn(): ButtonComponent {
     this.startBtn = new ButtonComponent(
       'Start',
@@ -107,7 +101,7 @@ class StartPage implements PageInterface {
       {
         key: 'click',
         value: (): void => {
-          this.moveToMainPage();
+          window.location.hash = PAGES_IDS.MAIN;
         },
       },
     );

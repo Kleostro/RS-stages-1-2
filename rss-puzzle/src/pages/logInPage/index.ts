@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import LoginForm from '../../widgets/loginForm/LoginForm.ts';
@@ -8,6 +7,7 @@ import Mediator from '../core/mediator/mediator.ts';
 import STORE_KEYS from '../../app/Storage/types/enums.ts';
 import type PageInterface from '../types/interfaces.ts';
 import AppEvents from '../core/mediator/types/enums.ts';
+import { type UserDataInterface } from '../../app/Storage/types/interfaces.ts';
 
 class LogInPage implements PageInterface {
   public storage: StorageComponent;
@@ -33,8 +33,8 @@ class LogInPage implements PageInterface {
   }
 
   public checkAuthUser(): boolean {
-    const userData = this.storage.get(STORE_KEYS.USER);
-    if (userData.name !== '') {
+    const userData = this.storage.get<UserDataInterface>(STORE_KEYS.USER);
+    if (userData && userData.name !== '') {
       this.singletonMediator.notify(AppEvents.newUser, userData);
     } else {
       return false;
@@ -42,9 +42,7 @@ class LogInPage implements PageInterface {
     return true;
   }
 
-  public saveAuthUser(userData: {
-    [key: string]: FormDataEntryValue | null;
-  }): void {
+  public saveAuthUser(userData: UserDataInterface): void {
     this.storage.add(STORE_KEYS.USER, JSON.stringify(userData));
   }
 

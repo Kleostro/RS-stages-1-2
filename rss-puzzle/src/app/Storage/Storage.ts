@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import STORE_KEYS from './types/enums.ts';
-import type {
-  Data,
-  StorageComponentInterface,
-  UserDataInterface,
-} from './types/interfaces';
+import type { Data, StorageComponentInterface } from './types/interfaces';
 
 class StorageComponent implements StorageComponentInterface {
   private storage: Data;
@@ -13,12 +9,12 @@ class StorageComponent implements StorageComponentInterface {
     this.storage = this.init();
   }
 
-  public get(key: string): UserDataInterface {
-    let result: UserDataInterface = { name: '', surname: '' };
+  public get<T>(key: string): T | undefined {
     if (key in this.storage) {
-      result = JSON.parse(this.storage[key]);
+      const result: T = JSON.parse(this.storage[key]);
+      return result;
     }
-    return result;
+    return undefined;
   }
 
   public add(key: string, value: string): void {
@@ -27,9 +23,8 @@ class StorageComponent implements StorageComponentInterface {
   }
 
   public remove(key: string): void {
-    const data: Data = this.init();
-    delete data[key];
-    this.save(data);
+    delete this.storage[key];
+    this.save(this.storage);
   }
 
   public clear(): void {
@@ -37,15 +32,15 @@ class StorageComponent implements StorageComponentInterface {
     this.init();
   }
 
-  private save(data: Data): Data {
+  private save(data: Data): void {
     localStorage.setItem(STORE_KEYS.LS_NAME, JSON.stringify(data));
-    return this.storage;
+    this.storage = this.init();
   }
 
   private init(): Data {
     const storedData = localStorage.getItem(STORE_KEYS.LS_NAME);
 
-    const safeJsonParse = <T extends Data>(str: string): T => {
+    const safeJsonParse = <T>(str: string): T => {
       try {
         const jsonValue: T = JSON.parse(str);
         return jsonValue;

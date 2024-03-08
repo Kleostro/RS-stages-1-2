@@ -9,10 +9,17 @@ class InputFieldComponent
 
   public isValid: boolean;
 
+  public name: string;
+
   constructor(attrs: Record<string, string>, form: HTMLFormElement) {
     super(attrs);
     this.form = form;
     this.isValid = true;
+    this.name = attrs.name;
+  }
+
+  public getData(): string {
+    return this.input.value;
   }
 }
 
