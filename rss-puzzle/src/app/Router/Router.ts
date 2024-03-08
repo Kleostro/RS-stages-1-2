@@ -1,8 +1,12 @@
+import AppEvents from '../../pages/core/mediator/types/enums.ts';
+import Mediator from '../../pages/core/mediator/mediator.ts';
 import { PAGES_IDS, PAGES_STATE } from '../../pages/types/enums.ts';
 import type PageInterface from '../../pages/types/interfaces.ts';
+import type RenderNewPageCallback from './types/types.ts';
+import EVENT_NAMES from '../../shared/types/enums.ts';
 
 const PAGE_DELAY = 500;
-const maxOpacity = 1;
+const MAX_OPACITY = 1;
 
 class Router {
   private pages: Record<string, PageInterface>;
@@ -11,16 +15,33 @@ class Router {
 
   private duration: number;
 
+  private singletonMediator: Mediator<unknown>;
+
   constructor(pages: Record<string, PageInterface>) {
     this.pages = pages;
-
     this.currentPage = this.setCurrentPage();
     this.duration = PAGE_DELAY;
-    window.addEventListener('hashchange', this.hashChangeHandler.bind(this));
+    this.singletonMediator = Mediator.getInstance();
+    this.singletonMediator.subscribe(
+      AppEvents.changeHash,
+      this.renderNewPageCallback,
+    );
+    window.addEventListener(
+      EVENT_NAMES.hashchange,
+      this.hashChangeHandler.bind(this),
+    );
   }
 
   public init(): void {
-    this.hashChangeHandler();
+    const loginPage = this.pages[PAGES_IDS.LOG_IN];
+
+    if (loginPage.checkAuthUser) {
+      if (loginPage.checkAuthUser()) {
+        this.renderNewPageCallback(PAGES_IDS.START);
+      } else {
+        this.renderNewPageCallback(PAGES_IDS.LOG_IN);
+      }
+    }
   }
 
   private setCurrentPage(): PageInterface {
@@ -28,19 +49,25 @@ class Router {
 
     if (currentHash in this.pages) {
       this.currentPage = this.pages[currentHash];
-    } else if (currentHash === '') {
+    } else if (currentHash === PAGES_IDS.BLANK) {
       this.currentPage = this.pages[PAGES_IDS.LOG_IN];
     }
 
     return this.currentPage;
   }
 
+  private renderNewPageCallback: RenderNewPageCallback = (hash: unknown) => {
+    if (typeof hash === 'string') {
+      window.location.hash = hash;
+      this.renderNewPage(hash);
+    }
+  };
+
   private renderNewPage(pageID: string): void {
     const formattedTitle = pageID[0].toUpperCase() + pageID.slice(1);
     document.title = formattedTitle;
 
     this.fadeOutAndIn(this.currentPage, this.pages[pageID]);
-
     this.currentPage = this.pages[pageID];
   }
 
@@ -53,7 +80,7 @@ class Router {
 
     const fadeIn = (timestamp: number): void => {
       const elapsed = timestamp - start;
-      const progress = Math.min(elapsed / duration, maxOpacity);
+      const progress = Math.min(elapsed / duration, MAX_OPACITY);
       const page = nextPage.getHTML();
 
       page.style.opacity = `${progress}`;
@@ -66,10 +93,11 @@ class Router {
 
     const fadeOut = (timestamp: number): void => {
       const elapsed = timestamp - start;
-      const progress = Math.min(elapsed / duration, maxOpacity);
+      const progress = Math.min(elapsed / duration, MAX_OPACITY);
+      const opacity = MAX_OPACITY - progress;
 
       const page = currentPage.getHTML();
-      page.style.opacity = `${maxOpacity - progress}`;
+      page.style.opacity = `${opacity}`;
 
       if (elapsed < duration) {
         window.requestAnimationFrame(fadeOut);
@@ -91,26 +119,27 @@ class Router {
 
   private hashChangeHandler(): void {
     const loginPage = this.pages[PAGES_IDS.LOG_IN];
+    const hash = window.location.hash.slice(1);
 
-    if (loginPage.checkAuthUser) {
+    if (!loginPage.checkAuthUser) {
+      return;
+    }
+
+    if (hash !== this.pages[hash]?.id) {
       if (loginPage.checkAuthUser()) {
-        const hash = window.location.hash.slice(1);
-
-        if (hash === '' || hash === PAGES_IDS.LOG_IN) {
-          window.location.hash = PAGES_IDS.START;
-          this.renderNewPage(PAGES_IDS.START);
-        } else if (hash !== this.pages[hash]?.id) {
-          // TBD add 404 page
-          window.location.hash = PAGES_IDS.START;
-          this.renderNewPage(PAGES_IDS.START);
-          throw new Error('Wrong hash');
-        } else {
-          this.renderNewPage(hash);
-        }
+        this.renderNewPageCallback(PAGES_IDS.START);
       } else {
-        window.location.hash = PAGES_IDS.LOG_IN;
-        this.renderNewPage(PAGES_IDS.LOG_IN);
+        this.renderNewPageCallback(PAGES_IDS.LOG_IN);
       }
+    }
+    if (loginPage.checkAuthUser()) {
+      if (hash !== PAGES_IDS.BLANK && hash !== PAGES_IDS.LOG_IN) {
+        this.renderNewPageCallback(hash);
+      } else {
+        window.location.hash = this.currentPage.id;
+      }
+    } else {
+      this.renderNewPageCallback(PAGES_IDS.LOG_IN);
     }
   }
 }

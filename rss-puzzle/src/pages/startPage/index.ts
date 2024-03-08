@@ -8,6 +8,7 @@ import { type UserDataInterface } from '../../app/Storage/types/interfaces.ts';
 import { PAGES_IDS, PAGES_STATE } from '../types/enums.ts';
 import Mediator from '../core/mediator/mediator.ts';
 import AppEvents from '../core/mediator/types/enums.ts';
+import EVENT_NAMES from '../../shared/types/enums.ts';
 
 class StartPage implements PageInterface {
   public id: string;
@@ -28,7 +29,7 @@ class StartPage implements PageInterface {
 
   private logOutBtn: ButtonComponent | null;
 
-  private singletonMediator: Mediator;
+  private singletonMediator: Mediator<unknown>;
 
   constructor(id: string, parent: HTMLDivElement, storage: StorageComponent) {
     this.id = id;
@@ -63,7 +64,7 @@ class StartPage implements PageInterface {
 
   private logOut(): void {
     this.storage.remove(STORE_KEYS.USER);
-    window.location.hash = PAGES_IDS.LOG_IN;
+    this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.LOG_IN);
   }
 
   private createTitle(): HTMLHeadingElement {
@@ -99,9 +100,9 @@ class StartPage implements PageInterface {
       [styles.page__btn, 'btn-reset'],
       {},
       {
-        key: 'click',
+        key: EVENT_NAMES.click,
         value: (): void => {
-          window.location.hash = PAGES_IDS.MAIN;
+          this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.MAIN);
         },
       },
     );
@@ -114,7 +115,7 @@ class StartPage implements PageInterface {
       [styles.page__btn, 'btn-reset'],
       {},
       {
-        key: 'click',
+        key: EVENT_NAMES.click,
         value: (): void => {
           this.logOut();
         },

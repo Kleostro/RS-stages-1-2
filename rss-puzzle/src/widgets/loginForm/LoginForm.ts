@@ -4,9 +4,9 @@ import InputFieldComponent from '../../entities/inputField/InputField.ts';
 import SubmitButtonComponent from '../../entities/submitBtn/SubmitBtn.ts';
 import FormValidation from '../../features/formValidation/FormValidation.ts';
 import FIELD_NAMES from './types/enum.ts';
-import { PAGES_IDS } from '../../pages/types/enums.ts';
 import type PageInterface from '../../pages/types/interfaces.ts';
 import { type UserDataInterface } from '../../app/Storage/types/interfaces.ts';
+import EVENT_NAMES from '../../shared/types/enums.ts';
 
 class LoginForm {
   private form: HTMLFormElement;
@@ -39,16 +39,6 @@ class LoginForm {
     return this.form;
   }
 
-  private redrawForm(): void {
-    const currentForm = this.form;
-    const newLoginForm = new LoginForm(this.page);
-    const { parentElement } = currentForm;
-
-    if (parentElement) {
-      parentElement.replaceChild(newLoginForm.getHTML(), currentForm);
-    }
-  }
-
   private getData(): UserDataInterface {
     const userData: UserDataInterface = {};
 
@@ -64,23 +54,23 @@ class LoginForm {
   private submit(event: Event): void {
     event.preventDefault();
 
-    window.location.hash = PAGES_IDS.START;
-
     if (this.page.saveAuthUser) {
       this.page.saveAuthUser(this.getData());
     }
 
-    this.redrawForm();
+    this.form.remove();
   }
 
   private createFieldBox(input: HTMLInputElement): HTMLLabelElement {
+    const labelText = `Enter ${input.name}`;
+
     const fieldLabel = createBaseElement({
       tag: 'label',
       cssClasses: [styles.form__label],
       attributes: {
         for: input.id,
       },
-      innerContent: `Enter ${input.name}`,
+      innerContent: labelText,
     });
 
     const fieldErrorSpan = createBaseElement({
@@ -156,7 +146,7 @@ class LoginForm {
       this.form.append(fieldBox);
     });
 
-    this.form.addEventListener('submit', this.submit.bind(this));
+    this.form.addEventListener(EVENT_NAMES.submit, this.submit.bind(this));
     this.form.append(this.submitBtn.getHTML());
     return this.form;
   }

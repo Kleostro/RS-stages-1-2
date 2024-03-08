@@ -2,7 +2,7 @@ import styles from './style.module.scss';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import LoginForm from '../../widgets/loginForm/LoginForm.ts';
 import type StorageComponent from '../../app/Storage/Storage.ts';
-import { PAGES_STATE } from '../types/enums.ts';
+import { PAGES_IDS, PAGES_STATE } from '../types/enums.ts';
 import Mediator from '../core/mediator/mediator.ts';
 import STORE_KEYS from '../../app/Storage/types/enums.ts';
 import type PageInterface from '../types/interfaces.ts';
@@ -16,7 +16,7 @@ class LogInPage implements PageInterface {
 
   private parent: HTMLDivElement;
 
-  private singletonMediator: Mediator;
+  private singletonMediator: Mediator<unknown>;
 
   private page: HTMLDivElement;
 
@@ -26,7 +26,12 @@ class LogInPage implements PageInterface {
     this.storage = storage;
     this.singletonMediator = Mediator.getInstance();
     this.page = this.createHTML(this.id);
+    this.hidden();
   }
+
+  private hidden = (): void => {
+    this.page.style.display = PAGES_STATE.HIDDEN;
+  };
 
   public getHTML(): HTMLDivElement {
     return this.page;
@@ -34,7 +39,7 @@ class LogInPage implements PageInterface {
 
   public checkAuthUser(): boolean {
     const userData = this.storage.get<UserDataInterface>(STORE_KEYS.USER);
-    if (userData && userData.name !== '') {
+    if (userData) {
       this.singletonMediator.notify(AppEvents.newUser, userData);
     } else {
       return false;
@@ -44,6 +49,13 @@ class LogInPage implements PageInterface {
 
   public saveAuthUser(userData: UserDataInterface): void {
     this.storage.add(STORE_KEYS.USER, JSON.stringify(userData));
+    this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.START);
+    this.drawForm();
+  }
+
+  private drawForm(): void {
+    const loginForm = new LoginForm(this);
+    this.page.append(loginForm.getHTML());
   }
 
   private createHTML(id: string): HTMLDivElement {
@@ -54,10 +66,8 @@ class LogInPage implements PageInterface {
     });
 
     this.page.style.display = PAGES_STATE.HIDDEN;
+    this.drawForm();
 
-    const loginForm = new LoginForm(this);
-
-    this.page.append(loginForm.getHTML());
     this.parent.append(this.page);
     return this.page;
   }
