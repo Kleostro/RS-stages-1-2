@@ -63,8 +63,14 @@ class MainPage implements PageInterface {
       .getData(url)
       .then((data) => {
         const words = this.getWords(data, currentRound);
+        const wrapper = createBaseElement({
+          tag: 'div',
+          cssClasses: [styles.game_wrapper],
+        });
+
         this.playground = new PlaygroundComponent(words);
-        this.page.append(this.playground.getHTML());
+        wrapper.append(this.playground.getHTML());
+        this.page.append(wrapper);
         return words;
       })
       .catch(() => {});

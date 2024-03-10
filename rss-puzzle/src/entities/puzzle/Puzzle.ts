@@ -1,3 +1,4 @@
+import type PlaygroundComponent from '@/widgets/playground/Playground.ts';
 import EVENT_NAMES from '../../shared/types/enums.ts';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import styles from './style.module.scss';
@@ -12,16 +13,31 @@ class PuzzleComponent {
 
   private word: string;
 
-  private parent: HTMLDivElement;
+  private playground: PlaygroundComponent;
 
-  constructor(word: string, parent: HTMLDivElement) {
+  constructor(word: string, playground: PlaygroundComponent) {
     this.word = word;
-    this.parent = parent;
+    this.playground = playground;
     this.puzzle = this.createHTML(this.word);
   }
 
   public getHTML(): HTMLDivElement {
     return this.puzzle;
+  }
+
+  private calculateSizePuzzle(elem: HTMLDivElement): void {
+    const currentElem = elem;
+    const wordLength = this.word.length;
+    const paddingX = 1;
+    const paddingY = 0.5;
+
+    const pivotFont = 5;
+    const minFontSize = 1;
+    const maxFontSize = 1.2;
+    const fontSize = wordLength > pivotFont ? minFontSize : maxFontSize;
+
+    currentElem.style.padding = `${paddingY}dvw ${paddingX}dvw`;
+    currentElem.style.fontSize = `${fontSize}dvw`;
   }
 
   private createDuplicateWordElement(): HTMLDivElement {
@@ -31,18 +47,22 @@ class PuzzleComponent {
       attributes: {},
       innerContent: this.word,
     });
+
+    this.calculateSizePuzzle(copyWord);
     return copyWord;
   }
 
   private clickHandler(): void {
+    if (!this.playground.sourceBlock || !this.playground.gameBoard) {
+      return;
+    }
+
     const copyWord = this.createDuplicateWordElement();
-    const { y, x } = this.puzzle.getBoundingClientRect();
 
-    const horizontallyTransform = x - this.parent.clientWidth;
-    const verticallyTransform = y;
-
+    const horizontallyTransform = 0;
+    const verticallyTransform = this.puzzle.clientHeight;
     const startTransformTranslate = `translate(${horizontallyTransform}px, ${verticallyTransform}px)`;
-    const endTransformTranslate = `translate(${0}px, ${0}px)`;
+    const endTransformTranslate = `translate(${0}, ${0})`;
 
     const COPY_PUZZLE_ANIMATION_PROPERTY = [
       { transform: startTransformTranslate },
@@ -64,7 +84,7 @@ class PuzzleComponent {
 
     this.puzzle.animate(PUZZLE_ANIMATION_PROPERTY, PUZZLE_ANIMATION_OPTIONS);
 
-    this.parent.append(copyWord);
+    this.playground.gameBoard.append(copyWord);
   }
 
   private createHTML(word: string): HTMLDivElement {
@@ -74,6 +94,8 @@ class PuzzleComponent {
       attributes: {},
       innerContent: word,
     });
+
+    this.calculateSizePuzzle(this.puzzle);
 
     this.puzzle.addEventListener(
       EVENT_NAMES.click,

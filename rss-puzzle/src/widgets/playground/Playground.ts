@@ -4,6 +4,10 @@ import PuzzleComponent from '../../entities/puzzle/Puzzle.ts';
 import randomIndex from './types/constants.ts';
 
 class PlaygroundComponent {
+  public gameBoard: HTMLDivElement | null;
+
+  public sourceBlock: HTMLDivElement | null;
+
   private playground: HTMLDivElement;
 
   private words: string[][];
@@ -12,6 +16,8 @@ class PlaygroundComponent {
 
   constructor(words: string[][]) {
     this.words = words;
+    this.gameBoard = null;
+    this.sourceBlock = null;
     this.playground = this.createHTML();
   }
 
@@ -28,18 +34,6 @@ class PlaygroundComponent {
     return this.words;
   }
 
-  private createSourceDataBlock(index: number): HTMLDivElement {
-    const sourceDataBlock = createBaseElement({
-      tag: 'div',
-      cssClasses: [styles.sourceData],
-    });
-
-    this.puzzles[index].forEach((puzzle) => {
-      sourceDataBlock.append(puzzle.getHTML());
-    });
-    return sourceDataBlock;
-  }
-
   private createPuzzleElements(): PuzzleComponent[][] {
     if (!(this.words instanceof Array)) {
       return [];
@@ -49,7 +43,7 @@ class PlaygroundComponent {
       const lineArr: PuzzleComponent[] = [];
 
       wordsLine.forEach((word) => {
-        const puzzle = new PuzzleComponent(word, this.playground);
+        const puzzle = new PuzzleComponent(word, this);
         lineArr.push(puzzle);
       });
 
@@ -65,10 +59,25 @@ class PlaygroundComponent {
       cssClasses: [styles.playground],
     });
 
+    this.gameBoard = createBaseElement({
+      tag: 'div',
+      cssClasses: [styles.game_board],
+    });
+
+    this.sourceBlock = createBaseElement({
+      tag: 'div',
+      cssClasses: [styles.source_data],
+    });
+
+    this.playground.append(this.gameBoard, this.sourceBlock);
+
     this.getShuffledWords();
     this.createPuzzleElements();
 
-    this.playground.append(this.createSourceDataBlock(0));
+    this.puzzles[0].forEach((puzzle) => {
+      this.sourceBlock?.append(puzzle.getHTML());
+    });
+
     return this.playground;
   }
 }
