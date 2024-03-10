@@ -4,7 +4,6 @@ import createBaseElement from '../../utils/createBaseElement.ts';
 import styles from './style.module.scss';
 import {
   PUZZLE_STYLE,
-  PUZZLE_ANIMATION_OPTIONS,
   COPY_PUZZLE_ANIMATION_OPTIONS,
 } from './types/constans.ts';
 
@@ -52,12 +51,17 @@ class PuzzleComponent {
     return copyWord;
   }
 
-  private clickHandler(): void {
+  private clickPuzzleHandler(): void {
     if (!this.playground.sourceBlock || !this.playground.gameBoard) {
       return;
     }
 
     const copyWord = this.createDuplicateWordElement();
+    copyWord.addEventListener(EVENT_NAMES.click, () => {
+      this.puzzle.style.pointerEvents = PUZZLE_STYLE.auto;
+      this.puzzle.classList.remove(styles.puzzle_placeholder);
+      copyWord.remove();
+    });
 
     const horizontallyTransform = 0;
     const verticallyTransform = this.puzzle.clientHeight;
@@ -76,13 +80,7 @@ class PuzzleComponent {
 
     copyWord.replaceWith(this.puzzle);
     this.puzzle.style.pointerEvents = PUZZLE_STYLE.none;
-
-    const PUZZLE_ANIMATION_PROPERTY = [
-      { opacity: PUZZLE_STYLE.opacity_on },
-      { opacity: PUZZLE_STYLE.opacity_off },
-    ];
-
-    this.puzzle.animate(PUZZLE_ANIMATION_PROPERTY, PUZZLE_ANIMATION_OPTIONS);
+    this.puzzle.classList.add(styles.puzzle_placeholder);
 
     this.playground.gameBoard.append(copyWord);
   }
@@ -99,7 +97,7 @@ class PuzzleComponent {
 
     this.puzzle.addEventListener(
       EVENT_NAMES.click,
-      this.clickHandler.bind(this),
+      this.clickPuzzleHandler.bind(this),
     );
 
     return this.puzzle;

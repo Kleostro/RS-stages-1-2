@@ -1,4 +1,5 @@
 .puzzle {
+  position: relative;
   display: flex;
   align-items: center;
   outline: 2px solid #807080;
@@ -7,6 +8,17 @@
   background-color: #f5deb3;
   transition: background-color 0.2s ease-in-out;
   cursor: pointer;
+
+  &_placeholder {
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      border-radius: 10px;
+      background-color: #f5deb3;
+      inset: 0;
+    }
+  }
 
   @media (hover: hover) {
     &:hover {

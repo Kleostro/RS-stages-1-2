@@ -1,17 +1,13 @@
-.source_data {
+.source_data,
+.game_board {
   display: flex;
-  border: 2px solid #3e393e;
+  border: 2px solid #403b40;
   border-radius: 10px;
   padding: 0.5dvw 1dvw;
+  height: 5dvw;
   gap: 1dvw;
 }
 
 .game_board {
-  display: flex;
   margin-bottom: 20px;
-  border: 2px solid #403b40;
-  border-radius: 10px;
-  padding: 0.5dvw 1dvw;
-  width: max-content;
-  gap: 1dvw;
 }

@@ -1,5 +1,6 @@
 export const PUZZLE_STYLE = {
   none: 'none',
+  auto: 'auto',
   opacity_on: '1',
   opacity_off: '0',
   fill: 'forwards',
