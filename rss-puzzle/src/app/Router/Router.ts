@@ -131,7 +131,9 @@ class Router {
       } else {
         this.renderNewPageCallback(PAGES_IDS.LOG_IN);
       }
+      return;
     }
+
     if (loginPage.checkAuthUser()) {
       if (hash !== PAGES_IDS.BLANK && hash !== PAGES_IDS.LOG_IN) {
         this.renderNewPageCallback(hash);
