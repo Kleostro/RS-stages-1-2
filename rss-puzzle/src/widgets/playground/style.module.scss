@@ -1,13 +1,62 @@
+.playground {
+  display: flex;
+  flex-direction: column;
+  gap: 2dvw;
+}
+
 .source_data,
 .game_board {
   display: flex;
   border: 2px solid #403b40;
   border-radius: 10px;
   padding: 0.5dvw 1dvw;
-  height: 5dvw;
   gap: 1dvw;
 }
 
+.source_data {
+  height: 5dvw;
+}
+
 .game_board {
+  display: grid;
+  grid-template-rows: repeat(10, 4dvw);
   margin-bottom: 20px;
+  gap: 10px;
+}
+
+.line {
+  display: flex;
+  gap: 1dvw;
+}
+
+.continue_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #403b40;
+  border-radius: 10px;
+  padding: 0.5dvw 1dvw;
+  width: 12dvw;
+  height: 3dvw;
+  font-size: 1.2dvw;
+  color: #000;
+  background-color: #9e3d9e;
+  transition:
+    color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out,
+    opacity 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: #ada9ad;
+      background-color: #bb64bb;
+    }
+  }
 }

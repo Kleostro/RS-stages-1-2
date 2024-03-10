@@ -5,12 +5,7 @@ import type StorageComponent from '../../app/Storage/Storage.ts';
 import { PAGES_STATE } from '../types/enums.ts';
 import type PageInterface from '../types/interfaces.ts';
 import PlaygroundComponent from '../../widgets/playground/Playground.ts';
-import type {
-  levelInfo,
-  wordsInfo,
-} from '../../shared/api/types/interfaces.ts';
 import type Api from '../../shared/api/Api.ts';
-import API_URLS from '../../shared/api/types/constants.ts';
 
 class MainPage implements PageInterface {
   public id: string;
@@ -35,47 +30,12 @@ class MainPage implements PageInterface {
     this.parent = parent;
     this.storage = storage;
     this.api = api;
-    this.playground = this.createPlayground(1, 0);
+    this.playground = new PlaygroundComponent(this.api);
     this.page = this.createHTML(this.id);
   }
 
   public getHTML(): HTMLDivElement {
     return this.page;
-  }
-
-  private getWords(data: levelInfo, round: number): string[][] {
-    const words: string[][] = [];
-    const currentWords = data.rounds[round].words;
-
-    currentWords.forEach((word: wordsInfo) => {
-      words.push(word.textExample.split(' '));
-    });
-    return words;
-  }
-
-  private createPlayground(
-    currentLvl: number,
-    currentRound: number,
-  ): PlaygroundComponent {
-    const url = `${API_URLS.levelData}${currentLvl}.json`;
-
-    this.api
-      .getData(url)
-      .then((data) => {
-        const words = this.getWords(data, currentRound);
-        const wrapper = createBaseElement({
-          tag: 'div',
-          cssClasses: [styles.game_wrapper],
-        });
-
-        this.playground = new PlaygroundComponent(words);
-        wrapper.append(this.playground.getHTML());
-        this.page.append(wrapper);
-        return words;
-      })
-      .catch(() => {});
-
-    return this.playground;
   }
 
   private createHTML(id: string): HTMLDivElement {
@@ -84,6 +44,13 @@ class MainPage implements PageInterface {
       cssClasses: [styles.page],
       attributes: { id },
     });
+
+    const wrapper = createBaseElement({
+      tag: 'div',
+      cssClasses: [styles.game_wrapper],
+    });
+    this.page.append(wrapper);
+    wrapper.append(this.playground.getHTML());
 
     this.page.style.display = PAGES_STATE.HIDDEN;
     this.parent.append(this.page);

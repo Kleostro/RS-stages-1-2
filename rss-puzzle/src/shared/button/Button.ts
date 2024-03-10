@@ -17,6 +17,10 @@ class ButtonComponent {
     return this.button;
   }
 
+  public switchDisabled(): void {
+    this.button.disabled = !this.button.disabled;
+  }
+
   private createHTML(
     action?: ButtonAction,
     classes?: string[],

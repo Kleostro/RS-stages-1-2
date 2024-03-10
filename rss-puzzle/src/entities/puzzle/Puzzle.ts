@@ -51,20 +51,35 @@ class PuzzleComponent {
     return copyWord;
   }
 
-  private clickPuzzleHandler(): void {
+  private clickPuzzleCopyHandler(copyWord: HTMLDivElement): void {
+    this.puzzle.style.pointerEvents = PUZZLE_STYLE.auto;
+    this.puzzle.classList.remove(styles.puzzle_placeholder);
+    this.playground.currentLine = this.playground.currentLine.filter(
+      (word) => word !== this.word,
+    );
+    const continueBtn = this.playground.continueBtn.getHTML();
+    continueBtn.disabled = true;
+    this.playground.checkLine();
+    copyWord.remove();
+  }
+
+  private setPuzzleAnimation(copyWord: HTMLDivElement): void {
     if (!this.playground.sourceBlock || !this.playground.gameBoard) {
       return;
     }
 
-    const copyWord = this.createDuplicateWordElement();
-    copyWord.addEventListener(EVENT_NAMES.click, () => {
-      this.puzzle.style.pointerEvents = PUZZLE_STYLE.auto;
-      this.puzzle.classList.remove(styles.puzzle_placeholder);
-      copyWord.remove();
-    });
+    const lineRect =
+      this.playground.linesArr[
+        this.playground.currentRound
+      ].getBoundingClientRect();
+
+    const gameBoardRect = this.playground.gameBoard.getBoundingClientRect();
 
     const horizontallyTransform = 0;
-    const verticallyTransform = this.puzzle.clientHeight;
+    const verticallyTransform =
+      gameBoardRect.height -
+      lineRect.height +
+      this.playground.sourceBlock.clientHeight;
     const startTransformTranslate = `translate(${horizontallyTransform}px, ${verticallyTransform}px)`;
     const endTransformTranslate = `translate(${0}, ${0})`;
 
@@ -77,12 +92,28 @@ class PuzzleComponent {
       COPY_PUZZLE_ANIMATION_PROPERTY,
       COPY_PUZZLE_ANIMATION_OPTIONS,
     );
+  }
+
+  private clickPuzzleHandler(): void {
+    if (!this.playground.sourceBlock || !this.playground.gameBoard) {
+      return;
+    }
+
+    this.playground.currentLine.push(this.word);
+    this.playground.checkLine();
+
+    const copyWord = this.createDuplicateWordElement();
+    copyWord.addEventListener(EVENT_NAMES.click, () => {
+      this.clickPuzzleCopyHandler.bind(this, copyWord)();
+    });
+
+    this.setPuzzleAnimation(copyWord);
 
     copyWord.replaceWith(this.puzzle);
     this.puzzle.style.pointerEvents = PUZZLE_STYLE.none;
     this.puzzle.classList.add(styles.puzzle_placeholder);
 
-    this.playground.gameBoard.append(copyWord);
+    this.playground.linesArr[this.playground.currentRound].append(copyWord);
   }
 
   private createHTML(word: string): HTMLDivElement {
