@@ -1,7 +1,7 @@
-import shuffleStringArr from '../../utils/shuffleStringArr.ts';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import styles from './style.module.scss';
 import PuzzleComponent from '../../entities/puzzle/Puzzle.ts';
+import randomIndex from './types/constants.ts';
 
 class PlaygroundComponent {
   private playground: HTMLDivElement;
@@ -20,7 +20,11 @@ class PlaygroundComponent {
   }
 
   private getShuffledWords(): string[][] {
-    this.words.forEach((wordArr) => shuffleStringArr(wordArr));
+    if (this.words instanceof Array) {
+      this.words.forEach((wordArr: string[]) =>
+        wordArr.sort(() => Math.random() - randomIndex),
+      );
+    }
     return this.words;
   }
 
@@ -37,7 +41,11 @@ class PlaygroundComponent {
   }
 
   private createPuzzleElements(): PuzzleComponent[][] {
-    this.words.forEach((wordsLine) => {
+    if (!(this.words instanceof Array)) {
+      return [];
+    }
+
+    this.words.forEach((wordsLine: string[]) => {
       const lineArr: PuzzleComponent[] = [];
 
       wordsLine.forEach((word) => {

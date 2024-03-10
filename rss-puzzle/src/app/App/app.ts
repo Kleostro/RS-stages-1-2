@@ -6,11 +6,14 @@ import StartPage from '../../pages/startPage/index.ts';
 import Router from '../Router/Router.ts';
 import { PAGES_IDS } from '../../pages/types/enums.ts';
 import MainPage from '../../pages/mainPage/index.ts';
+import Api from '../../shared/api/Api.ts';
 
 class App {
   public pagesContainer: HTMLDivElement;
 
   private storage: StorageComponent;
+
+  private api: Api;
 
   public pages: {
     logIn: LogInPage;
@@ -23,11 +26,17 @@ class App {
   constructor() {
     this.pagesContainer = this.createHTML();
     this.storage = new StorageComponent();
+    this.api = new Api();
 
     this.pages = {
       logIn: new LogInPage(PAGES_IDS.LOG_IN, this.pagesContainer, this.storage),
       start: new StartPage(PAGES_IDS.START, this.pagesContainer, this.storage),
-      main: new MainPage(PAGES_IDS.MAIN, this.pagesContainer, this.storage),
+      main: new MainPage(
+        PAGES_IDS.MAIN,
+        this.pagesContainer,
+        this.storage,
+        this.api,
+      ),
     };
 
     this.router = new Router(this.pages);
