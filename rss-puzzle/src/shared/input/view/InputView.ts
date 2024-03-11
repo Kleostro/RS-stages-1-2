@@ -1,7 +1,7 @@
-import createBaseElement from '../../utils/createBaseElement.ts';
-import { type InputComponentInterface } from './types/interfaces.ts';
+import { TAG_NAMES } from '../../types/enums.ts';
+import createBaseElement from '../../../utils/createBaseElement.ts';
 
-class InputComponent implements InputComponentInterface {
+class InputView {
   public input: HTMLInputElement;
 
   constructor(attrs: Record<string, string>) {
@@ -14,7 +14,7 @@ class InputComponent implements InputComponentInterface {
 
   private createHTML(attrs: Record<string, string>): HTMLInputElement {
     this.input = createBaseElement({
-      tag: 'input',
+      tag: TAG_NAMES.input,
       attributes: attrs,
     });
 
@@ -22,4 +22,4 @@ class InputComponent implements InputComponentInterface {
   }
 }
 
-export default InputComponent;
+export default InputView;

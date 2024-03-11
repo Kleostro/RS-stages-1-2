@@ -1,8 +1,9 @@
-import createBaseElement from '../../utils/createBaseElement.ts';
-import type ButtonAction from './types/types.ts';
+import { TAG_NAMES } from '../../types/enums.ts';
+import createBaseElement from '../../../utils/createBaseElement.ts';
+import type ButtonAction from '../types/types';
 
-class ButtonComponent {
-  public button: HTMLButtonElement;
+class ButtonView {
+  private button: HTMLButtonElement;
 
   constructor(
     text?: string,
@@ -17,10 +18,6 @@ class ButtonComponent {
     return this.button;
   }
 
-  public switchDisabled(): void {
-    this.button.disabled = !this.button.disabled;
-  }
-
   private createHTML(
     action?: ButtonAction,
     classes?: string[],
@@ -28,7 +25,7 @@ class ButtonComponent {
     text?: string,
   ): HTMLButtonElement {
     this.button = createBaseElement({
-      tag: 'button',
+      tag: TAG_NAMES.button,
       cssClasses: classes,
       attributes: attrs,
       innerContent: text,
@@ -42,4 +39,4 @@ class ButtonComponent {
   }
 }
 
-export default ButtonComponent;
+export default ButtonView;

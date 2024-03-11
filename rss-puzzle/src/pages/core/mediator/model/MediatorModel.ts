@@ -1,7 +1,7 @@
-type ListenerCallback<T> = (params: T) => T;
+import type ListenerCallback from '../types/types.ts';
 
-class Mediator<T> {
-  private static mediator = new Mediator();
+class MediatorModel<T> {
+  private static mediator = new MediatorModel();
 
   private listeners: Map<string, Array<ListenerCallback<T>>>;
 
@@ -9,8 +9,8 @@ class Mediator<T> {
     this.listeners = new Map();
   }
 
-  public static getInstance(): Mediator<unknown> {
-    return Mediator.mediator;
+  public static getInstance(): MediatorModel<unknown> {
+    return MediatorModel.mediator;
   }
 
   public subscribe(eventName: string, listener: ListenerCallback<T>): void {
@@ -43,4 +43,4 @@ class Mediator<T> {
   }
 }
 
-export default Mediator;
+export default MediatorModel;

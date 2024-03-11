@@ -1,7 +1,7 @@
-import type ButtonAction from '../../shared/button/types/types.ts';
-import ButtonComponent from '../../shared/button/Button.ts';
+import type ButtonAction from '../../../shared/button/types/types.ts';
+import ButtonModel from '../../../shared/button/model/ButtonModel.ts';
 
-class SubmitButtonComponent extends ButtonComponent {
+class SubmitButtonModel extends ButtonModel {
   public form: HTMLFormElement;
 
   constructor(
@@ -17,4 +17,4 @@ class SubmitButtonComponent extends ButtonComponent {
   }
 }
 
-export default SubmitButtonComponent;
+export default SubmitButtonModel;

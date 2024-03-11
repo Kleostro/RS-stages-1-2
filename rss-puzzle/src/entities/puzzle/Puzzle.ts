@@ -1,22 +1,31 @@
-import type PlaygroundComponent from '@/widgets/playground/Playground.ts';
-import EVENT_NAMES from '../../shared/types/enums.ts';
+// import type PlaygroundComponent from '@/widgets/playground/Playground.ts';
+import type PlaygroundView from '../../widgets/playground/ui/PlaygroundView.ts';
+import { EVENT_NAMES } from '../../shared/types/enums.ts';
 import createBaseElement from '../../utils/createBaseElement.ts';
 import styles from './style.module.scss';
 import {
   PUZZLE_STYLE,
   COPY_PUZZLE_ANIMATION_OPTIONS,
 } from './types/constans.ts';
+import type PlaygroundModel from '../../widgets/playground/model/PlaygroundModel.ts';
 
 class PuzzleComponent {
   private puzzle: HTMLDivElement;
 
   private word: string;
 
-  private playground: PlaygroundComponent;
+  private playground: PlaygroundModel;
 
-  constructor(word: string, playground: PlaygroundComponent) {
+  private playgroundView: PlaygroundView;
+
+  constructor(
+    word: string,
+    playground: PlaygroundModel,
+    playgroundView: PlaygroundView,
+  ) {
     this.word = word;
     this.playground = playground;
+    this.playgroundView = playgroundView;
     this.puzzle = this.createHTML(this.word);
   }
 
@@ -54,40 +63,40 @@ class PuzzleComponent {
   private clickPuzzleCopyHandler(copyWord: HTMLDivElement): void {
     this.puzzle.style.pointerEvents = PUZZLE_STYLE.auto;
     this.puzzle.classList.remove(styles.puzzle_placeholder);
-    this.playground.currentLine = this.playground.currentLine.filter(
-      (word) => word !== this.word,
-    );
 
-    this.playground.copyPuzzles = this.playground.copyPuzzles.filter(
-      (copy) => copy !== copyWord,
-    );
+    const newWordsInCurrentLine = this.playground
+      .getWordsInCurrentLine()
+      .filter((word) => word !== this.word);
+    this.playground.setWordsInCurrentLine(newWordsInCurrentLine);
 
-    const continueBtn = this.playground.continueBtn.getHTML();
-    continueBtn.disabled = true;
+    const newCopyPuzzles = this.playground
+      .getCopyPuzzles()
+      .filter((copy) => copy !== copyWord);
+    this.playground.setCopyPuzzles(newCopyPuzzles);
 
-    const checkBtn = this.playground.checkBtn.getHTML();
-    checkBtn.disabled = true;
+    const continueBtn = this.playgroundView.getContinueBtn();
+    continueBtn.setDisabled();
+
+    const checkBtn = this.playgroundView.getCheckBtn();
+    checkBtn.setDisabled();
+
     this.playground.checkLine();
     copyWord.remove();
   }
 
   private setPuzzleAnimation(copyWord: HTMLDivElement): void {
-    if (!this.playground.sourceBlock || !this.playground.gameBoard) {
-      return;
-    }
+    const linesArr = this.playground.getWordLinesHTML();
+    const currentRound = this.playground.getCurrentRound();
+    const lineRect = linesArr[currentRound].getBoundingClientRect();
 
-    const lineRect =
-      this.playground.linesArr[
-        this.playground.currentRound
-      ].getBoundingClientRect();
+    const gameBoard = this.playgroundView.getGameBoardHTML();
+    const gameBoardRect = gameBoard.getBoundingClientRect();
 
-    const gameBoardRect = this.playground.gameBoard.getBoundingClientRect();
+    const sourceBlock = this.playgroundView.getSourceBlockHTML();
 
     const horizontallyTransform = 0;
     const verticallyTransform =
-      gameBoardRect.height -
-      lineRect.height +
-      this.playground.sourceBlock.clientHeight;
+      gameBoardRect.height - lineRect.height + sourceBlock.clientHeight;
     const startTransformTranslate = `translate(${horizontallyTransform}px, ${verticallyTransform}px)`;
     const endTransformTranslate = `translate(${0}, ${0})`;
 
@@ -103,22 +112,20 @@ class PuzzleComponent {
   }
 
   private clickPuzzleHandler(): void {
-    if (!this.playground.sourceBlock || !this.playground.gameBoard) {
-      return;
-    }
-
-    this.playground.currentLine.push(this.word);
+    const wordsInCurrentLine = this.playground.getWordsInCurrentLine();
+    wordsInCurrentLine.push(this.word);
     this.playground.checkLine();
+    const words = this.playground.getWords();
+    const currentRound = this.playground.getCurrentRound();
+    const checkBtn = this.playgroundView.getCheckBtn();
+    const copyPuzzles = this.playground.getCopyPuzzles();
 
-    if (
-      this.playground.currentLine.length ===
-      this.playground.words[this.playground.currentRound].length
-    ) {
-      this.playground.checkBtn.switchDisabled();
+    if (wordsInCurrentLine.length === words[currentRound].length) {
+      checkBtn.switchDisabled();
     }
 
     const copyWord = this.createDuplicateWordElement();
-    this.playground.copyPuzzles.push(copyWord);
+    copyPuzzles.push(copyWord);
 
     copyWord.addEventListener(EVENT_NAMES.click, () => {
       this.clickPuzzleCopyHandler.bind(this, copyWord)();
@@ -130,7 +137,8 @@ class PuzzleComponent {
     this.puzzle.style.pointerEvents = PUZZLE_STYLE.none;
     this.puzzle.classList.add(styles.puzzle_placeholder);
 
-    this.playground.linesArr[this.playground.currentRound].append(copyWord);
+    const wordLines = this.playground.getWordLinesHTML();
+    wordLines[currentRound].append(copyWord);
   }
 
   private createHTML(word: string): HTMLDivElement {

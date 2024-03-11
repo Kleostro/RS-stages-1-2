@@ -1,10 +1,11 @@
-import { type InputFieldComponentInterface } from '../../entities/inputField/types/interfaces.ts';
-import styles from '../../widgets/loginForm/style.module.scss';
-import ERRORS_NAME from './types/enum.ts';
-import FIELD_INFO from './const.ts';
+import styles from '../../../widgets/loginForm/style.module.scss';
+import ERRORS_NAME from '../types/enum.ts';
+import FIELD_INFO from '../const.ts';
+import type InputFieldModal from '@/entities/inputField/model/InputFieldModal.ts';
+import INPUT_STATE from '../../../shared/input/types/enums.ts';
 
-class FormValidation {
-  private fields: InputFieldComponentInterface[] = [];
+class FormValidationModel {
+  private fields: InputFieldModal[] = [];
 
   private errorMessages: Record<string, string> = {};
 
@@ -13,7 +14,7 @@ class FormValidation {
   private button: HTMLButtonElement;
 
   constructor(
-    fields: InputFieldComponentInterface[],
+    fields: InputFieldModal[],
     fieldErrors: HTMLSpanElement[],
     button: HTMLButtonElement,
   ) {
@@ -40,7 +41,7 @@ class FormValidation {
 
   private updateBtnState(): void {
     const isValidFields = Object.values(this.fields).every(
-      (field) => !field.isValid,
+      (field) => !field.getIsValid(),
     );
     this.button.disabled = !isValidFields;
   }
@@ -61,14 +62,14 @@ class FormValidation {
   }
 
   private setError(
-    field: InputFieldComponentInterface,
+    field: InputFieldModal,
     span: HTMLSpanElement,
     error: string,
     options?: Record<string, number>,
     name?: string,
   ): void {
     const currentField = field;
-    currentField.isValid = true;
+    currentField.setIsValid(INPUT_STATE.DISABLED);
 
     const fieldHTML = currentField.getHTML();
     fieldHTML.classList.remove(styles.form__input__success);
@@ -83,7 +84,7 @@ class FormValidation {
   }
 
   private fieldCheck(
-    field: InputFieldComponentInterface,
+    field: InputFieldModal,
     fieldHTML: HTMLInputElement,
     options: Record<string, number>,
   ): void {
@@ -119,7 +120,7 @@ class FormValidation {
       const errorCode = ERRORS_NAME.MANY_CHARS;
       this.setError(currentField, currentSpan, errorCode, options, name);
     } else {
-      currentField.isValid = false;
+      currentField.setIsValid(INPUT_STATE.ENABLED);
       fieldHTML.classList.add(styles.form__input__success);
       fieldHTML.classList.remove(styles.form__input__error);
 
@@ -132,4 +133,4 @@ class FormValidation {
   }
 }
 
-export default FormValidation;
+export default FormValidationModel;

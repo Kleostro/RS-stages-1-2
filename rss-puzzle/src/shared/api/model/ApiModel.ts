@@ -1,10 +1,15 @@
-import type { levelInfo } from './types/interfaces';
+import type { levelInfo } from '../types/interfaces';
 
-class Api {
+class ApiModel {
   private response: Promise<levelInfo> | null;
 
   constructor() {
     this.response = null;
+  }
+
+  public async getData(url: string): Promise<levelInfo> {
+    const data: levelInfo = await this.fetchResponse(url);
+    return data;
   }
 
   private fetchResponse(url: string): Promise<levelInfo> {
@@ -14,11 +19,6 @@ class Api {
 
     return this.response;
   }
-
-  public async getData(url: string): Promise<levelInfo> {
-    const data: levelInfo = await this.fetchResponse(url);
-    return data;
-  }
 }
 
-export default Api;
+export default ApiModel;

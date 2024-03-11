@@ -1,5 +1,5 @@
 import './index.scss';
-import App from './app/App/app.ts';
+import AppModel from './app/App/model/AppModel.ts';
 
-const myApp = new App();
-document.body.append(myApp.pagesContainer);
+const myApp = new AppModel();
+document.body.append(myApp.getHTML());

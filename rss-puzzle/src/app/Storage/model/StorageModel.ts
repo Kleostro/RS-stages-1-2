@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import STORE_KEYS from './types/enums.ts';
-import type { Data, StorageComponentInterface } from './types/interfaces';
+import STORE_KEYS from '../types/enums.ts';
+import type { Data, StorageModelInterface } from '../types/interfaces';
 
-class StorageComponent implements StorageComponentInterface {
+class StorageModel implements StorageModelInterface {
   private storage: Data;
 
   constructor() {
@@ -60,4 +60,4 @@ class StorageComponent implements StorageComponentInterface {
   }
 }
 
-export default StorageComponent;
+export default StorageModel;

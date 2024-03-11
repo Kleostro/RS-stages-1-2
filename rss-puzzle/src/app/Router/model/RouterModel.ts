@@ -1,27 +1,27 @@
-import AppEvents from '../../pages/core/mediator/types/enums.ts';
-import Mediator from '../../pages/core/mediator/mediator.ts';
-import { PAGES_IDS, PAGES_STATE } from '../../pages/types/enums.ts';
-import type PageInterface from '../../pages/types/interfaces.ts';
-import type RenderNewPageCallback from './types/types.ts';
-import EVENT_NAMES from '../../shared/types/enums.ts';
+import AppEvents from '../../../pages/core/mediator/types/enums.ts';
+import MediatorModel from '../../../pages/core/mediator/model/MediatorModel.ts';
+import { PAGES_IDS, PAGES_STATE } from '../../../pages/types/enums.ts';
+import type PageInterface from '../../../pages/types/interfaces.ts';
+import type RenderNewPageCallback from '../types/types.ts';
+import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 
 const PAGE_DELAY = 500;
 const MAX_OPACITY = 1;
 
-class Router {
+class RouterModel {
   private pages: Record<string, PageInterface>;
 
   private currentPage: PageInterface;
 
   private duration: number;
 
-  private singletonMediator: Mediator<unknown>;
+  private singletonMediator: MediatorModel<unknown>;
 
   constructor(pages: Record<string, PageInterface>) {
     this.pages = pages;
     this.currentPage = this.setCurrentPage();
     this.duration = PAGE_DELAY;
-    this.singletonMediator = Mediator.getInstance();
+    this.singletonMediator = MediatorModel.getInstance();
     this.singletonMediator.subscribe(
       AppEvents.changeHash,
       this.renderNewPageCallback,
@@ -125,7 +125,7 @@ class Router {
       return;
     }
 
-    if (hash !== this.pages[hash]?.id) {
+    if (hash !== this.pages[hash].getID()) {
       if (loginPage.checkAuthUser()) {
         this.renderNewPageCallback(PAGES_IDS.START);
       } else {
@@ -138,7 +138,7 @@ class Router {
       if (hash !== PAGES_IDS.BLANK && hash !== PAGES_IDS.LOG_IN) {
         this.renderNewPageCallback(hash);
       } else {
-        window.location.hash = this.currentPage.id;
+        window.location.hash = this.currentPage.getID();
       }
     } else {
       this.renderNewPageCallback(PAGES_IDS.LOG_IN);
@@ -146,4 +146,4 @@ class Router {
   }
 }
 
-export default Router;
+export default RouterModel;

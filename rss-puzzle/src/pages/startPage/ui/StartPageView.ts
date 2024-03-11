@@ -1,0 +1,114 @@
+import createBaseElement from '../../../utils/createBaseElement.ts';
+import ButtonModel from '../../../shared/button/model/ButtonModel.ts';
+import styles from './style.module.scss';
+import { PAGES_STATE } from '../../types/enums.ts';
+import { TAG_NAMES } from '../../../shared/types/enums.ts';
+import BUTTONS_TEXT_CONTENT from '../types/enums.ts';
+
+class StartPageView {
+  private parent: HTMLDivElement;
+
+  private page: HTMLDivElement;
+
+  private title: HTMLHeadingElement;
+
+  private subtitle: HTMLHeadingElement;
+
+  private descr: HTMLDivElement;
+
+  private startBtn: ButtonModel;
+
+  private logOutBtn: ButtonModel;
+
+  constructor(id: string, parent: HTMLDivElement) {
+    this.title = this.createTitle();
+    this.subtitle = this.createSubtitle();
+    this.descr = this.createDescr();
+    this.startBtn = this.createStartBtn();
+    this.logOutBtn = this.createLogOutBtn();
+    this.parent = parent;
+    this.page = this.createHTML(id);
+  }
+
+  public getHTML(): HTMLDivElement {
+    return this.page;
+  }
+
+  public getSubTitle(): HTMLHeadingElement {
+    return this.subtitle;
+  }
+
+  public getLogOutBtn(): ButtonModel {
+    return this.logOutBtn;
+  }
+
+  public getStartBtn(): ButtonModel {
+    return this.startBtn;
+  }
+
+  private createTitle(): HTMLHeadingElement {
+    this.title = createBaseElement({
+      tag: TAG_NAMES.h1,
+      cssClasses: [styles.page__title],
+      innerContent: 'RSS Puzzle',
+    });
+    return this.title;
+  }
+
+  private createSubtitle(): HTMLHeadingElement {
+    this.subtitle = createBaseElement({
+      tag: TAG_NAMES.h2,
+      cssClasses: [styles.page__subtitle],
+    });
+    return this.subtitle;
+  }
+
+  private createDescr(): HTMLParagraphElement {
+    this.descr = createBaseElement({
+      tag: TAG_NAMES.p,
+      cssClasses: [styles.page__descr],
+      innerContent: 'Your RSS reader',
+    });
+    return this.descr;
+  }
+
+  private createStartBtn(): ButtonModel {
+    this.startBtn = new ButtonModel(BUTTONS_TEXT_CONTENT.startBtn, [
+      styles.page__btn,
+      'btn-reset',
+    ]);
+    return this.startBtn;
+  }
+
+  private createLogOutBtn(): ButtonModel {
+    this.logOutBtn = new ButtonModel(BUTTONS_TEXT_CONTENT.loginBtn, [
+      styles.page__btn,
+      'btn-reset',
+    ]);
+
+    return this.logOutBtn;
+  }
+
+  private createHTML(id: string): HTMLDivElement {
+    this.page = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.page],
+      attributes: { id },
+    });
+
+    this.page.style.display = PAGES_STATE.HIDDEN;
+
+    this.page.append(
+      this.title,
+      this.subtitle,
+      this.descr,
+      this.startBtn.getHTML(),
+      this.logOutBtn.getHTML(),
+    );
+
+    this.parent.append(this.page);
+    return this.page;
+  }
+}
+
+export default StartPageView;
