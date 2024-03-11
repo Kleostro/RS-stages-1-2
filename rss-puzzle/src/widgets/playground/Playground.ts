@@ -105,13 +105,19 @@ class PlaygroundComponent {
 
   private checkMatchingPuzzles(): void {
     this.currentLine.forEach((word, index) => {
-      if (word === this.words[this.currentRound][index]) {
-        this.copyPuzzles[index].classList.remove(styles.copy_puzzle__error);
-        this.copyPuzzles[index].classList.add(styles.copy_puzzle__success);
-      } else {
-        this.copyPuzzles[index].classList.add(styles.copy_puzzle__error);
-        this.copyPuzzles[index].classList.remove(styles.copy_puzzle__success);
-      }
+      const isMatching = word === this.words[this.currentRound][index];
+      this.copyPuzzles[index].classList.toggle(
+        styles.copy_puzzle__error,
+        !isMatching,
+      );
+      this.copyPuzzles[index].classList.toggle(
+        styles.copy_puzzle__success,
+        isMatching,
+      );
+      this.continueBtn
+        .getHTML()
+        .classList.toggle(styles.btn__hidden, !isMatching);
+      this.checkBtn.getHTML().classList.toggle(styles.btn__hidden, isMatching);
     });
   }
 
@@ -139,6 +145,8 @@ class PlaygroundComponent {
 
   private startNextRound(): void {
     this.currentRound += 1;
+    this.continueBtn.getHTML().classList.add(styles.btn__hidden);
+    this.checkBtn.getHTML().classList.remove(styles.btn__hidden);
 
     if (this.currentRound === this.words.length) {
       this.startNextLvl();
@@ -199,7 +207,7 @@ class PlaygroundComponent {
   private createContinueBtn(): ButtonComponent {
     this.continueBtn = new ButtonComponent(
       'button',
-      [styles.continue_btn],
+      [styles.continue_btn, styles.btn__hidden],
       {},
       {
         key: EVENT_NAMES.click,
