@@ -26,6 +26,8 @@ class PlaygroundComponent {
 
   public checkBtn: ButtonComponent;
 
+  public autocompleteBtn: ButtonComponent;
+
   public words: string[][];
 
   public copyPuzzles: HTMLDivElement[] = [];
@@ -49,6 +51,7 @@ class PlaygroundComponent {
     this.sourceBlock = null;
     this.continueBtn = this.createContinueBtn();
     this.checkBtn = this.createCheckBtn();
+    this.autocompleteBtn = this.createAutocompleteBtn();
     this.playground = this.createHTML();
   }
 
@@ -118,7 +121,21 @@ class PlaygroundComponent {
         .getHTML()
         .classList.toggle(styles.btn__hidden, !isMatching);
       this.checkBtn.getHTML().classList.toggle(styles.btn__hidden, isMatching);
+      this.autocompleteBtn.getHTML().disabled = isMatching;
     });
+  }
+
+  private autoCompleteLine(): void {
+    this.linesArr[this.currentRound].innerHTML = '';
+
+    this.words[this.currentRound].forEach((word) => {
+      const puzzle = new PuzzleComponent(word, this);
+      this.linesArr[this.currentRound].appendChild(puzzle.getHTML());
+    });
+
+    this.checkBtn.getHTML().disabled = false;
+    this.continueBtn.getHTML().disabled = false;
+    this.startNextRound();
   }
 
   private startNextLvl(): void {
@@ -155,6 +172,7 @@ class PlaygroundComponent {
     this.currentLine = [];
     this.continueBtn.switchDisabled();
     this.checkBtn.switchDisabled();
+    this.autocompleteBtn.getHTML().disabled = false;
 
     this.copyPuzzles.forEach((copyWord) => {
       copyWord.classList.remove(styles.copy_puzzle__success);
@@ -242,6 +260,24 @@ class PlaygroundComponent {
     return this.checkBtn;
   }
 
+  private createAutocompleteBtn(): ButtonComponent {
+    this.autocompleteBtn = new ButtonComponent(
+      'button',
+      [styles.autocomplete_btn],
+      {},
+      {
+        key: EVENT_NAMES.click,
+        value: (): void => {
+          this.autoCompleteLine();
+        },
+      },
+    );
+
+    const textContent = 'Autocomplete';
+    this.autocompleteBtn.getHTML().textContent = textContent;
+    return this.autocompleteBtn;
+  }
+
   private createHTML(): HTMLDivElement {
     this.playground = createBaseElement({
       tag: 'div',
@@ -263,6 +299,7 @@ class PlaygroundComponent {
       this.sourceBlock,
       this.continueBtn.getHTML(),
       this.checkBtn.getHTML(),
+      this.autocompleteBtn.getHTML(),
     );
 
     this.setWords()
