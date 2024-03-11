@@ -9,6 +9,7 @@ import type {
   levelInfo,
   wordsInfo,
 } from '../../shared/api/types/interfaces.ts';
+import EVENT_NAMES from '../../shared/types/enums.ts';
 
 class PlaygroundComponent {
   private api: Api;
@@ -23,6 +24,12 @@ class PlaygroundComponent {
 
   public continueBtn: ButtonComponent;
 
+  public checkBtn: ButtonComponent;
+
+  public words: string[][];
+
+  public copyPuzzles: HTMLDivElement[] = [];
+
   public currentRound = 0;
 
   private currentRoundLvl = 0;
@@ -30,8 +37,6 @@ class PlaygroundComponent {
   private currentLvl = 1;
 
   private playground: HTMLDivElement;
-
-  private words: string[][];
 
   private randomWords: string[][] = [];
 
@@ -43,6 +48,7 @@ class PlaygroundComponent {
     this.gameBoard = null;
     this.sourceBlock = null;
     this.continueBtn = this.createContinueBtn();
+    this.checkBtn = this.createCheckBtn();
     this.playground = this.createHTML();
   }
 
@@ -97,6 +103,18 @@ class PlaygroundComponent {
     }
   }
 
+  private checkMatchingPuzzles(): void {
+    this.currentLine.forEach((word, index) => {
+      if (word === this.words[this.currentRound][index]) {
+        this.copyPuzzles[index].classList.remove(styles.copy_puzzle__error);
+        this.copyPuzzles[index].classList.add(styles.copy_puzzle__success);
+      } else {
+        this.copyPuzzles[index].classList.add(styles.copy_puzzle__error);
+        this.copyPuzzles[index].classList.remove(styles.copy_puzzle__success);
+      }
+    });
+  }
+
   private startNextLvl(): void {
     this.currentRoundLvl += 1;
     this.currentRound = 0;
@@ -128,6 +146,14 @@ class PlaygroundComponent {
     }
     this.currentLine = [];
     this.continueBtn.switchDisabled();
+    this.checkBtn.switchDisabled();
+
+    this.copyPuzzles.forEach((copyWord) => {
+      copyWord.classList.remove(styles.copy_puzzle__success);
+      copyWord.classList.remove(styles.copy_puzzle__error);
+    });
+
+    this.copyPuzzles = [];
 
     if (this.sourceBlock) {
       this.sourceBlock.innerHTML = '';
@@ -176,7 +202,7 @@ class PlaygroundComponent {
       [styles.continue_btn],
       {},
       {
-        key: 'click',
+        key: EVENT_NAMES.click,
         value: (): void => {
           this.startNextRound();
         },
@@ -187,6 +213,25 @@ class PlaygroundComponent {
     this.continueBtn.getHTML().textContent = textContent;
     this.continueBtn.switchDisabled();
     return this.continueBtn;
+  }
+
+  private createCheckBtn(): ButtonComponent {
+    this.checkBtn = new ButtonComponent(
+      'button',
+      [styles.check_btn],
+      {},
+      {
+        key: EVENT_NAMES.click,
+        value: (): void => {
+          this.checkMatchingPuzzles();
+        },
+      },
+    );
+
+    const textContent = 'Check';
+    this.checkBtn.getHTML().textContent = textContent;
+    this.checkBtn.switchDisabled();
+    return this.checkBtn;
   }
 
   private createHTML(): HTMLDivElement {
@@ -209,6 +254,7 @@ class PlaygroundComponent {
       this.gameBoard,
       this.sourceBlock,
       this.continueBtn.getHTML(),
+      this.checkBtn.getHTML(),
     );
 
     this.setWords()

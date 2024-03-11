@@ -57,8 +57,16 @@ class PuzzleComponent {
     this.playground.currentLine = this.playground.currentLine.filter(
       (word) => word !== this.word,
     );
+
+    this.playground.copyPuzzles = this.playground.copyPuzzles.filter(
+      (copy) => copy !== copyWord,
+    );
+
     const continueBtn = this.playground.continueBtn.getHTML();
     continueBtn.disabled = true;
+
+    const checkBtn = this.playground.checkBtn.getHTML();
+    checkBtn.disabled = true;
     this.playground.checkLine();
     copyWord.remove();
   }
@@ -102,7 +110,16 @@ class PuzzleComponent {
     this.playground.currentLine.push(this.word);
     this.playground.checkLine();
 
+    if (
+      this.playground.currentLine.length ===
+      this.playground.words[this.playground.currentRound].length
+    ) {
+      this.playground.checkBtn.switchDisabled();
+    }
+
     const copyWord = this.createDuplicateWordElement();
+    this.playground.copyPuzzles.push(copyWord);
+
     copyWord.addEventListener(EVENT_NAMES.click, () => {
       this.clickPuzzleCopyHandler.bind(this, copyWord)();
     });

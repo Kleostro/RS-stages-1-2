@@ -1,12 +1,13 @@
 .playground {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 2dvw;
 }
 
 .source_data,
 .game_board {
   display: flex;
+  grid-column: 2 span;
   border: 2px solid #403b40;
   border-radius: 10px;
   padding: 0.5dvw 1dvw;
@@ -14,11 +15,13 @@
 }
 
 .source_data {
+  grid-row: 2;
   height: 5dvw;
 }
 
 .game_board {
   display: grid;
+  grid-row: 1;
   grid-template-rows: repeat(10, 4dvw);
   margin-bottom: 20px;
   gap: 10px;
@@ -27,12 +30,27 @@
 .line {
   display: flex;
   gap: 1dvw;
+
+  &:not(:last-child) {
+    border-bottom: 2px solid #ada9ad;
+  }
+
+  .copy_puzzle__error {
+    outline: 2px solid #f00;
+  }
+
+  .copy_puzzle__success {
+    outline: 2px solid #0f0;
+  }
 }
 
-.continue_btn {
+.continue_btn,
+.check_btn {
   display: flex;
   align-items: center;
   justify-content: center;
+  grid-row: 3;
+  margin: 0 auto;
   border: 2px solid #403b40;
   border-radius: 10px;
   padding: 0.5dvw 1dvw;
