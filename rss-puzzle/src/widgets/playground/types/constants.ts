@@ -5,3 +5,8 @@ export const BUTTONS_TEXT_CONTENT = {
   checkBtn: 'Check',
   autocompleteBtn: 'Autocomplete',
 } as const;
+
+export const EVENT_ACCESSIBILITY = {
+  none: 'none',
+  auto: 'auto',
+} as const;

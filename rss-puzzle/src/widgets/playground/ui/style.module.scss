@@ -17,6 +17,7 @@
 .source_data {
   grid-row: 2;
   height: 5dvw;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .game_board {
@@ -29,6 +30,7 @@
 
 .line {
   display: flex;
+  transition: background-color 0.2s ease-in-out;
   gap: 1dvw;
 
   &:not(:last-child) {
@@ -42,6 +44,14 @@
   .copy_puzzle__success {
     outline: 2px solid #0f0;
   }
+}
+
+.line_hovered {
+  background-color: #403b4023;
+}
+
+.no_drop {
+  pointer-events: none;
 }
 
 .continue_btn,
