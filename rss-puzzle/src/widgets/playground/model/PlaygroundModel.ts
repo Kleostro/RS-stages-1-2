@@ -71,6 +71,7 @@ class PlaygroundModel {
 
     this.audio.addEventListener(EVENT_NAMES.ended, () => {
       translateListenHTML.innerHTML = IMG_SRC.volumeOff;
+      translateListenHTML.classList.remove(styles.translate_btn_active);
     });
   }
 
@@ -109,6 +110,7 @@ class PlaygroundModel {
   private switchTranslateListen(): void {
     const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
     translateListenHTML.innerHTML = IMG_SRC.volumeOn;
+    translateListenHTML.classList.add(styles.translate_btn_active);
     this.audio.src = this.formattedAudioURL();
     this.audio.play().catch(() => {});
   }

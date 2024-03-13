@@ -29,18 +29,21 @@
 }
 
 .translate_btn {
-  border: 0.2dvw solid #403b40;
+  border: 2px solid #403b40;
   border-radius: 50%;
-  width: 4dvw;
-  height: 4dvw;
-  font-size: 1.2dvw;
-  background-position: center;
-  background-size: 80%;
-  background-repeat: no-repeat;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
   transition:
-    background-image 0.3s ease-in-out,
     border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out,
     transform 0.3s ease-in-out;
+
+  &_active {
+    border: 2px solid #81df62;
+    background-color: #f1daadb3;
+    animation: zoom 1s ease-in-out infinite;
+  }
 
   @media (hover: hover) {
     &:hover {
@@ -52,6 +55,20 @@
   /* stylelint-disable-next-line order/order */
   &:active {
     border: 0.2dvw solid #ccdfbe;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
     transform: scale(1);
   }
 }
