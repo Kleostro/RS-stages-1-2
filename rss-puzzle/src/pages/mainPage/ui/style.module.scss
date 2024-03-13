@@ -3,5 +3,8 @@
 }
 
 .game_wrapper {
-  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  margin: 40px;
+  width: 100%;
 }

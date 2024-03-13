@@ -1,0 +1,37 @@
+.game_settings {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  gap: 2%;
+}
+
+.translate_sentence_img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #403b40;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+
+  svg {
+    stroke: #8e0d8e;
+  }
+}
+
+.game_settings_item {
+  display: flex;
+  align-items: center;
+  border: 2px solid #f00;
+  padding: 4% 8%;
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+  gap: 5%;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: #d1c192e8;
+    }
+  }
+}

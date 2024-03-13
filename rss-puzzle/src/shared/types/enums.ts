@@ -30,4 +30,5 @@ export const EVENT_NAMES = {
   dragLeave: 'dragleave',
   dragEnter: 'dragenter',
   input: 'input',
+  ended: 'ended',
 } as const;

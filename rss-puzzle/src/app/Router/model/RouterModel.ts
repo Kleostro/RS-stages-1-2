@@ -37,7 +37,7 @@ class RouterModel {
 
     if (loginPage.checkAuthUser) {
       if (loginPage.checkAuthUser()) {
-        this.renderNewPageCallback(PAGES_IDS.START);
+        this.renderNewPageCallback(PAGES_IDS.MAIN);
       } else {
         this.renderNewPageCallback(PAGES_IDS.LOG_IN);
       }

@@ -4,20 +4,24 @@ import type PageInterface from '../../types/interfaces.ts';
 import styles from './style.module.scss';
 import { PAGES_STATE } from '../../types/enums.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
+import GameSettingsModel from '../../../features/gameSettings/model/GameSettingsModel.ts';
 
 class MainPageView implements PageInterface {
   private id: string;
 
   private parent: HTMLDivElement;
 
-  private page: HTMLDivElement;
-
   private playground: PlaygroundModel;
+
+  private gameSettingsModel: GameSettingsModel;
+
+  private page: HTMLDivElement;
 
   constructor(id: string, parent: HTMLDivElement) {
     this.id = id;
     this.parent = parent;
     this.playground = new PlaygroundModel();
+    this.gameSettingsModel = new GameSettingsModel();
     this.page = this.createHTML(this.id);
   }
 
@@ -41,7 +45,7 @@ class MainPageView implements PageInterface {
       cssClasses: [styles.game_wrapper],
     });
     this.page.append(wrapper);
-    wrapper.append(this.playground.getHTML());
+    wrapper.append(this.playground.getHTML(), this.gameSettingsModel.getHTML());
 
     this.page.style.display = PAGES_STATE.HIDDEN;
     this.parent.append(this.page);

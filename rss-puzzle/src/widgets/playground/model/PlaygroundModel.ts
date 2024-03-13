@@ -1,17 +1,32 @@
 import { EVENT_NAMES, TAG_NAMES } from '../../../shared/types/enums.ts';
-import type { wordsInfo } from '../../../shared/api/types/interfaces.ts';
+import type {
+  levelInfo,
+  wordsInfo,
+} from '../../../shared/api/types/interfaces.ts';
 import PlaygroundApi from '../api/PlaygroundApi.ts';
-import { EVENT_ACCESSIBILITY, randomIndex } from '../types/constants.ts';
+import {
+  AUDIO_SRC,
+  EVENT_ACCESSIBILITY,
+  randomIndex,
+} from '../types/constants.ts';
 import PlaygroundView from '../ui/PlaygroundView.ts';
 import styles from '../ui/style.module.scss';
 import PuzzleComponent from '../../../entities/puzzle/Puzzle.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
-import { lampOffSrc, lampOnSrc } from '../ui/img/imgSrc/imgSrc.ts';
+import MediatorModel from '../../../pages/core/mediator/model/MediatorModel.ts';
+import AppEvents from '../../../pages/core/mediator/types/enums.ts';
+import IMG_SRC from '../ui/imgSrc/imgSrc.ts';
 
 class PlaygroundModel {
   private view: PlaygroundView;
 
   private api: PlaygroundApi;
+
+  private levelData: levelInfo;
+
+  private audio: HTMLAudioElement;
+
+  private singletonMediator: MediatorModel<unknown>;
 
   private words: string[][] = [];
 
@@ -34,12 +49,29 @@ class PlaygroundModel {
   constructor() {
     this.view = new PlaygroundView();
     this.api = new PlaygroundApi();
+    this.singletonMediator = MediatorModel.getInstance();
+    this.singletonMediator.subscribe(
+      AppEvents.switchTranslateVisible,
+      this.switchVisibleTranslateSentence.bind(this),
+    );
+    this.levelData = this.setLevelData();
+    this.audio = this.view.getAudioElement();
     this.shuffledWords = this.shuffleWords();
     this.wordLinesHTML = this.createWordLines();
     this.init();
     this.setHandlersToButtons();
     this.setDragsForSourceBlock();
     this.dragWrapper = this.view.getSourceBlockHTML();
+
+    const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
+    translateListenHTML.addEventListener(
+      EVENT_NAMES.click,
+      this.switchTranslateListen.bind(this),
+    );
+
+    this.audio.addEventListener(EVENT_NAMES.ended, () => {
+      translateListenHTML.innerHTML = IMG_SRC.volumeOff;
+    });
   }
 
   public getHTML(): HTMLDivElement {
@@ -74,6 +106,13 @@ class PlaygroundModel {
     return this.puzzles;
   }
 
+  private switchTranslateListen(): void {
+    const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
+    translateListenHTML.innerHTML = IMG_SRC.volumeOn;
+    this.audio.src = this.formattedAudioURL();
+    this.audio.play().catch(() => {});
+  }
+
   private setDragsForSourceBlock(): void {
     const sourceBlock = this.view.getSourceBlockHTML();
 
@@ -95,14 +134,19 @@ class PlaygroundModel {
     ) {
       const continueBtn = this.view.getContinueBtn();
       continueBtn.setEnabled();
-      const translateSentenceHTML = this.view.getTranslateSentenceHTML();
-      const translateBtnHTML = this.view.getTranslateSentenceBtn().getHTML();
-
-      translateSentenceHTML.classList.remove(styles.translate_sentence__hidden);
-      translateBtnHTML.style.backgroundImage = `url(${lampOnSrc})`;
       return true;
     }
     return false;
+  }
+
+  private setLevelData(): levelInfo {
+    this.api
+      .getLevelData()
+      .then((data) => {
+        this.levelData = data;
+      })
+      .catch(() => {});
+    return this.levelData;
   }
 
   private async setWords(): Promise<string[][]> {
@@ -149,6 +193,15 @@ class PlaygroundModel {
     continueBtn.setDisabled();
     checkBtn.setDisabled();
     this.init();
+  }
+
+  private formattedAudioURL(): string {
+    const currentAudioSrc =
+      this.levelData.rounds[this.currentRoundLvl].words[this.currentRound]
+        .audioExample;
+
+    const url = `${AUDIO_SRC}${currentAudioSrc}`;
+    return url;
   }
 
   private incrementCurrentRound(): void {
@@ -271,20 +324,13 @@ class PlaygroundModel {
     continueBtnHTML.setEnabled();
   }
 
-  private switchVisibleTranslateSentence(): void {
-    const translateSentenceHTML = this.view.getTranslateSentenceHTML();
-    const translateBtnHTML = this.view.getTranslateSentenceBtn().getHTML();
+  private switchVisibleTranslateSentence(isVisible: unknown): void {
+    const translateSentenceHTML = this.view.getTranslateSentenceWrapperHTML();
 
-    if (
-      translateSentenceHTML.classList.contains(
-        styles.translate_sentence__hidden,
-      )
-    ) {
-      translateSentenceHTML.classList.remove(styles.translate_sentence__hidden);
-      translateBtnHTML.style.backgroundImage = `url(${lampOnSrc})`;
+    if (isVisible) {
+      translateSentenceHTML.classList.remove(styles.translate_wrapper__hidden);
     } else {
-      translateSentenceHTML.classList.add(styles.translate_sentence__hidden);
-      translateBtnHTML.style.backgroundImage = `url(${lampOffSrc})`;
+      translateSentenceHTML.classList.add(styles.translate_wrapper__hidden);
     }
   }
 
@@ -292,7 +338,6 @@ class PlaygroundModel {
     const checkBtnHTML = this.view.getCheckBtn().getHTML();
     const continueBtnHTML = this.view.getContinueBtn().getHTML();
     const autoCompleteBtnHTML = this.view.getAutocompleteBtn().getHTML();
-    const translateBtnHTML = this.view.getTranslateSentenceBtn().getHTML();
 
     checkBtnHTML.addEventListener(
       EVENT_NAMES.click,
@@ -307,11 +352,6 @@ class PlaygroundModel {
     autoCompleteBtnHTML.addEventListener(
       EVENT_NAMES.click,
       this.autoCompleteLine.bind(this),
-    );
-
-    translateBtnHTML.addEventListener(
-      EVENT_NAMES.click,
-      this.switchVisibleTranslateSentence.bind(this),
     );
   }
 

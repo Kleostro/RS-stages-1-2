@@ -11,3 +11,6 @@ export const EVENT_ACCESSIBILITY = {
   none: 'none',
   auto: 'auto',
 } as const;
+
+export const AUDIO_SRC =
+  'https://raw.githubusercontent.com/rolling-scopes-school/rss-puzzle-data/main/';

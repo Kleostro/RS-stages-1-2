@@ -3,14 +3,16 @@ import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import styles from './style.module.scss';
 import { BUTTONS_TEXT_CONTENT } from '../types/constants.ts';
-import { lampOffSrc } from './img/imgSrc/imgSrc.ts';
+import IMG_SRC from './imgSrc/imgSrc.ts';
 
 class PlaygroundView {
-  private translateWrapper: HTMLDivElement;
-
   private translateSentence: HTMLDivElement;
 
-  private translateSentenceBtn: ButtonModel;
+  private translateListenBtn: ButtonModel;
+
+  private audio: HTMLAudioElement;
+
+  private translateWrapper: HTMLDivElement;
 
   private playground: HTMLDivElement;
 
@@ -25,8 +27,9 @@ class PlaygroundView {
   private autocompleteBtn: ButtonModel;
 
   constructor() {
-    this.translateSentenceBtn = this.createTranslateSentenceBtn();
+    this.audio = new Audio();
     this.translateSentence = this.createTranslateSentence();
+    this.translateListenBtn = this.createTranslateListenBtn();
     this.translateWrapper = this.createTranslateWrapper();
     this.gameBoard = this.createGameBoard();
     this.sourceBlock = this.createSourceBlock();
@@ -44,8 +47,16 @@ class PlaygroundView {
     return this.translateSentence;
   }
 
-  public getTranslateSentenceBtn(): ButtonModel {
-    return this.translateSentenceBtn;
+  public getTranslateSentenceWrapperHTML(): HTMLDivElement {
+    return this.translateWrapper;
+  }
+
+  public getTranslateListenBtn(): ButtonModel {
+    return this.translateListenBtn;
+  }
+
+  public getAudioElement(): HTMLAudioElement {
+    return this.audio;
   }
 
   public getGameBoardHTML(): HTMLDivElement {
@@ -76,6 +87,12 @@ class PlaygroundView {
     return this.autocompleteBtn;
   }
 
+  private createTranslateListenBtn(): ButtonModel {
+    this.translateListenBtn = new ButtonModel('', [styles.translate_btn]);
+    this.translateListenBtn.getHTML().innerHTML = IMG_SRC.volumeOff;
+    return this.translateListenBtn;
+  }
+
   private createTranslateSentence(): HTMLDivElement {
     this.translateSentence = createBaseElement({
       tag: TAG_NAMES.div,
@@ -84,19 +101,15 @@ class PlaygroundView {
     return this.translateSentence;
   }
 
-  private createTranslateSentenceBtn(): ButtonModel {
-    this.translateSentenceBtn = new ButtonModel('', [styles.translate_btn]);
-    this.translateSentenceBtn.getHTML().style.backgroundImage = `url(${lampOffSrc})`;
-    return this.translateSentenceBtn;
-  }
-
   private createTranslateWrapper(): HTMLDivElement {
     this.translateWrapper = createBaseElement({
       tag: TAG_NAMES.div,
       cssClasses: [styles.translate_wrapper],
     });
+
     this.translateWrapper.append(
-      this.translateSentenceBtn.getHTML(),
+      this.audio,
+      this.translateListenBtn.getHTML(),
       this.translateSentence,
     );
     return this.translateWrapper;
