@@ -6,6 +6,7 @@ import PlaygroundView from '../ui/PlaygroundView.ts';
 import styles from '../ui/style.module.scss';
 import PuzzleComponent from '../../../entities/puzzle/Puzzle.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
+import { lampOffSrc, lampOnSrc } from '../ui/img/imgSrc/imgSrc.ts';
 
 class PlaygroundModel {
   private view: PlaygroundView;
@@ -94,6 +95,11 @@ class PlaygroundModel {
     ) {
       const continueBtn = this.view.getContinueBtn();
       continueBtn.setEnabled();
+      const translateSentenceHTML = this.view.getTranslateSentenceHTML();
+      const translateBtnHTML = this.view.getTranslateSentenceBtn().getHTML();
+
+      translateSentenceHTML.classList.remove(styles.translate_sentence__hidden);
+      translateBtnHTML.style.backgroundImage = `url(${lampOnSrc})`;
       return true;
     }
     return false;
@@ -266,9 +272,20 @@ class PlaygroundModel {
   }
 
   private switchVisibleTranslateSentence(): void {
-    this.view
-      .getTranslateSentenceHTML()
-      .classList.toggle(styles.translate_sentence__hidden);
+    const translateSentenceHTML = this.view.getTranslateSentenceHTML();
+    const translateBtnHTML = this.view.getTranslateSentenceBtn().getHTML();
+
+    if (
+      translateSentenceHTML.classList.contains(
+        styles.translate_sentence__hidden,
+      )
+    ) {
+      translateSentenceHTML.classList.remove(styles.translate_sentence__hidden);
+      translateBtnHTML.style.backgroundImage = `url(${lampOnSrc})`;
+    } else {
+      translateSentenceHTML.classList.add(styles.translate_sentence__hidden);
+      translateBtnHTML.style.backgroundImage = `url(${lampOffSrc})`;
+    }
   }
 
   private setHandlersToButtons(): void {

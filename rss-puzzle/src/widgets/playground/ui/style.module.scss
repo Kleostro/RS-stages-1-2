@@ -7,9 +7,10 @@
 .translate_wrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   grid-column: 2 span;
   grid-row: 1;
+  gap: 1dvw;
 }
 
 .translate_sentence {
@@ -26,7 +27,31 @@
 }
 
 .translate_btn {
+  border: 0.2dvw solid #403b40;
+  border-radius: 50%;
+  width: 4dvw;
+  height: 4dvw;
   font-size: 1.2dvw;
+  background-position: center;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  transition:
+    background-image 0.3s ease-in-out,
+    border 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+
+  @media (hover: hover) {
+    &:hover {
+      border: 0.2dvw solid #ccdfbe;
+      transform: scale(1.05);
+    }
+  }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    border: 0.2dvw solid #ccdfbe;
+    transform: scale(1);
+  }
 }
 
 .translate_word {

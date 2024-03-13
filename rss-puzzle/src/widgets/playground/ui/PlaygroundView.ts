@@ -3,6 +3,7 @@ import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import styles from './style.module.scss';
 import { BUTTONS_TEXT_CONTENT } from '../types/constants.ts';
+import { lampOffSrc } from './img/imgSrc/imgSrc.ts';
 
 class PlaygroundView {
   private translateWrapper: HTMLDivElement;
@@ -84,10 +85,8 @@ class PlaygroundView {
   }
 
   private createTranslateSentenceBtn(): ButtonModel {
-    this.translateSentenceBtn = new ButtonModel(
-      BUTTONS_TEXT_CONTENT.translateBtn,
-      [styles.translate_btn],
-    );
+    this.translateSentenceBtn = new ButtonModel('', [styles.translate_btn]);
+    this.translateSentenceBtn.getHTML().style.backgroundImage = `url(${lampOffSrc})`;
     return this.translateSentenceBtn;
   }
 
