@@ -41,13 +41,41 @@ class GameSettingsModel {
     translateSentenceWrapper.classList.toggle(styles.active);
   }
 
+  private translateListenHandler(): void {
+    const translateListenWrapper =
+      this.gameSettingsView.getTranslateListenWrapper();
+
+    const translateListenImg = this.gameSettingsView.getTranslateListenImg();
+
+    let isVisible = true;
+
+    if (translateListenWrapper.classList.contains(styles.active)) {
+      translateListenImg.innerHTML = IMG_SRC.translateOff;
+      isVisible = true;
+    } else {
+      translateListenImg.innerHTML = IMG_SRC.translateOn;
+      isVisible = false;
+    }
+
+    this.singletonMediator.notify(AppEvents.switchListenVisible, isVisible);
+    translateListenWrapper.classList.toggle(styles.active);
+  }
+
   private init(): void {
     const translateSentenceWrapper =
       this.gameSettingsView.getTranslateSentenceWrapper();
 
+    const translateListenWrapper =
+      this.gameSettingsView.getTranslateListenWrapper();
+
     translateSentenceWrapper.addEventListener(
       EVENT_NAMES.click,
       this.translateSentenceHandler.bind(this),
+    );
+
+    translateListenWrapper.addEventListener(
+      EVENT_NAMES.click,
+      this.translateListenHandler.bind(this),
     );
   }
 }

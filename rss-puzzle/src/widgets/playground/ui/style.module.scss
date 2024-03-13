@@ -11,12 +11,7 @@
   justify-content: center;
   grid-column: 2 span;
   grid-row: 1;
-  transition: opacity 0.3s ease-in-out;
   gap: 1dvw;
-
-  &__hidden {
-    opacity: 0;
-  }
 }
 
 .translate_sentence {
@@ -26,6 +21,11 @@
   letter-spacing: 0.1dvw;
   transition: opacity 0.3s ease-in-out;
   gap: 0.8dvw;
+
+  &_hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .translate_btn {
@@ -37,6 +37,7 @@
   transition:
     border 0.3s ease-in-out,
     background-color 0.3s ease-in-out,
+    opacity 0.3s ease-in-out,
     transform 0.3s ease-in-out;
 
   &_active {
@@ -169,4 +170,9 @@
 
 .btn__hidden {
   display: none;
+}
+
+.translate_listen_hidden {
+  opacity: 0;
+  pointer-events: none;
 }

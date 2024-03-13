@@ -49,11 +49,17 @@ class PlaygroundModel {
   constructor() {
     this.view = new PlaygroundView();
     this.api = new PlaygroundApi();
+
     this.singletonMediator = MediatorModel.getInstance();
     this.singletonMediator.subscribe(
       AppEvents.switchTranslateVisible,
       this.switchVisibleTranslateSentence.bind(this),
     );
+    this.singletonMediator.subscribe(
+      AppEvents.switchListenVisible,
+      this.switchVisibleTranslateListen.bind(this),
+    );
+
     this.levelData = this.setLevelData();
     this.audio = this.view.getAudioElement();
     this.shuffledWords = this.shuffleWords();
@@ -136,6 +142,11 @@ class PlaygroundModel {
     ) {
       const continueBtn = this.view.getContinueBtn();
       continueBtn.setEnabled();
+
+      const translateSentenceHTML = this.view.getTranslateSentenceHTML();
+      translateSentenceHTML.classList.remove(styles.translate_sentence_hidden);
+      const translateListenBtn = this.view.getTranslateListenBtn().getHTML();
+      translateListenBtn.classList.remove(styles.translate_listen_hidden);
       return true;
     }
     return false;
@@ -273,6 +284,11 @@ class PlaygroundModel {
     const continueBtn = this.view.getContinueBtn();
     const autoCompleteBtn = this.view.getAutocompleteBtn();
 
+    const translateSentenceHTML = this.view.getTranslateSentenceHTML();
+    translateSentenceHTML.classList.add(styles.translate_sentence_hidden);
+    const translateListenBtn = this.view.getTranslateListenBtn().getHTML();
+    translateListenBtn.classList.add(styles.translate_listen_hidden);
+
     this.cleanAllUnmatchedPuzzles();
 
     this.wordLinesHTML[this.currentRound].style.pointerEvents =
@@ -327,12 +343,22 @@ class PlaygroundModel {
   }
 
   private switchVisibleTranslateSentence(isVisible: unknown): void {
-    const translateSentenceHTML = this.view.getTranslateSentenceWrapperHTML();
+    const translateSentenceHTML = this.view.getTranslateSentenceHTML();
 
     if (isVisible) {
-      translateSentenceHTML.classList.remove(styles.translate_wrapper__hidden);
+      translateSentenceHTML.classList.remove(styles.translate_sentence_hidden);
     } else {
-      translateSentenceHTML.classList.add(styles.translate_wrapper__hidden);
+      translateSentenceHTML.classList.add(styles.translate_sentence_hidden);
+    }
+  }
+
+  private switchVisibleTranslateListen(isVisible: unknown): void {
+    const translateListenBtn = this.view.getTranslateListenBtn().getHTML();
+
+    if (isVisible) {
+      translateListenBtn.classList.remove(styles.translate_listen_hidden);
+    } else {
+      translateListenBtn.classList.add(styles.translate_listen_hidden);
     }
   }
 
