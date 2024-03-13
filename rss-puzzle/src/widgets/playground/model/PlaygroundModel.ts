@@ -14,6 +14,8 @@ class PlaygroundModel {
 
   private words: string[][] = [];
 
+  private translateSentence = '';
+
   private shuffledWords: string[][];
 
   private currentRoundLvl = 0;
@@ -109,6 +111,16 @@ class PlaygroundModel {
     return this.words;
   }
 
+  private async setTranslateSentence(): Promise<string> {
+    const levelData = await this.api.getLevelData();
+    const translateSentence =
+      levelData.rounds[this.currentRoundLvl].words[this.currentRound]
+        .textExampleTranslate;
+
+    this.translateSentence = translateSentence;
+    return this.translateSentence;
+  }
+
   private shuffleWords(): string[][] {
     this.shuffledWords = this.words.map((wordArr: string[]) =>
       [...wordArr].sort(() => Math.random() - randomIndex),
@@ -126,6 +138,10 @@ class PlaygroundModel {
 
     this.view.clearGameBoardHTML();
     this.view.clearSourceBlockHTML();
+    const checkBtn = this.view.getCheckBtn();
+    const continueBtn = this.view.getContinueBtn();
+    continueBtn.setDisabled();
+    checkBtn.setDisabled();
     this.init();
   }
 
@@ -202,7 +218,6 @@ class PlaygroundModel {
       EVENT_ACCESSIBILITY.none;
 
     this.incrementCurrentRound();
-    this.setDragListenersToNextRound();
 
     if (this.wordLinesHTML[this.currentRound]) {
       this.wordLinesHTML[this.currentRound].style.pointerEvents =
@@ -216,6 +231,13 @@ class PlaygroundModel {
       this.startNextLvl();
       return;
     }
+
+    this.setDragListenersToNextRound();
+    this.setTranslateSentence()
+      .then(() => {
+        this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
+      })
+      .catch(() => {});
     this.wordsInCurrentLine = [];
     continueBtn.setDisabled();
     checkBtn.setDisabled();
@@ -243,10 +265,17 @@ class PlaygroundModel {
     continueBtnHTML.setEnabled();
   }
 
+  private switchVisibleTranslateSentence(): void {
+    this.view
+      .getTranslateSentenceHTML()
+      .classList.toggle(styles.translate_sentence__hidden);
+  }
+
   private setHandlersToButtons(): void {
     const checkBtnHTML = this.view.getCheckBtn().getHTML();
     const continueBtnHTML = this.view.getContinueBtn().getHTML();
     const autoCompleteBtnHTML = this.view.getAutocompleteBtn().getHTML();
+    const translateBtnHTML = this.view.getTranslateSentenceBtn().getHTML();
 
     checkBtnHTML.addEventListener(
       EVENT_NAMES.click,
@@ -261,6 +290,11 @@ class PlaygroundModel {
     autoCompleteBtnHTML.addEventListener(
       EVENT_NAMES.click,
       this.autoCompleteLine.bind(this),
+    );
+
+    translateBtnHTML.addEventListener(
+      EVENT_NAMES.click,
+      this.switchVisibleTranslateSentence.bind(this),
     );
   }
 
@@ -378,24 +412,13 @@ class PlaygroundModel {
           EVENT_ACCESSIBILITY.auto;
         this.createPuzzleElements();
         this.fillSourcedBlock();
+        this.setDragListenersToNextRound();
+      })
+      .catch(() => {});
 
-        this.puzzles[this.currentRound].forEach((puzzle) => {
-          const currentPuzzle = puzzle.getHTML();
-          const puzzleWord = puzzle.getWord();
-          currentPuzzle.addEventListener(
-            EVENT_NAMES.dragStart,
-            (event: DragEvent) => {
-              this.setDragStartForPuzzle(currentPuzzle, event, puzzleWord);
-              const parent = currentPuzzle.parentElement;
-              if (parent) {
-                this.dragWrapper = parent;
-              }
-            },
-          );
-          currentPuzzle.addEventListener(EVENT_NAMES.dragEnd, () => {
-            this.setDragEndForPuzzle(currentPuzzle);
-          });
-        });
+    this.setTranslateSentence()
+      .then(() => {
+        this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
       })
       .catch(() => {});
   }

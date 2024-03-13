@@ -4,6 +4,39 @@
   gap: 2dvw;
 }
 
+.translate_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  grid-column: 2 span;
+  grid-row: 1;
+}
+
+.translate_sentence {
+  display: flex;
+  justify-content: center;
+  font-size: 1.2dvw;
+  letter-spacing: 0.1dvw;
+  transition: opacity 0.3s ease-in-out;
+  gap: 0.8dvw;
+
+  &__hidden {
+    opacity: 0;
+  }
+}
+
+.translate_btn {
+  font-size: 1.2dvw;
+}
+
+.translate_word {
+  color: #153048;
+
+  &.open {
+    color: #29b946;
+  }
+}
+
 .source_data,
 .game_board {
   display: flex;
@@ -15,14 +48,14 @@
 }
 
 .source_data {
-  grid-row: 2;
+  grid-row: 3;
   height: 5dvw;
   transition: background-color 0.2s ease-in-out;
 }
 
 .game_board {
   display: grid;
-  grid-row: 1;
+  grid-row: 2;
   grid-template-rows: repeat(10, 4dvw);
   margin-bottom: 20px;
   gap: 10px;
@@ -60,7 +93,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  grid-row: 3;
+  grid-row: 4;
   margin: 0 auto;
   border: 2px solid #403b40;
   border-radius: 10px;

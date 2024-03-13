@@ -5,6 +5,12 @@ import styles from './style.module.scss';
 import { BUTTONS_TEXT_CONTENT } from '../types/constants.ts';
 
 class PlaygroundView {
+  private translateWrapper: HTMLDivElement;
+
+  private translateSentence: HTMLDivElement;
+
+  private translateSentenceBtn: ButtonModel;
+
   private playground: HTMLDivElement;
 
   private gameBoard: HTMLDivElement;
@@ -18,6 +24,9 @@ class PlaygroundView {
   private autocompleteBtn: ButtonModel;
 
   constructor() {
+    this.translateSentenceBtn = this.createTranslateSentenceBtn();
+    this.translateSentence = this.createTranslateSentence();
+    this.translateWrapper = this.createTranslateWrapper();
     this.gameBoard = this.createGameBoard();
     this.sourceBlock = this.createSourceBlock();
     this.continueBtn = this.createContinueBtn();
@@ -28,6 +37,14 @@ class PlaygroundView {
 
   public getHTML(): HTMLDivElement {
     return this.playground;
+  }
+
+  public getTranslateSentenceHTML(): HTMLDivElement {
+    return this.translateSentence;
+  }
+
+  public getTranslateSentenceBtn(): ButtonModel {
+    return this.translateSentenceBtn;
   }
 
   public getGameBoardHTML(): HTMLDivElement {
@@ -56,6 +73,34 @@ class PlaygroundView {
 
   public getAutocompleteBtn(): ButtonModel {
     return this.autocompleteBtn;
+  }
+
+  private createTranslateSentence(): HTMLDivElement {
+    this.translateSentence = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.translate_sentence],
+    });
+    return this.translateSentence;
+  }
+
+  private createTranslateSentenceBtn(): ButtonModel {
+    this.translateSentenceBtn = new ButtonModel(
+      BUTTONS_TEXT_CONTENT.translateBtn,
+      [styles.translate_btn],
+    );
+    return this.translateSentenceBtn;
+  }
+
+  private createTranslateWrapper(): HTMLDivElement {
+    this.translateWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.translate_wrapper],
+    });
+    this.translateWrapper.append(
+      this.translateSentenceBtn.getHTML(),
+      this.translateSentence,
+    );
+    return this.translateWrapper;
   }
 
   private createGameBoard(): HTMLDivElement {
@@ -111,6 +156,7 @@ class PlaygroundView {
     });
 
     this.playground.append(
+      this.translateWrapper,
       this.gameBoard,
       this.sourceBlock,
       this.continueBtn.getHTML(),
