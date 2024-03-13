@@ -26,7 +26,7 @@ class PlaygroundModel {
 
   private wordLinesHTML: HTMLDivElement[] = [];
 
-  private dragWrapper: ParentNode | null = null;
+  private dragWrapper: HTMLElement;
 
   constructor() {
     this.view = new PlaygroundView();
@@ -36,6 +36,7 @@ class PlaygroundModel {
     this.init();
     this.setHandlersToButtons();
     this.setDragsForSourceBlock();
+    this.dragWrapper = this.view.getSourceBlockHTML();
   }
 
   public getHTML(): HTMLDivElement {
@@ -73,26 +74,11 @@ class PlaygroundModel {
   private setDragsForSourceBlock(): void {
     const sourceBlock = this.view.getSourceBlockHTML();
 
-    sourceBlock.addEventListener('dragover', (event) => event.preventDefault());
+    sourceBlock.addEventListener(EVENT_NAMES.dragOver, (event) =>
+      event.preventDefault(),
+    );
 
-    sourceBlock.addEventListener('dragenter', () => {
-      if (this.dragWrapper === sourceBlock) {
-        return;
-      }
-      sourceBlock.classList.add(styles.line_hovered);
-    });
-
-    sourceBlock.addEventListener('dragleave', () => {
-      if (this.dragWrapper === sourceBlock) {
-        return;
-      }
-      sourceBlock.classList.remove(styles.line_hovered);
-    });
-
-    sourceBlock.addEventListener('drop', (event: DragEvent) => {
-      if (this.dragWrapper === sourceBlock) {
-        return;
-      }
+    sourceBlock.addEventListener(EVENT_NAMES.dragDrop, (event: DragEvent) => {
       this.setDragDrop(event, sourceBlock);
     });
   }
@@ -184,6 +170,27 @@ class PlaygroundModel {
     });
   }
 
+  private setDragListenersToNextRound(): void {
+    this.puzzles[this.currentRound].forEach((puzzle) => {
+      const currentPuzzle = puzzle.getHTML();
+      const puzzleWord = puzzle.getWord();
+      currentPuzzle.addEventListener(
+        EVENT_NAMES.dragStart,
+        (event: DragEvent) => {
+          this.setDragStartForPuzzle(currentPuzzle, event, puzzleWord);
+          const parent = currentPuzzle.parentElement;
+
+          if (parent) {
+            this.dragWrapper = parent;
+          }
+        },
+      );
+      currentPuzzle.addEventListener(EVENT_NAMES.dragEnd, () => {
+        this.setDragEndForPuzzle(currentPuzzle);
+      });
+    });
+  }
+
   private startNextRound(): void {
     const checkBtn = this.view.getCheckBtn();
     const continueBtn = this.view.getContinueBtn();
@@ -195,22 +202,7 @@ class PlaygroundModel {
       EVENT_ACCESSIBILITY.none;
 
     this.incrementCurrentRound();
-
-    this.puzzles[this.currentRound].forEach((puzzle) => {
-      const currentPuzzle = puzzle.getHTML();
-      const puzzleWord = puzzle.getWord();
-      currentPuzzle.addEventListener('dragstart', (event: DragEvent) => {
-        this.setDragStartForPuzzle(currentPuzzle, event, puzzleWord);
-        const parent = currentPuzzle.parentElement;
-
-        if (parent) {
-          this.dragWrapper = parent;
-        }
-      });
-      currentPuzzle.addEventListener('dragend', () => {
-        this.setDragEndForPuzzle(currentPuzzle);
-      });
-    });
+    this.setDragListenersToNextRound();
 
     if (this.wordLinesHTML[this.currentRound]) {
       this.wordLinesHTML[this.currentRound].style.pointerEvents =
@@ -282,19 +274,11 @@ class PlaygroundModel {
       wordsLine.style.pointerEvents = EVENT_ACCESSIBILITY.none;
       this.wordLinesHTML.push(wordsLine);
 
-      wordsLine.addEventListener('dragover', (event) => {
+      wordsLine.addEventListener(EVENT_NAMES.dragOver, (event) => {
         event.preventDefault();
       });
 
-      wordsLine.addEventListener('dragenter', () => {
-        wordsLine.classList.add(styles.line_hovered);
-      });
-
-      wordsLine.addEventListener('dragleave', () => {
-        wordsLine.classList.remove(styles.line_hovered);
-      });
-
-      wordsLine.addEventListener('drop', (event: DragEvent) => {
+      wordsLine.addEventListener(EVENT_NAMES.dragDrop, (event: DragEvent) => {
         this.setDragDrop(event, wordsLine);
       });
     });
@@ -319,9 +303,12 @@ class PlaygroundModel {
       if (index !== -1) {
         const puzzle = this.puzzles[this.currentRound][index];
         this.puzzles[this.currentRound].splice(index, 1);
-        puzzle.clickPuzzleHandler();
-        element.append(puzzle.getHTML());
-        this.puzzles[this.currentRound].push(puzzle);
+
+        if (puzzle.getHTML().parentNode !== element) {
+          puzzle.clickPuzzleHandler();
+          element.append(puzzle.getHTML());
+          this.puzzles[this.currentRound].push(puzzle);
+        }
       }
     }
   }
@@ -354,7 +341,14 @@ class PlaygroundModel {
     puzzleWord: string,
   ): void {
     const { target } = event;
-    this.wordLinesHTML[this.currentRound].classList.add(styles.line_hovered);
+    const currentLine = this.wordLinesHTML[this.currentRound];
+    const sourceBlock = this.view.getSourceBlockHTML();
+
+    if (currentPuzzle.parentElement === sourceBlock) {
+      currentLine.classList.add(styles.line_hovered);
+    } else {
+      sourceBlock.classList.add(styles.line_hovered);
+    }
 
     if (event.dataTransfer && target instanceof HTMLElement && target.id) {
       event.dataTransfer.setData('id', puzzleWord);
@@ -363,7 +357,15 @@ class PlaygroundModel {
   }
 
   private setDragEndForPuzzle(currentPuzzle: HTMLElement): void {
-    this.wordLinesHTML[this.currentRound].classList.remove(styles.line_hovered);
+    const currentLine = this.wordLinesHTML[this.currentRound];
+    const sourceBlock = this.view.getSourceBlockHTML();
+
+    if (currentPuzzle.parentElement === sourceBlock) {
+      currentLine.classList.remove(styles.line_hovered);
+    } else {
+      sourceBlock.classList.remove(styles.line_hovered);
+    }
+
     currentPuzzle.classList.remove(styles.puzzle_placeholder);
   }
 
@@ -380,14 +382,17 @@ class PlaygroundModel {
         this.puzzles[this.currentRound].forEach((puzzle) => {
           const currentPuzzle = puzzle.getHTML();
           const puzzleWord = puzzle.getWord();
-          currentPuzzle.addEventListener('dragstart', (event: DragEvent) => {
-            this.setDragStartForPuzzle(currentPuzzle, event, puzzleWord);
-            const parent = currentPuzzle.parentNode;
-            if (parent) {
-              this.dragWrapper = parent;
-            }
-          });
-          currentPuzzle.addEventListener('dragend', () => {
+          currentPuzzle.addEventListener(
+            EVENT_NAMES.dragStart,
+            (event: DragEvent) => {
+              this.setDragStartForPuzzle(currentPuzzle, event, puzzleWord);
+              const parent = currentPuzzle.parentElement;
+              if (parent) {
+                this.dragWrapper = parent;
+              }
+            },
+          );
+          currentPuzzle.addEventListener(EVENT_NAMES.dragEnd, () => {
             this.setDragEndForPuzzle(currentPuzzle);
           });
         });

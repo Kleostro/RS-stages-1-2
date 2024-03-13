@@ -43,10 +43,12 @@ class PuzzleComponent {
     const pivotFont = 5;
     const minFontSize = 1;
     const maxFontSize = 1.2;
-    const fontSize = wordLength > pivotFont ? minFontSize : maxFontSize;
+    const calcFontSize = wordLength > pivotFont ? minFontSize : maxFontSize;
+    const padding = `${paddingY}dvw ${paddingX}dvw`;
+    const fontSize = `${calcFontSize}dvw`;
 
-    currentElem.style.padding = `${paddingY}dvw ${paddingX}dvw`;
-    currentElem.style.fontSize = `${fontSize}dvw`;
+    currentElem.style.padding = padding;
+    currentElem.style.fontSize = fontSize;
   }
 
   public clickPuzzleHandler(): void {
@@ -123,11 +125,12 @@ class PuzzleComponent {
   }
 
   private createHTML(word: string): HTMLDivElement {
+    const isDraggable = 'true';
     this.puzzle = createBaseElement({
       tag: TAG_NAMES.div,
       cssClasses: [styles.puzzle],
       attributes: {
-        draggable: 'true',
+        draggable: isDraggable,
         id: word,
       },
       innerContent: word,

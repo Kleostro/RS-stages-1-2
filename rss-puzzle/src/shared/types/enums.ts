@@ -23,4 +23,11 @@ export const EVENT_NAMES = {
   hashchange: 'hashchange',
   click: 'click',
   submit: 'submit',
+  dragOver: 'dragover',
+  dragDrop: 'drop',
+  dragStart: 'dragstart',
+  dragEnd: 'dragend',
+  dragLeave: 'dragleave',
+  dragEnter: 'dragenter',
+  input: 'input',
 } as const;
