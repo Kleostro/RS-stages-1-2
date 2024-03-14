@@ -7,19 +7,14 @@ class PlaygroundApi {
 
   private levelInfo: levelInfo | null;
 
-  private levelInfoReceived: boolean;
-
   constructor() {
     this.api = new ApiModel();
     this.levelInfo = null;
-    this.levelInfoReceived = false;
-    this.receiveLevelInfo(1).catch(() => {});
   }
 
-  public async getLevelData(): Promise<levelInfo> {
-    if (!this.levelInfoReceived) {
-      await this.receiveLevelInfo(1);
-    }
+  public async getLevelData(lvl: number): Promise<levelInfo> {
+    await this.receiveLevelInfo(lvl);
+
     if (!this.levelInfo) {
       throw new Error('No level info');
     }
@@ -33,11 +28,8 @@ class PlaygroundApi {
       .getData(url)
       .then((data) => {
         this.levelInfo = data;
-        this.levelInfoReceived = true;
       })
-      .catch(() => {
-        this.levelInfoReceived = false;
-      });
+      .catch(() => {});
   }
 }
 

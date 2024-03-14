@@ -1,3 +1,3 @@
-type ListenerCallback<T> = (params: T) => T;
+type ListenerCallback<T> = (params: T) => void;
 
 export default ListenerCallback;

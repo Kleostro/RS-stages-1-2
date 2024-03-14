@@ -5,6 +5,7 @@ import RouterModel from '../../Router/model/RouterModel.ts';
 import { PAGES_IDS } from '../../../pages/types/enums.ts';
 import MainPageModel from '../../../pages/mainPage/model/MainPageModel.ts';
 import AppView from '../ui/AppView.ts';
+import ChoiceGamePageModel from '../../../pages/choiceGamePage/model/ChoiceGamePageModel.ts';
 
 class AppModel {
   private appView: AppView;
@@ -16,6 +17,7 @@ class AppModel {
   private pages: {
     logIn: LogInPageModel;
     start: StartPageModel;
+    choiceGame: ChoiceGamePageModel;
     main: MainPageModel;
   };
 
@@ -34,6 +36,11 @@ class AppModel {
       ),
       start: new StartPageModel(
         PAGES_IDS.START,
+        this.appView.getHTML(),
+        this.storage,
+      ),
+      choiceGame: new ChoiceGamePageModel(
+        PAGES_IDS.CHOICE_GAME,
         this.appView.getHTML(),
         this.storage,
       ),

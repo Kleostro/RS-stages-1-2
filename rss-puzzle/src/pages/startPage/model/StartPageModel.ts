@@ -22,6 +22,8 @@ class StartPageModel implements PageInterface {
 
   private startBtn: ButtonModel;
 
+  private choiceGameBtn: ButtonModel;
+
   private logOutBtn: ButtonModel;
 
   private singletonMediator: MediatorModel<unknown>;
@@ -32,6 +34,7 @@ class StartPageModel implements PageInterface {
     this.page = this.pageView.getHTML();
     this.subtitle = this.pageView.getSubTitle();
     this.startBtn = this.pageView.getStartBtn();
+    this.choiceGameBtn = this.pageView.getChoiceGameBtn();
     this.logOutBtn = this.pageView.getLogOutBtn();
     this.storage = storage;
 
@@ -71,6 +74,13 @@ class StartPageModel implements PageInterface {
 
     this.startBtn.getHTML().addEventListener(EVENT_NAMES.click, () => {
       this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.MAIN);
+    });
+
+    this.choiceGameBtn.getHTML().addEventListener(EVENT_NAMES.click, () => {
+      this.singletonMediator.notify(
+        AppEvents.changeHash,
+        PAGES_IDS.CHOICE_GAME,
+      );
     });
   }
 }

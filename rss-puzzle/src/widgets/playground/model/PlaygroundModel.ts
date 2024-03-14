@@ -17,6 +17,8 @@ import MediatorModel from '../../../pages/core/mediator/model/MediatorModel.ts';
 import AppEvents from '../../../pages/core/mediator/types/enums.ts';
 import IMG_SRC from '../ui/imgSrc/imgSrc.ts';
 import type StorageModel from '../../../app/Storage/model/StorageModel.ts';
+import type NewData from '../types/interfaces.ts';
+import isNewData from '../../../utils/isNewData.ts';
 
 class PlaygroundModel {
   private storage: StorageModel;
@@ -36,6 +38,8 @@ class PlaygroundModel {
   private translateSentence = '';
 
   private shuffledWords: string[][];
+
+  private lvl = 1;
 
   private currentRoundLvl = 0;
 
@@ -62,6 +66,11 @@ class PlaygroundModel {
     this.singletonMediator.subscribe(
       AppEvents.switchListenVisible,
       this.switchVisibleTranslateListen.bind(this),
+    );
+
+    this.singletonMediator.subscribe(
+      AppEvents.newRound,
+      this.newData.bind(this),
     );
 
     this.levelData = this.setLevelData();
@@ -158,9 +167,47 @@ class PlaygroundModel {
     return false;
   }
 
+  private newData(data: unknown): void {
+    if (isNewData(data)) {
+      const newData: NewData = data;
+      this.currentRoundLvl = newData.currentRound;
+      this.currentRound = 0;
+      this.words = [];
+      this.lvl = newData.currentLVL + 1;
+      this.setLevelData();
+      this.wordsInCurrentLine = [];
+      this.puzzles = [];
+      this.wordLinesHTML = [];
+      this.shuffledWords = [];
+      this.wordsInCurrentLine = [];
+      const currentWords = data.gameData.words;
+      currentWords.forEach((word: wordsInfo) => {
+        this.words.push(word.textExample.split(' '));
+      });
+      this.newGame();
+    }
+  }
+
+  private newGame(): void {
+    this.view.clearGameBoardHTML();
+    this.view.clearSourceBlockHTML();
+    this.shuffleWords();
+    this.wordLinesHTML = this.createWordLines();
+    this.createPuzzleElements();
+    this.fillSourcedBlock();
+    this.setDragListenersToNextRound();
+    this.setTranslateSentence()
+      .then(() => {
+        this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
+      })
+      .catch(() => {});
+    this.wordLinesHTML[this.currentRound].style.pointerEvents =
+      EVENT_ACCESSIBILITY.auto;
+  }
+
   private setLevelData(): levelInfo {
     this.api
-      .getLevelData()
+      .getLevelData(this.lvl)
       .then((data) => {
         this.levelData = data;
       })
@@ -170,7 +217,7 @@ class PlaygroundModel {
 
   private async setWords(): Promise<string[][]> {
     this.words = [];
-    const levelData = await this.api.getLevelData();
+    const levelData = await this.api.getLevelData(this.lvl);
     const currentWords = levelData.rounds[this.currentRoundLvl].words;
 
     currentWords.forEach((word: wordsInfo) => {
@@ -181,7 +228,7 @@ class PlaygroundModel {
   }
 
   private async setTranslateSentence(): Promise<string> {
-    const levelData = await this.api.getLevelData();
+    const levelData = await this.api.getLevelData(this.lvl);
     const translateSentence =
       levelData.rounds[this.currentRoundLvl].words[this.currentRound]
         .textExampleTranslate;

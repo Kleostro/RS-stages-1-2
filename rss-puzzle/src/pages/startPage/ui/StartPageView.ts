@@ -18,6 +18,8 @@ class StartPageView {
 
   private startBtn: ButtonModel;
 
+  private choiceGameBtn: ButtonModel;
+
   private logOutBtn: ButtonModel;
 
   constructor(id: string, parent: HTMLDivElement) {
@@ -25,6 +27,7 @@ class StartPageView {
     this.subtitle = this.createSubtitle();
     this.descr = this.createDescr();
     this.startBtn = this.createStartBtn();
+    this.choiceGameBtn = this.createChoiceGameBtn();
     this.logOutBtn = this.createLogOutBtn();
     this.parent = parent;
     this.page = this.createHTML(id);
@@ -44,6 +47,10 @@ class StartPageView {
 
   public getStartBtn(): ButtonModel {
     return this.startBtn;
+  }
+
+  public getChoiceGameBtn(): ButtonModel {
+    return this.choiceGameBtn;
   }
 
   private createTitle(): HTMLHeadingElement {
@@ -80,6 +87,14 @@ class StartPageView {
     return this.startBtn;
   }
 
+  private createChoiceGameBtn(): ButtonModel {
+    this.choiceGameBtn = new ButtonModel(BUTTONS_TEXT_CONTENT.choiceGameBtn, [
+      styles.page__btn,
+      'btn-reset',
+    ]);
+    return this.choiceGameBtn;
+  }
+
   private createLogOutBtn(): ButtonModel {
     this.logOutBtn = new ButtonModel(BUTTONS_TEXT_CONTENT.loginBtn, [
       styles.page__btn,
@@ -103,6 +118,7 @@ class StartPageView {
       this.subtitle,
       this.descr,
       this.startBtn.getHTML(),
+      this.choiceGameBtn.getHTML(),
       this.logOutBtn.getHTML(),
     );
 

@@ -37,7 +37,7 @@ class RouterModel {
 
     if (loginPage.checkAuthUser) {
       if (loginPage.checkAuthUser()) {
-        this.renderNewPageCallback(PAGES_IDS.MAIN);
+        this.renderNewPageCallback(PAGES_IDS.START);
       } else {
         this.renderNewPageCallback(PAGES_IDS.LOG_IN);
       }
@@ -95,6 +95,10 @@ class RouterModel {
       const elapsed = timestamp - start;
       const progress = Math.min(elapsed / duration, MAX_OPACITY);
       const opacity = MAX_OPACITY - progress;
+
+      if (!currentPage.getHTML()) {
+        return;
+      }
 
       const page = currentPage.getHTML();
       page.style.opacity = `${opacity}`;

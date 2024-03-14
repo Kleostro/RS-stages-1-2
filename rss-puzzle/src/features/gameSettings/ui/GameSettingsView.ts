@@ -14,11 +14,17 @@ class GameSettingsView {
 
   private translateListenImg: HTMLSpanElement;
 
+  private choiceGameWrapper: HTMLDivElement;
+
+  private choiceGameImg: HTMLSpanElement;
+
   constructor() {
     this.translateSentenceImg = this.createTranslateSentenceImg();
     this.translateSentenceWrapper = this.createTranslateSentenceWrapper();
     this.translateListenImg = this.createTranslateListenImg();
     this.translateListenWrapper = this.createTranslateListenWrapper();
+    this.choiceGameImg = this.createChoiceGameImg();
+    this.choiceGameWrapper = this.createChoiceGameWrapper();
     this.gameSettings = this.createHTML();
   }
 
@@ -40,6 +46,14 @@ class GameSettingsView {
 
   public getTranslateListenImg(): HTMLSpanElement {
     return this.translateListenImg;
+  }
+
+  public getChoiceGameWrapper(): HTMLDivElement {
+    return this.choiceGameWrapper;
+  }
+
+  public getChoiceGameImg(): HTMLSpanElement {
+    return this.choiceGameImg;
   }
 
   private createTranslateSentenceImg(): HTMLSpanElement {
@@ -96,6 +110,33 @@ class GameSettingsView {
     return this.translateListenWrapper;
   }
 
+  private createChoiceGameImg(): HTMLSpanElement {
+    this.choiceGameImg = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.translate_listen_img],
+      attributes: {},
+      innerContent: IMG_SRC.translateOff,
+    });
+    return this.choiceGameImg;
+  }
+
+  private createChoiceGameWrapper(): HTMLDivElement {
+    this.choiceGameWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.game_settings_item],
+    });
+
+    const textContent = 'Choice Game';
+    const textElem = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.game_settings_item_text],
+      innerContent: textContent,
+    });
+
+    this.choiceGameWrapper.append(this.choiceGameImg, textElem);
+    return this.choiceGameWrapper;
+  }
+
   private createHTML(): HTMLDivElement {
     this.gameSettings = createBaseElement({
       tag: TAG_NAMES.div,
@@ -105,6 +146,7 @@ class GameSettingsView {
     this.gameSettings.append(
       this.translateSentenceWrapper,
       this.translateListenWrapper,
+      this.choiceGameWrapper,
     );
     return this.gameSettings;
   }

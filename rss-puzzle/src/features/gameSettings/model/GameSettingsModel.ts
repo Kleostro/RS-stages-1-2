@@ -6,6 +6,7 @@ import styles from '../ui/style.module.scss';
 import AppEvents from '../../../pages/core/mediator/types/enums.ts';
 import type StorageModel from '../../../app/Storage/model/StorageModel.ts';
 import IS_VISIBLE from '../types/enums.ts';
+import { PAGES_IDS } from '../../../pages/types/enums.ts';
 
 class GameSettingsModel {
   private storage: StorageModel;
@@ -135,6 +136,14 @@ class GameSettingsModel {
       EVENT_NAMES.click,
       this.translateListenHandler.bind(this),
     );
+
+    const choiceGameWrapper = this.gameSettingsView.getChoiceGameWrapper();
+    choiceGameWrapper.addEventListener(EVENT_NAMES.click, () => {
+      this.singletonMediator.notify(
+        AppEvents.changeHash,
+        PAGES_IDS.CHOICE_GAME,
+      );
+    });
   }
 }
 

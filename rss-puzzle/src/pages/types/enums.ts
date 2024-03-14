@@ -2,6 +2,7 @@ export const PAGES_IDS = {
   START: 'start',
   LOG_IN: 'logIn',
   BLANK: '',
+  CHOICE_GAME: 'choiceGame',
   MAIN: 'main',
 } as const;
 
