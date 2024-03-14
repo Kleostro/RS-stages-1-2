@@ -1,27 +1,32 @@
 import createBaseElement from '../../../utils/createBaseElement.ts';
-import PlaygroundModel from '../../../widgets/playground/model/PlaygroundModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import styles from './style.module.scss';
 import { PAGES_STATE } from '../../types/enums.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
-import GameSettingsModel from '../../../features/gameSettings/model/GameSettingsModel.ts';
+import type PlaygroundView from '../../../widgets/playground/ui/PlaygroundView.ts';
+import type GameSettingsView from '../../../features/gameSettings/ui/GameSettingsView.ts';
 
 class MainPageView implements PageInterface {
   private id: string;
 
   private parent: HTMLDivElement;
 
-  private playground: PlaygroundModel;
+  private playgroundView: PlaygroundView;
 
-  private gameSettingsModel: GameSettingsModel;
+  private gameSettingsView: GameSettingsView;
 
   private page: HTMLDivElement;
 
-  constructor(id: string, parent: HTMLDivElement) {
+  constructor(
+    id: string,
+    parent: HTMLDivElement,
+    playground: PlaygroundView,
+    gameSettings: GameSettingsView,
+  ) {
     this.id = id;
     this.parent = parent;
-    this.playground = new PlaygroundModel();
-    this.gameSettingsModel = new GameSettingsModel();
+    this.playgroundView = playground;
+    this.gameSettingsView = gameSettings;
     this.page = this.createHTML(this.id);
   }
 
@@ -45,7 +50,10 @@ class MainPageView implements PageInterface {
       cssClasses: [styles.game_wrapper],
     });
     this.page.append(wrapper);
-    wrapper.append(this.playground.getHTML(), this.gameSettingsModel.getHTML());
+    wrapper.append(
+      this.playgroundView.getHTML(),
+      this.gameSettingsView.getHTML(),
+    );
 
     this.page.style.display = PAGES_STATE.HIDDEN;
     this.parent.append(this.page);

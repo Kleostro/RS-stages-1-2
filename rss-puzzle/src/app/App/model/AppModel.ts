@@ -37,7 +37,11 @@ class AppModel {
         this.appView.getHTML(),
         this.storage,
       ),
-      main: new MainPageModel(PAGES_IDS.MAIN, this.appView.getHTML()),
+      main: new MainPageModel(
+        PAGES_IDS.MAIN,
+        this.appView.getHTML(),
+        this.storage,
+      ),
     };
 
     this.router = new RouterModel(this.pages);
