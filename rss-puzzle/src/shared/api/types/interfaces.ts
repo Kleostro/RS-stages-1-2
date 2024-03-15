@@ -25,3 +25,8 @@ export interface levelInfo {
   rounds: [roundsInfo];
   roundsCount: number;
 }
+
+export interface CompletedRound {
+  lvl: number;
+  round: number;
+}

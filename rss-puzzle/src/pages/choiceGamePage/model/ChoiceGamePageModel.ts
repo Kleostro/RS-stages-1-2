@@ -2,11 +2,25 @@ import type PageInterface from '../../types/interfaces.ts';
 import type StorageModel from '../../../app/Storage/model/StorageModel.ts';
 import ChoiceGamePageView from '../ui/ChoiceGamePageView.ts';
 import ChoiceGameApi from '../api/ChoiceGameApi.ts';
-import type { levelInfo } from '../../../shared/api/types/interfaces.ts';
+import type {
+  CompletedRound,
+  levelInfo,
+} from '../../../shared/api/types/interfaces.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import MediatorModel from '../../core/mediator/model/MediatorModel.ts';
 import AppEvents from '../../core/mediator/types/enums.ts';
 import { PAGES_IDS } from '../../types/enums.ts';
+import styles from '../ui/style.module.scss';
+import getComplexityColor from '../../../utils/getComplexityColor.ts';
+
+const complexityColors = [
+  'beginner',
+  'novice',
+  'intermediate',
+  'advanced',
+  'master',
+  'expert',
+];
 
 class ChoiceGamePageModel implements PageInterface {
   private id: string;
@@ -31,6 +45,10 @@ class ChoiceGamePageModel implements PageInterface {
     this.api = new ChoiceGameApi();
     this.storage = storage;
     this.singletonMediator = MediatorModel.getInstance();
+    this.singletonMediator.subscribe(
+      AppEvents.newCompletedRound,
+      this.switchCompletedRound.bind(this),
+    );
     this.pageView = new ChoiceGamePageView(this.id, this.parent, this.gameData);
     this.page = this.init();
   }
@@ -49,6 +67,60 @@ class ChoiceGamePageModel implements PageInterface {
     return gameData;
   }
 
+  private switchParentClassByButtonClass(): void {
+    const btns = this.pageView.getRoundBtns();
+    const btnsHTML: HTMLButtonElement[] = [];
+    btns.forEach((item) => {
+      btnsHTML.push(item.getHTML());
+    });
+
+    const groupedByParent = new Map<HTMLElement, HTMLElement[]>();
+
+    btnsHTML.forEach((btn) => {
+      const parent = btn.parentElement;
+      if (parent) {
+        if (groupedByParent.has(parent)) {
+          groupedByParent.get(parent)?.push(btn);
+        } else {
+          groupedByParent.set(parent, [btn]);
+        }
+      }
+    });
+
+    groupedByParent.forEach((buttons, parent) => {
+      const lvl = Number(parent.getAttribute('id'));
+      const hasAnyClass = (classes: string[]): boolean =>
+        buttons.every((btn) =>
+          btn.classList.contains(styles[classes[Number(lvl)]]),
+        );
+
+      const allButtonsHaveClass = hasAnyClass(complexityColors);
+      if (allButtonsHaveClass) {
+        parent.classList.add(styles[complexityColors[Number(lvl)]]);
+      }
+    });
+  }
+
+  private switchCompletedRound(): void {
+    const completedRounds =
+      this.storage.get<CompletedRound[]>('completedRounds');
+    const btns = this.pageView.getRoundBtns();
+
+    btns.forEach((btn) => {
+      const lvl = btn.getHTML().getAttribute('currentLVL');
+      const round = btn.getHTML().getAttribute('currentRound');
+      const complexity = getComplexityColor(Number(lvl));
+      if (
+        completedRounds?.some(
+          (obj) => obj.lvl.toString() === lvl && obj.round.toString() === round,
+        )
+      ) {
+        btn.getHTML().classList.add(styles[complexity]);
+        this.switchParentClassByButtonClass();
+      }
+    });
+  }
+
   private setHandlersForBtns(): void {
     const btns = this.pageView.getRoundBtns();
     btns.forEach((btn) => {
@@ -56,11 +128,11 @@ class ChoiceGamePageModel implements PageInterface {
         const currentLVL = Number(btn.getHTML().getAttribute('currentLVL'));
         const currentRound = Number(btn.getHTML().getAttribute('currentRound'));
         const currentDataLVL = {
-          gameData: this.gameData[currentLVL].rounds[currentRound],
+          gameData: this.gameData,
           currentRound,
           currentLVL,
         };
-        this.singletonMediator.notify(AppEvents.newRound, currentDataLVL);
+        this.singletonMediator.notify(AppEvents.newGame, currentDataLVL);
         this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.MAIN);
       });
     });
@@ -70,11 +142,22 @@ class ChoiceGamePageModel implements PageInterface {
     this.getGameData()
       .then((data) => {
         this.gameData = data;
-        this.page = this.pageView.createHTML(this.id, this.gameData);
+      })
+      .then(() => {
+        this.pageView.initHTML(this.gameData);
         this.setHandlersForBtns();
+        this.switchCompletedRound();
+        this.switchParentClassByButtonClass();
+        const data = {
+          gameData: this.gameData,
+          currentRound: 0,
+          currentLVL: 1,
+        };
+        this.singletonMediator.notify(AppEvents.newGame, data);
       })
       .catch(() => {});
 
+    this.page = this.pageView.createHTML(this.id);
     return this.page;
   }
 }

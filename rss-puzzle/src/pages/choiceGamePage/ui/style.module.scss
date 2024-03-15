@@ -17,6 +17,44 @@
   width: 100%;
 }
 
+.page__lvl {
+  &.beginner {
+    .page__lvl_description {
+      background-color: #0bf;
+    }
+  }
+
+  &.novice {
+    .page__lvl_description {
+      background-color: #0f0;
+    }
+  }
+
+  &.intermediate {
+    .page__lvl_description {
+      background-color: #ff0;
+    }
+  }
+
+  &.advanced {
+    .page__lvl_description {
+      background-color: #ffa500;
+    }
+  }
+
+  &.master {
+    .page__lvl_description {
+      background-color: #572a77;
+    }
+  }
+
+  &.expert {
+    .page__lvl_description {
+      background-color: #590707;
+    }
+  }
+}
+
 .page__btn {
   margin: 10px;
   border-radius: 50%;
@@ -25,6 +63,30 @@
   font-size: 20px;
   color: #f0f8ff;
   background-color: #7a7a7a;
+
+  &.beginner {
+    background-color: #0bf;
+  }
+
+  &.novice {
+    background-color: #0f0;
+  }
+
+  &.intermediate {
+    background-color: #ff0;
+  }
+
+  &.advanced {
+    background-color: #ffa500;
+  }
+
+  &.master {
+    background-color: #572a77;
+  }
+
+  &.expert {
+    background-color: #590707;
+  }
 }
 
 .page__lvl_description {

@@ -3,7 +3,8 @@ const AppEvents = {
   changeHash: 'changeHash',
   switchTranslateVisible: 'switchTranslateVisible',
   switchListenVisible: 'switchListenVisible',
-  newRound: 'newRound',
+  newGame: 'newGame',
+  newCompletedRound: 'newCompletedRound',
 } as const;
 
 export default AppEvents;

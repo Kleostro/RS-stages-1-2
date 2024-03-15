@@ -74,43 +74,39 @@ class RouterModel {
   private fadeOutAndIn(
     currentPage: PageInterface,
     nextPage: PageInterface,
-    duration = this.duration,
   ): void {
     let start = performance.now();
 
     const fadeIn = (timestamp: number): void => {
       const elapsed = timestamp - start;
-      const progress = Math.min(elapsed / duration, MAX_OPACITY);
+      const progress = Math.min(elapsed / this.duration, MAX_OPACITY);
       const page = nextPage.getHTML();
 
       page.style.opacity = `${progress}`;
       page.style.display = PAGES_STATE.VISIBLE;
 
-      if (elapsed < duration) {
+      if (elapsed < this.duration) {
         window.requestAnimationFrame(fadeIn);
       }
     };
 
     const fadeOut = (timestamp: number): void => {
       const elapsed = timestamp - start;
-      const progress = Math.min(elapsed / duration, MAX_OPACITY);
+      const progress = Math.min(elapsed / this.duration, MAX_OPACITY);
       const opacity = MAX_OPACITY - progress;
-
-      if (!currentPage.getHTML()) {
-        return;
-      }
 
       const page = currentPage.getHTML();
       page.style.opacity = `${opacity}`;
 
-      if (elapsed < duration) {
+      if (elapsed < this.duration) {
         window.requestAnimationFrame(fadeOut);
       } else {
-        Object.entries(this.pages)
-          .filter(([key]) => key !== this.currentPage.getHTML().id)
-          .forEach(([key]) => {
-            this.pages[key].getHTML().style.display = PAGES_STATE.HIDDEN;
-          });
+        Object.entries(this.pages).forEach(([key, value]) => {
+          if (key !== this.currentPage.getHTML().id && value.getHTML()) {
+            const val = value.getHTML();
+            val.style.display = PAGES_STATE.HIDDEN;
+          }
+        });
 
         page.style.display = PAGES_STATE.HIDDEN;
         start = performance.now();

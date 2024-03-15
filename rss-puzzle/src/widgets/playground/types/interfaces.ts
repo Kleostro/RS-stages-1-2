@@ -1,11 +1,9 @@
-import type { wordsInfo } from '../../../shared/api/types/interfaces.ts';
+import type { levelInfo } from '../../../shared/api/types/interfaces.ts';
 
 interface NewData {
   currentRound: number;
   currentLVL: number;
-  gameData: {
-    words: wordsInfo[];
-  };
+  gameData: [levelInfo];
 }
 
 export default NewData;

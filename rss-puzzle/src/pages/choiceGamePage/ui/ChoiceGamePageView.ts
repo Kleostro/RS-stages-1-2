@@ -13,6 +13,8 @@ class ChoiceGamePageView {
 
   private gameData: levelInfo[];
 
+  private pageWrapper: HTMLDivElement | null;
+
   private roundBtns: ButtonModel[];
 
   private descriptionsHTML: HTMLDivElement[] = [];
@@ -24,6 +26,7 @@ class ChoiceGamePageView {
     this.parent = parent;
     this.gameData = gameData;
     this.roundBtns = [];
+    this.pageWrapper = null;
     this.BTNS_OPTIONS = BTN_OPTIONS;
   }
 
@@ -65,7 +68,7 @@ class ChoiceGamePageView {
     });
 
     this.gameData.forEach((LVL, index) => {
-      const currentLVL = index.toString();
+      const currentLVL = (index + 1).toString();
       const currentLvlWrapper = createBaseElement({
         tag: TAG_NAMES.div,
         cssClasses: [styles.page__lvl],
@@ -112,27 +115,28 @@ class ChoiceGamePageView {
     });
   }
 
-  public createHTML(id: string, gameData: levelInfo[]): HTMLDivElement {
+  public initHTML(gameData: levelInfo[]): void {
+    this.gameData = gameData;
+
+    const LVLsWrapper = this.createLVLsHTML();
+    this.fillDescriptions();
+    this.pageWrapper?.append(LVLsWrapper);
+  }
+
+  public createHTML(id: string): HTMLDivElement {
     const page = createBaseElement({
       tag: TAG_NAMES.div,
       cssClasses: [styles.page],
       attributes: { id },
     });
 
-    const wrapper = createBaseElement({
+    this.pageWrapper = createBaseElement({
       tag: TAG_NAMES.div,
       cssClasses: [styles.choice_game_wrapper],
     });
 
-    this.gameData = gameData;
-
-    const LVLsWrapper = this.createLVLsHTML();
-    this.fillDescriptions();
-    wrapper.append(LVLsWrapper);
-    page.append(wrapper);
-
     page.style.display = PAGES_STATE.HIDDEN;
-
+    page.append(this.pageWrapper);
     this.parent.append(page);
     return page;
   }

@@ -1,9 +1,9 @@
 import { EVENT_NAMES, TAG_NAMES } from '../../../shared/types/enums.ts';
 import type {
+  CompletedRound,
   levelInfo,
   wordsInfo,
 } from '../../../shared/api/types/interfaces.ts';
-import PlaygroundApi from '../api/PlaygroundApi.ts';
 import {
   AUDIO_SRC,
   EVENT_ACCESSIBILITY,
@@ -25,9 +25,9 @@ class PlaygroundModel {
 
   private view: PlaygroundView;
 
-  private api: PlaygroundApi;
+  private gameData: levelInfo[] = [];
 
-  private levelData: levelInfo;
+  private levelData: levelInfo | null;
 
   private audio: HTMLAudioElement;
 
@@ -56,44 +56,13 @@ class PlaygroundModel {
   constructor(storage: StorageModel) {
     this.storage = storage;
     this.view = new PlaygroundView();
-    this.api = new PlaygroundApi();
-
     this.singletonMediator = MediatorModel.getInstance();
-    this.singletonMediator.subscribe(
-      AppEvents.switchTranslateVisible,
-      this.switchVisibleTranslateSentence.bind(this),
-    );
-    this.singletonMediator.subscribe(
-      AppEvents.switchListenVisible,
-      this.switchVisibleTranslateListen.bind(this),
-    );
-
-    this.singletonMediator.subscribe(
-      AppEvents.newRound,
-      this.newData.bind(this),
-    );
-
-    this.levelData = this.setLevelData();
+    this.levelData = null;
     this.audio = this.view.getAudioElement();
     this.shuffledWords = this.shuffleWords();
     this.wordLinesHTML = this.createWordLines();
-    this.init();
-    this.setHandlersToButtons();
-    this.setDragsForSourceBlock();
-    this.switchInitialTranslateSentence();
-    this.switchInitialTranslateListen();
     this.dragWrapper = this.view.getSourceBlockHTML();
-
-    const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
-    translateListenHTML.addEventListener(
-      EVENT_NAMES.click,
-      this.switchTranslateListen.bind(this),
-    );
-
-    this.audio.addEventListener(EVENT_NAMES.ended, () => {
-      translateListenHTML.innerHTML = IMG_SRC.volumeOff;
-      translateListenHTML.classList.remove(styles.translate_btn_active);
-    });
+    this.init();
   }
 
   public getHTML(): HTMLDivElement {
@@ -132,7 +101,7 @@ class PlaygroundModel {
     const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
     translateListenHTML.innerHTML = IMG_SRC.volumeOn;
     translateListenHTML.classList.add(styles.translate_btn_active);
-    this.audio.src = this.formattedAudioURL();
+    this.audio.src = this.getCurrentAudioURL();
     this.audio.play().catch(() => {});
   }
 
@@ -167,23 +136,36 @@ class PlaygroundModel {
     return false;
   }
 
+  private clearPlaygroundInfo(): void {
+    this.currentRound = 0;
+    this.words = [];
+    this.wordsInCurrentLine = [];
+    this.puzzles = [];
+    this.wordLinesHTML = [];
+    this.shuffledWords = [];
+    this.wordsInCurrentLine = [];
+
+    const checkBtn = this.view.getCheckBtn();
+    const continueBtn = this.view.getContinueBtn();
+    continueBtn.setDisabled();
+    checkBtn.setDisabled();
+  }
+
+  private setCurrentWords(): void {
+    const currentWords = this.levelData?.rounds[this.currentRoundLvl].words;
+    currentWords?.forEach((word: wordsInfo) => {
+      this.words.push(word.textExample.split(' '));
+    });
+  }
+
   private newData(data: unknown): void {
     if (isNewData(data)) {
       const newData: NewData = data;
+      this.lvl = newData.currentLVL - 1;
       this.currentRoundLvl = newData.currentRound;
-      this.currentRound = 0;
-      this.words = [];
-      this.lvl = newData.currentLVL + 1;
-      this.setLevelData();
-      this.wordsInCurrentLine = [];
-      this.puzzles = [];
-      this.wordLinesHTML = [];
-      this.shuffledWords = [];
-      this.wordsInCurrentLine = [];
-      const currentWords = data.gameData.words;
-      currentWords.forEach((word: wordsInfo) => {
-        this.words.push(word.textExample.split(' '));
-      });
+      this.gameData = newData.gameData;
+      this.levelData = newData.gameData[this.lvl];
+      this.clearPlaygroundInfo();
       this.newGame();
     }
   }
@@ -191,47 +173,26 @@ class PlaygroundModel {
   private newGame(): void {
     this.view.clearGameBoardHTML();
     this.view.clearSourceBlockHTML();
+    this.setCurrentWords();
     this.shuffleWords();
     this.wordLinesHTML = this.createWordLines();
     this.createPuzzleElements();
     this.fillSourcedBlock();
     this.setDragListenersToNextRound();
-    this.setTranslateSentence()
-      .then(() => {
-        this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
-      })
-      .catch(() => {});
+    this.setTranslateSentence();
+    this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
     this.wordLinesHTML[this.currentRound].style.pointerEvents =
       EVENT_ACCESSIBILITY.auto;
   }
 
-  private setLevelData(): levelInfo {
-    this.api
-      .getLevelData(this.lvl)
-      .then((data) => {
-        this.levelData = data;
-      })
-      .catch(() => {});
-    return this.levelData;
-  }
-
-  private async setWords(): Promise<string[][]> {
-    this.words = [];
-    const levelData = await this.api.getLevelData(this.lvl);
-    const currentWords = levelData.rounds[this.currentRoundLvl].words;
-
-    currentWords.forEach((word: wordsInfo) => {
-      this.words.push(word.textExample.split(' '));
-    });
-
-    return this.words;
-  }
-
-  private async setTranslateSentence(): Promise<string> {
-    const levelData = await this.api.getLevelData(this.lvl);
-    const translateSentence =
-      levelData.rounds[this.currentRoundLvl].words[this.currentRound]
+  private setTranslateSentence(): string {
+    let translateSentence =
+      this.levelData?.rounds[this.currentRoundLvl].words[this.currentRound]
         .textExampleTranslate;
+
+    if (!translateSentence) {
+      translateSentence = '';
+    }
 
     this.translateSentence = translateSentence;
     return this.translateSentence;
@@ -245,33 +206,50 @@ class PlaygroundModel {
     return this.shuffledWords;
   }
 
-  private startNextLvl(): void {
-    this.currentRoundLvl += 1;
-    this.currentRound = 0;
-    this.wordsInCurrentLine = [];
-    this.puzzles = [];
-    this.wordLinesHTML = [];
+  private saveCompletedRound(): void {
+    let completedRounds: CompletedRound[] =
+      this.storage.get<CompletedRound[]>('completedRounds') || [];
 
-    this.view.clearGameBoardHTML();
-    this.view.clearSourceBlockHTML();
-    const checkBtn = this.view.getCheckBtn();
-    const continueBtn = this.view.getContinueBtn();
-    continueBtn.setDisabled();
-    checkBtn.setDisabled();
-    this.init();
+    if (!completedRounds) {
+      completedRounds = [];
+    }
+
+    const formattedLVL = this.lvl + 1;
+
+    const completedRoundData = {
+      lvl: formattedLVL,
+      round: this.currentRoundLvl,
+    };
+    completedRounds.push(completedRoundData);
+    this.storage.add('completedRounds', JSON.stringify(completedRounds));
+    this.singletonMediator.notify(AppEvents.newCompletedRound, '');
   }
 
-  private formattedAudioURL(): string {
+  private startNextRound(): void {
+    this.saveCompletedRound();
+    this.clearPlaygroundInfo();
+
+    if (
+      this.levelData &&
+      this.currentRoundLvl === this.levelData.roundsCount - 1
+    ) {
+      this.lvl = this.lvl === this.gameData.length - 1 ? 0 : (this.lvl += 1);
+      this.levelData = this.gameData[this.lvl];
+      this.currentRoundLvl = 0;
+    } else {
+      this.currentRoundLvl += 1;
+    }
+
+    this.newGame();
+  }
+
+  private getCurrentAudioURL(): string {
     const currentAudioSrc =
-      this.levelData.rounds[this.currentRoundLvl].words[this.currentRound]
+      this.levelData?.rounds[this.currentRoundLvl].words[this.currentRound]
         .audioExample;
 
     const url = `${AUDIO_SRC}${currentAudioSrc}`;
     return url;
-  }
-
-  private incrementCurrentRound(): void {
-    this.currentRound += 1;
   }
 
   private checkMatchingPuzzles(): void {
@@ -332,7 +310,7 @@ class PlaygroundModel {
     });
   }
 
-  private startNextRound(): void {
+  private startNextLine(): void {
     const checkBtn = this.view.getCheckBtn();
     const continueBtn = this.view.getContinueBtn();
     const autoCompleteBtn = this.view.getAutocompleteBtn();
@@ -345,7 +323,7 @@ class PlaygroundModel {
     this.wordLinesHTML[this.currentRound].style.pointerEvents =
       EVENT_ACCESSIBILITY.none;
 
-    this.incrementCurrentRound();
+    this.currentRound += 1;
 
     if (this.wordLinesHTML[this.currentRound]) {
       this.wordLinesHTML[this.currentRound].style.pointerEvents =
@@ -356,16 +334,13 @@ class PlaygroundModel {
     checkBtn.getHTML().classList.remove(styles.btn__hidden);
 
     if (this.currentRound === this.words.length) {
-      this.startNextLvl();
+      this.startNextRound();
       return;
     }
 
     this.setDragListenersToNextRound();
-    this.setTranslateSentence()
-      .then(() => {
-        this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
-      })
-      .catch(() => {});
+    this.setTranslateSentence();
+    this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
     this.wordsInCurrentLine = [];
     continueBtn.setDisabled();
     checkBtn.setDisabled();
@@ -448,7 +423,7 @@ class PlaygroundModel {
 
     continueBtnHTML.addEventListener(
       EVENT_NAMES.click,
-      this.startNextRound.bind(this),
+      this.startNextLine.bind(this),
     );
 
     autoCompleteBtnHTML.addEventListener(
@@ -563,23 +538,35 @@ class PlaygroundModel {
   }
 
   private init(): void {
-    this.setWords()
-      .then(() => {
-        this.shuffleWords();
-        this.createWordLines();
-        this.wordLinesHTML[this.currentRound].style.pointerEvents =
-          EVENT_ACCESSIBILITY.auto;
-        this.createPuzzleElements();
-        this.fillSourcedBlock();
-        this.setDragListenersToNextRound();
-      })
-      .catch(() => {});
+    this.singletonMediator.subscribe(
+      AppEvents.switchTranslateVisible,
+      this.switchVisibleTranslateSentence.bind(this),
+    );
+    this.singletonMediator.subscribe(
+      AppEvents.switchListenVisible,
+      this.switchVisibleTranslateListen.bind(this),
+    );
 
-    this.setTranslateSentence()
-      .then(() => {
-        this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
-      })
-      .catch(() => {});
+    this.singletonMediator.subscribe(
+      AppEvents.newGame,
+      this.newData.bind(this),
+    );
+
+    this.setHandlersToButtons();
+    this.setDragsForSourceBlock();
+    this.switchInitialTranslateSentence();
+    this.switchInitialTranslateListen();
+
+    const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
+    translateListenHTML.addEventListener(
+      EVENT_NAMES.click,
+      this.switchTranslateListen.bind(this),
+    );
+
+    this.audio.addEventListener(EVENT_NAMES.ended, () => {
+      translateListenHTML.innerHTML = IMG_SRC.volumeOff;
+      translateListenHTML.classList.remove(styles.translate_btn_active);
+    });
   }
 }
 
