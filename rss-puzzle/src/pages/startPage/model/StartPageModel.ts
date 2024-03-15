@@ -64,7 +64,10 @@ class StartPageModel implements PageInterface {
 
   private logOut(): void {
     this.storage.remove(STORE_KEYS.USER);
+    this.storage.remove(STORE_KEYS.COMPLETED_ROUND);
+    this.storage.remove(STORE_KEYS.LAST_ROUND);
     this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.LOG_IN);
+    this.singletonMediator.notify(AppEvents.logOut, '');
   }
 
   private setHandlers(): void {

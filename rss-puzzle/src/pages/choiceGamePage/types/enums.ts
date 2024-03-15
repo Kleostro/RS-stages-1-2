@@ -13,3 +13,12 @@ export const DESCRIPTIONS = [
   `Level 5: "Welcome to 'Flying Alphabet'! You will have to collect sentences to launch a rocket of words in English. Fly on the wings of words!"`,
   `Level 6: "In this level, you will collect sentences to unravel the secret code of the English language and open the door to a world of fluent English communication. Get ready for 'Solving Speech Puzzles'!"`,
 ];
+
+export const COMPLEXITY_COLORS = [
+  'beginner',
+  'novice',
+  'intermediate',
+  'advanced',
+  'master',
+  'expert',
+];

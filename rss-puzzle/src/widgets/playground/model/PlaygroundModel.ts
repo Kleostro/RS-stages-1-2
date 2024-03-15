@@ -17,8 +17,9 @@ import MediatorModel from '../../../pages/core/mediator/model/MediatorModel.ts';
 import AppEvents from '../../../pages/core/mediator/types/enums.ts';
 import IMG_SRC from '../ui/imgSrc/imgSrc.ts';
 import type StorageModel from '../../../app/Storage/model/StorageModel.ts';
-import type NewData from '../types/interfaces.ts';
 import isNewData from '../../../utils/isNewData.ts';
+import type { NewData } from '../types/interfaces.ts';
+import STORE_KEYS from '../../../app/Storage/types/enums.ts';
 
 class PlaygroundModel {
   private storage: StorageModel;
@@ -158,6 +159,14 @@ class PlaygroundModel {
     });
   }
 
+  private checkLimitSaveGame(): void {
+    if (this.levelData && this.currentRoundLvl === this.levelData.roundsCount) {
+      this.lvl = this.lvl === this.gameData.length - 1 ? 0 : (this.lvl += 1);
+      this.levelData = this.gameData[this.lvl];
+      this.currentRoundLvl = 0;
+    }
+  }
+
   private newData(data: unknown): void {
     if (isNewData(data)) {
       const newData: NewData = data;
@@ -165,6 +174,7 @@ class PlaygroundModel {
       this.currentRoundLvl = newData.currentRound;
       this.gameData = newData.gameData;
       this.levelData = newData.gameData[this.lvl];
+      this.checkLimitSaveGame();
       this.clearPlaygroundInfo();
       this.newGame();
     }
@@ -208,7 +218,7 @@ class PlaygroundModel {
 
   private saveCompletedRound(): void {
     let completedRounds: CompletedRound[] =
-      this.storage.get<CompletedRound[]>('completedRounds') || [];
+      this.storage.get<CompletedRound[]>(STORE_KEYS.COMPLETED_ROUND) || [];
 
     if (!completedRounds) {
       completedRounds = [];
@@ -221,14 +231,23 @@ class PlaygroundModel {
       round: this.currentRoundLvl,
     };
     completedRounds.push(completedRoundData);
-    this.storage.add('completedRounds', JSON.stringify(completedRounds));
+    this.storage.add(
+      STORE_KEYS.COMPLETED_ROUND,
+      JSON.stringify(completedRounds),
+    );
     this.singletonMediator.notify(AppEvents.newCompletedRound, '');
   }
 
-  private startNextRound(): void {
-    this.saveCompletedRound();
-    this.clearPlaygroundInfo();
+  private saveLastRound(): void {
+    const lastRoundData = {
+      currentLVL: this.lvl + 1,
+      currentRound: this.currentRoundLvl + 1,
+      gameData: this.gameData,
+    };
+    this.storage.add(STORE_KEYS.LAST_ROUND, JSON.stringify(lastRoundData));
+  }
 
+  private checkLimitGames(): void {
     if (
       this.levelData &&
       this.currentRoundLvl === this.levelData.roundsCount - 1
@@ -239,7 +258,13 @@ class PlaygroundModel {
     } else {
       this.currentRoundLvl += 1;
     }
+  }
 
+  private startNextRound(): void {
+    this.saveCompletedRound();
+    this.saveLastRound();
+    this.clearPlaygroundInfo();
+    this.checkLimitGames();
     this.newGame();
   }
 

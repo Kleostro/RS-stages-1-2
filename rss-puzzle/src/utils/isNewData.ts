@@ -1,5 +1,5 @@
 import type { levelInfo } from '../shared/api/types/interfaces.ts';
-import type NewData from '../widgets/playground/types/interfaces.ts';
+import type { NewData } from '../widgets/playground/types/interfaces.ts';
 
 const isNewData = (data: unknown): data is NewData => {
   if (

@@ -12,15 +12,9 @@ import AppEvents from '../../core/mediator/types/enums.ts';
 import { PAGES_IDS } from '../../types/enums.ts';
 import styles from '../ui/style.module.scss';
 import getComplexityColor from '../../../utils/getComplexityColor.ts';
-
-const complexityColors = [
-  'beginner',
-  'novice',
-  'intermediate',
-  'advanced',
-  'master',
-  'expert',
-];
+import type { LastRoundInfo } from '../../../widgets/playground/types/interfaces.ts';
+import STORE_KEYS from '../../../app/Storage/types/enums.ts';
+import { COMPLEXITY_COLORS } from '../types/enums.ts';
 
 class ChoiceGamePageModel implements PageInterface {
   private id: string;
@@ -49,6 +43,16 @@ class ChoiceGamePageModel implements PageInterface {
       AppEvents.newCompletedRound,
       this.switchCompletedRound.bind(this),
     );
+    this.singletonMediator.subscribe(
+      AppEvents.logOut,
+      this.setGameData.bind(this),
+    );
+
+    this.singletonMediator.subscribe(
+      AppEvents.logOut,
+      this.switchCompletedRound.bind(this),
+    );
+
     this.pageView = new ChoiceGamePageView(this.id, this.parent, this.gameData);
     this.page = this.init();
   }
@@ -94,16 +98,19 @@ class ChoiceGamePageModel implements PageInterface {
           btn.classList.contains(styles[classes[Number(lvl)]]),
         );
 
-      const allButtonsHaveClass = hasAnyClass(complexityColors);
+      const allButtonsHaveClass = hasAnyClass(COMPLEXITY_COLORS);
       if (allButtonsHaveClass) {
-        parent.classList.add(styles[complexityColors[Number(lvl)]]);
+        parent.classList.add(styles[COMPLEXITY_COLORS[Number(lvl)]]);
+      } else {
+        parent.classList.remove(styles[COMPLEXITY_COLORS[Number(lvl)]]);
       }
     });
   }
 
   private switchCompletedRound(): void {
-    const completedRounds =
-      this.storage.get<CompletedRound[]>('completedRounds');
+    const completedRounds = this.storage.get<CompletedRound[]>(
+      STORE_KEYS.COMPLETED_ROUND,
+    );
     const btns = this.pageView.getRoundBtns();
 
     btns.forEach((btn) => {
@@ -116,13 +123,16 @@ class ChoiceGamePageModel implements PageInterface {
         )
       ) {
         btn.getHTML().classList.add(styles[complexity]);
-        this.switchParentClassByButtonClass();
+      } else {
+        btn.getHTML().classList.remove(styles[complexity]);
       }
     });
+    this.switchParentClassByButtonClass();
   }
 
   private setHandlersForBtns(): void {
     const btns = this.pageView.getRoundBtns();
+
     btns.forEach((btn) => {
       btn.getHTML().addEventListener(EVENT_NAMES.click, () => {
         const currentLVL = Number(btn.getHTML().getAttribute('currentLVL'));
@@ -138,6 +148,27 @@ class ChoiceGamePageModel implements PageInterface {
     });
   }
 
+  private setGameData(): void {
+    const lastRoundData: LastRoundInfo | undefined = this.storage.get(
+      STORE_KEYS.LAST_ROUND,
+    );
+    if (lastRoundData) {
+      const currentDataLVL = {
+        gameData: this.gameData,
+        currentRound: lastRoundData.currentRound,
+        currentLVL: lastRoundData.currentLVL,
+      };
+      this.singletonMediator.notify(AppEvents.newGame, currentDataLVL);
+    } else {
+      const data = {
+        gameData: this.gameData,
+        currentRound: 0,
+        currentLVL: 1,
+      };
+      this.singletonMediator.notify(AppEvents.newGame, data);
+    }
+  }
+
   private init(): HTMLDivElement {
     this.getGameData()
       .then((data) => {
@@ -148,12 +179,7 @@ class ChoiceGamePageModel implements PageInterface {
         this.setHandlersForBtns();
         this.switchCompletedRound();
         this.switchParentClassByButtonClass();
-        const data = {
-          gameData: this.gameData,
-          currentRound: 0,
-          currentLVL: 1,
-        };
-        this.singletonMediator.notify(AppEvents.newGame, data);
+        this.setGameData();
       })
       .catch(() => {});
 
