@@ -26,6 +26,14 @@ class PlaygroundView {
 
   private autocompleteBtn: ButtonModel;
 
+  private nextRound: ButtonModel;
+
+  private roundImgWrapper: HTMLDivElement;
+
+  private roundTitle: HTMLHeadingElement;
+
+  private roundDescription: HTMLSpanElement;
+
   constructor() {
     this.audio = new Audio();
     this.translateSentence = this.createTranslateSentence();
@@ -36,6 +44,10 @@ class PlaygroundView {
     this.continueBtn = this.createContinueBtn();
     this.checkBtn = this.createCheckBtn();
     this.autocompleteBtn = this.createAutocompleteBtn();
+    this.nextRound = this.createNextRoundBtn();
+    this.roundImgWrapper = this.createRoundImgWrapper();
+    this.roundTitle = this.createRoundTitle();
+    this.roundDescription = this.createRoundDescription();
     this.playground = this.createHTML();
   }
 
@@ -85,6 +97,22 @@ class PlaygroundView {
 
   public getAutocompleteBtn(): ButtonModel {
     return this.autocompleteBtn;
+  }
+
+  public getNextRoundBtn(): ButtonModel {
+    return this.nextRound;
+  }
+
+  public getRoundImgWrapper(): HTMLDivElement {
+    return this.roundImgWrapper;
+  }
+
+  public getRoundTitle(): HTMLHeadingElement {
+    return this.roundTitle;
+  }
+
+  public getRoundDescription(): HTMLSpanElement {
+    return this.roundDescription;
   }
 
   private createTranslateListenBtn(): ButtonModel {
@@ -152,6 +180,15 @@ class PlaygroundView {
     return this.checkBtn;
   }
 
+  private createNextRoundBtn(): ButtonModel {
+    this.nextRound = new ButtonModel(BUTTONS_TEXT_CONTENT.nextRoundBtn, [
+      styles.nextRound_btn,
+      styles.btn__hidden,
+    ]);
+
+    return this.nextRound;
+  }
+
   private createAutocompleteBtn(): ButtonModel {
     this.autocompleteBtn = new ButtonModel(
       BUTTONS_TEXT_CONTENT.autocompleteBtn,
@@ -159,6 +196,32 @@ class PlaygroundView {
     );
 
     return this.autocompleteBtn;
+  }
+
+  private createRoundImgWrapper(): HTMLDivElement {
+    this.roundImgWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.game_board_wrapper],
+    });
+
+    return this.roundImgWrapper;
+  }
+
+  private createRoundTitle(): HTMLHeadingElement {
+    this.roundTitle = createBaseElement({
+      tag: TAG_NAMES.h2,
+      cssClasses: [styles.game_board_title],
+    });
+
+    return this.roundTitle;
+  }
+
+  private createRoundDescription(): HTMLSpanElement {
+    this.roundDescription = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.game_board_description],
+    });
+    return this.roundDescription;
   }
 
   private createHTML(): HTMLDivElement {
@@ -173,6 +236,7 @@ class PlaygroundView {
       this.sourceBlock,
       this.continueBtn.getHTML(),
       this.checkBtn.getHTML(),
+      this.nextRound.getHTML(),
       this.autocompleteBtn.getHTML(),
     );
     return this.playground;

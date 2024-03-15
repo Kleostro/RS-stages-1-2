@@ -5,6 +5,7 @@ export const BUTTONS_TEXT_CONTENT = {
   checkBtn: 'Check',
   autocompleteBtn: 'Autocomplete',
   translateBtn: 'Translate',
+  nextRoundBtn: 'Next round',
 } as const;
 
 export const EVENT_ACCESSIBILITY = {

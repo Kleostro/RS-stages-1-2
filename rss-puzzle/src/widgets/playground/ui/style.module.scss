@@ -101,9 +101,16 @@
 .game_board {
   display: grid;
   grid-row: 2;
-  grid-template-rows: repeat(10, 4dvw);
+  grid-template-rows: repeat(10, 40px);
   margin-bottom: 20px;
+  transition: opacity 0.3s ease-in-out;
   gap: 10px;
+
+  &.game_board__complete {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 
 .line {
@@ -134,7 +141,8 @@
 
 .continue_btn,
 .check_btn,
-.autocomplete_btn {
+.autocomplete_btn,
+.nextRound_btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,4 +183,17 @@
 .translate_listen_hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+.game_board_title {
+  font-size: 25px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.game_board_description {
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-align: center;
 }
