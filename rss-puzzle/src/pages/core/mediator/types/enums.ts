@@ -7,6 +7,8 @@ const AppEvents = {
   newGame: 'newGame',
   newCompletedRound: 'newCompletedRound',
   nextRound: 'nextRound',
+  switchDisableNextRoundBtn: 'switchDisableNextRoundBtn',
+  endRound: 'endRound',
 } as const;
 
 export default AppEvents;

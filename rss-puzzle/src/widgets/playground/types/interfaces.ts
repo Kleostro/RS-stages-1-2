@@ -11,3 +11,8 @@ export interface LastRoundInfo {
   currentLVL: number;
   gameData: [levelInfo];
 }
+
+export interface lineInfo {
+  audioCurrentLineSrc: string | undefined;
+  sentenceCurrentLine: string | undefined;
+}

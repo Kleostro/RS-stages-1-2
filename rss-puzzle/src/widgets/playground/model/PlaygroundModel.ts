@@ -22,6 +22,7 @@ import STORE_KEYS from '../../../app/Storage/types/enums.ts';
 import API_URLS from '../../../pages/choiceGamePage/types/constants.ts';
 import formattedText from '../../../utils/formattedText.ts';
 import { PAGES_IDS } from '../../../pages/types/enums.ts';
+import type MapOfLineInfo from '../types/types.ts';
 
 class PlaygroundModel {
   private storage: StorageModel;
@@ -55,6 +56,10 @@ class PlaygroundModel {
   private wordLinesHTML: HTMLDivElement[] = [];
 
   private dragWrapper: HTMLElement;
+
+  private knowLines: MapOfLineInfo = new Map();
+
+  private dontKnowLines: MapOfLineInfo = new Map();
 
   constructor(storage: StorageModel) {
     this.storage = storage;
@@ -133,9 +138,30 @@ class PlaygroundModel {
       translateSentenceHTML.classList.remove(styles.translate_sentence_hidden);
       const translateListenBtn = this.view.getTranslateListenBtn().getHTML();
       translateListenBtn.classList.remove(styles.translate_listen_hidden);
+      this.addKnowLine();
       return true;
     }
     return false;
+  }
+
+  private addKnowLine(): void {
+    const currentLine =
+      this.levelData?.rounds[this.currentRoundLvl].words[this.currentRound];
+    const currentLineData = {
+      audioCurrentLineSrc: this.getCurrentAudioURL(), // TBD: дописать путь
+      sentenceCurrentLine: currentLine?.textExample,
+    };
+    this.knowLines.set(this.currentRound, currentLineData);
+  }
+
+  private addDontKnowLine(): void {
+    const currentLine =
+      this.levelData?.rounds[this.currentRoundLvl].words[this.currentRound];
+    const currentLineData = {
+      audioCurrentLineSrc: this.getCurrentAudioURL(), // TBD: дописать путь
+      sentenceCurrentLine: currentLine?.textExample,
+    };
+    this.dontKnowLines.set(this.currentRound, currentLineData);
   }
 
   private clearRoundInfo(): void {
@@ -146,6 +172,8 @@ class PlaygroundModel {
     this.wordLinesHTML = [];
     this.shuffledWords = [];
     this.wordsInCurrentLine = [];
+    this.knowLines.clear();
+    this.dontKnowLines.clear();
 
     const checkBtn = this.view.getCheckBtn();
     const continueBtn = this.view.getContinueBtn();
@@ -366,6 +394,11 @@ class PlaygroundModel {
 
     const autoCompleteBtn = this.view.getAutocompleteBtn().getHTML();
     autoCompleteBtn.classList.add(styles.btn__hidden);
+
+    this.singletonMediator.notify(AppEvents.endRound, [
+      this.knowLines,
+      this.dontKnowLines,
+    ]);
   }
 
   private getCurrentAudioURL(): string {
@@ -499,6 +532,8 @@ class PlaygroundModel {
       .getTranslateListenBtn()
       .getHTML()
       .classList.remove(styles.translate_listen_hidden);
+
+    this.addDontKnowLine();
   }
 
   private switchInitialTranslateSentence(): void {
@@ -573,6 +608,7 @@ class PlaygroundModel {
 
     statisticsBtnHTML.addEventListener(EVENT_NAMES.click, () => {
       this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.STATISTICS);
+      this.singletonMediator.notify(AppEvents.switchDisableNextRoundBtn, '');
     });
   }
 
