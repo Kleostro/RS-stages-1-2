@@ -3,6 +3,8 @@ enum STORE_KEYS {
   USER = 'user',
   COMPLETED_ROUND = 'completedRounds',
   LAST_ROUND = 'lastRound',
+  LISTEN_VISIBLE = 'switchListenVisible',
+  TRANSLATE_VISIBLE = 'switchTranslateVisible',
 }
 
 export default STORE_KEYS;

@@ -6,6 +6,7 @@ const AppEvents = {
   switchListenVisible: 'switchListenVisible',
   newGame: 'newGame',
   newCompletedRound: 'newCompletedRound',
+  nextRound: 'nextRound',
 } as const;
 
 export default AppEvents;

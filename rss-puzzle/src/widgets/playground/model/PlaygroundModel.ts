@@ -323,13 +323,35 @@ class PlaygroundModel {
     this.clearRoundInfo();
     this.checkLimitGames();
     this.redrawPlayground();
+
+    this.view
+      .getTranslateSentenceHTML()
+      .classList.toggle(
+        styles.translate_sentence_hidden,
+        this.storage.get(STORE_KEYS.TRANSLATE_VISIBLE),
+      );
+
+    this.view
+      .getTranslateListenBtn()
+      .getHTML()
+      .classList.toggle(
+        styles.translate_listen_hidden,
+        this.storage.get(STORE_KEYS.LISTEN_VISIBLE),
+      );
   }
 
   private endRound(): void {
     this.saveCompletedRound();
     this.saveLastRound();
     this.createContentForCompleteRound();
+    this.view
+      .getTranslateSentenceHTML()
+      .classList.add(styles.translate_sentence_hidden);
 
+    this.view
+      .getTranslateListenBtn()
+      .getHTML()
+      .classList.add(styles.translate_listen_hidden);
     const continueBtn = this.view.getContinueBtn().getHTML();
     continueBtn.classList.add(styles.btn__hidden);
 
@@ -468,6 +490,15 @@ class PlaygroundModel {
     autoCompleteBtn.setDisabled();
     checkBtnHTML.setEnabled();
     continueBtnHTML.setEnabled();
+
+    this.view
+      .getTranslateSentenceHTML()
+      .classList.remove(styles.translate_sentence_hidden);
+
+    this.view
+      .getTranslateListenBtn()
+      .getHTML()
+      .classList.remove(styles.translate_listen_hidden);
   }
 
   private switchInitialTranslateSentence(): void {
@@ -663,6 +694,11 @@ class PlaygroundModel {
     this.singletonMediator.subscribe(
       AppEvents.newGame,
       this.setGameData.bind(this),
+    );
+
+    this.singletonMediator.subscribe(
+      AppEvents.nextRound,
+      this.startNextRound.bind(this),
     );
 
     this.setHandlersToButtons();

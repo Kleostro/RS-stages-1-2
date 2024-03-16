@@ -7,6 +7,7 @@ import AppEvents from '../../../pages/core/mediator/types/enums.ts';
 import type StorageModel from '../../../app/Storage/model/StorageModel.ts';
 import IS_VISIBLE from '../types/enums.ts';
 import { PAGES_IDS } from '../../../pages/types/enums.ts';
+import STORE_KEYS from '../../../app/Storage/types/enums.ts';
 
 class GameSettingsModel {
   private storage: StorageModel;
@@ -33,21 +34,14 @@ class GameSettingsModel {
   }
 
   private checkSentence(): void {
-    if (
-      typeof this.storage.get(AppEvents.switchTranslateVisible) === 'undefined'
-    ) {
-      this.storage.add(
-        AppEvents.switchTranslateVisible,
-        `${IS_VISIBLE.visible}`,
-      );
+    if (typeof this.storage.get(STORE_KEYS.TRANSLATE_VISIBLE) === 'undefined') {
+      this.storage.add(STORE_KEYS.TRANSLATE_VISIBLE, `${IS_VISIBLE.visible}`);
     }
   }
 
   private checkListen(): void {
-    if (
-      typeof this.storage.get(AppEvents.switchListenVisible) === 'undefined'
-    ) {
-      this.storage.add(AppEvents.switchListenVisible, `${IS_VISIBLE.visible}`);
+    if (typeof this.storage.get(STORE_KEYS.LISTEN_VISIBLE) === 'undefined') {
+      this.storage.add(STORE_KEYS.LISTEN_VISIBLE, `${IS_VISIBLE.visible}`);
     }
   }
 
@@ -97,9 +91,7 @@ class GameSettingsModel {
   private switchInitTranslateSentence(): void {
     const translateSentenceImg =
       this.gameSettingsView.getTranslateSentenceImg();
-    if (
-      this.storage.get(AppEvents.switchTranslateVisible) === IS_VISIBLE.visible
-    ) {
+    if (this.storage.get(STORE_KEYS.TRANSLATE_VISIBLE) === IS_VISIBLE.visible) {
       translateSentenceImg.innerHTML = IMG_SRC.translateOn;
     } else {
       translateSentenceImg.innerHTML = IMG_SRC.translateOff;
@@ -108,9 +100,7 @@ class GameSettingsModel {
 
   private switchInitTranslateListen(): void {
     const translateListenImg = this.gameSettingsView.getTranslateListenImg();
-    if (
-      this.storage.get(AppEvents.switchListenVisible) === IS_VISIBLE.visible
-    ) {
+    if (this.storage.get(STORE_KEYS.LISTEN_VISIBLE) === IS_VISIBLE.visible) {
       translateListenImg.innerHTML = IMG_SRC.translateOn;
     } else {
       translateListenImg.innerHTML = IMG_SRC.translateOff;
