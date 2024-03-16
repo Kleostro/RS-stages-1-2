@@ -1,4 +1,4 @@
-import styles from '../../../widgets/loginForm/style.module.scss';
+import styles from '../../../widgets/loginForm/ui/style.module.scss';
 import ERRORS_NAME from '../types/enum.ts';
 import FIELD_INFO from '../types/const.ts';
 import type InputFieldModal from '@/entities/inputField/model/InputFieldModal.ts';

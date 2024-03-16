@@ -2,8 +2,9 @@ import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import InputFieldModal from '../../../entities/inputField/model/InputFieldModal.ts';
 import SubmitButtonModel from '../../../entities/submitBtn/model/SubmitBtnModel.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
-import styles from '../style.module.scss';
+import styles from './style.module.scss';
 import FIELD_NAMES from '../types/enum.ts';
+import formattedText from '../../../utils/formattedText.ts';
 
 class LoginFormView {
   private form: HTMLFormElement;
@@ -38,7 +39,7 @@ class LoginFormView {
   }
 
   private createFieldBox(input: HTMLInputElement): HTMLLabelElement {
-    const labelText = `Enter ${input.name}`;
+    const labelText = formattedText(input.name);
 
     const fieldLabel = createBaseElement({
       tag: TAG_NAMES.label,
