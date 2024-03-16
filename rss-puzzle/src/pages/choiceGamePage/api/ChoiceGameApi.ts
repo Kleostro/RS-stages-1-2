@@ -1,18 +1,15 @@
-import API_URLS from '../../../shared/api/types/constants.ts';
-import ApiModel from '../../../shared/api/model/ApiModel.ts';
-import type { levelInfo } from '../../../shared/api/types/interfaces.ts';
+import API_URLS from '../types/constants.ts';
+import type { levelInfo } from '../types/interfaces.ts';
+import getData from '../../../utils/getData.ts';
 
 const MAX_LEVEL = 6;
 
 class ChoiceGameApi {
-  private api: ApiModel;
-
   private levelInfo: levelInfo | null;
 
   private levelInfoReceived: boolean;
 
   constructor() {
-    this.api = new ApiModel();
     this.levelInfo = null;
     this.levelInfoReceived = false;
   }
@@ -33,8 +30,7 @@ class ChoiceGameApi {
   private async receiveLevelInfo(currentLvl: number): Promise<levelInfo> {
     const url = `${API_URLS.levelData}${currentLvl}.json`;
 
-    await this.api
-      .getData(url)
+    await getData(url)
       .then((data) => {
         this.levelInfo = data;
         this.levelInfoReceived = true;

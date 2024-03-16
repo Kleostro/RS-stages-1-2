@@ -3,7 +3,7 @@ import type {
   CompletedRound,
   levelInfo,
   wordsInfo,
-} from '../../../shared/api/types/interfaces.ts';
+} from '../../../pages/choiceGamePage/types/interfaces.ts';
 import {
   AUDIO_SRC,
   EVENT_ACCESSIBILITY,
@@ -19,8 +19,9 @@ import IMG_SRC from '../ui/imgSrc/imgSrc.ts';
 import type StorageModel from '../../../app/Storage/model/StorageModel.ts';
 import isNewData from '../../../utils/isNewData.ts';
 import STORE_KEYS from '../../../app/Storage/types/enums.ts';
-import API_URLS from '../../../shared/api/types/constants.ts';
+import API_URLS from '../../../pages/choiceGamePage/types/constants.ts';
 import formattedText from '../../../utils/formattedText.ts';
+import { PAGES_IDS } from '../../../pages/types/enums.ts';
 
 class PlaygroundModel {
   private storage: StorageModel;
@@ -29,7 +30,7 @@ class PlaygroundModel {
 
   private gameData: levelInfo[] = [];
 
-  private levelData: levelInfo | null;
+  private levelData: levelInfo | null = null;
 
   private audio: HTMLAudioElement;
 
@@ -59,7 +60,6 @@ class PlaygroundModel {
     this.storage = storage;
     this.view = new PlaygroundView();
     this.singletonMediator = MediatorModel.getInstance();
-    this.levelData = null;
     this.audio = this.view.getAudioElement();
     this.shuffledWords = this.shuffleWords();
     this.wordLinesHTML = this.createWordLines();
@@ -149,8 +149,16 @@ class PlaygroundModel {
 
     const checkBtn = this.view.getCheckBtn();
     const continueBtn = this.view.getContinueBtn();
+    const nextRoundBtn = this.view.getNextRoundBtn();
+    const autoCompleteBtn = this.view.getAutocompleteBtn();
+    const statisticsBtn = this.view.getStatisticsBtn();
+    nextRoundBtn.getHTML().classList.add(styles.btn__hidden);
+    checkBtn.getHTML().classList.remove(styles.btn__hidden);
+    autoCompleteBtn.getHTML().classList.remove(styles.btn__hidden);
+    statisticsBtn.getHTML().classList.add(styles.btn__hidden);
     continueBtn.setDisabled();
     checkBtn.setDisabled();
+    autoCompleteBtn.setEnabled();
   }
 
   private setCurrentWords(): void {
@@ -168,19 +176,8 @@ class PlaygroundModel {
     }
   }
 
-  private setGameData(data: unknown): void {
-    if (isNewData(data)) {
-      this.lvl = data.currentLVL - 1;
-      this.currentRoundLvl = data.currentRound;
-      this.gameData = data.gameData;
-      this.levelData = data.gameData[this.lvl];
-      this.checkLimitSaveGame();
-      this.clearRoundInfo();
-      this.redrawPlayground();
-    }
-  }
-
   private redrawPlayground(): void {
+    this.view.getGameBoardHTML().classList.remove(styles.game_board__complete);
     this.view.clearGameBoardHTML();
     this.view.clearSourceBlockHTML();
     this.setCurrentWords();
@@ -260,6 +257,61 @@ class PlaygroundModel {
     }
   }
 
+  private setGameData(data: unknown): void {
+    if (isNewData(data)) {
+      this.lvl = data.currentLVL - 1;
+      this.currentRoundLvl = data.currentRound;
+      this.gameData = data.gameData;
+      this.levelData = data.gameData[this.lvl];
+      this.checkLimitSaveGame();
+      this.clearRoundInfo();
+      this.redrawPlayground();
+    }
+  }
+
+  private startNextLine(): void {
+    const checkBtn = this.view.getCheckBtn();
+    const continueBtn = this.view.getContinueBtn();
+    const autoCompleteBtn = this.view.getAutocompleteBtn();
+    const nextRoundBtn = this.view.getNextRoundBtn();
+    const statisticsBtn = this.view.getStatisticsBtn();
+
+    this.switchInitialTranslateSentence();
+    this.switchInitialTranslateListen();
+
+    this.cleanAllUnmatchedPuzzles();
+
+    this.wordLinesHTML[this.currentRound].style.pointerEvents =
+      EVENT_ACCESSIBILITY.none;
+
+    this.currentRound += 1;
+
+    if (this.wordLinesHTML[this.currentRound]) {
+      this.wordLinesHTML[this.currentRound].style.pointerEvents =
+        EVENT_ACCESSIBILITY.auto;
+    }
+
+    continueBtn.getHTML().classList.add(styles.btn__hidden);
+    nextRoundBtn.getHTML().classList.add(styles.btn__hidden);
+    statisticsBtn.getHTML().classList.add(styles.btn__hidden);
+    checkBtn.getHTML().classList.remove(styles.btn__hidden);
+
+    if (this.currentRound === this.words.length) {
+      this.endRound();
+      return;
+    }
+
+    this.setDragListenersToNextRound();
+    this.setTranslateSentence();
+    this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
+    this.wordsInCurrentLine = [];
+    continueBtn.setDisabled();
+    checkBtn.setDisabled();
+    autoCompleteBtn.setEnabled();
+    this.view.clearSourceBlockHTML();
+    this.fillSourcedBlock();
+  }
+
   private startNextRound(): void {
     this.view.getGameBoardHTML().classList.remove(styles.game_board__complete);
     this.view.getCheckBtn().setDisabled();
@@ -268,10 +320,30 @@ class PlaygroundModel {
     const autoCompleteBtn = this.view.getAutocompleteBtn();
     autoCompleteBtn.setEnabled();
     this.saveCompletedRound();
-    this.saveLastRound();
     this.clearRoundInfo();
     this.checkLimitGames();
     this.redrawPlayground();
+  }
+
+  private endRound(): void {
+    this.saveCompletedRound();
+    this.saveLastRound();
+    this.createContentForCompleteRound();
+
+    const continueBtn = this.view.getContinueBtn().getHTML();
+    continueBtn.classList.add(styles.btn__hidden);
+
+    const checkBtn = this.view.getCheckBtn().getHTML();
+    checkBtn.classList.add(styles.btn__hidden);
+
+    const nextRoundBtn = this.view.getNextRoundBtn().getHTML();
+    nextRoundBtn.classList.remove(styles.btn__hidden);
+
+    const statisticsBtn = this.view.getStatisticsBtn().getHTML();
+    statisticsBtn.classList.remove(styles.btn__hidden);
+
+    const autoCompleteBtn = this.view.getAutocompleteBtn().getHTML();
+    autoCompleteBtn.classList.add(styles.btn__hidden);
   }
 
   private getCurrentAudioURL(): string {
@@ -374,63 +446,6 @@ class PlaygroundModel {
     gameBoardHTML.append(imgWrapper, title, description);
   }
 
-  private endRound(): void {
-    this.createContentForCompleteRound();
-
-    const continueBtn = this.view.getContinueBtn().getHTML();
-    continueBtn.classList.add(styles.btn__hidden);
-
-    const checkBtn = this.view.getCheckBtn().getHTML();
-    checkBtn.classList.add(styles.btn__hidden);
-
-    const nextRoundBtn = this.view.getNextRoundBtn().getHTML();
-    nextRoundBtn.classList.remove(styles.btn__hidden);
-
-    const autoCompleteBtn = this.view.getAutocompleteBtn();
-    autoCompleteBtn.setDisabled();
-  }
-
-  private startNextLine(): void {
-    const checkBtn = this.view.getCheckBtn();
-    const continueBtn = this.view.getContinueBtn();
-    const autoCompleteBtn = this.view.getAutocompleteBtn();
-    const nextRoundBtn = this.view.getNextRoundBtn();
-
-    this.switchInitialTranslateSentence();
-    this.switchInitialTranslateListen();
-
-    this.cleanAllUnmatchedPuzzles();
-
-    this.wordLinesHTML[this.currentRound].style.pointerEvents =
-      EVENT_ACCESSIBILITY.none;
-
-    this.currentRound += 1;
-
-    if (this.wordLinesHTML[this.currentRound]) {
-      this.wordLinesHTML[this.currentRound].style.pointerEvents =
-        EVENT_ACCESSIBILITY.auto;
-    }
-
-    continueBtn.getHTML().classList.add(styles.btn__hidden);
-    nextRoundBtn.getHTML().classList.add(styles.btn__hidden);
-    checkBtn.getHTML().classList.remove(styles.btn__hidden);
-
-    if (this.currentRound === this.words.length) {
-      this.endRound();
-      return;
-    }
-
-    this.setDragListenersToNextRound();
-    this.setTranslateSentence();
-    this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
-    this.wordsInCurrentLine = [];
-    continueBtn.setDisabled();
-    checkBtn.setDisabled();
-    autoCompleteBtn.setEnabled();
-    this.view.clearSourceBlockHTML();
-    this.fillSourcedBlock();
-  }
-
   private autoCompleteLine(): void {
     this.wordLinesHTML[this.currentRound].innerHTML = '';
     this.wordLinesHTML[this.currentRound].style.pointerEvents =
@@ -503,6 +518,7 @@ class PlaygroundModel {
     const continueBtnHTML = this.view.getContinueBtn().getHTML();
     const autoCompleteBtnHTML = this.view.getAutocompleteBtn().getHTML();
     const nextRoundBtnHTML = this.view.getNextRoundBtn().getHTML();
+    const statisticsBtnHTML = this.view.getStatisticsBtn().getHTML();
 
     checkBtnHTML.addEventListener(
       EVENT_NAMES.click,
@@ -523,6 +539,10 @@ class PlaygroundModel {
       EVENT_NAMES.click,
       this.startNextRound.bind(this),
     );
+
+    statisticsBtnHTML.addEventListener(EVENT_NAMES.click, () => {
+      this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.STATISTICS);
+    });
   }
 
   private createWordLines(): HTMLDivElement[] {

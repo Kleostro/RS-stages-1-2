@@ -28,6 +28,8 @@ class PlaygroundView {
 
   private nextRound: ButtonModel;
 
+  private statisticsBtn: ButtonModel;
+
   private roundImgWrapper: HTMLDivElement;
 
   private roundTitle: HTMLHeadingElement;
@@ -45,6 +47,7 @@ class PlaygroundView {
     this.checkBtn = this.createCheckBtn();
     this.autocompleteBtn = this.createAutocompleteBtn();
     this.nextRound = this.createNextRoundBtn();
+    this.statisticsBtn = this.createStatisticsBtn();
     this.roundImgWrapper = this.createRoundImgWrapper();
     this.roundTitle = this.createRoundTitle();
     this.roundDescription = this.createRoundDescription();
@@ -101,6 +104,10 @@ class PlaygroundView {
 
   public getNextRoundBtn(): ButtonModel {
     return this.nextRound;
+  }
+
+  public getStatisticsBtn(): ButtonModel {
+    return this.statisticsBtn;
   }
 
   public getRoundImgWrapper(): HTMLDivElement {
@@ -181,12 +188,21 @@ class PlaygroundView {
   }
 
   private createNextRoundBtn(): ButtonModel {
-    this.nextRound = new ButtonModel(BUTTONS_TEXT_CONTENT.nextRoundBtn, [
+    this.nextRound = new ButtonModel(BUTTONS_TEXT_CONTENT.continueBtn, [
       styles.nextRound_btn,
       styles.btn__hidden,
     ]);
 
     return this.nextRound;
+  }
+
+  private createStatisticsBtn(): ButtonModel {
+    this.statisticsBtn = new ButtonModel(BUTTONS_TEXT_CONTENT.statisticsBtn, [
+      styles.statistics_btn,
+      styles.btn__hidden,
+    ]);
+
+    return this.statisticsBtn;
   }
 
   private createAutocompleteBtn(): ButtonModel {
@@ -237,6 +253,7 @@ class PlaygroundView {
       this.continueBtn.getHTML(),
       this.checkBtn.getHTML(),
       this.nextRound.getHTML(),
+      this.statisticsBtn.getHTML(),
       this.autocompleteBtn.getHTML(),
     );
     return this.playground;

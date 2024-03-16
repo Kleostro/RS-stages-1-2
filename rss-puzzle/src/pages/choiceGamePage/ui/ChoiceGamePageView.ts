@@ -2,7 +2,7 @@ import createBaseElement from '../../../utils/createBaseElement.ts';
 import styles from './style.module.scss';
 import { PAGES_STATE } from '../../types/enums.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
-import type { levelInfo } from '../../../shared/api/types/interfaces.ts';
+import type { levelInfo } from '../types/interfaces.ts';
 import ButtonModel from '../../../shared/button/model/ButtonModel.ts';
 import { BTN_OPTIONS, DESCRIPTIONS } from '../types/enums.ts';
 

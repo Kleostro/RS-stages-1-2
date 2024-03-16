@@ -142,7 +142,8 @@
 .continue_btn,
 .check_btn,
 .autocomplete_btn,
-.nextRound_btn {
+.nextRound_btn,
+.statistics_btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -196,4 +197,11 @@
   font-size: 18px;
   letter-spacing: 1px;
   text-align: center;
+}
+
+.game_board_wrapper {
+  img {
+    width: 100%;
+    aspect-ratio: auto;
+  }
 }

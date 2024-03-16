@@ -4,6 +4,7 @@ export const PAGES_IDS = {
   BLANK: '',
   CHOICE_GAME: 'choiceGame',
   MAIN: 'main',
+  STATISTICS: 'statistics',
 } as const;
 
 export const PAGES_STATE = {

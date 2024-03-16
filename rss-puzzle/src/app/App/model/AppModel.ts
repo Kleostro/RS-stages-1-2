@@ -6,6 +6,7 @@ import { PAGES_IDS } from '../../../pages/types/enums.ts';
 import MainPageModel from '../../../pages/mainPage/model/MainPageModel.ts';
 import AppView from '../ui/AppView.ts';
 import ChoiceGamePageModel from '../../../pages/choiceGamePage/model/ChoiceGamePageModel.ts';
+import StatisticsPageModel from '../../../pages/statisticsPage/model/StatisticsPageModel.ts';
 
 class AppModel {
   private appView: AppView;
@@ -19,6 +20,7 @@ class AppModel {
     start: StartPageModel;
     choiceGame: ChoiceGamePageModel;
     main: MainPageModel;
+    statistics: StatisticsPageModel;
   };
 
   private router: RouterModel;
@@ -48,6 +50,10 @@ class AppModel {
         PAGES_IDS.MAIN,
         this.appView.getHTML(),
         this.storage,
+      ),
+      statistics: new StatisticsPageModel(
+        PAGES_IDS.STATISTICS,
+        this.appView.getHTML(),
       ),
     };
 

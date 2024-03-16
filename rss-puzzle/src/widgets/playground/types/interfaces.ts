@@ -1,4 +1,4 @@
-import type { levelInfo } from '../../../shared/api/types/interfaces.ts';
+import type { levelInfo } from '../../../pages/choiceGamePage/types/interfaces';
 
 export interface NewData {
   currentRound: number;

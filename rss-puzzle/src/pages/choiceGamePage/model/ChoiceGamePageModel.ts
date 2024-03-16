@@ -2,10 +2,7 @@ import type PageInterface from '../../types/interfaces.ts';
 import type StorageModel from '../../../app/Storage/model/StorageModel.ts';
 import ChoiceGamePageView from '../ui/ChoiceGamePageView.ts';
 import ChoiceGameApi from '../api/ChoiceGameApi.ts';
-import type {
-  CompletedRound,
-  levelInfo,
-} from '../../../shared/api/types/interfaces.ts';
+import type { CompletedRound, levelInfo } from '../types/interfaces.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import MediatorModel from '../../core/mediator/model/MediatorModel.ts';
 import AppEvents from '../../core/mediator/types/enums.ts';
