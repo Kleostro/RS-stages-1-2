@@ -16,3 +16,9 @@ export interface lineInfo {
   audioCurrentLineSrc: string | undefined;
   sentenceCurrentLine: string | undefined;
 }
+
+export interface PictureInfo {
+  src: string;
+  title: string;
+  info: string;
+}

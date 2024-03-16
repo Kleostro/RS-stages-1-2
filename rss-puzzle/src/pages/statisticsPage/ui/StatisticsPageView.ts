@@ -26,12 +26,24 @@ class StatisticsPageView {
 
   private liArr: HTMLLIElement[] = [];
 
+  private roundPictureImg: HTMLImageElement;
+
+  private roundPictureAuthor: HTMLSpanElement;
+
+  private roundPictureInfo: HTMLSpanElement;
+
+  private roundPictureWrapper: HTMLDivElement;
+
   constructor(id: string, parent: HTMLDivElement) {
     this.id = id;
     this.parent = parent;
     this.nextRoundBtn = this.createNextRoundBtn();
     this.knowList = this.createKnowList();
     this.dontKnowList = this.createDontKnowList();
+    this.roundPictureInfo = this.createRoundPictureInfo();
+    this.roundPictureAuthor = this.createRoundPictureAuthor();
+    this.roundPictureImg = this.createRoundPictureElement();
+    this.roundPictureWrapper = this.createRoundPictureWrapper();
     this.roundInfoWrapper = this.createRoundInfoWrapper();
     this.page = this.createHTML(this.id);
   }
@@ -54,6 +66,18 @@ class StatisticsPageView {
 
   public clearKnowList(): void {
     this.knowList.innerHTML = '';
+  }
+
+  public getRoundPictureImg(): HTMLImageElement {
+    return this.roundPictureImg;
+  }
+
+  public getRoundPictureAuthor(): HTMLSpanElement {
+    return this.roundPictureAuthor;
+  }
+
+  public getRoundPictureInfo(): HTMLSpanElement {
+    return this.roundPictureInfo;
   }
 
   public getDontKnowList(): HTMLUListElement {
@@ -89,11 +113,58 @@ class StatisticsPageView {
     return li;
   }
 
+  private createRoundPictureWrapper(): HTMLDivElement {
+    this.roundPictureWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.round_picture_wrapper],
+    });
+
+    const imgWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.round_picture_wrapper],
+    });
+    imgWrapper.append(this.roundPictureImg);
+    this.roundPictureWrapper.append(
+      imgWrapper,
+      this.roundPictureAuthor,
+      this.roundPictureInfo,
+    );
+    return this.roundPictureWrapper;
+  }
+
+  private createRoundPictureElement(): HTMLImageElement {
+    this.roundPictureImg = createBaseElement({
+      tag: TAG_NAMES.img,
+      cssClasses: [styles.round_picture],
+    });
+
+    return this.roundPictureImg;
+  }
+
+  private createRoundPictureAuthor(): HTMLSpanElement {
+    this.roundPictureAuthor = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.round_picture_author],
+    });
+
+    return this.roundPictureAuthor;
+  }
+
+  private createRoundPictureInfo(): HTMLSpanElement {
+    this.roundPictureInfo = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.round_picture_info],
+    });
+
+    return this.roundPictureInfo;
+  }
+
   private createRoundInfoWrapper(): HTMLDivElement {
     this.roundInfoWrapper = createBaseElement({
       tag: TAG_NAMES.div,
       cssClasses: [styles.round_info_wrapper],
     });
+
     return this.roundInfoWrapper;
   }
 
@@ -136,6 +207,7 @@ class StatisticsPageView {
     });
 
     this.roundInfoWrapper.append(
+      this.roundPictureWrapper,
       this.knowList,
       this.dontKnowList,
       this.nextRoundBtn.getHTML(),

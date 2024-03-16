@@ -23,6 +23,7 @@ import API_URLS from '../../../pages/choiceGamePage/types/constants.ts';
 import formattedText from '../../../utils/formattedText.ts';
 import { PAGES_IDS } from '../../../pages/types/enums.ts';
 import type MapOfLineInfo from '../types/types.ts';
+import type { PictureInfo } from '../types/interfaces.ts';
 
 class PlaygroundModel {
   private storage: StorageModel;
@@ -60,6 +61,12 @@ class PlaygroundModel {
   private knowLines: MapOfLineInfo = new Map();
 
   private dontKnowLines: MapOfLineInfo = new Map();
+
+  private pictureInfo: PictureInfo = {
+    src: '',
+    title: '',
+    info: '',
+  };
 
   constructor(storage: StorageModel) {
     this.storage = storage;
@@ -148,7 +155,7 @@ class PlaygroundModel {
     const currentLine =
       this.levelData?.rounds[this.currentRoundLvl].words[this.currentRound];
     const currentLineData = {
-      audioCurrentLineSrc: this.getCurrentAudioURL(), // TBD: дописать путь
+      audioCurrentLineSrc: this.getCurrentAudioURL(),
       sentenceCurrentLine: currentLine?.textExample,
     };
     this.knowLines.set(this.currentRound, currentLineData);
@@ -158,7 +165,7 @@ class PlaygroundModel {
     const currentLine =
       this.levelData?.rounds[this.currentRoundLvl].words[this.currentRound];
     const currentLineData = {
-      audioCurrentLineSrc: this.getCurrentAudioURL(), // TBD: дописать путь
+      audioCurrentLineSrc: this.getCurrentAudioURL(),
       sentenceCurrentLine: currentLine?.textExample,
     };
     this.dontKnowLines.set(this.currentRound, currentLineData);
@@ -368,6 +375,28 @@ class PlaygroundModel {
       );
   }
 
+  private getCurrentRoundInfo(): PictureInfo {
+    const imgSrc = `${API_URLS.cutImg}${this.levelData?.rounds[this.currentRoundLvl].levelData.cutSrc}`;
+
+    const titleTextContent =
+      this.levelData?.rounds[this.currentRoundLvl].levelData.author ?? '';
+    const pictureNameText =
+      this.levelData?.rounds[this.currentRoundLvl].levelData.name ?? '';
+    const pictureYearText =
+      this.levelData?.rounds[this.currentRoundLvl].levelData.year ?? '';
+
+    const formattedTitle = formattedText(titleTextContent);
+    const formattedPictureName = formattedText(pictureNameText);
+    const formattedPictureYear = formattedText(pictureYearText);
+
+    const imgInfo = `- ${formattedPictureName} (${formattedPictureYear})`;
+    return {
+      src: imgSrc,
+      title: formattedTitle,
+      info: imgInfo,
+    };
+  }
+
   private endRound(): void {
     this.saveCompletedRound();
     this.saveLastRound();
@@ -395,9 +424,12 @@ class PlaygroundModel {
     const autoCompleteBtn = this.view.getAutocompleteBtn().getHTML();
     autoCompleteBtn.classList.add(styles.btn__hidden);
 
+    this.pictureInfo = this.getCurrentRoundInfo();
+
     this.singletonMediator.notify(AppEvents.endRound, [
       this.knowLines,
       this.dontKnowLines,
+      this.pictureInfo,
     ]);
   }
 
