@@ -125,7 +125,7 @@ class RouterModel {
       return;
     }
 
-    if (hash !== this.pages[hash].getID()) {
+    if (!(hash in this.pages)) {
       if (loginPage.checkAuthUser()) {
         this.renderNewPageCallback(PAGES_IDS.START);
       } else {

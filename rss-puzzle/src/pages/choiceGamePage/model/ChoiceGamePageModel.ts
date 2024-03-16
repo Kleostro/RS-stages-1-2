@@ -143,6 +143,20 @@ class ChoiceGamePageModel implements PageInterface {
         this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.MAIN);
       });
     });
+
+    const backToRoundBtn = this.pageView.getBackToRoundBtn();
+    backToRoundBtn.getHTML().addEventListener(EVENT_NAMES.click, () => {
+      this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.MAIN);
+    });
+
+    const logOutBtn = this.pageView.getLogOutBtn();
+    logOutBtn.getHTML().addEventListener(EVENT_NAMES.click, () => {
+      this.storage.remove(STORE_KEYS.USER);
+      this.storage.remove(STORE_KEYS.COMPLETED_ROUND);
+      this.storage.remove(STORE_KEYS.LAST_ROUND);
+      this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.LOG_IN);
+      this.singletonMediator.notify(AppEvents.logOut, '');
+    });
   }
 
   private setGameData(): void {
