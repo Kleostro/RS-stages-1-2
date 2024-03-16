@@ -73,8 +73,8 @@ class StatisticsPageModel {
 
   private drawRoundInfo(params: unknown): void {
     if (isMapOfLineInfoArr(params)) {
-      this.pageView.getKnowList().innerHTML = '';
-      this.pageView.getDontKnowList().innerHTML = '';
+      this.pageView.clearKnowList();
+      this.pageView.clearDontKnowList();
       this.fillKnowList(params[this.KNOW_LIST_INDEX]);
       this.fillDontKnowList(params[this.DONT_KNOW_LIST_INDEX]);
     }

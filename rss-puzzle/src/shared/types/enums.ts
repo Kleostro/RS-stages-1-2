@@ -17,6 +17,7 @@ export const TAG_NAMES = {
   li: 'li',
   a: 'a',
   img: 'img',
+  svg: 'svg',
 } as const;
 
 export const EVENT_NAMES = {

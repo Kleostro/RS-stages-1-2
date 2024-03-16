@@ -7,6 +7,7 @@ import { BUTTONS_TEXT_CONTENT } from '../../../widgets/playground/types/constant
 import BUTTON_STATE from '../../../shared/button/types/enums.ts';
 import type { lineInfo } from '../../../widgets/playground/types/interfaces.ts';
 import setListenersLineBtn from '../../../utils/addListenersAudioBnt.ts';
+import IMG_SRC from '../../../widgets/playground/ui/imgSrc/imgSrc.ts';
 
 class StatisticsPageView {
   private id: string;
@@ -51,8 +52,16 @@ class StatisticsPageView {
     return this.knowList;
   }
 
+  public clearKnowList(): void {
+    this.knowList.innerHTML = '';
+  }
+
   public getDontKnowList(): HTMLUListElement {
     return this.dontKnowList;
+  }
+
+  public clearDontKnowList(): void {
+    this.dontKnowList.innerHTML = '';
   }
 
   public createListItem(
@@ -72,6 +81,7 @@ class StatisticsPageView {
       innerContent: `${value.sentenceCurrentLine}`,
     });
     const btnHTML = btn.getHTML();
+    btnHTML.innerHTML = IMG_SRC.volumeOff;
     setListenersLineBtn(btnHTML, audio);
     btnHTML.append(audio);
     li.append(btnHTML, text);
