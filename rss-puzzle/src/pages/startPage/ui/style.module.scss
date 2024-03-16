@@ -7,33 +7,57 @@
   gap: var(--large-offset);
 
   &__title {
+    font-style: italic;
     font-size: 40px;
-    letter-spacing: 2px;
+    letter-spacing: 5px;
     text-align: center;
+    text-transform: uppercase;
+    color: #59c67c;
+  }
+
+  &__subtitle {
+    font-size: 22px;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #c77f2c;
   }
 
   &__descr {
+    max-width: 490px;
     font-size: 20px;
+    line-height: 175%;
     letter-spacing: 1px;
     text-align: center;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(90deg, #47aa63, #21cfc8);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  &__btns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
   }
 
   &__btn {
-    outline: 2px solid var(--body-bg);
+    outline: 2px solid #ababab;
     border-radius: var(--small-offset);
     padding: var(--small-offset) var(--medium-offset);
     width: max-content;
     height: 50px;
     font-size: 20px;
-    background-color: #ee82ee;
+    color: #ffe89d;
+    background-color: #0d681b;
     transition:
       background-color 0.3s ease-in-out,
       color 0.3s ease-in-out;
 
     @media (hover: hover) {
       &:hover {
-        color: var(--login-form-bg);
-        background-color: var(--body-bg);
+        color: var(--white);
+        background-color: #2f9f28;
       }
     }
   }

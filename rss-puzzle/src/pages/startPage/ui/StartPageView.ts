@@ -54,10 +54,11 @@ class StartPageView {
   }
 
   private createTitle(): HTMLHeadingElement {
+    const titleTextContent = 'RSS Puzzle';
     this.title = createBaseElement({
       tag: TAG_NAMES.h1,
       cssClasses: [styles.page__title],
-      innerContent: 'RSS Puzzle',
+      innerContent: titleTextContent,
     });
     return this.title;
   }
@@ -71,10 +72,12 @@ class StartPageView {
   }
 
   private createDescr(): HTMLParagraphElement {
+    const descrTextContent =
+      'Embark on a wonderful journey of learning English by assembling jigsaw puzzles of paintings by great artists';
     this.descr = createBaseElement({
       tag: TAG_NAMES.p,
       cssClasses: [styles.page__descr],
-      innerContent: 'Your RSS reader',
+      innerContent: descrTextContent,
     });
     return this.descr;
   }
@@ -96,7 +99,7 @@ class StartPageView {
   }
 
   private createLogOutBtn(): ButtonModel {
-    this.logOutBtn = new ButtonModel(BUTTONS_TEXT_CONTENT.loginBtn, [
+    this.logOutBtn = new ButtonModel(BUTTONS_TEXT_CONTENT.logOutBtn, [
       styles.page__btn,
       'btn-reset',
     ]);
@@ -113,14 +116,17 @@ class StartPageView {
 
     this.page.style.display = PAGES_STATE.HIDDEN;
 
-    this.page.append(
-      this.title,
-      this.subtitle,
-      this.descr,
+    const btnsWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.page__btns],
+    });
+    btnsWrapper.append(
       this.startBtn.getHTML(),
       this.choiceGameBtn.getHTML(),
       this.logOutBtn.getHTML(),
     );
+
+    this.page.append(this.title, this.subtitle, this.descr, btnsWrapper);
 
     this.parent.append(this.page);
     return this.page;
