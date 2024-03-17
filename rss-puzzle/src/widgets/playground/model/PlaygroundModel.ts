@@ -11,6 +11,7 @@ import {
 } from '../types/constants.ts';
 import PlaygroundView from '../ui/PlaygroundView.ts';
 import styles from '../ui/style.module.scss';
+import puzzleStyles from '../../../entities/puzzle/style.module.scss';
 import PuzzleComponent from '../../../entities/puzzle/Puzzle.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import MediatorModel from '../../../pages/core/mediator/model/MediatorModel.ts';
@@ -62,6 +63,8 @@ class PlaygroundModel {
 
   private dontKnowLines: MapOfLineInfo = new Map();
 
+  private imageRound: HTMLImageElement | null = null;
+
   private pictureInfo: PictureInfo = {
     src: '',
     title: '',
@@ -111,6 +114,10 @@ class PlaygroundModel {
     return this.puzzles;
   }
 
+  public getImageRound(): HTMLImageElement | null {
+    return this.imageRound;
+  }
+
   private switchTranslateListen(): void {
     const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
     translateListenHTML.innerHTML = IMG_SRC.volumeOn;
@@ -140,6 +147,11 @@ class PlaygroundModel {
     ) {
       const continueBtn = this.view.getContinueBtn();
       continueBtn.setEnabled();
+
+      const currentWordLine = this.wordLinesHTML[this.currentRound];
+      const filterStyle = 'grayscale(0)';
+      currentWordLine.style.backdropFilter = filterStyle;
+      currentWordLine.style.pointerEvents = EVENT_ACCESSIBILITY.none;
 
       const translateSentenceHTML = this.view.getTranslateSentenceHTML();
       translateSentenceHTML.classList.remove(styles.translate_sentence_hidden);
@@ -211,9 +223,19 @@ class PlaygroundModel {
     }
   }
 
+  private setCurrentRoundImg(): void {
+    const gameBoard = this.view.getGameBoardHTML();
+    const imgRoundSrc = `${API_URLS.cutImg}${this.levelData?.rounds[this.currentRoundLvl].levelData.imageSrc}`;
+    this.imageRound = new Image();
+    this.imageRound.src = imgRoundSrc;
+    this.imageRound.classList.add(styles.game_board__image);
+    gameBoard.appendChild(this.imageRound);
+  }
+
   private redrawPlayground(): void {
     this.view.getGameBoardHTML().classList.remove(styles.game_board__complete);
     this.view.clearGameBoardHTML();
+    this.setCurrentRoundImg();
     this.view.clearSourceBlockHTML();
     this.setCurrentWords();
     this.shuffleWords();
@@ -315,9 +337,6 @@ class PlaygroundModel {
     this.switchInitialTranslateListen();
 
     this.cleanAllUnmatchedPuzzles();
-
-    this.wordLinesHTML[this.currentRound].style.pointerEvents =
-      EVENT_ACCESSIBILITY.none;
 
     this.currentRound += 1;
 
@@ -501,7 +520,19 @@ class PlaygroundModel {
   }
 
   private createContentForCompleteRound(): void {
-    const imgSrc = `${API_URLS.cutImg}${this.levelData?.rounds[this.currentRoundLvl].levelData.imageSrc}`;
+    this.wordLinesHTML.forEach((wordsLine) => {
+      const currentWordsLine = wordsLine;
+      currentWordsLine.classList.add(styles.line_complete);
+      const wordsLineChildren = Array.from(wordsLine.children);
+      wordsLineChildren.forEach((puzzle) => {
+        const puzzleHTML = puzzle;
+        puzzleHTML.classList.add(puzzleStyles.puzzle_completed);
+        if (puzzleHTML instanceof HTMLDivElement) {
+          const fontSize = '0px';
+          puzzleHTML.style.fontSize = fontSize;
+        }
+      });
+    });
 
     const titleTextContent =
       this.levelData?.rounds[this.currentRoundLvl].levelData.author ?? '';
@@ -519,18 +550,10 @@ class PlaygroundModel {
     const gameBoardHTML = this.view.getGameBoardHTML();
     const title = this.view.getRoundTitle();
     const description = this.view.getRoundDescription();
-    const imgWrapper = this.view.getRoundImgWrapper();
-    const img = new Image();
     gameBoardHTML.classList.add(styles.game_board__complete);
-    img.src = imgSrc;
-    img.alt = imgInfo;
     title.textContent = formattedTitle;
     description.textContent = imgInfo;
-    imgWrapper.innerHTML = '';
-    imgWrapper.append(img);
-
-    this.view.clearGameBoardHTML();
-    gameBoardHTML.append(imgWrapper, title, description);
+    gameBoardHTML.append(title, description);
   }
 
   private autoCompleteLine(): void {
@@ -645,13 +668,14 @@ class PlaygroundModel {
   }
 
   private createWordLines(): HTMLDivElement[] {
-    this.shuffledWords.forEach(() => {
+    this.shuffledWords.forEach((_, index) => {
       const wordsLine = createBaseElement({
         tag: TAG_NAMES.div,
         cssClasses: [styles.line],
       });
 
       wordsLine.style.pointerEvents = EVENT_ACCESSIBILITY.none;
+      wordsLine.style.top = `${index}0%`;
       this.wordLinesHTML.push(wordsLine);
 
       wordsLine.addEventListener(EVENT_NAMES.dragOver, (event) => {
@@ -699,6 +723,7 @@ class PlaygroundModel {
 
       wordsLine.forEach((word) => {
         const puzzle = new PuzzleComponent(word, this, this.view);
+
         lineArr.push(puzzle);
       });
 
@@ -711,8 +736,13 @@ class PlaygroundModel {
   private fillSourcedBlock(): void {
     const sourcedBlockHTML = this.view.getSourceBlockHTML();
     this.puzzles[this.currentRound].forEach((puzzle) => {
-      sourcedBlockHTML.append(puzzle.getHTML());
+      const puzzleHTML = puzzle.getHTML();
+      sourcedBlockHTML.append(puzzleHTML);
     });
+    const gridTemplateColumns = `repeat(${this.puzzles[this.currentRound].length}, auto)`;
+    sourcedBlockHTML.style.gridTemplateColumns = gridTemplateColumns;
+    this.wordLinesHTML[this.currentRound].style.gridTemplateColumns =
+      gridTemplateColumns;
   }
 
   private setDragStartForPuzzle(

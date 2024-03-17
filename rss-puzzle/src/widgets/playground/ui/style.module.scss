@@ -1,6 +1,7 @@
 .playground {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(4, max-content);
   width: 70%;
   gap: 2dvw;
 }
@@ -8,19 +9,21 @@
 .translate_wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   grid-column: 2 span;
   grid-row: 1;
-  gap: 1dvw;
+  gap: 10px;
 }
 
 .translate_sentence {
   display: flex;
   justify-content: center;
-  font-size: 1.2dvw;
-  letter-spacing: 0.1dvw;
+  width: 100%;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #f5deb3;
   transition: opacity 0.3s ease-in-out;
-  gap: 0.8dvw;
 
   &_hidden {
     opacity: 0;
@@ -39,6 +42,10 @@
     background-color 0.3s ease-in-out,
     opacity 0.3s ease-in-out,
     transform 0.3s ease-in-out;
+
+  svg {
+    stroke: #f5deb3;
+  }
 
   &_active {
     border: 2px solid #81df62;
@@ -87,39 +94,60 @@
   display: flex;
   grid-column: 2 span;
   border: 2px solid #403b40;
-  border-radius: 10px;
-  padding: 0.5dvw 1dvw;
-  gap: 1dvw;
 }
 
 .source_data {
+  display: grid;
   grid-row: 3;
-  height: 5dvw;
+  height: max-content;
+  min-height: 40px;
   transition: background-color 0.2s ease-in-out;
 }
 
 .game_board {
+  position: relative;
   display: grid;
   grid-row: 2;
-  grid-template-rows: repeat(10, 40px);
   margin-bottom: 20px;
-  transition: opacity 0.3s ease-in-out;
-  gap: 10px;
+  height: max-content;
+  max-width: 768px;
+  transition:
+    opacity 0.5s ease-in-out,
+    background-color 0.5s ease-in-out,
+    padding-bottom 0.5s ease-in-out;
 
   &.game_board__complete {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+    background-color: #faebd7;
     gap: 20px;
   }
 }
 
 .line {
-  display: flex;
-  transition: background-color 0.2s ease-in-out;
-  gap: 1dvw;
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  height: 10%;
+  transition:
+    background-color 0.2s ease-in-out,
+    backdrop-filter 0.5s ease-in-out,
+    border-bottom 0.5s ease-in-out;
+  backdrop-filter: grayscale(1);
 
   &:not(:last-child) {
-    border-bottom: 2px solid #ada9ad;
+    border-bottom: 2px solid #659d7a;
+  }
+
+  &_complete {
+    backdrop-filter: grayscale(0);
+
+    &:not(:last-child) {
+      border-bottom: none;
+    }
   }
 
   .copy_puzzle__error {
@@ -132,7 +160,7 @@
 }
 
 .line_hovered {
-  background-color: #403b4023;
+  background-color: #ffd0006e;
 }
 
 .no_drop {
@@ -151,12 +179,11 @@
   margin: 0 auto;
   border: 2px solid #403b40;
   border-radius: 10px;
-  padding: 0.5dvw 1dvw;
-  width: 12dvw;
-  height: 3dvw;
-  font-size: 1.2dvw;
-  color: #000;
-  background-color: #9e3d9e;
+  padding: 10px 20px;
+  width: 120px;
+  font-size: 14px;
+  color: #fff397;
+  background-color: #005f00;
   transition:
     color 0.2s ease-in-out,
     background-color 0.2s ease-in-out,
@@ -171,8 +198,8 @@
 
   @media (hover: hover) {
     &:hover {
-      color: #ada9ad;
-      background-color: #bb64bb;
+      color: #fff;
+      background-color: #009500;
     }
   }
 }
@@ -193,6 +220,7 @@
 }
 
 .game_board_description {
+  padding: 0 20px;
   font-style: italic;
   font-size: 18px;
   letter-spacing: 1px;
@@ -204,4 +232,9 @@
     width: 100%;
     aspect-ratio: auto;
   }
+}
+
+.game_board__image {
+  pointer-events: none;
+  aspect-ratio: auto;
 }

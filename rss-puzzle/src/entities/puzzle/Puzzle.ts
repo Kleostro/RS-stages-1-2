@@ -37,15 +37,15 @@ class PuzzleComponent {
   private calculateSizePuzzle(elem: HTMLDivElement): void {
     const currentElem = elem;
     const wordLength = this.word.length;
-    const paddingX = 1;
-    const paddingY = 0.5;
+    const paddingX = 2;
+    const paddingY = 1;
 
     const pivotFont = 5;
-    const minFontSize = 1;
-    const maxFontSize = 1.2;
+    const minFontSize = 65;
+    const maxFontSize = 75;
     const calcFontSize = wordLength > pivotFont ? minFontSize : maxFontSize;
-    const padding = `${paddingY}dvw ${paddingX}dvw`;
-    const fontSize = `${calcFontSize}dvw`;
+    const padding = `${paddingY}% ${paddingX}%`;
+    const fontSize = `${calcFontSize}%`;
 
     currentElem.style.padding = padding;
     currentElem.style.fontSize = fontSize;

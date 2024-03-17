@@ -1,7 +1,11 @@
 .game_settings {
   display: flex;
   flex-direction: column;
+  border-radius: 10px;
+  padding: 20px;
   width: 20%;
+  height: 100vh;
+  background-color: #ffffff1c;
   gap: 2%;
 }
 
@@ -12,27 +16,30 @@
   justify-content: center;
   border: 2px solid #403b40;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 
   svg {
-    stroke: #8e0d8e;
+    stroke: #f3daab;
   }
 }
 
 .game_settings_item {
   display: flex;
   align-items: center;
-  border: 2px solid #f00;
-  padding: 4% 8%;
+  border: 2px solid #c3c3c3;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #f5deb3;
   transition: background-color 0.2s ease-in-out;
   cursor: pointer;
   user-select: none;
-  gap: 5%;
+  gap: 5px;
 
   @media (hover: hover) {
     &:hover {
-      background-color: #d1c192e8;
+      background-color: #598342;
     }
   }
 }
