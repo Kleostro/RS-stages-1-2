@@ -41,8 +41,8 @@ class PuzzleComponent {
     const paddingY = 1;
 
     const pivotFont = 5;
-    const minFontSize = 65;
-    const maxFontSize = 75;
+    const minFontSize = 75;
+    const maxFontSize = 85;
     const calcFontSize = wordLength > pivotFont ? minFontSize : maxFontSize;
     const padding = `${paddingY}% ${paddingX}%`;
     const fontSize = `${calcFontSize}%`;

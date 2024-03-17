@@ -25,6 +25,7 @@ import formattedText from '../../../utils/formattedText.ts';
 import { PAGES_IDS } from '../../../pages/types/enums.ts';
 import type MapOfLineInfo from '../types/types.ts';
 import type { PictureInfo } from '../types/interfaces.ts';
+import shuffleArr from '../../../utils/shuffleArr.ts';
 
 class PlaygroundModel {
   private storage: StorageModel;
@@ -224,18 +225,41 @@ class PlaygroundModel {
   }
 
   private setCurrentRoundImg(): void {
-    const gameBoard = this.view.getGameBoardHTML();
     const imgRoundSrc = `${API_URLS.cutImg}${this.levelData?.rounds[this.currentRoundLvl].levelData.imageSrc}`;
     this.imageRound = new Image();
     this.imageRound.src = imgRoundSrc;
     this.imageRound.classList.add(styles.game_board__image);
-    gameBoard.appendChild(this.imageRound);
+
+    this.imageRound.onload = async (): Promise<void> => {
+      const gameBoard = this.view.getGameBoardHTML();
+
+      if (this.imageRound) {
+        gameBoard.append(this.imageRound);
+      }
+
+      await this.waitForImageClientWidth();
+      this.addBackgroundToPuzzle();
+    };
+  }
+
+  private waitForImageClientWidth(): Promise<void> {
+    return new Promise((resolve) => {
+      const checkClientWidth = (): void => {
+        if (this.imageRound?.clientWidth) {
+          resolve();
+        } else {
+          const time = 100;
+          setTimeout(checkClientWidth, time);
+        }
+      };
+
+      checkClientWidth();
+    });
   }
 
   private redrawPlayground(): void {
     this.view.getGameBoardHTML().classList.remove(styles.game_board__complete);
     this.view.clearGameBoardHTML();
-    this.setCurrentRoundImg();
     this.view.clearSourceBlockHTML();
     this.setCurrentWords();
     this.shuffleWords();
@@ -247,6 +271,7 @@ class PlaygroundModel {
     this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
     this.wordLinesHTML[this.currentRound].style.pointerEvents =
       EVENT_ACCESSIBILITY.auto;
+    this.setCurrentRoundImg();
   }
 
   private setTranslateSentence(): string {
@@ -417,6 +442,12 @@ class PlaygroundModel {
   }
 
   private endRound(): void {
+    this.puzzles.forEach((line) => {
+      line.forEach((puzzle) => {
+        const currentPuzzle = puzzle.getHTML();
+        currentPuzzle.style.backgroundImage = '';
+      });
+    });
     this.saveCompletedRound();
     this.saveLastRound();
     this.createContentForCompleteRound();
@@ -459,6 +490,46 @@ class PlaygroundModel {
 
     const url = `${AUDIO_SRC}${currentAudioSrc}`;
     return url;
+  }
+
+  private addBackgroundToPuzzle(): void {
+    const imageWidth = this.view.getGameBoardHTML().clientWidth ?? 0;
+    const imageHeight = this.view.getGameBoardHTML().clientHeight ?? 0;
+    const maxLines = 10;
+
+    this.words.forEach((line, lineIndex) => {
+      line.forEach((_, puzzleIndex) => {
+        this.puzzles.forEach((lineArr) => {
+          lineArr.forEach((puzzle) => {
+            const puzzleLine = puzzle.getHTML().getAttribute('line');
+            const puzzleWord = puzzle.getHTML().getAttribute('word');
+            const currentPuzzle = puzzle.getHTML();
+            if (
+              puzzleLine === String(lineIndex) &&
+              puzzleWord === String(puzzleIndex)
+            ) {
+              if (!currentPuzzle.style.backgroundImage) {
+                let backgroundPositionX = 0;
+                let backgroundPositionY = 0;
+                if (puzzleIndex > 0) {
+                  backgroundPositionX = -(
+                    puzzleIndex *
+                    (imageWidth / line.length)
+                  );
+                }
+                if (lineIndex > 0) {
+                  backgroundPositionY = -(lineIndex * (imageHeight / maxLines));
+                }
+
+                currentPuzzle.style.backgroundImage = `url(${this.imageRound?.src})`;
+                currentPuzzle.style.backgroundSize = `${imageWidth}px ${imageHeight}px`;
+                currentPuzzle.style.backgroundPosition = `${backgroundPositionX}px ${backgroundPositionY}px`;
+              }
+            }
+          });
+        });
+      });
+    });
   }
 
   private checkMatchingPuzzles(): void {
@@ -562,10 +633,20 @@ class PlaygroundModel {
       EVENT_ACCESSIBILITY.none;
     this.view.clearSourceBlockHTML();
 
-    this.words[this.currentRound].forEach((word) => {
-      const puzzle = new PuzzleComponent(word, this, this.view);
-      this.wordLinesHTML[this.currentRound].appendChild(puzzle.getHTML());
+    const wordsCopy = [...this.words[this.currentRound]];
+    const puzzlesCopy = [...this.puzzles[this.currentRound]];
+
+    wordsCopy.forEach((word, index) => {
+      const puzzle = puzzlesCopy.find(
+        (item) =>
+          item.getHTML().id === word &&
+          item.getHTML().getAttribute('word') === String(index),
+      );
+      if (puzzle) {
+        this.wordLinesHTML[this.currentRound].appendChild(puzzle.getHTML());
+      }
     });
+
     const checkBtnHTML = this.view.getCheckBtn();
     const continueBtnHTML = this.view.getContinueBtn();
     const nextRoundBtnHTML = this.view.getNextRoundBtn();
@@ -718,11 +799,18 @@ class PlaygroundModel {
   }
 
   private createPuzzleElements(): PuzzleComponent[][] {
-    this.shuffledWords.forEach((wordsLine: string[]) => {
+    this.shuffledWords.forEach((wordsLine, lineIndex) => {
       const lineArr: PuzzleComponent[] = [];
 
-      wordsLine.forEach((word) => {
-        const puzzle = new PuzzleComponent(word, this, this.view);
+      wordsLine.forEach((_, wordIndex) => {
+        const puzzle = new PuzzleComponent(
+          this.words[lineIndex][wordIndex],
+          this,
+          this.view,
+        );
+
+        puzzle.getHTML().setAttribute('line', `${lineIndex}`);
+        puzzle.getHTML().setAttribute('word', `${wordIndex}`);
 
         lineArr.push(puzzle);
       });
@@ -735,10 +823,14 @@ class PlaygroundModel {
 
   private fillSourcedBlock(): void {
     const sourcedBlockHTML = this.view.getSourceBlockHTML();
-    this.puzzles[this.currentRound].forEach((puzzle) => {
-      const puzzleHTML = puzzle.getHTML();
-      sourcedBlockHTML.append(puzzleHTML);
+    const shuffledPuzzles = shuffleArr(this.puzzles[this.currentRound]);
+    shuffledPuzzles.forEach((puzzle) => {
+      if (puzzle instanceof PuzzleComponent) {
+        const puzzleHTML = puzzle.getHTML();
+        sourcedBlockHTML.append(puzzleHTML);
+      }
     });
+
     const gridTemplateColumns = `repeat(${this.puzzles[this.currentRound].length}, auto)`;
     sourcedBlockHTML.style.gridTemplateColumns = gridTemplateColumns;
     this.wordLinesHTML[this.currentRound].style.gridTemplateColumns =
