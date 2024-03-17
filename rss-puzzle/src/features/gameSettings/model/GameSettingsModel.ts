@@ -134,6 +134,15 @@ class GameSettingsModel {
         PAGES_IDS.CHOICE_GAME,
       );
     });
+
+    const logOutWrapper = this.gameSettingsView.getLogOutWrapper();
+    logOutWrapper.addEventListener(EVENT_NAMES.click, () => {
+      this.storage.remove(STORE_KEYS.USER);
+      this.storage.remove(STORE_KEYS.COMPLETED_ROUND);
+      this.storage.remove(STORE_KEYS.LAST_ROUND);
+      this.singletonMediator.notify(AppEvents.logOut, '');
+      this.singletonMediator.notify(AppEvents.changeHash, PAGES_IDS.LOG_IN);
+    });
   }
 }
 

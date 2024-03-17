@@ -12,13 +12,14 @@
   justify-content: space-between;
   grid-column: 2 span;
   grid-row: 1;
+  min-height: 80px;
   gap: 10px;
 }
 
 .translate_sentence {
   display: flex;
   justify-content: center;
-  width: 100%;
+  width: 90%;
   font-size: 20px;
   letter-spacing: 1px;
   text-align: center;

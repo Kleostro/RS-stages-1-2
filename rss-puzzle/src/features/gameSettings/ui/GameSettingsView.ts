@@ -18,6 +18,10 @@ class GameSettingsView {
 
   private choiceGameImg: HTMLSpanElement;
 
+  private logOutWrapper: HTMLDivElement;
+
+  private logOutImg: HTMLSpanElement;
+
   constructor() {
     this.translateSentenceImg = this.createTranslateSentenceImg();
     this.translateSentenceWrapper = this.createTranslateSentenceWrapper();
@@ -25,6 +29,8 @@ class GameSettingsView {
     this.translateListenWrapper = this.createTranslateListenWrapper();
     this.choiceGameImg = this.createChoiceGameImg();
     this.choiceGameWrapper = this.createChoiceGameWrapper();
+    this.logOutImg = this.createLogOutImg();
+    this.logOutWrapper = this.createLogOutWrapper();
     this.gameSettings = this.createHTML();
   }
 
@@ -54,6 +60,10 @@ class GameSettingsView {
 
   public getChoiceGameImg(): HTMLSpanElement {
     return this.choiceGameImg;
+  }
+
+  public getLogOutWrapper(): HTMLDivElement {
+    return this.logOutWrapper;
   }
 
   private createTranslateSentenceImg(): HTMLSpanElement {
@@ -115,7 +125,7 @@ class GameSettingsView {
       tag: TAG_NAMES.span,
       cssClasses: [styles.translate_listen_img],
       attributes: {},
-      innerContent: IMG_SRC.translateOff,
+      innerContent: IMG_SRC.chooseGameImg,
     });
     return this.choiceGameImg;
   }
@@ -137,6 +147,33 @@ class GameSettingsView {
     return this.choiceGameWrapper;
   }
 
+  private createLogOutImg(): HTMLSpanElement {
+    this.logOutImg = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.translate_listen_img],
+      attributes: {},
+      innerContent: IMG_SRC.logOutImg,
+    });
+    return this.logOutImg;
+  }
+
+  private createLogOutWrapper(): HTMLDivElement {
+    this.logOutWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.game_settings_item],
+    });
+
+    const textContent = 'Log Out';
+    const textElem = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.game_settings_item_text],
+      innerContent: textContent,
+    });
+
+    this.logOutWrapper.append(this.logOutImg, textElem);
+    return this.logOutWrapper;
+  }
+
   private createHTML(): HTMLDivElement {
     this.gameSettings = createBaseElement({
       tag: TAG_NAMES.div,
@@ -147,6 +184,7 @@ class GameSettingsView {
       this.translateSentenceWrapper,
       this.translateListenWrapper,
       this.choiceGameWrapper,
+      this.logOutWrapper,
     );
     return this.gameSettings;
   }
