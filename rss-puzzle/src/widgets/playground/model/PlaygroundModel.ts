@@ -154,6 +154,11 @@ class PlaygroundModel {
       currentWordLine.style.backdropFilter = filterStyle;
       currentWordLine.style.pointerEvents = EVENT_ACCESSIBILITY.none;
 
+      this.puzzles[this.currentRound].forEach((puzzle) => {
+        const currentPuzzle = puzzle.getHTML();
+        currentPuzzle.classList.remove(puzzleStyles.puzzle_placeholder);
+      });
+
       const translateSentenceHTML = this.view.getTranslateSentenceHTML();
       translateSentenceHTML.classList.remove(styles.translate_sentence_hidden);
       const translateListenBtn = this.view.getTranslateListenBtn().getHTML();
@@ -224,6 +229,18 @@ class PlaygroundModel {
     }
   }
 
+  private checkVisibleBackgroundHint(): void {
+    this.puzzles.forEach((line) => {
+      line.forEach((puzzle) => {
+        const currentPuzzle = puzzle.getHTML();
+        currentPuzzle.classList.toggle(
+          puzzleStyles.puzzle_placeholder,
+          this.storage.get(STORE_KEYS.BACKGROUND_HINT) === false,
+        );
+      });
+    });
+  }
+
   private setCurrentRoundImg(): void {
     const imgRoundSrc = `${API_URLS.cutImg}${this.levelData?.rounds[this.currentRoundLvl].levelData.imageSrc}`;
     this.imageRound = new Image();
@@ -265,6 +282,7 @@ class PlaygroundModel {
     this.shuffleWords();
     this.wordLinesHTML = this.createWordLines();
     this.createPuzzleElements();
+    this.checkVisibleBackgroundHint();
     this.fillSourcedBlock();
     this.setDragListenersToNextRound();
     this.setTranslateSentence();
@@ -647,6 +665,11 @@ class PlaygroundModel {
       }
     });
 
+    this.puzzles[this.currentRound].forEach((puzzle) => {
+      const currentPuzzle = puzzle.getHTML();
+      currentPuzzle.classList.remove(puzzleStyles.puzzle_placeholder);
+    });
+
     const checkBtnHTML = this.view.getCheckBtn();
     const continueBtnHTML = this.view.getContinueBtn();
     const nextRoundBtnHTML = this.view.getNextRoundBtn();
@@ -712,6 +735,18 @@ class PlaygroundModel {
         styles.translate_listen_hidden,
         !isVisible,
       );
+    }
+  }
+
+  private switchVisibleBackgroundHint(isVisible: unknown): void {
+    if (typeof isVisible === 'boolean') {
+      this.puzzles[this.currentRound].forEach((puzzle) => {
+        const currentPuzzle = puzzle.getHTML();
+        currentPuzzle.classList.toggle(
+          puzzleStyles.puzzle_placeholder,
+          !isVisible,
+        );
+      });
     }
   }
 
@@ -831,6 +866,16 @@ class PlaygroundModel {
       }
     });
 
+    shuffledPuzzles.forEach((puzzle) => {
+      if (puzzle instanceof PuzzleComponent) {
+        const currentPuzzle = puzzle.getHTML();
+        currentPuzzle.classList.toggle(
+          puzzleStyles.puzzle_placeholder,
+          this.storage.get(STORE_KEYS.BACKGROUND_HINT) === true,
+        );
+      }
+    });
+
     const gridTemplateColumns = `repeat(${this.puzzles[this.currentRound].length}, auto)`;
     sourcedBlockHTML.style.gridTemplateColumns = gridTemplateColumns;
     this.wordLinesHTML[this.currentRound].style.gridTemplateColumns =
@@ -879,6 +924,11 @@ class PlaygroundModel {
     this.singletonMediator.subscribe(
       AppEvents.switchListenVisible,
       this.switchVisibleTranslateListen.bind(this),
+    );
+
+    this.singletonMediator.subscribe(
+      AppEvents.switchBackgroundHintVisible,
+      this.switchVisibleBackgroundHint.bind(this),
     );
 
     this.singletonMediator.subscribe(

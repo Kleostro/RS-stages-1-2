@@ -23,6 +23,11 @@ class GameSettingsModel {
     this.init();
     this.checkSentence();
     this.checkListen();
+    this.checkBackgroundHint();
+    this.singletonMediator.subscribe(
+      AppEvents.logOut,
+      this.resetStates.bind(this),
+    );
   }
 
   public getHTML(): HTMLDivElement {
@@ -43,6 +48,18 @@ class GameSettingsModel {
     if (typeof this.storage.get(STORE_KEYS.LISTEN_VISIBLE) === 'undefined') {
       this.storage.add(STORE_KEYS.LISTEN_VISIBLE, `${IS_VISIBLE.visible}`);
     }
+  }
+
+  private checkBackgroundHint(): void {
+    if (typeof this.storage.get(STORE_KEYS.BACKGROUND_HINT) === 'undefined') {
+      this.storage.add(STORE_KEYS.BACKGROUND_HINT, `${IS_VISIBLE.visible}`);
+    }
+  }
+
+  private resetStates(): void {
+    this.storage.add(STORE_KEYS.TRANSLATE_VISIBLE, `${IS_VISIBLE.hidden}`);
+    this.storage.add(STORE_KEYS.LISTEN_VISIBLE, `${IS_VISIBLE.hidden}`);
+    this.storage.add(STORE_KEYS.BACKGROUND_HINT, `${IS_VISIBLE.hidden}`);
   }
 
   private toggleVisibilityState(
@@ -88,6 +105,17 @@ class GameSettingsModel {
     );
   }
 
+  private translateBackgroundHintHandler(): void {
+    const backgroundHintWrapper =
+      this.gameSettingsView.getBackgroundHintWrapper();
+    const backgroundHintImg = this.gameSettingsView.getBackgroundHintImg();
+    this.toggleVisibilityState(
+      backgroundHintWrapper,
+      backgroundHintImg,
+      AppEvents.switchBackgroundHintVisible,
+    );
+  }
+
   private switchInitTranslateSentence(): void {
     const translateSentenceImg =
       this.gameSettingsView.getTranslateSentenceImg();
@@ -107,12 +135,22 @@ class GameSettingsModel {
     }
   }
 
+  private switchInitBackgroundHintListen(): void {
+    const backgroundHintImg = this.gameSettingsView.getBackgroundHintImg();
+    if (this.storage.get(STORE_KEYS.BACKGROUND_HINT) === IS_VISIBLE.visible) {
+      backgroundHintImg.innerHTML = IMG_SRC.translateOn;
+    } else {
+      backgroundHintImg.innerHTML = IMG_SRC.translateOff;
+    }
+  }
+
   private init(): void {
     const translateSentenceWrapper =
       this.gameSettingsView.getTranslateSentenceWrapper();
 
     this.switchInitTranslateSentence();
     this.switchInitTranslateListen();
+    this.switchInitBackgroundHintListen();
 
     const translateListenWrapper =
       this.gameSettingsView.getTranslateListenWrapper();
@@ -125,6 +163,13 @@ class GameSettingsModel {
     translateListenWrapper.addEventListener(
       EVENT_NAMES.click,
       this.translateListenHandler.bind(this),
+    );
+
+    const backgroundHintWrapper =
+      this.gameSettingsView.getBackgroundHintWrapper();
+    backgroundHintWrapper.addEventListener(
+      EVENT_NAMES.click,
+      this.translateBackgroundHintHandler.bind(this),
     );
 
     const choiceGameWrapper = this.gameSettingsView.getChoiceGameWrapper();

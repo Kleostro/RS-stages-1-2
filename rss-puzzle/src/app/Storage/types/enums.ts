@@ -4,6 +4,7 @@ enum STORE_KEYS {
   COMPLETED_ROUND = 'completedRounds',
   LAST_ROUND = 'lastRound',
   LISTEN_VISIBLE = 'switchListenVisible',
+  BACKGROUND_HINT = 'switchBackgroundHintVisible',
   TRANSLATE_VISIBLE = 'switchTranslateVisible',
 }
 

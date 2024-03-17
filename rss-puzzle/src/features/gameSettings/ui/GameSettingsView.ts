@@ -18,6 +18,10 @@ class GameSettingsView {
 
   private choiceGameImg: HTMLSpanElement;
 
+  private backgroundHintImg: HTMLSpanElement;
+
+  private backgroundHintWrapper: HTMLDivElement;
+
   private logOutWrapper: HTMLDivElement;
 
   private logOutImg: HTMLSpanElement;
@@ -29,6 +33,8 @@ class GameSettingsView {
     this.translateListenWrapper = this.createTranslateListenWrapper();
     this.choiceGameImg = this.createChoiceGameImg();
     this.choiceGameWrapper = this.createChoiceGameWrapper();
+    this.backgroundHintImg = this.createBackgroundHintImg();
+    this.backgroundHintWrapper = this.createBackgroundHintWrapper();
     this.logOutImg = this.createLogOutImg();
     this.logOutWrapper = this.createLogOutWrapper();
     this.gameSettings = this.createHTML();
@@ -52,6 +58,14 @@ class GameSettingsView {
 
   public getTranslateListenImg(): HTMLSpanElement {
     return this.translateListenImg;
+  }
+
+  public getBackgroundHintWrapper(): HTMLDivElement {
+    return this.backgroundHintWrapper;
+  }
+
+  public getBackgroundHintImg(): HTMLSpanElement {
+    return this.backgroundHintImg;
   }
 
   public getChoiceGameWrapper(): HTMLDivElement {
@@ -157,6 +171,33 @@ class GameSettingsView {
     return this.logOutImg;
   }
 
+  private createBackgroundHintWrapper(): HTMLDivElement {
+    this.backgroundHintWrapper = createBaseElement({
+      tag: TAG_NAMES.div,
+      cssClasses: [styles.game_settings_item],
+    });
+
+    const textContent = 'Background Hint';
+    const textElem = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.game_settings_item_text],
+      innerContent: textContent,
+    });
+
+    this.backgroundHintWrapper.append(this.backgroundHintImg, textElem);
+    return this.backgroundHintWrapper;
+  }
+
+  private createBackgroundHintImg(): HTMLSpanElement {
+    this.backgroundHintImg = createBaseElement({
+      tag: TAG_NAMES.span,
+      cssClasses: [styles.translate_listen_img],
+      attributes: {},
+      innerContent: IMG_SRC.translateOff,
+    });
+    return this.backgroundHintImg;
+  }
+
   private createLogOutWrapper(): HTMLDivElement {
     this.logOutWrapper = createBaseElement({
       tag: TAG_NAMES.div,
@@ -183,6 +224,7 @@ class GameSettingsView {
     this.gameSettings.append(
       this.translateSentenceWrapper,
       this.translateListenWrapper,
+      this.backgroundHintWrapper,
       this.choiceGameWrapper,
       this.logOutWrapper,
     );

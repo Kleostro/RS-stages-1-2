@@ -4,6 +4,7 @@ const AppEvents = {
   changeHash: 'changeHash',
   switchTranslateVisible: 'switchTranslateVisible',
   switchListenVisible: 'switchListenVisible',
+  switchBackgroundHintVisible: 'switchBackgroundHintVisible',
   newGame: 'newGame',
   newCompletedRound: 'newCompletedRound',
   nextRound: 'nextRound',
