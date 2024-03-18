@@ -32,6 +32,8 @@ class PlaygroundView {
 
   private roundTitle: HTMLHeadingElement;
 
+  private roundSubtitle: HTMLHeadingElement;
+
   private roundDescription: HTMLSpanElement;
 
   constructor() {
@@ -47,6 +49,7 @@ class PlaygroundView {
     this.nextRound = this.createNextRoundBtn();
     this.statisticsBtn = this.createStatisticsBtn();
     this.roundTitle = this.createRoundTitle();
+    this.roundSubtitle = this.createRoundSubtitle();
     this.roundDescription = this.createRoundDescription();
     this.playground = this.createHTML();
   }
@@ -113,6 +116,18 @@ class PlaygroundView {
 
   public getRoundDescription(): HTMLSpanElement {
     return this.roundDescription;
+  }
+
+  public getRoundSubtitle(): HTMLHeadingElement {
+    return this.roundSubtitle;
+  }
+
+  private createRoundSubtitle(): HTMLHeadingElement {
+    this.roundSubtitle = createBaseElement({
+      tag: TAG_NAMES.h3,
+      cssClasses: [styles.game_board_subtitle],
+    });
+    return this.roundSubtitle;
   }
 
   private createTranslateListenBtn(): ButtonModel {
@@ -232,6 +247,7 @@ class PlaygroundView {
 
     this.playground.append(
       this.translateWrapper,
+      this.roundSubtitle,
       this.gameBoard,
       this.sourceBlock,
       this.continueBtn.getHTML(),

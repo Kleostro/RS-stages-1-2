@@ -20,14 +20,14 @@ class GameSettingsModel {
     this.storage = storage;
     this.singletonMediator = MediatorModel.getInstance();
     this.gameSettingsView = new GameSettingsView();
-    this.init();
-    this.checkSentence();
-    this.checkListen();
-    this.checkBackgroundHint();
     this.singletonMediator.subscribe(
       AppEvents.logOut,
       this.resetStates.bind(this),
     );
+    this.init();
+    this.checkSentence();
+    this.checkListen();
+    this.checkBackgroundHint();
   }
 
   public getHTML(): HTMLDivElement {
@@ -135,7 +135,7 @@ class GameSettingsModel {
     }
   }
 
-  private switchInitBackgroundHintListen(): void {
+  private switchInitBackgroundHint(): void {
     const backgroundHintImg = this.gameSettingsView.getBackgroundHintImg();
     if (this.storage.get(STORE_KEYS.BACKGROUND_HINT) === IS_VISIBLE.visible) {
       backgroundHintImg.innerHTML = IMG_SRC.translateOn;
@@ -150,7 +150,7 @@ class GameSettingsModel {
 
     this.switchInitTranslateSentence();
     this.switchInitTranslateListen();
-    this.switchInitBackgroundHintListen();
+    this.switchInitBackgroundHint();
 
     const translateListenWrapper =
       this.gameSettingsView.getTranslateListenWrapper();

@@ -7,6 +7,7 @@ import type {
 import {
   AUDIO_SRC,
   EVENT_ACCESSIBILITY,
+  IS_VISIBLE,
   randomIndex,
 } from '../types/constants.ts';
 import PlaygroundView from '../ui/PlaygroundView.ts';
@@ -229,17 +230,17 @@ class PlaygroundModel {
     }
   }
 
-  private checkVisibleBackgroundHint(): void {
-    this.puzzles.forEach((line) => {
-      line.forEach((puzzle) => {
-        const currentPuzzle = puzzle.getHTML();
-        currentPuzzle.classList.toggle(
-          puzzleStyles.puzzle_placeholder,
-          this.storage.get(STORE_KEYS.BACKGROUND_HINT) === false,
-        );
-      });
-    });
-  }
+  // private checkVisibleBackgroundHint(): void {
+  //   this.puzzles.forEach((line) => {
+  //     line.forEach((puzzle) => {
+  //       const currentPuzzle = puzzle.getHTML();
+  //       currentPuzzle.classList.toggle(
+  //         puzzleStyles.puzzle_placeholder,
+  //         this.storage.get(STORE_KEYS.BACKGROUND_HINT) === false,
+  //       );
+  //     });
+  //   });
+  // }
 
   private setCurrentRoundImg(): void {
     const imgRoundSrc = `${API_URLS.cutImg}${this.levelData?.rounds[this.currentRoundLvl].levelData.imageSrc}`;
@@ -265,13 +266,17 @@ class PlaygroundModel {
         if (this.imageRound?.clientWidth) {
           resolve();
         } else {
-          const time = 100;
-          setTimeout(checkClientWidth, time);
+          setTimeout(checkClientWidth, 0);
         }
       };
 
       checkClientWidth();
     });
+  }
+
+  private updateRoundSubtitle(): void {
+    const textContent = `Lvl: ${this.lvl + 1} Round: ${this.currentRoundLvl + 1}`;
+    this.view.getRoundSubtitle().textContent = textContent;
   }
 
   private redrawPlayground(): void {
@@ -282,10 +287,10 @@ class PlaygroundModel {
     this.shuffleWords();
     this.wordLinesHTML = this.createWordLines();
     this.createPuzzleElements();
-    this.checkVisibleBackgroundHint();
     this.fillSourcedBlock();
     this.setDragListenersToNextRound();
     this.setTranslateSentence();
+    this.updateRoundSubtitle();
     this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
     this.wordLinesHTML[this.currentRound].style.pointerEvents =
       EVENT_ACCESSIBILITY.auto;
@@ -719,6 +724,7 @@ class PlaygroundModel {
 
   private switchInitialTranslateListen(): void {
     const isVisible = this.storage.get(AppEvents.switchListenVisible);
+
     const translateListenBtn = this.view.getTranslateListenBtn().getHTML();
     if (typeof isVisible === 'boolean') {
       translateListenBtn.classList.toggle(
@@ -738,8 +744,21 @@ class PlaygroundModel {
     }
   }
 
-  private switchVisibleBackgroundHint(isVisible: unknown): void {
+  private switchInitialBackgroundHint(): void {
+    const isVisible = this.storage.get(AppEvents.switchBackgroundHintVisible);
     if (typeof isVisible === 'boolean') {
+      this.puzzles[this.currentRound].forEach((puzzle) => {
+        const currentPuzzle = puzzle.getHTML();
+        currentPuzzle.classList.toggle(
+          puzzleStyles.puzzle_placeholder,
+          isVisible,
+        );
+      });
+    }
+  }
+
+  private switchVisibleBackgroundHint(isVisible: unknown): void {
+    if (typeof isVisible === 'boolean' && this.puzzles[this.currentRound]) {
       this.puzzles[this.currentRound].forEach((puzzle) => {
         const currentPuzzle = puzzle.getHTML();
         currentPuzzle.classList.toggle(
@@ -876,6 +895,8 @@ class PlaygroundModel {
       }
     });
 
+    this.switchInitialBackgroundHint();
+
     const gridTemplateColumns = `repeat(${this.puzzles[this.currentRound].length}, auto)`;
     sourcedBlockHTML.style.gridTemplateColumns = gridTemplateColumns;
     this.wordLinesHTML[this.currentRound].style.gridTemplateColumns =
@@ -931,6 +952,15 @@ class PlaygroundModel {
       this.switchVisibleBackgroundHint.bind(this),
     );
 
+    this.singletonMediator.subscribe(AppEvents.logOut, () => {
+      this.switchVisibleTranslateListen(IS_VISIBLE.visible);
+      this.switchVisibleTranslateSentence(IS_VISIBLE.visible);
+      this.switchVisibleBackgroundHint(IS_VISIBLE.visible);
+    });
+
+    this.switchInitialTranslateListen();
+    this.switchInitialTranslateSentence();
+
     this.singletonMediator.subscribe(
       AppEvents.newGame,
       this.setGameData.bind(this),
@@ -943,8 +973,6 @@ class PlaygroundModel {
 
     this.setHandlersToButtons();
     this.setDragsForSourceBlock();
-    this.switchInitialTranslateSentence();
-    this.switchInitialTranslateListen();
 
     const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
     translateListenHTML.addEventListener(
