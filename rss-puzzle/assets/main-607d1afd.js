@@ -528,9 +528,9 @@ const AppEvents = {
   switchDisableNextRoundBtn: "switchDisableNextRoundBtn",
   endRound: "endRound"
 };
-const page$3 = "_page_1gm9x_1";
+const page$4 = "_page_1gm9x_1";
 const styles$7 = {
-  page: page$3
+  page: page$4
 };
 class LoginPageView {
   constructor(id, parent) {
@@ -652,14 +652,14 @@ class StorageModel {
     return this.storage;
   }
 }
-const page$2 = "_page_19h0a_1";
+const page$3 = "_page_19h0a_1";
 const page__title = "_page__title_19h0a_9";
 const page__subtitle = "_page__subtitle_19h0a_17";
 const page__descr = "_page__descr_19h0a_23";
 const page__btns = "_page__btns_19h0a_34";
 const page__btn$1 = "_page__btn_19h0a_34";
 const styles$6 = {
-  page: page$2,
+  page: page$3,
   page__title,
   page__subtitle,
   page__descr,
@@ -862,7 +862,7 @@ class RouterModel {
     const loginPage = this.pages[PAGES_IDS.LOG_IN];
     if (loginPage.checkAuthUser) {
       if (loginPage.checkAuthUser()) {
-        this.renderNewPageCallback(PAGES_IDS.START);
+        this.renderNewPageCallback(PAGES_IDS.MAIN);
       } else {
         this.renderNewPageCallback(PAGES_IDS.LOG_IN);
       }
@@ -955,39 +955,45 @@ const EVENT_ACCESSIBILITY = {
   none: "none",
   auto: "auto"
 };
+const IS_VISIBLE$1 = {
+  visible: true,
+  hidden: false
+};
 const AUDIO_SRC = "https://raw.githubusercontent.com/rolling-scopes-school/rss-puzzle-data/main/";
-const playground = "_playground_1ghg4_1";
-const translate_wrapper = "_translate_wrapper_1ghg4_9";
-const translate_sentence = "_translate_sentence_1ghg4_19";
-const translate_sentence_hidden = "_translate_sentence_hidden_1ghg4_29";
-const translate_btn = "_translate_btn_1ghg4_34";
-const translate_btn_active = "_translate_btn_active_1ghg4_46";
-const zoom = "_zoom_1ghg4_1";
-const translate_word = "_translate_word_1ghg4_73";
-const open = "_open_1ghg4_76";
-const source_data = "_source_data_1ghg4_80";
-const game_board = "_game_board_1ghg4_81";
-const game_board__complete = "_game_board__complete_1ghg4_104";
-const line = "_line_1ghg4_113";
-const line_complete = "_line_complete_1ghg4_125";
-const copy_puzzle__error = "_copy_puzzle__error_1ghg4_131";
-const copy_puzzle__success = "_copy_puzzle__success_1ghg4_134";
-const line_hovered = "_line_hovered_1ghg4_138";
-const no_drop = "_no_drop_1ghg4_142";
-const continue_btn = "_continue_btn_1ghg4_146";
-const check_btn = "_check_btn_1ghg4_147";
-const autocomplete_btn = "_autocomplete_btn_1ghg4_148";
-const nextRound_btn = "_nextRound_btn_1ghg4_149";
-const statistics_btn = "_statistics_btn_1ghg4_150";
-const btn__hidden = "_btn__hidden_1ghg4_186";
-const translate_listen_hidden = "_translate_listen_hidden_1ghg4_190";
-const game_board_title = "_game_board_title_1ghg4_195";
-const game_board_description = "_game_board_description_1ghg4_201";
-const game_board_wrapper = "_game_board_wrapper_1ghg4_209";
-const game_board__image = "_game_board__image_1ghg4_214";
+const playground = "_playground_1rlp5_1";
+const translate_wrapper = "_translate_wrapper_1rlp5_9";
+const game_board_subtitle = "_game_board_subtitle_1rlp5_19";
+const translate_sentence = "_translate_sentence_1rlp5_28";
+const translate_sentence_hidden = "_translate_sentence_hidden_1rlp5_38";
+const translate_btn = "_translate_btn_1rlp5_43";
+const translate_btn_active = "_translate_btn_active_1rlp5_55";
+const zoom = "_zoom_1rlp5_1";
+const translate_word = "_translate_word_1rlp5_82";
+const open = "_open_1rlp5_85";
+const source_data = "_source_data_1rlp5_89";
+const game_board = "_game_board_1rlp5_19";
+const game_board__complete = "_game_board__complete_1rlp5_113";
+const line = "_line_1rlp5_122";
+const line_complete = "_line_complete_1rlp5_134";
+const copy_puzzle__error = "_copy_puzzle__error_1rlp5_140";
+const copy_puzzle__success = "_copy_puzzle__success_1rlp5_143";
+const line_hovered = "_line_hovered_1rlp5_147";
+const no_drop = "_no_drop_1rlp5_151";
+const continue_btn = "_continue_btn_1rlp5_155";
+const check_btn = "_check_btn_1rlp5_156";
+const autocomplete_btn = "_autocomplete_btn_1rlp5_157";
+const nextRound_btn$1 = "_nextRound_btn_1rlp5_158";
+const statistics_btn = "_statistics_btn_1rlp5_159";
+const btn__hidden = "_btn__hidden_1rlp5_195";
+const translate_listen_hidden = "_translate_listen_hidden_1rlp5_199";
+const game_board_title = "_game_board_title_1rlp5_204";
+const game_board_description = "_game_board_description_1rlp5_210";
+const game_board_wrapper = "_game_board_wrapper_1rlp5_218";
+const game_board__image = "_game_board__image_1rlp5_223";
 const styles$5 = {
   playground,
   translate_wrapper,
+  game_board_subtitle,
   translate_sentence,
   translate_sentence_hidden,
   translate_btn,
@@ -1007,7 +1013,7 @@ const styles$5 = {
   continue_btn,
   check_btn,
   autocomplete_btn,
-  nextRound_btn,
+  nextRound_btn: nextRound_btn$1,
   statistics_btn,
   btn__hidden,
   translate_listen_hidden,
@@ -1037,6 +1043,7 @@ class PlaygroundView {
     __publicField(this, "nextRound");
     __publicField(this, "statisticsBtn");
     __publicField(this, "roundTitle");
+    __publicField(this, "roundSubtitle");
     __publicField(this, "roundDescription");
     this.audio = new Audio();
     this.translateSentence = this.createTranslateSentence();
@@ -1050,6 +1057,7 @@ class PlaygroundView {
     this.nextRound = this.createNextRoundBtn();
     this.statisticsBtn = this.createStatisticsBtn();
     this.roundTitle = this.createRoundTitle();
+    this.roundSubtitle = this.createRoundSubtitle();
     this.roundDescription = this.createRoundDescription();
     this.playground = this.createHTML();
   }
@@ -1100,6 +1108,16 @@ class PlaygroundView {
   }
   getRoundDescription() {
     return this.roundDescription;
+  }
+  getRoundSubtitle() {
+    return this.roundSubtitle;
+  }
+  createRoundSubtitle() {
+    this.roundSubtitle = createBaseElement({
+      tag: TAG_NAMES.h3,
+      cssClasses: [styles$5.game_board_subtitle]
+    });
+    return this.roundSubtitle;
   }
   createTranslateListenBtn() {
     this.translateListenBtn = new ButtonModel("", [styles$5.translate_btn]);
@@ -1195,6 +1213,7 @@ class PlaygroundView {
     });
     this.playground.append(
       this.translateWrapper,
+      this.roundSubtitle,
       this.gameBoard,
       this.sourceBlock,
       this.continueBtn.getHTML(),
@@ -1497,17 +1516,17 @@ class PlaygroundModel {
       this.currentRoundLvl = 0;
     }
   }
-  checkVisibleBackgroundHint() {
-    this.puzzles.forEach((line2) => {
-      line2.forEach((puzzle2) => {
-        const currentPuzzle = puzzle2.getHTML();
-        currentPuzzle.classList.toggle(
-          puzzleStyles.puzzle_placeholder,
-          this.storage.get(STORE_KEYS.BACKGROUND_HINT) === false
-        );
-      });
-    });
-  }
+  // private checkVisibleBackgroundHint(): void {
+  //   this.puzzles.forEach((line) => {
+  //     line.forEach((puzzle) => {
+  //       const currentPuzzle = puzzle.getHTML();
+  //       currentPuzzle.classList.toggle(
+  //         puzzleStyles.puzzle_placeholder,
+  //         this.storage.get(STORE_KEYS.BACKGROUND_HINT) === false,
+  //       );
+  //     });
+  //   });
+  // }
   setCurrentRoundImg() {
     var _a;
     const imgRoundSrc = `${API_URLS.cutImg}${(_a = this.levelData) == null ? void 0 : _a.rounds[this.currentRoundLvl].levelData.imageSrc}`;
@@ -1530,12 +1549,15 @@ class PlaygroundModel {
         if ((_a = this.imageRound) == null ? void 0 : _a.clientWidth) {
           resolve();
         } else {
-          const time = 100;
-          setTimeout(checkClientWidth, time);
+          setTimeout(checkClientWidth, 0);
         }
       };
       checkClientWidth();
     });
+  }
+  updateRoundSubtitle() {
+    const textContent = `Lvl: ${this.lvl + 1} Round: ${this.currentRoundLvl + 1}`;
+    this.view.getRoundSubtitle().textContent = textContent;
   }
   redrawPlayground() {
     this.view.getGameBoardHTML().classList.remove(styles$5.game_board__complete);
@@ -1545,10 +1567,10 @@ class PlaygroundModel {
     this.shuffleWords();
     this.wordLinesHTML = this.createWordLines();
     this.createPuzzleElements();
-    this.checkVisibleBackgroundHint();
     this.fillSourcedBlock();
     this.setDragListenersToNextRound();
     this.setTranslateSentence();
+    this.updateRoundSubtitle();
     this.view.getTranslateSentenceHTML().innerHTML = this.translateSentence;
     this.wordLinesHTML[this.currentRound].style.pointerEvents = EVENT_ACCESSIBILITY.auto;
     this.setCurrentRoundImg();
@@ -1898,8 +1920,20 @@ class PlaygroundModel {
       );
     }
   }
-  switchVisibleBackgroundHint(isVisible) {
+  switchInitialBackgroundHint() {
+    const isVisible = this.storage.get(AppEvents.switchBackgroundHintVisible);
     if (typeof isVisible === "boolean") {
+      this.puzzles[this.currentRound].forEach((puzzle2) => {
+        const currentPuzzle = puzzle2.getHTML();
+        currentPuzzle.classList.toggle(
+          puzzleStyles.puzzle_placeholder,
+          isVisible
+        );
+      });
+    }
+  }
+  switchVisibleBackgroundHint(isVisible) {
+    if (typeof isVisible === "boolean" && this.puzzles[this.currentRound]) {
       this.puzzles[this.currentRound].forEach((puzzle2) => {
         const currentPuzzle = puzzle2.getHTML();
         currentPuzzle.classList.toggle(
@@ -2011,6 +2045,7 @@ class PlaygroundModel {
         );
       }
     });
+    this.switchInitialBackgroundHint();
     const gridTemplateColumns = `repeat(${this.puzzles[this.currentRound].length}, auto)`;
     sourcedBlockHTML.style.gridTemplateColumns = gridTemplateColumns;
     this.wordLinesHTML[this.currentRound].style.gridTemplateColumns = gridTemplateColumns;
@@ -2052,6 +2087,13 @@ class PlaygroundModel {
       AppEvents.switchBackgroundHintVisible,
       this.switchVisibleBackgroundHint.bind(this)
     );
+    this.singletonMediator.subscribe(AppEvents.logOut, () => {
+      this.switchVisibleTranslateListen(IS_VISIBLE$1.visible);
+      this.switchVisibleTranslateSentence(IS_VISIBLE$1.visible);
+      this.switchVisibleBackgroundHint(IS_VISIBLE$1.visible);
+    });
+    this.switchInitialTranslateListen();
+    this.switchInitialTranslateSentence();
     this.singletonMediator.subscribe(
       AppEvents.newGame,
       this.setGameData.bind(this)
@@ -2062,8 +2104,6 @@ class PlaygroundModel {
     );
     this.setHandlersToButtons();
     this.setDragsForSourceBlock();
-    this.switchInitialTranslateSentence();
-    this.switchInitialTranslateListen();
     const translateListenHTML = this.view.getTranslateListenBtn().getHTML();
     translateListenHTML.addEventListener(
       EVENT_NAMES.click,
@@ -2075,10 +2115,10 @@ class PlaygroundModel {
     });
   }
 }
-const page$1 = "_page_8wdyu_1";
+const page$2 = "_page_8wdyu_1";
 const game_wrapper = "_game_wrapper_8wdyu_5";
 const styles$4 = {
-  page: page$1,
+  page: page$2,
   game_wrapper
 };
 class MainPageView {
@@ -2351,14 +2391,14 @@ class GameSettingsModel {
     this.storage = storage;
     this.singletonMediator = MediatorModel.getInstance();
     this.gameSettingsView = new GameSettingsView();
-    this.init();
-    this.checkSentence();
-    this.checkListen();
-    this.checkBackgroundHint();
     this.singletonMediator.subscribe(
       AppEvents.logOut,
       this.resetStates.bind(this)
     );
+    this.init();
+    this.checkSentence();
+    this.checkListen();
+    this.checkBackgroundHint();
   }
   getHTML() {
     return this.gameSettingsView.getHTML();
@@ -2442,7 +2482,7 @@ class GameSettingsModel {
       translateListenImg.innerHTML = IMG_SRC.translateOff;
     }
   }
-  switchInitBackgroundHintListen() {
+  switchInitBackgroundHint() {
     const backgroundHintImg = this.gameSettingsView.getBackgroundHintImg();
     if (this.storage.get(STORE_KEYS.BACKGROUND_HINT) === IS_VISIBLE.visible) {
       backgroundHintImg.innerHTML = IMG_SRC.translateOn;
@@ -2454,7 +2494,7 @@ class GameSettingsModel {
     const translateSentenceWrapper = this.gameSettingsView.getTranslateSentenceWrapper();
     this.switchInitTranslateSentence();
     this.switchInitTranslateListen();
-    this.switchInitBackgroundHintListen();
+    this.switchInitBackgroundHint();
     const translateListenWrapper = this.gameSettingsView.getTranslateListenWrapper();
     translateSentenceWrapper.addEventListener(
       EVENT_NAMES.click,
@@ -2535,7 +2575,7 @@ class AppView {
     return this.pagesContainer;
   }
 }
-const page = "_page_ije10_1";
+const page$1 = "_page_ije10_1";
 const choice_game_wrapper = "_choice_game_wrapper_ije10_8";
 const page_aside = "_page_aside_ije10_31";
 const aside__btn = "_aside__btn_ije10_39";
@@ -2550,7 +2590,7 @@ const master = "_master_ije10_79";
 const expert = "_expert_ije10_82";
 const page__btn = "_page__btn_ije10_86";
 const styles$1 = {
-  page,
+  page: page$1,
   choice_game_wrapper,
   page_aside,
   aside__btn,
@@ -2929,7 +2969,24 @@ class ChoiceGamePageModel {
     return this.page;
   }
 }
-const styles = {};
+const page = "_page_1y7vm_1";
+const round_info_wrapper = "_round_info_wrapper_1y7vm_8";
+const round_picture_wrapper = "_round_picture_wrapper_1y7vm_15";
+const round_picture_author = "_round_picture_author_1y7vm_27";
+const round_picture_info = "_round_picture_info_1y7vm_33";
+const know_list = "_know_list_1y7vm_40";
+const dont_know_list = "_dont_know_list_1y7vm_41";
+const nextRound_btn = "_nextRound_btn_1y7vm_98";
+const styles = {
+  page,
+  round_info_wrapper,
+  round_picture_wrapper,
+  round_picture_author,
+  round_picture_info,
+  know_list,
+  dont_know_list,
+  nextRound_btn
+};
 const setListenersLineBtn = (btn, audio) => {
   const currentBtn = btn;
   let btnSvg = currentBtn.firstChild;
@@ -3267,4 +3324,4 @@ class AppModel {
 }
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-50aee821.js.map
+//# sourceMappingURL=main-607d1afd.js.map
