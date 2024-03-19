@@ -1,0 +1,53 @@
+{
+  "name": "async-race",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npx vite build && npx gh-pages -d dist -e async-race",
+    "format": "prettier --write .",
+    "ci:format": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "cd .. && husky async-race/.husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.1",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@eslint/eslintrc": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "esbuild-loader": "^4.0.3",
+    "eslint": "^8.53.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "globals": "^14.0.0",
+    "husky": "^9.0.11",
+    "import": "^0.0.6",
+    "lint-staged": "^15.2.2",
+    "path": "^0.12.7",
+    "prettier": "^3.2.4",
+    "sass": "^1.69.5",
+    "sharp": "^0.32.6",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard-scss": "^11.1.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.7.0",
+    "stylelint-order": "^6.0.3",
+    "stylelint-scss": "^5.3.0",
+    "svgo": "^3.0.2",
+    "typescript": "^5.3.3",
+    "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.17",
+    "modern-normalize": "^2.0.0",
+    "vite-plugin-checker": "^0.6.4",
+    "vite-plugin-image-optimizer": "^1.1.7",
+    "vite-plugin-inspect": "^0.8.3",
+    "vite-tsconfig-paths": "^4.3.1"
+  }
+}
