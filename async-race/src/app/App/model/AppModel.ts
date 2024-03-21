@@ -10,19 +10,18 @@ class AppModel {
 
   private parent: HTMLDivElement;
 
-  private router: RouterModel;
-
   constructor() {
     this.appView = new AppView();
     this.parent = this.appView.getHTML();
 
     const pages: Record<string, PageInterface> = {
+      [PAGES_IDS.DEFAULT_PAGE]: new GaragePageModel(this.parent),
       [PAGES_IDS.GARAGE_PAGE]: new GaragePageModel(this.parent),
       [PAGES_IDS.WINNERS_PAGE]: new WinnersPageModel(this.parent),
     };
 
-    this.router = new RouterModel(pages);
-    this.router.navigateTo(window.location.pathname.slice(1));
+    const router = new RouterModel(pages);
+    router.init();
   }
 
   public getHTML(): HTMLDivElement {

@@ -53,6 +53,7 @@ export const EVENT_NAMES = {
   FOCUS: 'focus',
   BLUR: 'blur',
   CONTEXTMENU: 'contextmenu',
+  DOM_CONTENT_LOADED: 'DOMContentLoaded',
   LOAD: 'load',
   ERROR: 'error',
   ANIMATIONSTART: 'animationstart',

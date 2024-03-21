@@ -20,6 +20,7 @@
     "@eslint/eslintrc": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
+    "dotenv": "^16.4.5",
     "esbuild-loader": "^4.0.3",
     "eslint": "^8.53.0",
     "eslint-config-airbnb": "^19.0.4",

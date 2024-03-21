@@ -10,19 +10,27 @@ class RouterModel {
   constructor(pages: Record<string, PageInterface>) {
     this.pages = pages;
 
+    document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
+      this.navigateTo(window.location.pathname);
+    });
+
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      this.handleRequest(window.location.pathname.slice(1));
+      this.handleRequest(window.location.pathname);
     });
   }
 
   public handleRequest(path: string): void {
-    if (!(path in this.pages) || path === PAGES_IDS.DEFAULT_PAGE) {
-      window.location.pathname = PAGES_IDS.GARAGE_PAGE;
+    if (!(path in this.pages)) {
+      window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
     }
 
     this.currentPage?.hide();
     this.currentPage = this.pages[path];
     this.currentPage.show();
+  }
+
+  public init(): PageInterface | null {
+    return this.currentPage;
   }
 
   public navigateTo(route: string): void {
