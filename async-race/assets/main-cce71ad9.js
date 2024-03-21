@@ -125,7 +125,7 @@ class RouterModel {
   }
   handleRequest(path) {
     var _a;
-    if (!(path in this.pages) || path === PAGES_IDS.DEFAULT_PAGE) {
+    if (!(path in this.pages)) {
       window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
     }
     (_a = this.currentPage) == null ? void 0 : _a.hide();
@@ -276,6 +276,7 @@ class AppModel {
     this.appView = new AppView();
     this.parent = this.appView.getHTML();
     const pages = {
+      [PAGES_IDS.DEFAULT_PAGE]: new GaragePageModel(this.parent),
       [PAGES_IDS.GARAGE_PAGE]: new GaragePageModel(this.parent),
       [PAGES_IDS.WINNERS_PAGE]: new WinnersPageModel(this.parent)
     };
@@ -289,4 +290,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-698e4fbb.js.map
+//# sourceMappingURL=main-cce71ad9.js.map
