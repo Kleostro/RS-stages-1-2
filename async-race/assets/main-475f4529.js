@@ -122,8 +122,8 @@ class RouterModel {
     document.addEventListener("DOMContentLoaded", () => {
       this.navigateTo(window.location.pathname);
     });
+    console.log(window.location.pathname);
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      console.log(window.location.pathname);
       this.handleRequest(window.location.pathname);
     });
   }
@@ -296,4 +296,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-363a160b.js.map
+//# sourceMappingURL=main-475f4529.js.map
