@@ -123,6 +123,7 @@ class RouterModel {
       this.navigateTo(window.location.pathname);
     });
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
+      console.log(window.location.pathname);
       this.handleRequest(window.location.pathname);
     });
   }
@@ -134,6 +135,9 @@ class RouterModel {
     (_a = this.currentPage) == null ? void 0 : _a.hide();
     this.currentPage = this.pages[path];
     this.currentPage.show();
+  }
+  init() {
+    return this.currentPage;
   }
   navigateTo(route) {
     this.handleRequest(route);
@@ -283,7 +287,7 @@ class AppModel {
       [PAGES_IDS.WINNERS_PAGE]: new WinnersPageModel(this.parent)
     };
     const router = new RouterModel(pages);
-    console.log(router);
+    router.init();
   }
   getHTML() {
     return this.parent;
@@ -292,4 +296,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-9482acdc.js.map
+//# sourceMappingURL=main-26d1b3be.js.map
