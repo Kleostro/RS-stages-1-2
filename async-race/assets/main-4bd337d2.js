@@ -121,7 +121,7 @@ class RouterModel {
     this.pages = pages;
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
       this.handleRequest(
-        window.location.pathname.slice(1) + "kleostro-JSFE2023Q4/"
+        "kleostro-JSFE2023Q4/" + window.location.pathname.slice(1)
       );
     });
   }
@@ -285,7 +285,7 @@ class AppModel {
     };
     this.router = new RouterModel(pages);
     this.router.navigateTo(
-      window.location.pathname.slice(1) + "kleostro-JSFE2023Q4/"
+      "kleostro-JSFE2023Q4/" + window.location.pathname.slice(1)
     );
   }
   getHTML() {
@@ -312,4 +312,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-74c37afb.js.map
+//# sourceMappingURL=main-4bd337d2.js.map
