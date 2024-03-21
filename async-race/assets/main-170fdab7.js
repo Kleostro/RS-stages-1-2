@@ -110,9 +110,9 @@ const EVENT_NAMES = {
   BEFOREUNLOAD: "beforeunload"
 };
 const PAGES_IDS = {
-  DEFAULT_PAGE: "/",
-  GARAGE_PAGE: "/garage",
-  WINNERS_PAGE: "/winners"
+  DEFAULT_PAGE: "",
+  GARAGE_PAGE: "garage",
+  WINNERS_PAGE: "winners"
 };
 class RouterModel {
   constructor(pages) {
@@ -120,10 +120,7 @@ class RouterModel {
     __publicField(this, "currentPage", null);
     this.pages = pages;
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      this.handleRequest(window.location.pathname);
-    });
-    window.addEventListener("load", () => {
-      this.handleRequest(window.location.pathname);
+      this.handleRequest(window.location.pathname.slice(1));
     });
   }
   handleRequest(path) {
@@ -285,7 +282,7 @@ class AppModel {
       [PAGES_IDS.WINNERS_PAGE]: new WinnersPageModel(this.parent)
     };
     this.router = new RouterModel(pages);
-    this.router.navigateTo(window.location.pathname);
+    this.router.navigateTo(window.location.pathname.slice(1));
   }
   getHTML() {
     this.btn = createBaseElement({
@@ -311,4 +308,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-5b82392b.js.map
+//# sourceMappingURL=main-170fdab7.js.map
