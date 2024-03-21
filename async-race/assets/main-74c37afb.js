@@ -120,7 +120,9 @@ class RouterModel {
     __publicField(this, "currentPage", null);
     this.pages = pages;
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      this.handleRequest(window.location.pathname.slice(1));
+      this.handleRequest(
+        window.location.pathname.slice(1) + "kleostro-JSFE2023Q4/"
+      );
     });
   }
   handleRequest(path) {
@@ -282,7 +284,9 @@ class AppModel {
       [PAGES_IDS.WINNERS_PAGE]: new WinnersPageModel(this.parent)
     };
     this.router = new RouterModel(pages);
-    this.router.navigateTo(window.location.pathname.slice(1));
+    this.router.navigateTo(
+      window.location.pathname.slice(1) + "kleostro-JSFE2023Q4/"
+    );
   }
   getHTML() {
     this.btn = createBaseElement({
@@ -308,4 +312,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-170fdab7.js.map
+//# sourceMappingURL=main-74c37afb.js.map
