@@ -1,4 +1,4 @@
-import TAG_NAMES from '../../../shared/types/enums.ts';
+import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import APP_STYLES from './app.module.scss';
 
