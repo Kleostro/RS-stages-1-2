@@ -126,7 +126,7 @@ class RouterModel {
   handleRequest(path) {
     var _a;
     if (!(path in this.pages) || path === PAGES_IDS.DEFAULT_PAGE) {
-      window.location.pathname = PAGES_IDS.GARAGE_PAGE;
+      window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
     }
     (_a = this.currentPage) == null ? void 0 : _a.hide();
     this.currentPage = this.pages[path];
@@ -289,4 +289,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-fc75a9eb.js.map
+//# sourceMappingURL=main-698e4fbb.js.map
