@@ -6,7 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 
 export default {
-  publicDir: 'assets',
+  publicDir: 'public',
   plugins: [
     Inspect(),
     ViteImageOptimizer({

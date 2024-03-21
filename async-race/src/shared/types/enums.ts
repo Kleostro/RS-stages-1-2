@@ -1,4 +1,4 @@
-const TAG_NAMES = {
+export const TAG_NAMES = {
   MAIN: 'main',
   HEADER: 'header',
   FOOTER: 'footer',
@@ -41,4 +41,25 @@ const TAG_NAMES = {
   DIVIDER: 'hr',
 } as const;
 
-export default TAG_NAMES;
+export const EVENT_NAMES = {
+  CLICK: 'click',
+  CHANGE: 'change',
+  INPUT: 'input',
+  SUBMIT: 'submit',
+  KEYUP: 'keyup',
+  KEYDOWN: 'keydown',
+  SCROLL: 'scroll',
+  RESIZE: 'resize',
+  FOCUS: 'focus',
+  BLUR: 'blur',
+  CONTEXTMENU: 'contextmenu',
+  LOAD: 'load',
+  ERROR: 'error',
+  ANIMATIONSTART: 'animationstart',
+  ANIMATIONEND: 'animationend',
+  ANIMATIONITERATION: 'animationiteration',
+  TRANSITIONEND: 'transitionend',
+  POPSTATE: 'popstate',
+  HASHCHANGE: 'hashchange',
+  BEFOREUNLOAD: 'beforeunload',
+} as const;
