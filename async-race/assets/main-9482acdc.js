@@ -110,15 +110,18 @@ const EVENT_NAMES = {
   BEFOREUNLOAD: "beforeunload"
 };
 const PAGES_IDS = {
-  DEFAULT_PAGE: "/kleostro-JSFE2023Q4/async-race/",
-  GARAGE_PAGE: "/kleostro-JSFE2023Q4/async-race/garage",
-  WINNERS_PAGE: "/kleostro-JSFE2023Q4/async-race/winners"
+  DEFAULT_PAGE: "/",
+  GARAGE_PAGE: "/garage",
+  WINNERS_PAGE: "/winners"
 };
 class RouterModel {
   constructor(pages) {
     __publicField(this, "pages");
     __publicField(this, "currentPage", null);
     this.pages = pages;
+    document.addEventListener("DOMContentLoaded", () => {
+      this.navigateTo(window.location.pathname);
+    });
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
       this.handleRequest(window.location.pathname);
     });
@@ -272,7 +275,6 @@ class AppModel {
   constructor() {
     __publicField(this, "appView");
     __publicField(this, "parent");
-    __publicField(this, "router");
     this.appView = new AppView();
     this.parent = this.appView.getHTML();
     const pages = {
@@ -280,8 +282,8 @@ class AppModel {
       [PAGES_IDS.GARAGE_PAGE]: new GaragePageModel(this.parent),
       [PAGES_IDS.WINNERS_PAGE]: new WinnersPageModel(this.parent)
     };
-    this.router = new RouterModel(pages);
-    this.router.navigateTo(window.location.pathname);
+    const router = new RouterModel(pages);
+    console.log(router);
   }
   getHTML() {
     return this.parent;
@@ -290,4 +292,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-cce71ad9.js.map
+//# sourceMappingURL=main-9482acdc.js.map
