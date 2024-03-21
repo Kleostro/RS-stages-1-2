@@ -110,9 +110,9 @@ const EVENT_NAMES = {
   BEFOREUNLOAD: "beforeunload"
 };
 const PAGES_IDS = {
-  DEFAULT_PAGE: "/",
-  GARAGE_PAGE: "/garage",
-  WINNERS_PAGE: "/winners"
+  DEFAULT_PAGE: "/kleostro-JSFE2023Q4/async-race/",
+  GARAGE_PAGE: "/kleostro-JSFE2023Q4/async-race/garage",
+  WINNERS_PAGE: "/kleostro-JSFE2023Q4/async-race/winners"
 };
 class RouterModel {
   constructor(pages) {
@@ -296,4 +296,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-26d1b3be.js.map
+//# sourceMappingURL=main-363a160b.js.map
