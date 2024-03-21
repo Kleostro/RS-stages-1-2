@@ -122,6 +122,9 @@ class RouterModel {
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
       this.handleRequest(window.location.pathname);
     });
+    window.addEventListener("load", () => {
+      this.handleRequest(window.location.pathname);
+    });
   }
   handleRequest(path) {
     var _a;
@@ -308,4 +311,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-263b69fa.js.map
+//# sourceMappingURL=main-5b82392b.js.map
