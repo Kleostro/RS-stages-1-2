@@ -126,7 +126,7 @@ class RouterModel {
   handleRequest(path) {
     var _a;
     if (!(path in this.pages) || path === PAGES_IDS.DEFAULT_PAGE) {
-      window.location.pathname = "kleostro-JSFE2023Q4/" + PAGES_IDS.GARAGE_PAGE;
+      window.location.pathname = "kleostro-JSFE2023Q4/async-race/" + PAGES_IDS.GARAGE_PAGE;
     }
     (_a = this.currentPage) == null ? void 0 : _a.hide();
     this.currentPage = this.pages[path];
@@ -308,4 +308,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-8f3d8c66.js.map
+//# sourceMappingURL=main-fa3f6ba8.js.map
