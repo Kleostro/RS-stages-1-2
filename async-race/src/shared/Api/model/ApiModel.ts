@@ -7,25 +7,23 @@ import {
 } from '../types/enums.ts';
 import type {
   CarInterface,
-  CarsInterface,
   EngineCarDataInterface,
   EngineCarDriveInterface,
   EngineInterface,
   WinnerInterface,
-  WinnersInterface,
   WinnersQueryParamsInterface,
 } from '../types/interfaces.ts';
 
 class ApiModel {
   public static async getCars(
     params: Map<string, number>,
-  ): Promise<CarsInterface | null> {
+  ): Promise<CarInterface[] | null> {
     const pageParam =
       params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE;
     const limitParam =
       params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.DEFAULT_CARS_LIMIT;
     const url = `${API_URLS.CARS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}`;
-    return this.fetchData<CarsInterface>(url, API_METHODS.GET);
+    return this.fetchData<CarInterface[]>(url, API_METHODS.GET);
   }
 
   public static async getCarById(id: string): Promise<CarInterface | null> {
@@ -35,7 +33,7 @@ class ApiModel {
 
   public static async getWinners(
     params: Map<string, WinnersQueryParamsInterface>,
-  ): Promise<WinnersInterface | null> {
+  ): Promise<WinnerInterface[] | null> {
     const pageParam = Number(
       params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE,
     );
@@ -48,7 +46,7 @@ class ApiModel {
     );
 
     const url = `${API_URLS.WINNERS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}&${QUERY_PARAMS.SORT}=${sortParam}&${QUERY_PARAMS.ORDER}=${orderParam}`;
-    return this.fetchData<WinnersInterface>(url, API_METHODS.GET);
+    return this.fetchData<WinnerInterface[]>(url, API_METHODS.GET);
   }
 
   public static async getWinnerById(
