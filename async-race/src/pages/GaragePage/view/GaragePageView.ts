@@ -5,10 +5,16 @@ import GARAGE_PAGE_STYLES from './garagePage.module.scss';
 class GaragePageView {
   private parent: HTMLDivElement;
 
+  private garageTitle: HTMLHeadingElement;
+
+  private raceTracksList: HTMLUListElement;
+
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.garageTitle = this.createGarageTitle();
+    this.raceTracksList = this.createRaceTracksList();
     this.page = this.createHTML();
   }
 
@@ -16,20 +22,45 @@ class GaragePageView {
     return this.page;
   }
 
+  public getGarageTitle(): HTMLHeadingElement {
+    return this.garageTitle;
+  }
+
+  public getRaceTracksList(): HTMLUListElement {
+    return this.raceTracksList;
+  }
+
+  private createGarageTitle(): HTMLHeadingElement {
+    this.garageTitle = createBaseElement({
+      tag: TAG_NAMES.H2,
+      cssClasses: [GARAGE_PAGE_STYLES.title],
+    });
+    return this.garageTitle;
+  }
+
+  private createRaceTracksList(): HTMLUListElement {
+    this.raceTracksList = createBaseElement({
+      tag: TAG_NAMES.UL,
+      cssClasses: [GARAGE_PAGE_STYLES.list],
+    });
+
+    return this.raceTracksList;
+  }
+
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [GARAGE_PAGE_STYLES['garage-page']],
+      cssClasses: [GARAGE_PAGE_STYLES.page],
     });
 
-    const h1 = createBaseElement({
-      tag: TAG_NAMES.H1,
-      innerContent: 'Garage',
+    const garageBottomWrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [GARAGE_PAGE_STYLES['bottom-wrapper']],
     });
-    h1.style.color = 'white';
-    this.page.append(h1);
+
+    garageBottomWrapper.append(this.garageTitle, this.raceTracksList);
+    this.page.append(garageBottomWrapper);
     this.parent.append(this.page);
-
     return this.page;
   }
 }
