@@ -4,11 +4,14 @@ import AppView from '../view/AppView.ts';
 import GaragePageModel from '../../../pages/GaragePage/model/GaragePageModel.ts';
 import type PageInterface from '../../../pages/types/interfaces.ts';
 import WinnersPageModel from '../../../pages/WinnersPage/model/WinnersPageModel.ts';
+import HeaderModel from '../../../widgets/Header/model/HeaderModel.ts';
 
 class AppModel {
   private appView: AppView;
 
   private parent: HTMLDivElement;
+
+  private router: RouterModel;
 
   constructor() {
     this.appView = new AppView();
@@ -16,8 +19,10 @@ class AppModel {
 
     const pages = this.initPages();
 
-    const router = new RouterModel(pages);
-    router.init();
+    this.router = new RouterModel(pages);
+
+    const header = new HeaderModel(this.router);
+    this.parent.prepend(header.getHTML());
   }
 
   public getHTML(): HTMLDivElement {

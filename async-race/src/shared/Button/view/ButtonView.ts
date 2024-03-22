@@ -5,8 +5,8 @@ import type ButtonInterface from '../types/interfaces.ts';
 class ButtonView {
   private button: HTMLButtonElement;
 
-  constructor({ text, classes, attrs, action }: ButtonInterface) {
-    this.button = this.createHTML({ action, classes, attrs, text });
+  constructor(params: ButtonInterface) {
+    this.button = this.createHTML(params);
   }
 
   public getHTML(): HTMLButtonElement {

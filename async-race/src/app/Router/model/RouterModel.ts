@@ -19,8 +19,9 @@ class RouterModel {
     });
   }
 
-  public init(): PageInterface | undefined {
-    return this.currentPage;
+  public navigateTo(route: string): void {
+    this.handleRequest(route);
+    window.history.pushState(route, '', route);
   }
 
   private handleRequest(path: string): void {
@@ -31,11 +32,6 @@ class RouterModel {
     this.currentPage?.hide();
     this.currentPage = this.pages.get(path);
     this.currentPage?.show();
-  }
-
-  private navigateTo(route: string): void {
-    this.handleRequest(route);
-    window.history.pushState(route, '', route);
   }
 }
 

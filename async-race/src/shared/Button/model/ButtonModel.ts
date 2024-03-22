@@ -1,5 +1,5 @@
 import { IS_DISABLED } from '../../types/enums.ts';
-import type ButtonAction from '../types/types.ts';
+import type ButtonInterface from '../types/interfaces.ts';
 import ButtonView from '../view/ButtonView.ts';
 
 class ButtonModel {
@@ -7,13 +7,8 @@ class ButtonModel {
 
   private button: HTMLButtonElement;
 
-  constructor(
-    text?: string,
-    classes?: string[],
-    attrs?: Record<string, string>,
-    action?: ButtonAction,
-  ) {
-    this.view = new ButtonView({ text, classes, attrs, action });
+  constructor(params: ButtonInterface) {
+    this.view = new ButtonView(params);
     this.button = this.view.getHTML();
   }
 
