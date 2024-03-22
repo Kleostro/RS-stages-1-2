@@ -1,0 +1,154 @@
+._garage-page_13l4w_1 {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+._garage-page_list_13l4w_5 {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+._garage-page--hidden_13l4w_10 {
+  opacity: 0;
+}._race-track__bottom-wrapper_ow0gl_1 {
+  display: flex;
+  border-bottom: 3px solid var(--white);
+  border-bottom-style: dashed;
+}
+._race-track__car-svg-wrapper_ow0gl_6 {
+  display: flex;
+  max-width: 100px;
+  max-height: 40px;
+}._winners-page_1umj9_1 {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+._winners-page--hidden_1umj9_5 {
+  opacity: 0;
+}._header_36v5w_1 {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--medium-offset);
+  padding: var(--small-offset);
+  background-color: var(--header-bg);
+  gap: var(--small-offset);
+}
+
+._header__garage-button_36v5w_10,
+._header__winners-button_36v5w_11 {
+  border-radius: var(--border-radius);
+  padding: calc(var(--little-offset) / 2) var(--little-offset);
+  width: -moz-max-content;
+  width: max-content;
+  font: var(--small-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--button-color);
+  background-color: var(--button-bg);
+  transition: background-color 0.3s, color 0.3s;
+}
+@media (hover: hover) {
+  ._header__garage-button_36v5w_10:hover,
+  ._header__winners-button_36v5w_11:hover {
+    color: var(--white);
+    background-color: var(--button-bg-hover);
+  }
+}ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  outline: none;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input,
+textarea {
+  outline: none;
+  border: none;
+}
+
+.visually-hidden {
+  position: fixed;
+  transform: scale(0);
+}
+
+.lock {
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.stop-scroll {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0 auto;
+  min-width: 320px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  background-color: var(--body-bg);
+  scroll-behavior: smooth;
+}
+
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+.stop-scroll {
+  overflow: hidden;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 var(--small-offset);
+  max-width: 1440px;
+}
+
+:root {
+  --little-offset: 20px;
+  --small-offset: 30px;
+  --medium-offset: 50px;
+  --large-offset: 100px;
+  --border-radius: 10px;
+  --white: #fff;
+  --black: #000;
+  --body-bg: #454545;
+  --header-bg: #2b2b2b;
+  --button-bg: #416440;
+  --button-bg-hover: #3e803c;
+  --button-color: #f3ffbd;
+  --small-font: 400 14px "Roboto", sans-serif;
+}
