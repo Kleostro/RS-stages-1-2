@@ -14,11 +14,7 @@ class AppModel {
     this.appView = new AppView();
     this.parent = this.appView.getHTML();
 
-    const pages: Record<string, PageInterface> = {
-      [PAGES_IDS.DEFAULT_PAGE]: new GaragePageModel(this.parent),
-      [PAGES_IDS.GARAGE_PAGE]: new GaragePageModel(this.parent),
-      [PAGES_IDS.WINNERS_PAGE]: new WinnersPageModel(this.parent),
-    };
+    const pages = this.initPages();
 
     const router = new RouterModel(pages);
     router.init();
@@ -26,6 +22,19 @@ class AppModel {
 
   public getHTML(): HTMLDivElement {
     return this.parent;
+  }
+
+  private initPages(): Map<string, PageInterface> {
+    const garagePage = new GaragePageModel(this.parent);
+    const winnersPage = new WinnersPageModel(this.parent);
+    const pages: Map<string, PageInterface> = new Map(
+      Object.entries({
+        [PAGES_IDS.DEFAULT_PAGE]: garagePage,
+        [PAGES_IDS.GARAGE_PAGE]: garagePage,
+        [PAGES_IDS.WINNERS_PAGE]: winnersPage,
+      }),
+    );
+    return pages;
   }
 }
 
