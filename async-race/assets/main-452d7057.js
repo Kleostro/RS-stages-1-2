@@ -460,7 +460,7 @@ const createSVGUse = (id) => {
   use.setAttributeNS(
     "http://www.w3.org/1999/xlink",
     "xlink:href",
-    `../sprite.svg#${id}`
+    `../async-race/sprite.svg#${id}`
   );
   return use;
 };
@@ -782,4 +782,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-d7bc1e92.js.map
+//# sourceMappingURL=main-452d7057.js.map
