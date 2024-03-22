@@ -64,3 +64,8 @@ export const EVENT_NAMES = {
   HASHCHANGE: 'hashchange',
   BEFOREUNLOAD: 'beforeunload',
 } as const;
+
+export const IS_DISABLED = {
+  DISABLED: true,
+  ENABLED: false,
+} as const;

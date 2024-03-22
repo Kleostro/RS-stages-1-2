@@ -1,4 +1,4 @@
-import BUTTON_STATE from '../types/enums.ts';
+import { IS_DISABLED } from '../../types/enums.ts';
 import type ButtonAction from '../types/types.ts';
 import ButtonView from '../view/ButtonView.ts';
 
@@ -22,11 +22,11 @@ class ButtonModel {
   }
 
   public setDisabled(): void {
-    this.button.disabled = BUTTON_STATE.DISABLED;
+    this.button.disabled = IS_DISABLED.DISABLED;
   }
 
   public setEnabled(): void {
-    this.button.disabled = BUTTON_STATE.ENABLED;
+    this.button.disabled = IS_DISABLED.ENABLED;
   }
 }
 
