@@ -455,7 +455,7 @@ const RACE_TRACK_BUTTON_TEXT = {
   START_ENGINE: "A",
   STOP_ENGINE: "B"
 };
-const spritePath = "../../assets/sprite.svg";
+const spritePath = "../img/sprite.svg";
 const spriteURL = new URL(spritePath, import.meta.url);
 const createSVGUse = (id) => {
   const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
@@ -784,4 +784,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-26328b9f.js.map
+//# sourceMappingURL=main-3bc4be8f.js.map
