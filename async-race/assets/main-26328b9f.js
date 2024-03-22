@@ -455,12 +455,14 @@ const RACE_TRACK_BUTTON_TEXT = {
   START_ENGINE: "A",
   STOP_ENGINE: "B"
 };
+const spritePath = "../../assets/sprite.svg";
+const spriteURL = new URL(spritePath, import.meta.url);
 const createSVGUse = (id) => {
   const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
   use.setAttributeNS(
     "http://www.w3.org/1999/xlink",
     "xlink:href",
-    `./sprite.svg#${id}`
+    `${String(spriteURL)}#${id}`
   );
   return use;
 };
@@ -782,4 +784,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-c7507ba4.js.map
+//# sourceMappingURL=main-26328b9f.js.map
