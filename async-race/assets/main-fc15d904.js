@@ -131,7 +131,8 @@ class RouterModel {
       this.navigateTo(currentPath);
     });
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      this.handleRequest(window.location.pathname);
+      const currentPath = window.location.pathname.split("/").slice(this.pathSegmentsToKeep + 1).join("/");
+      this.handleRequest(currentPath);
     });
   }
   navigateTo(route) {
@@ -831,4 +832,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-6411cc89.js.map
+//# sourceMappingURL=main-fc15d904.js.map
