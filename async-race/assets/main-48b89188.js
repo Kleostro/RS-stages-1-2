@@ -456,7 +456,7 @@ const RACE_TRACK_BUTTON_TEXT = {
   STOP_ENGINE: "B"
 };
 const sprite = "" + new URL("sprite-ee48f508.svg", import.meta.url).href;
-console.log(sprite);
+console.log(`${String(sprite)}#car`, sprite);
 const createSVGUse = (id) => {
   const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
   use.setAttributeNS(
@@ -784,4 +784,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-ad9f7c70.js.map
+//# sourceMappingURL=main-48b89188.js.map
