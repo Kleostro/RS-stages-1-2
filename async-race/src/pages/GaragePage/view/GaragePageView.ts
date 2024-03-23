@@ -41,7 +41,7 @@ class GaragePageView {
   private createRaceTracksList(): HTMLUListElement {
     this.raceTracksList = createBaseElement({
       tag: TAG_NAMES.UL,
-      cssClasses: [GARAGE_PAGE_STYLES.list],
+      cssClasses: [GARAGE_PAGE_STYLES['garage-page_list']],
     });
 
     return this.raceTracksList;
@@ -55,7 +55,7 @@ class GaragePageView {
 
     const garageBottomWrapper = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [GARAGE_PAGE_STYLES['bottom-wrapper']],
+      cssClasses: [GARAGE_PAGE_STYLES['garage-page_bottom-wrapper']],
     });
 
     garageBottomWrapper.append(this.garageTitle, this.raceTracksList);

@@ -2,6 +2,16 @@
   opacity: 1;
   transition: opacity 0.5s;
 
+  &_list {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  &_bottom-wrapper {
+    padding: 0 var(--small-offset);
+  }
+
   &--hidden {
     opacity: 0;
   }
