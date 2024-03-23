@@ -33,7 +33,7 @@ class GaragePageView {
   private createGarageTitle(): HTMLHeadingElement {
     this.garageTitle = createBaseElement({
       tag: TAG_NAMES.H2,
-      cssClasses: [GARAGE_PAGE_STYLES.title],
+      cssClasses: [GARAGE_PAGE_STYLES['garage-page_title']],
     });
     return this.garageTitle;
   }

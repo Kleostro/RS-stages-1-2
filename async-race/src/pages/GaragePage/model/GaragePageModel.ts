@@ -42,10 +42,17 @@ class GaragePageModel implements PageInterface {
             payload: data,
           });
           this.drawRaceTracks(data);
+          this.drawGarageTitle();
         }
         return data;
       })
       .catch(() => {});
+  }
+
+  private drawGarageTitle(): void {
+    const title = this.garagePageView.getGarageTitle();
+    const textContent = `Garage (${StoreModel.getState().currentCars.length})`;
+    title.textContent = textContent;
   }
 
   private drawRaceTracks(cars: CarInterface[]): void {
