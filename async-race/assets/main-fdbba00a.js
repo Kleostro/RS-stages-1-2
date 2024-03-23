@@ -229,9 +229,11 @@ __publicField(_StoreModel, "rootReducer", rootReducer);
 __publicField(_StoreModel, "state", INITIAL_DATA);
 let StoreModel = _StoreModel;
 const GARAGE_PAGE_STYLES = {
-  "garage-page": "_garage-page_13l4w_1",
-  "garage-page_list": "_garage-page_list_13l4w_5",
-  "garage-page--hidden": "_garage-page--hidden_13l4w_10"
+  "garage-page": "_garage-page_wxdub_1",
+  "garage-page_title": "_garage-page_title_wxdub_5",
+  "garage-page_list": "_garage-page_list_wxdub_11",
+  "garage-page_bottom-wrapper": "_garage-page_bottom-wrapper_wxdub_16",
+  "garage-page--hidden": "_garage-page--hidden_wxdub_19"
 };
 class GaragePageView {
   constructor(parent) {
@@ -256,7 +258,7 @@ class GaragePageView {
   createGarageTitle() {
     this.garageTitle = createBaseElement({
       tag: TAG_NAMES.H2,
-      cssClasses: [GARAGE_PAGE_STYLES.title]
+      cssClasses: [GARAGE_PAGE_STYLES["garage-page_title"]]
     });
     return this.garageTitle;
   }
@@ -274,7 +276,7 @@ class GaragePageView {
     });
     const garageBottomWrapper = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [GARAGE_PAGE_STYLES["bottom-wrapper"]]
+      cssClasses: [GARAGE_PAGE_STYLES["garage-page_bottom-wrapper"]]
     });
     garageBottomWrapper.append(this.garageTitle, this.raceTracksList);
     this.page.append(garageBottomWrapper);
@@ -446,8 +448,14 @@ class ButtonModel {
   }
 }
 const RACE_TRACK_STYLES = {
-  "race-track__bottom-wrapper": "_race-track__bottom-wrapper_ow0gl_1",
-  "race-track__car-svg-wrapper": "_race-track__car-svg-wrapper_ow0gl_6"
+  "race-track": "_race-track_fjuox_1",
+  "race-track__top-wrapper": "_race-track__top-wrapper_fjuox_6",
+  "race-track__bottom-wrapper": "_race-track__bottom-wrapper_fjuox_11",
+  "race-track__car-svg-wrapper": "_race-track__car-svg-wrapper_fjuox_18",
+  "race-track_car-button": "_race-track_car-button_fjuox_23",
+  "race-track_engine-button": "_race-track_engine-button_fjuox_36",
+  "race-track__name-car": "_race-track__name-car_fjuox_54",
+  "race-track__flag-img": "_race-track__flag-img_fjuox_59"
 };
 const RACE_TRACK_BUTTON_TEXT = {
   SELECT_CAR: "Select",
@@ -490,14 +498,14 @@ class RaceTrackView {
   createSelectCarButton() {
     this.selectCarButton = new ButtonModel({
       text: RACE_TRACK_BUTTON_TEXT.SELECT_CAR,
-      classes: [RACE_TRACK_STYLES["race-track_button"]]
+      classes: [RACE_TRACK_STYLES["race-track_car-button"]]
     });
     return this.selectCarButton;
   }
   createRemoveCarButton() {
     this.removeCarButton = new ButtonModel({
       text: RACE_TRACK_BUTTON_TEXT.REMOVE_CAR,
-      classes: [RACE_TRACK_STYLES["race-track_button"]]
+      classes: [RACE_TRACK_STYLES["race-track_car-button"]]
     });
     return this.removeCarButton;
   }
@@ -512,21 +520,24 @@ class RaceTrackView {
   createStartEngineButton() {
     this.startEngineButton = new ButtonModel({
       text: RACE_TRACK_BUTTON_TEXT.START_ENGINE,
-      classes: [RACE_TRACK_STYLES["race-track_button"]]
+      classes: [RACE_TRACK_STYLES["race-track_engine-button"]]
     });
     return this.startEngineButton;
   }
   createStopEngineButton() {
     this.stopEngineButton = new ButtonModel({
       text: RACE_TRACK_BUTTON_TEXT.STOP_ENGINE,
-      classes: [RACE_TRACK_STYLES["race-track_button"]]
+      classes: [RACE_TRACK_STYLES["race-track_engine-button"]]
     });
+    this.stopEngineButton.setDisabled();
     return this.stopEngineButton;
   }
   createCarSVG() {
-    this.carSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const svgURL = "http://www.w3.org/2000/svg";
+    const carID = "car";
+    this.carSVG = document.createElementNS(svgURL, TAG_NAMES.SVG);
     this.carSVG.classList.add(RACE_TRACK_STYLES["race-track__car-img"]);
-    this.carSVG.appendChild(createSVGUse("car"));
+    this.carSVG.appendChild(createSVGUse(carID));
     changeSVGFill(this.carSVG, this.carData.color);
     return this.carSVG;
   }
@@ -556,10 +567,16 @@ class RaceTrackView {
       tag: TAG_NAMES.DIV,
       cssClasses: [RACE_TRACK_STYLES["race-track__bottom-wrapper"]]
     });
+    const svgURL = "http://www.w3.org/2000/svg";
+    const flagID = "race-flag";
+    const raceFlag = document.createElementNS(svgURL, TAG_NAMES.SVG);
+    raceFlag.classList.add(RACE_TRACK_STYLES["race-track__flag-img"]);
+    raceFlag.appendChild(createSVGUse(flagID));
     bottomRaceTrackWrapper.append(
       this.startEngineButton.getHTML(),
       this.stopEngineButton.getHTML(),
-      this.carSVGWrapper
+      this.carSVGWrapper,
+      raceFlag
     );
     this.raceTrack.append(topRaceTrackWrapper, bottomRaceTrackWrapper);
     return this.raceTrack;
@@ -605,11 +622,16 @@ class GaragePageModel {
           payload: data
         });
         this.drawRaceTracks(data);
-        console.log(StoreModel.getState());
+        this.drawGarageTitle();
       }
       return data;
     }).catch(() => {
     });
+  }
+  drawGarageTitle() {
+    const title = this.garagePageView.getGarageTitle();
+    const textContent = `Garage (${StoreModel.getState().currentCars.length})`;
+    title.textContent = textContent;
   }
   drawRaceTracks(cars) {
     cars.forEach((car) => {
@@ -778,4 +800,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-fbb47c3d.js.map
+//# sourceMappingURL=main-fdbba00a.js.map

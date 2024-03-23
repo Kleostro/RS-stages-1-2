@@ -1,23 +1,88 @@
-._garage-page_13l4w_1 {
+._garage-page_wxdub_1 {
   opacity: 1;
   transition: opacity 0.5s;
 }
-._garage-page_list_13l4w_5 {
+._garage-page_title_wxdub_5 {
+  margin-bottom: var(--small-offset);
+  font: var(--second-font);
+  letter-spacing: 1px;
+  color: var(--garage-title-color);
+}
+._garage-page_list_wxdub_11 {
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
-._garage-page--hidden_13l4w_10 {
+._garage-page_bottom-wrapper_wxdub_16 {
+  padding: 0 var(--small-offset);
+}
+._garage-page--hidden_wxdub_19 {
   opacity: 0;
-}._race-track__bottom-wrapper_ow0gl_1 {
+}._race-track_fjuox_1 {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--small-offset) / 2);
+}
+._race-track__top-wrapper_fjuox_6 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--small-offset) / 4);
+}
+._race-track__bottom-wrapper_fjuox_11 {
+  position: relative;
   display: flex;
   border-bottom: 3px solid var(--white);
   border-bottom-style: dashed;
+  gap: calc(var(--small-offset) / 4);
 }
-._race-track__car-svg-wrapper_ow0gl_6 {
+._race-track__car-svg-wrapper_fjuox_18 {
   display: flex;
   max-width: 100px;
   max-height: 40px;
+}
+._race-track_car-button_fjuox_23 {
+  border-radius: 4px;
+  padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
+  color: var(--car-button-color);
+  background-color: var(--car-button-bg);
+  transition: color 0.3s, background-color 0.3s;
+}
+@media (hover: hover) {
+  ._race-track_car-button_fjuox_23:hover {
+    color: var(--car-button-color-hover);
+    background-color: var(--car-button-bg-hover);
+  }
+}
+._race-track_engine-button_fjuox_36 {
+  border-radius: 4px;
+  padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
+  height: -moz-max-content;
+  height: max-content;
+  color: var(--engine-button-color);
+  background-color: var(--engine-button-bg);
+  transition: color 0.3s, background-color 0.3s;
+}
+._race-track_engine-button_fjuox_36:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  ._race-track_engine-button_fjuox_36:hover {
+    color: var(--engine-button-color-hover);
+    background-color: var(--engine-button-bg-hover);
+  }
+}
+._race-track__name-car_fjuox_54 {
+  font: var(--small-font);
+  letter-spacing: 1px;
+  color: var(--car-name-color);
+}
+._race-track__flag-img_fjuox_59 {
+  position: absolute;
+  right: 15%;
+  bottom: 0;
+  width: 50px;
+  height: 50px;
 }._winners-page_1umj9_1 {
   opacity: 1;
   transition: opacity 0.5s;
@@ -150,5 +215,16 @@ img {
   --button-bg: #416440;
   --button-bg-hover: #3e803c;
   --button-color: #f3ffbd;
+  --garage-title-color: #e2e8c3e0;
+  --car-button-bg: #ffe8bc;
+  --car-button-bg-hover: #a9720e;
+  --car-button-color: #8e4200;
+  --car-button-color-hover: #ffdfbd;
+  --car-name-color: #cdc5fb;
+  --engine-button-bg: #abeab0;
+  --engine-button-bg-hover: #336b38;
+  --engine-button-color: #6b3201;
+  --engine-button-color-hover: #daa577;
   --small-font: 400 14px "Roboto", sans-serif;
+  --second-font: 600 25px "Roboto", sans-serif;
 }
