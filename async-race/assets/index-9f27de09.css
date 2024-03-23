@@ -1,23 +1,23 @@
-._garage-page_wxdub_1 {
+._garage-page_vslgy_1 {
   opacity: 1;
   transition: opacity 0.5s;
 }
-._garage-page_title_wxdub_5 {
-  margin-bottom: var(--small-offset);
-  font: var(--second-font);
-  letter-spacing: 1px;
-  color: var(--garage-title-color);
-}
-._garage-page_list_wxdub_11 {
+._garage-page_list_vslgy_5 {
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
-._garage-page_bottom-wrapper_wxdub_16 {
+._garage-page_bottom-wrapper_vslgy_10 {
   padding: 0 var(--small-offset);
 }
-._garage-page--hidden_wxdub_19 {
+._garage-page--hidden_vslgy_13 {
   opacity: 0;
+}
+._garage-page_title_vslgy_16, ._garage-page_info_vslgy_16 {
+  margin-bottom: calc(var(--small-offset) / 2);
+  font: var(--second-font);
+  letter-spacing: 1px;
+  color: var(--garage-title-color);
 }._race-track_fjuox_1 {
   display: flex;
   flex-direction: column;

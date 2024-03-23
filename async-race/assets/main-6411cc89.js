@@ -120,41 +120,38 @@ const PAGES_IDS = {
   GARAGE_PAGE: "garage",
   WINNERS_PAGE: "winners"
 };
-const _RouterModel = class _RouterModel {
-  constructor() {
+class RouterModel {
+  constructor(pages) {
+    __publicField(this, "pages");
+    __publicField(this, "currentPage");
+    __publicField(this, "pathSegmentsToKeep", 2);
+    this.pages = pages;
     document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
-      const currentPath = window.location.pathname.split("/").slice(_RouterModel.pathSegmentsToKeep + 1).join("/");
-      _RouterModel.navigateTo(currentPath);
+      const currentPath = window.location.pathname.split("/").slice(this.pathSegmentsToKeep + 1).join("/");
+      this.navigateTo(currentPath);
     });
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      _RouterModel.handleRequest(window.location.pathname);
+      this.handleRequest(window.location.pathname);
     });
   }
-  static setPages(pages) {
-    _RouterModel.pages = pages;
-  }
-  static navigateTo(route) {
+  navigateTo(route) {
     this.handleRequest(route);
     const pathnameApp = window.location.pathname.split("/").slice(1, this.pathSegmentsToKeep + 1).join("/");
     window.history.pushState({}, "", `/${pathnameApp}/${route}`);
   }
-  static handleRequest(path) {
+  handleRequest(path) {
     var _a, _b;
     const pathParts = path.split("/");
-    const hasRoute = _RouterModel.pages.has(pathParts[0]);
+    const hasRoute = this.pages.has(pathParts[0]);
     if (!hasRoute) {
       window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
       return;
     }
-    (_a = _RouterModel.currentPage) == null ? void 0 : _a.hide();
-    _RouterModel.currentPage = _RouterModel.pages.get(path);
-    (_b = _RouterModel.currentPage) == null ? void 0 : _b.show();
+    (_a = this.currentPage) == null ? void 0 : _a.hide();
+    this.currentPage = this.pages.get(path);
+    (_b = this.currentPage) == null ? void 0 : _b.show();
   }
-};
-__publicField(_RouterModel, "pages");
-__publicField(_RouterModel, "currentPage");
-__publicField(_RouterModel, "pathSegmentsToKeep", 2);
-let RouterModel = _RouterModel;
+}
 const createBaseElement = ({
   tag,
   cssClasses = [],
@@ -186,9 +183,45 @@ class AppView {
     return this.pagesContainer;
   }
 }
+const API_METHODS = {
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  PATCH: "PATCH",
+  DELETE: "DELETE"
+};
+const QUERY_PARAMS = {
+  PAGE: "_page",
+  LIMIT: "_limit",
+  SORT: "_sort",
+  ORDER: "_order",
+  ID: "id",
+  STATUS: "status"
+};
+const QUERY_VALUES = {
+  ASC: "asc",
+  DESC: "desc",
+  WINS: "wins",
+  TIME: "time",
+  ID: "id",
+  DEFAULT_PAGE: 1,
+  DEFAULT_CARS_LIMIT: 7,
+  DEFAULT_WINNERS_LIMIT: 10,
+  NO_CARS_LIMIT: 0,
+  NO_WINNERS_LIMIT: 0
+};
+const API_URLS = {
+  CARS: "http://127.0.0.1:3000/garage/",
+  WINNERS: "http://127.0.0.1:3000/winners/",
+  ENGINE: "http://127.0.0.1:3000/engine/"
+};
+const API_ERRORS = {
+  INCORRECT_PARAMS: "Incorrect params"
+};
 const INITIAL_DATA = {
   currentCars: [],
-  currentWinners: []
+  currentWinners: [],
+  garagePage: 1
 };
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -229,20 +262,23 @@ __publicField(_StoreModel, "rootReducer", rootReducer);
 __publicField(_StoreModel, "state", INITIAL_DATA);
 let StoreModel = _StoreModel;
 const GARAGE_PAGE_STYLES = {
-  "garage-page": "_garage-page_wxdub_1",
-  "garage-page_title": "_garage-page_title_wxdub_5",
-  "garage-page_list": "_garage-page_list_wxdub_11",
-  "garage-page_bottom-wrapper": "_garage-page_bottom-wrapper_wxdub_16",
-  "garage-page--hidden": "_garage-page--hidden_wxdub_19"
+  "garage-page": "_garage-page_vslgy_1",
+  "garage-page_list": "_garage-page_list_vslgy_5",
+  "garage-page_bottom-wrapper": "_garage-page_bottom-wrapper_vslgy_10",
+  "garage-page--hidden": "_garage-page--hidden_vslgy_13",
+  "garage-page_title": "_garage-page_title_vslgy_16",
+  "garage-page_info": "_garage-page_info_vslgy_16"
 };
 class GaragePageView {
   constructor(parent) {
     __publicField(this, "parent");
     __publicField(this, "garageTitle");
+    __publicField(this, "pageInfo");
     __publicField(this, "raceTracksList");
     __publicField(this, "page");
     this.parent = parent;
     this.garageTitle = this.createGarageTitle();
+    this.pageInfo = this.createPageInfo();
     this.raceTracksList = this.createRaceTracksList();
     this.page = this.createHTML();
   }
@@ -251,6 +287,9 @@ class GaragePageView {
   }
   getGarageTitle() {
     return this.garageTitle;
+  }
+  getPageInfo() {
+    return this.pageInfo;
   }
   getRaceTracksList() {
     return this.raceTracksList;
@@ -262,6 +301,13 @@ class GaragePageView {
     });
     return this.garageTitle;
   }
+  createPageInfo() {
+    this.pageInfo = createBaseElement({
+      tag: TAG_NAMES.H3,
+      cssClasses: [GARAGE_PAGE_STYLES["garage-page_info"]]
+    });
+    return this.pageInfo;
+  }
   createRaceTracksList() {
     this.raceTracksList = createBaseElement({
       tag: TAG_NAMES.UL,
@@ -272,55 +318,26 @@ class GaragePageView {
   createHTML() {
     this.page = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [GARAGE_PAGE_STYLES.page]
+      cssClasses: [GARAGE_PAGE_STYLES["garage-page"]]
     });
     const garageBottomWrapper = createBaseElement({
       tag: TAG_NAMES.DIV,
       cssClasses: [GARAGE_PAGE_STYLES["garage-page_bottom-wrapper"]]
     });
-    garageBottomWrapper.append(this.garageTitle, this.raceTracksList);
+    garageBottomWrapper.append(
+      this.garageTitle,
+      this.pageInfo,
+      this.raceTracksList
+    );
     this.page.append(garageBottomWrapper);
     this.parent.append(this.page);
     return this.page;
   }
 }
-const API_METHODS = {
-  GET: "GET",
-  POST: "POST",
-  PUT: "PUT",
-  PATCH: "PATCH",
-  DELETE: "DELETE"
-};
-const QUERY_PARAMS = {
-  PAGE: "_page",
-  LIMIT: "_limit",
-  SORT: "_sort",
-  ORDER: "_order",
-  ID: "id",
-  STATUS: "status"
-};
-const QUERY_VALUES = {
-  ASC: "asc",
-  DESC: "desc",
-  WINS: "wins",
-  TIME: "time",
-  ID: "id",
-  DEFAULT_PAGE: 1,
-  DEFAULT_CARS_LIMIT: 7,
-  DEFAULT_WINNERS_LIMIT: 10
-};
-const API_URLS = {
-  CARS: "http://127.0.0.1:3000/garage/",
-  WINNERS: "http://127.0.0.1:3000/winners/",
-  ENGINE: "http://127.0.0.1:3000/engine/"
-};
-const API_ERRORS = {
-  INCORRECT_PARAMS: "Incorrect params"
-};
 class ApiModel {
   static async getCars(params) {
     const pageParam = params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE;
-    const limitParam = params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.DEFAULT_CARS_LIMIT;
+    const limitParam = params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.NO_CARS_LIMIT;
     const url = `${API_URLS.CARS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}`;
     return this.fetchData(url, API_METHODS.GET);
   }
@@ -333,7 +350,7 @@ class ApiModel {
       params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE
     );
     const limitParam = Number(
-      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.DEFAULT_WINNERS_LIMIT
+      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.NO_WINNERS_LIMIT
     );
     const sortParam = String(params.get(QUERY_PARAMS.SORT) ?? QUERY_VALUES.ID);
     const orderParam = String(
@@ -622,19 +639,29 @@ class GaragePageModel {
           payload: data
         });
         this.drawRaceTracks(data);
-        this.drawGarageTitle();
+        this.drawGarageTitle(data.length);
+        this.drawPageInfo();
       }
       return data;
     }).catch(() => {
     });
   }
-  drawGarageTitle() {
+  drawGarageTitle(countCars) {
     const title = this.garagePageView.getGarageTitle();
-    const textContent = `Garage (${StoreModel.getState().currentCars.length})`;
+    const textContent = `Garage (${countCars})`;
     title.textContent = textContent;
   }
+  drawPageInfo() {
+    const pageInfo = this.garagePageView.getPageInfo();
+    const textContent = `Page: ${StoreModel.getState().garagePage}`;
+    pageInfo.textContent = textContent;
+  }
   drawRaceTracks(cars) {
-    cars.forEach((car) => {
+    const currentPage = StoreModel.getState().garagePage - 1;
+    const start = currentPage * QUERY_VALUES.DEFAULT_CARS_LIMIT;
+    const end = start + QUERY_VALUES.DEFAULT_CARS_LIMIT;
+    const currentCars = cars.slice(start, end);
+    currentCars.forEach((car) => {
       const raceTrack = new RaceTrackModel(car);
       this.garagePageView.getRaceTracksList().append(raceTrack.getHTML());
     });
@@ -750,9 +777,11 @@ class HeaderView {
   }
 }
 class HeaderModel {
-  constructor() {
+  constructor(router) {
     __publicField(this, "headerView");
     __publicField(this, "header");
+    __publicField(this, "router");
+    this.router = router;
     this.headerView = new HeaderView();
     this.header = this.headerView.getHTML();
     this.setHandlerToButtons();
@@ -764,10 +793,10 @@ class HeaderModel {
     const garageButton = this.headerView.getGarageButton().getHTML();
     const winnersButton = this.headerView.getWinnersButton().getHTML();
     garageButton.addEventListener(EVENT_NAMES.CLICK, () => {
-      RouterModel.navigateTo(PAGES_IDS.WINNERS_PAGE);
+      this.router.navigateTo(PAGES_IDS.WINNERS_PAGE);
     });
     winnersButton.addEventListener(EVENT_NAMES.CLICK, () => {
-      RouterModel.navigateTo(PAGES_IDS.GARAGE_PAGE);
+      this.router.navigateTo(PAGES_IDS.GARAGE_PAGE);
     });
   }
 }
@@ -775,15 +804,18 @@ class AppModel {
   constructor() {
     __publicField(this, "appView");
     __publicField(this, "parent");
+    __publicField(this, "router");
     this.appView = new AppView();
     this.parent = this.appView.getHTML();
-    RouterModel.setPages(this.initPages());
+    const routes = this.initPages();
+    this.router = new RouterModel(routes);
+    const header2 = new HeaderModel(this.router);
+    this.parent.prepend(header2.getHTML());
   }
   getHTML() {
     return this.parent;
   }
   initPages() {
-    const header2 = new HeaderModel();
     const garagePage = new GaragePageModel(this.parent);
     const winnersPage = new WinnersPageModel(this.parent);
     const pages = new Map(
@@ -793,11 +825,10 @@ class AppModel {
         [PAGES_IDS.WINNERS_PAGE]: winnersPage
       })
     );
-    this.parent.prepend(header2.getHTML());
     return pages;
   }
 }
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-fdbba00a.js.map
+//# sourceMappingURL=main-6411cc89.js.map
