@@ -461,7 +461,7 @@ const createSVGUse = (id) => {
   use.setAttributeNS(
     "http://www.w3.org/1999/xlink",
     "xlink:href",
-    `${String(sprite)}#${id}`
+    `./${String(sprite)}#${id}`
   );
   return use;
 };
@@ -783,4 +783,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-392543f2.js.map
+//# sourceMappingURL=main-e5b5959e.js.map
