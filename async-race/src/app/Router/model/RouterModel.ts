@@ -2,37 +2,57 @@ import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import PAGES_IDS from '../../../pages/types/enums.ts';
 import type PageInterface from '../../../pages/types/interfaces.ts';
 
-class RouterModel {
-  private pages: Map<string, PageInterface>;
+export default class RouterModel {
+  private static pages: Map<string, PageInterface>;
 
-  private currentPage: PageInterface | undefined = undefined;
+  private static currentPage: PageInterface | undefined = undefined;
 
-  constructor(pages: Map<string, PageInterface>) {
-    this.pages = pages;
+  private static pathSegmentsToKeep = 2;
 
+  constructor() {
     document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
-      this.navigateTo(window.location.pathname);
+      const currentPath = window.location.pathname
+        .split('/')
+        .slice(RouterModel.pathSegmentsToKeep + 1)
+        .join('/');
+      RouterModel.navigateTo(currentPath);
     });
 
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      this.handleRequest(window.location.pathname);
+      RouterModel.handleRequest(window.location.pathname);
     });
   }
 
-  public navigateTo(route: string): void {
-    this.handleRequest(route);
-    window.history.pushState(route, '', route);
+  public static setPages(pages: Map<string, PageInterface>): void {
+    RouterModel.pages = pages;
   }
 
-  private handleRequest(path: string): void {
-    if (!this.pages.has(path)) {
+  public static navigateTo(route: string): void {
+    this.handleRequest(route);
+
+    const pathnameApp = window.location.pathname
+      .split('/')
+      .slice(1, this.pathSegmentsToKeep + 1)
+      .join('/');
+    window.history.pushState({}, '', `/${pathnameApp}/${route}`);
+
+    // window.history.pushState(route, '', route);
+  }
+
+  private static handleRequest(path: string): void {
+    // if (!RouterModel.pages.has(path)) {
+    //   window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
+    // }
+
+    const pathParts = path.split('/');
+    const hasRoute = RouterModel.pages.has(pathParts[0]);
+    if (!hasRoute) {
       window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
+      return;
     }
 
-    this.currentPage?.hide();
-    this.currentPage = this.pages.get(path);
-    this.currentPage?.show();
+    RouterModel.currentPage?.hide();
+    RouterModel.currentPage = RouterModel.pages.get(path);
+    RouterModel.currentPage?.show();
   }
 }
-
-export default RouterModel;

@@ -11,18 +11,10 @@ class AppModel {
 
   private parent: HTMLDivElement;
 
-  private router: RouterModel;
-
   constructor() {
     this.appView = new AppView();
     this.parent = this.appView.getHTML();
-
-    const pages = this.initPages();
-
-    this.router = new RouterModel(pages);
-
-    const header = new HeaderModel(this.router);
-    this.parent.prepend(header.getHTML());
+    RouterModel.setPages(this.initPages());
   }
 
   public getHTML(): HTMLDivElement {
@@ -30,6 +22,7 @@ class AppModel {
   }
 
   private initPages(): Map<string, PageInterface> {
+    const header = new HeaderModel();
     const garagePage = new GaragePageModel(this.parent);
     const winnersPage = new WinnersPageModel(this.parent);
     const pages: Map<string, PageInterface> = new Map(
@@ -39,6 +32,7 @@ class AppModel {
         [PAGES_IDS.WINNERS_PAGE]: winnersPage,
       }),
     );
+    this.parent.prepend(header.getHTML());
     return pages;
   }
 }

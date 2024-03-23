@@ -14,6 +14,7 @@ export const TAG_NAMES = {
   TEXTAREA: 'textarea',
   SPAN: 'span',
   DIV: 'div',
+  SVG: 'svg',
   I: 'i',
   P: 'p',
   UL: 'ul',

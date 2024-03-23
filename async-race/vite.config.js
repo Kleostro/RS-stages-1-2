@@ -1,13 +1,18 @@
 import Inspect from 'vite-plugin-inspect';
-import { resolve } from 'path';
+import path, { resolve } from 'path';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import autoprefixer from 'autoprefixer';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
+import createSvgSpritePlugin from 'vite-plugin-svg-spriter';
+
+const SRC_PATH = path.resolve(__dirname, 'src');
+const SVG_FOLDER_PATH = path.resolve(SRC_PATH, 'img');
 
 export default {
-  publicDir: 'public',
+  publicDir: 'assets/',
   plugins: [
+    createSvgSpritePlugin({ svgFolder: SVG_FOLDER_PATH }),
     Inspect(),
     ViteImageOptimizer({
       png: {
