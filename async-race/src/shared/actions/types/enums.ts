@@ -1,6 +1,7 @@
 const ACTIONS = {
-  GET_CURRENT_CARS: 'getCurrentCars',
-  GET_CURRENT_WINNERS: 'getCurrentWinners',
+  GET_CARS: 'getCars',
+  GET_WINNERS: 'getWinners',
+  ADD_NEW_CAR: 'addNewCar',
 } as const;
 
 export default ACTIONS;

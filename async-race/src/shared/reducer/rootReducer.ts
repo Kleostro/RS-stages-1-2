@@ -7,15 +7,20 @@ export const rootReducer: Reducer<State, Action> = (
   action: Action,
 ): State => {
   switch (action.type) {
-    case 'getCurrentCars':
+    case 'getCars':
       return {
         ...state,
-        currentCars: [...state.currentCars, ...action.payload],
+        cars: [...state.cars, ...action.payload],
       };
-    case 'getCurrentWinners':
+    case 'getWinners':
       return {
         ...state,
-        currentWinners: [...state.currentWinners, ...action.payload],
+        winners: [...state.winners, ...action.payload],
+      };
+    case 'addNewCar':
+      return {
+        ...state,
+        newCar: [...state.newCar, ...action.payload],
       };
     default:
       return state;

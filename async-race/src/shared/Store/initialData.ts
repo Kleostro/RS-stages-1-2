@@ -1,8 +1,9 @@
 import type { State } from '../reducer/types/interfaces.ts';
 
 const INITIAL_DATA: State = {
-  currentCars: [],
-  currentWinners: [],
+  cars: [],
+  winners: [],
+  newCar: [],
   garagePage: 1,
 } as const;
 

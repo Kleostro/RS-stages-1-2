@@ -22,6 +22,10 @@ class InputModel {
   public setEnabled(): void {
     this.input.disabled = IS_DISABLED.ENABLED;
   }
+
+  public clear(): void {
+    this.input.value = '';
+  }
 }
 
 export default InputModel;

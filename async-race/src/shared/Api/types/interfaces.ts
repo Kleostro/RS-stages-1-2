@@ -1,7 +1,7 @@
 export interface CarInterface {
   name: string;
   color: string;
-  id: number;
+  id?: number;
 }
 
 export interface WinnerInterface {

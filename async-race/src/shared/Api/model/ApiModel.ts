@@ -1,6 +1,7 @@
 import {
   API_ERRORS,
   API_METHODS,
+  API_HEADERS,
   API_URLS,
   QUERY_PARAMS,
   QUERY_VALUES,
@@ -17,23 +18,29 @@ import type {
 class ApiModel {
   public static async getCars(
     params: Map<string, number>,
-  ): Promise<CarInterface[] | null> {
-    const pageParam =
-      params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE;
-    const limitParam =
-      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.NO_CARS_LIMIT;
-    const url = `${API_URLS.CARS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}`;
+  ): Promise<CarInterface[] | undefined> {
+    const pageParam = params.get(QUERY_PARAMS.PAGE);
+    const limitParam = params.get(QUERY_PARAMS.LIMIT);
+
+    let url = '';
+    if (!pageParam || !limitParam) {
+      url = `${API_URLS.CARS}/`;
+    } else {
+      url = `${API_URLS.CARS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}`;
+    }
     return this.fetchData<CarInterface[]>(url, API_METHODS.GET);
   }
 
-  public static async getCarById(id: string): Promise<CarInterface | null> {
+  public static async getCarById(
+    id: number,
+  ): Promise<CarInterface | undefined> {
     const url = `${API_URLS.CARS}${id}`;
     return this.fetchData<CarInterface>(url, API_METHODS.GET);
   }
 
   public static async getWinners(
     params: Map<string, WinnersQueryParamsInterface>,
-  ): Promise<WinnerInterface[] | null> {
+  ): Promise<WinnerInterface[] | undefined> {
     const pageParam = Number(
       params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE,
     );
@@ -50,34 +57,36 @@ class ApiModel {
   }
 
   public static async getWinnerById(
-    id: string,
-  ): Promise<WinnerInterface | null> {
+    id: number,
+  ): Promise<WinnerInterface | undefined> {
     const url = `${API_URLS.WINNERS}${id}`;
     return this.fetchData<WinnerInterface>(url, API_METHODS.GET);
   }
 
   public static async createCar(
     car: CarInterface,
-  ): Promise<CarInterface | null> {
+  ): Promise<CarInterface | undefined> {
     const url = API_URLS.CARS;
     return this.fetchData<CarInterface>(url, API_METHODS.POST, car);
   }
 
   public static async createWinner(
     winner: WinnerInterface,
-  ): Promise<WinnerInterface | null> {
+  ): Promise<WinnerInterface | undefined> {
     const url = API_URLS.WINNERS;
     return this.fetchData<WinnerInterface>(url, API_METHODS.POST, winner);
   }
 
-  public static async deleteCarById(id: string): Promise<CarInterface | null> {
+  public static async deleteCarById(
+    id: string,
+  ): Promise<CarInterface | undefined> {
     const url = `${API_URLS.CARS}${id}`;
     return this.fetchData<CarInterface>(url, API_METHODS.DELETE);
   }
 
   public static async deleteWinnerById(
     id: string,
-  ): Promise<WinnerInterface | null> {
+  ): Promise<WinnerInterface | undefined> {
     const url = `${API_URLS.WINNERS}${id}`;
     return this.fetchData<WinnerInterface>(url, API_METHODS.DELETE);
   }
@@ -85,7 +94,7 @@ class ApiModel {
   public static async updateCarById(
     id: string,
     car: CarInterface,
-  ): Promise<CarInterface | null> {
+  ): Promise<CarInterface | undefined> {
     const url = `${API_URLS.CARS}${id}`;
     return this.fetchData<CarInterface>(url, API_METHODS.PUT, car);
   }
@@ -93,14 +102,14 @@ class ApiModel {
   public static async updateWinnerById(
     id: string,
     winner: WinnerInterface,
-  ): Promise<WinnerInterface | null> {
+  ): Promise<WinnerInterface | undefined> {
     const url = `${API_URLS.WINNERS}${id}`;
     return this.fetchData<WinnerInterface>(url, API_METHODS.PUT, winner);
   }
 
   public static async startCarEngine(
     params: Map<string, EngineInterface>,
-  ): Promise<EngineCarDataInterface | null> {
+  ): Promise<EngineCarDataInterface | undefined> {
     const idParam = Number(params.get(QUERY_PARAMS.ID));
     const statusParam = String(params.get(QUERY_PARAMS.STATUS));
     if (!idParam || !statusParam) {
@@ -112,7 +121,7 @@ class ApiModel {
 
   public static async stopCarEngine(
     params: Map<string, EngineInterface>,
-  ): Promise<EngineCarDataInterface | null> {
+  ): Promise<EngineCarDataInterface | undefined> {
     const idParam = Number(params.get(QUERY_PARAMS.ID));
     const statusParam = String(params.get(QUERY_PARAMS.STATUS));
     if (!idParam || !statusParam) {
@@ -124,7 +133,7 @@ class ApiModel {
 
   public static async driveCarEngine(
     params: Map<string, EngineInterface>,
-  ): Promise<EngineCarDriveInterface | null> {
+  ): Promise<EngineCarDriveInterface | undefined> {
     const idParam = Number(params.get(QUERY_PARAMS.ID));
     const statusParam = String(params.get(QUERY_PARAMS.STATUS));
     if (!idParam || !statusParam) {
@@ -138,15 +147,17 @@ class ApiModel {
     url: string,
     method: string,
     body?: T | null,
-  ): Promise<T | null> {
-    const data: T | null = await fetch(url, {
+  ): Promise<T | undefined> {
+    return fetch(url, {
       method,
+      headers: {
+        [API_HEADERS.CONTENT_TYPE]: API_HEADERS.APPLICATION_JSON,
+      },
       body: body ? JSON.stringify(body) : null,
     })
       .then((response) => response.json())
       .then((json: T) => json)
-      .catch(() => null);
-    return data;
+      .catch(() => undefined);
   }
 }
 

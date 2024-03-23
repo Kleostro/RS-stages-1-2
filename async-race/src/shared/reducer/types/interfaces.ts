@@ -4,7 +4,8 @@ import type {
 } from '../../Api/types/interfaces.ts';
 
 export interface State {
-  currentCars: CarInterface[];
-  currentWinners: WinnerInterface[];
+  cars: CarInterface[];
+  winners: WinnerInterface[];
+  newCar: CarInterface[];
   garagePage: number;
 }

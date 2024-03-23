@@ -7,17 +7,26 @@ import ApiModel from '../../../shared/Api/model/ApiModel.ts';
 import ACTIONS from '../../../shared/actions/types/enums.ts';
 import type { CarInterface } from '../../../shared/Api/types/interfaces.ts';
 import RaceTrackModel from '../../../entities/RaceTrack/model/RaceTrackModel.ts';
+import CreateCarFormModel from '../../../widgets/CreateCarForm/model/CreateCarFormModel.ts';
+import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
+import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 
 class GaragePageModel implements PageInterface {
   private parent: HTMLDivElement;
 
+  private singletonMediator: MediatorModel<unknown>;
+
   private garagePageView: GaragePageView;
+
+  private createCarForm: CreateCarFormModel;
 
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.singletonMediator = MediatorModel.getInstance();
     this.garagePageView = new GaragePageView(this.parent);
+    this.createCarForm = new CreateCarFormModel();
     this.page = this.garagePageView.getHTML();
     this.init();
   }
@@ -39,7 +48,7 @@ class GaragePageModel implements PageInterface {
       .then((data) => {
         if (data) {
           StoreModel.dispatch({
-            type: ACTIONS.GET_CURRENT_CARS,
+            type: ACTIONS.GET_CARS,
             payload: data,
           });
           this.drawRaceTracks(data);
@@ -59,7 +68,11 @@ class GaragePageModel implements PageInterface {
 
   private drawPageInfo(): void {
     const pageInfo = this.garagePageView.getPageInfo();
-    const textContent = `Page: ${StoreModel.getState().garagePage}`;
+    const maxPage = Math.ceil(
+      StoreModel.getState().cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT,
+    );
+    const currentPage = StoreModel.getState().garagePage;
+    const textContent = `Page: ${currentPage} / ${maxPage} `;
     pageInfo.textContent = textContent;
   }
 
@@ -74,9 +87,29 @@ class GaragePageModel implements PageInterface {
     });
   }
 
+  private redrawCarsInfo(): void {
+    const allCarsCount = StoreModel.getState().cars.length;
+
+    ApiModel.getCarById(allCarsCount)
+      .then((newCar) => {
+        if (newCar) {
+          this.drawRaceTracks([newCar]);
+        }
+      })
+      .catch(() => {});
+
+    this.drawGarageTitle(allCarsCount);
+    this.drawPageInfo();
+  }
+
   private init(): void {
     this.hide();
     this.getInitialDataCars();
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.NEW_CAR,
+      this.redrawCarsInfo.bind(this),
+    );
+    this.page.prepend(this.createCarForm.getHTML());
   }
 }
 

@@ -28,6 +28,11 @@ export const QUERY_VALUES = {
   NO_WINNERS_LIMIT: 0,
 } as const;
 
+export const API_HEADERS = {
+  CONTENT_TYPE: 'Content-Type',
+  APPLICATION_JSON: 'application/json',
+} as const;
+
 export const API_URLS = {
   CARS: 'http://127.0.0.1:3000/garage/',
   WINNERS: 'http://127.0.0.1:3000/winners/',
