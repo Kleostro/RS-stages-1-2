@@ -7,6 +7,8 @@ class GaragePageView {
 
   private garageTitle: HTMLHeadingElement;
 
+  private pageInfo: HTMLHeadingElement;
+
   private raceTracksList: HTMLUListElement;
 
   private page: HTMLDivElement;
@@ -14,6 +16,7 @@ class GaragePageView {
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.garageTitle = this.createGarageTitle();
+    this.pageInfo = this.createPageInfo();
     this.raceTracksList = this.createRaceTracksList();
     this.page = this.createHTML();
   }
@@ -24,6 +27,10 @@ class GaragePageView {
 
   public getGarageTitle(): HTMLHeadingElement {
     return this.garageTitle;
+  }
+
+  public getPageInfo(): HTMLHeadingElement {
+    return this.pageInfo;
   }
 
   public getRaceTracksList(): HTMLUListElement {
@@ -38,6 +45,15 @@ class GaragePageView {
     return this.garageTitle;
   }
 
+  private createPageInfo(): HTMLHeadingElement {
+    this.pageInfo = createBaseElement({
+      tag: TAG_NAMES.H3,
+      cssClasses: [GARAGE_PAGE_STYLES['garage-page_info']],
+    });
+
+    return this.pageInfo;
+  }
+
   private createRaceTracksList(): HTMLUListElement {
     this.raceTracksList = createBaseElement({
       tag: TAG_NAMES.UL,
@@ -50,7 +66,7 @@ class GaragePageView {
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [GARAGE_PAGE_STYLES.page],
+      cssClasses: [GARAGE_PAGE_STYLES['garage-page']],
     });
 
     const garageBottomWrapper = createBaseElement({
@@ -58,7 +74,11 @@ class GaragePageView {
       cssClasses: [GARAGE_PAGE_STYLES['garage-page_bottom-wrapper']],
     });
 
-    garageBottomWrapper.append(this.garageTitle, this.raceTracksList);
+    garageBottomWrapper.append(
+      this.garageTitle,
+      this.pageInfo,
+      this.raceTracksList,
+    );
     this.page.append(garageBottomWrapper);
     this.parent.append(this.page);
     return this.page;

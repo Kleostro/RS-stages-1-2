@@ -24,6 +24,8 @@ export const QUERY_VALUES = {
   DEFAULT_PAGE: 1,
   DEFAULT_CARS_LIMIT: 7,
   DEFAULT_WINNERS_LIMIT: 10,
+  NO_CARS_LIMIT: 0,
+  NO_WINNERS_LIMIT: 0,
 } as const;
 
 export const API_URLS = {

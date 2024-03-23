@@ -1,3 +1,4 @@
+import { QUERY_VALUES } from '../../../shared/Api/types/enums.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import GaragePageView from '../view/GaragePageView.ts';
@@ -42,21 +43,32 @@ class GaragePageModel implements PageInterface {
             payload: data,
           });
           this.drawRaceTracks(data);
-          this.drawGarageTitle();
+          this.drawGarageTitle(data.length);
+          this.drawPageInfo();
         }
         return data;
       })
       .catch(() => {});
   }
 
-  private drawGarageTitle(): void {
+  private drawGarageTitle(countCars: number): void {
     const title = this.garagePageView.getGarageTitle();
-    const textContent = `Garage (${StoreModel.getState().currentCars.length})`;
+    const textContent = `Garage (${countCars})`;
     title.textContent = textContent;
   }
 
+  private drawPageInfo(): void {
+    const pageInfo = this.garagePageView.getPageInfo();
+    const textContent = `Page: ${StoreModel.getState().garagePage}`;
+    pageInfo.textContent = textContent;
+  }
+
   private drawRaceTracks(cars: CarInterface[]): void {
-    cars.forEach((car) => {
+    const currentPage = StoreModel.getState().garagePage - 1;
+    const start = currentPage * QUERY_VALUES.DEFAULT_CARS_LIMIT;
+    const end = start + QUERY_VALUES.DEFAULT_CARS_LIMIT;
+    const currentCars = cars.slice(start, end);
+    currentCars.forEach((car) => {
       const raceTrack = new RaceTrackModel(car);
       this.garagePageView.getRaceTracksList().append(raceTrack.getHTML());
     });

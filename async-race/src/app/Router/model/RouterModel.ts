@@ -3,56 +3,52 @@ import PAGES_IDS from '../../../pages/types/enums.ts';
 import type PageInterface from '../../../pages/types/interfaces.ts';
 
 export default class RouterModel {
-  private static pages: Map<string, PageInterface>;
+  private pages: Map<string, PageInterface>;
 
-  private static currentPage: PageInterface | undefined = undefined;
+  private currentPage: PageInterface | undefined = undefined;
 
-  private static pathSegmentsToKeep = 2;
+  private pathSegmentsToKeep = 2;
 
-  constructor() {
+  constructor(pages: Map<string, PageInterface>) {
+    this.pages = pages;
     document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
       const currentPath = window.location.pathname
         .split('/')
-        .slice(RouterModel.pathSegmentsToKeep + 1)
+        .slice(this.pathSegmentsToKeep + 1)
         .join('/');
-      RouterModel.navigateTo(currentPath);
+      this.navigateTo(currentPath);
     });
 
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
-      RouterModel.handleRequest(window.location.pathname);
+      const currentPath = window.location.pathname
+        .split('/')
+        .slice(this.pathSegmentsToKeep + 1)
+        .join('/');
+      this.handleRequest(currentPath);
     });
   }
 
-  public static setPages(pages: Map<string, PageInterface>): void {
-    RouterModel.pages = pages;
-  }
-
-  public static navigateTo(route: string): void {
+  public navigateTo(route: string): void {
     this.handleRequest(route);
 
     const pathnameApp = window.location.pathname
       .split('/')
       .slice(1, this.pathSegmentsToKeep + 1)
       .join('/');
-    window.history.pushState({}, '', `/${pathnameApp}/${route}`);
-
-    // window.history.pushState(route, '', route);
+    const url = `/${pathnameApp}/${route}`;
+    window.history.pushState({}, '', url);
   }
 
-  private static handleRequest(path: string): void {
-    // if (!RouterModel.pages.has(path)) {
-    //   window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
-    // }
-
+  private handleRequest(path: string): void {
     const pathParts = path.split('/');
-    const hasRoute = RouterModel.pages.has(pathParts[0]);
+    const hasRoute = this.pages.has(pathParts[0]);
     if (!hasRoute) {
       window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
       return;
     }
 
-    RouterModel.currentPage?.hide();
-    RouterModel.currentPage = RouterModel.pages.get(path);
-    RouterModel.currentPage?.show();
+    this.currentPage?.hide();
+    this.currentPage = this.pages.get(path);
+    this.currentPage?.show();
   }
 }

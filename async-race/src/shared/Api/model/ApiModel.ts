@@ -21,7 +21,7 @@ class ApiModel {
     const pageParam =
       params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE;
     const limitParam =
-      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.DEFAULT_CARS_LIMIT;
+      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.NO_CARS_LIMIT;
     const url = `${API_URLS.CARS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}`;
     return this.fetchData<CarInterface[]>(url, API_METHODS.GET);
   }
@@ -38,7 +38,7 @@ class ApiModel {
       params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE,
     );
     const limitParam = Number(
-      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.DEFAULT_WINNERS_LIMIT,
+      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.NO_WINNERS_LIMIT,
     );
     const sortParam = String(params.get(QUERY_PARAMS.SORT) ?? QUERY_VALUES.ID);
     const orderParam = String(

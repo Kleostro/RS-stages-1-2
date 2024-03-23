@@ -6,4 +6,5 @@ import type {
 export interface State {
   currentCars: CarInterface[];
   currentWinners: WinnerInterface[];
+  garagePage: number;
 }

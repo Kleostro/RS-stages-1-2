@@ -2,13 +2,6 @@
   opacity: 1;
   transition: opacity 0.5s;
 
-  &_title {
-    margin-bottom: var(--small-offset);
-    font: var(--second-font);
-    letter-spacing: 1px;
-    color: var(--garage-title-color);
-  }
-
   &_list {
     display: flex;
     flex-direction: column;
@@ -21,5 +14,13 @@
 
   &--hidden {
     opacity: 0;
+  }
+
+  &_title,
+  &_info {
+    margin-bottom: calc(var(--small-offset) / 2);
+    font: var(--second-font);
+    letter-spacing: 1px;
+    color: var(--garage-title-color);
   }
 }
