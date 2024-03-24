@@ -7,8 +7,28 @@
     display: flex;
     gap: calc(var(--small-offset) / 2);
 
-    @media (max-width: (850px)) {
+    @media (max-width: (1000px)) {
       flex-direction: column;
+    }
+  }
+
+  &_more-button {
+    border-radius: 4px;
+    padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
+    width: max-content;
+    height: max-content;
+    color: var(--car-button-color);
+    background-color: var(--car-button-bg);
+    transition:
+      color 0.3s,
+      background-color 0.3s,
+      opacity 0.3s;
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--car-button-color-hover);
+        background-color: var(--car-button-bg-hover);
+      }
     }
   }
 

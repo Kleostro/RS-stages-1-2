@@ -1,3 +1,4 @@
+import ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import GARAGE_PAGE_STYLES from './garagePage.module.scss';
@@ -11,12 +12,15 @@ class GaragePageView {
 
   private pageInfo: HTMLHeadingElement;
 
+  private moreCarsButton: ButtonModel;
+
   private raceTracksList: HTMLUListElement;
 
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.moreCarsButton = this.createMoreCarsButton();
     this.raceTrackTopWrapper = this.createRaceTrackTopWrapper();
     this.garageTitle = this.createGarageTitle();
     this.pageInfo = this.createPageInfo();
@@ -42,6 +46,10 @@ class GaragePageView {
 
   public getRaceTracksList(): HTMLUListElement {
     return this.raceTracksList;
+  }
+
+  public getMoreCarsButton(): ButtonModel {
+    return this.moreCarsButton;
   }
 
   private createGarageTitle(): HTMLHeadingElement {
@@ -70,12 +78,23 @@ class GaragePageView {
     return this.raceTracksList;
   }
 
+  private createMoreCarsButton(): ButtonModel {
+    const buttonText = 'Create 100 cars';
+    this.moreCarsButton = new ButtonModel({
+      text: buttonText,
+      classes: [GARAGE_PAGE_STYLES['garage-page_more-button']],
+    });
+
+    return this.moreCarsButton;
+  }
+
   private createRaceTrackTopWrapper(): HTMLDivElement {
     this.raceTrackTopWrapper = createBaseElement({
       tag: TAG_NAMES.DIV,
       cssClasses: [GARAGE_PAGE_STYLES['garage-page_top-wrapper']],
     });
 
+    this.raceTrackTopWrapper.append(this.moreCarsButton.getHTML());
     return this.raceTrackTopWrapper;
   }
 

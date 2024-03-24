@@ -1,4 +1,4 @@
-import { QUERY_VALUES } from '../../../shared/Api/types/enums.ts';
+import { QUERY_PARAMS, QUERY_VALUES } from '../../../shared/Api/types/enums.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import GaragePageView from '../view/GaragePageView.ts';
@@ -13,6 +13,8 @@ import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import PreviewCarModel from '../../../features/PreviewCar/model/PreviewCarModel.ts';
 import ChangeCarFormModel from '../../../widgets/ChangeCarForm/model/ChangeCarFormModel.ts';
 import type ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
+import { EVENT_NAMES } from '../../../shared/types/enums.ts';
+import createRandomDataCars from '../../../utils/createRandomDataCars.ts';
 
 class GaragePageModel implements PageInterface {
   private parent: HTMLDivElement;
@@ -55,7 +57,14 @@ class GaragePageModel implements PageInterface {
   }
 
   private getInitialDataCars(): void {
-    ApiModel.getCars(new Map())
+    ApiModel.getCars(
+      new Map(
+        Object.entries({
+          [QUERY_PARAMS.PAGE]: QUERY_VALUES.DEFAULT_PAGE,
+          [QUERY_PARAMS.LIMIT]: QUERY_VALUES.DEFAULT_CARS_LIMIT,
+        }),
+      ),
+    )
       .then((data) => {
         if (data) {
           StoreModel.dispatch({
@@ -63,10 +72,21 @@ class GaragePageModel implements PageInterface {
             payload: data,
           });
           this.drawRaceTracks(data);
-          this.drawGarageTitle(data.length);
-          this.drawPageInfo();
         }
         return data;
+      })
+      .catch(() => {});
+
+    ApiModel.getCars(new Map())
+      .then((cars) => {
+        if (cars) {
+          StoreModel.dispatch({
+            type: ACTIONS.GET_CARS,
+            payload: cars,
+          });
+          this.drawGarageTitle(cars.length);
+          this.drawPageInfo();
+        }
       })
       .catch(() => {});
   }
@@ -79,20 +99,22 @@ class GaragePageModel implements PageInterface {
 
   private drawPageInfo(): void {
     const pageInfo = this.garagePageView.getPageInfo();
-    const maxPage = Math.ceil(
-      StoreModel.getState().cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT,
-    );
-    const currentPage = StoreModel.getState().garagePage;
-    const textContent = `Page: ${currentPage} / ${maxPage} `;
-    pageInfo.textContent = textContent;
+    ApiModel.getCars(new Map())
+      .then((cars) => {
+        if (cars) {
+          const maxPage = Math.ceil(
+            cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT,
+          );
+          const currentPage = StoreModel.getState().garagePage;
+          const textContent = `Page: ${currentPage} / ${maxPage} `;
+          pageInfo.textContent = textContent;
+        }
+      })
+      .catch(() => {});
   }
 
   private drawRaceTracks(cars: CarInterface[]): void {
-    const currentPage = StoreModel.getState().garagePage - 1;
-    const start = currentPage * QUERY_VALUES.DEFAULT_CARS_LIMIT;
-    const end = start + QUERY_VALUES.DEFAULT_CARS_LIMIT;
-    const currentCars = cars.slice(start, end);
-    currentCars.forEach((car) => {
+    cars.forEach((car) => {
       const raceTrack = new RaceTrackModel(car);
       this.removeButtons.push(raceTrack.getView().getRemoveCarButton());
       this.garagePageView.getRaceTracksList().append(raceTrack.getHTML());
@@ -105,9 +127,32 @@ class GaragePageModel implements PageInterface {
     this.drawPageInfo();
   }
 
+  private moreCarsHandler(): void {
+    const carsCount = 100;
+    const cars = createRandomDataCars(carsCount);
+    cars.forEach((car) => {
+      ApiModel.createCar(car)
+        .then(() => {
+          StoreModel.dispatch({
+            type: ACTIONS.GET_CARS,
+            payload: [car],
+          });
+        })
+        .then(() => {
+          this.redrawCarsInfo();
+        })
+        .catch(() => {});
+    });
+  }
+
   private init(): void {
     this.hide();
     this.getInitialDataCars();
+    const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
+    moreCarsButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.moreCarsHandler.bind(this),
+    );
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
       const allCars = StoreModel.getState().cars;
       const newCar = [allCars[allCars.length - 1]];
