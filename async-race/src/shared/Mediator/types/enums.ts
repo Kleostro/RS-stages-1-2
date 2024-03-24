@@ -9,6 +9,8 @@ const MEDIATOR_EVENTS = {
   UPDATE_CAR: 'updateCar',
   CHANGE_COLOR_PREVIEW_CAR: 'changeColorPreviewCar',
   CHANGE_NAME_PREVIEW_CAR: 'changeNamePreviewCar',
+  CHANGE_GARAGE_PAGE: 'changeGaragePage',
+  CHANGE_WINNER_PAGE: 'changeWinnerPage',
 } as const;
 
 export default MEDIATOR_EVENTS;

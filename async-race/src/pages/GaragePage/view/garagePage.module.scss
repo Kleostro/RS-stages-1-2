@@ -12,6 +12,12 @@
     }
   }
 
+  &_bottom-wrapper {
+    display: grid;
+    grid-template-columns: repeat(9, max-content);
+    gap: calc(var(--small-offset) / 2);
+  }
+
   &_more-button {
     border-radius: 4px;
     padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
@@ -35,7 +41,19 @@
   &_list {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    grid-column: 12 span;
+    grid-row: 3;
+    gap: 20px;
+  }
+
+  &_title {
+    grid-column: 3 span;
+    grid-row: 1;
+  }
+
+  &_info {
+    grid-column: 3 span;
+    grid-row: 2;
   }
 
   &--hidden {
@@ -44,7 +62,6 @@
 
   &_title,
   &_info {
-    margin-bottom: calc(var(--small-offset) / 2);
     font: var(--second-font);
     letter-spacing: 1px;
     color: var(--garage-title-color);

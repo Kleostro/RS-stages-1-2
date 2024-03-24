@@ -29,3 +29,17 @@ export const deleteCar = (
   payload: value,
   type: ACTIONS.DELETE_CAR,
 });
+
+export const setTotalGaragePages = (
+  value: number,
+): ActionWithPayload<number, typeof ACTIONS.setTotalGaragePages> => ({
+  payload: value,
+  type: ACTIONS.setTotalGaragePages,
+});
+
+export const changeGaragePage = (
+  value: number,
+): ActionWithPayload<number, typeof ACTIONS.CHANGE_GARAGE_PAGE> => ({
+  payload: value,
+  type: ACTIONS.CHANGE_GARAGE_PAGE,
+});

@@ -15,6 +15,7 @@ import ChangeCarFormModel from '../../../widgets/ChangeCarForm/model/ChangeCarFo
 import type ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import createRandomDataCars from '../../../utils/createRandomDataCars.ts';
+import PaginationModel from '../../../features/Pagination/model/PaginationModel.ts';
 
 class GaragePageModel implements PageInterface {
   private parent: HTMLDivElement;
@@ -31,6 +32,8 @@ class GaragePageModel implements PageInterface {
 
   private previewCar: PreviewCarModel;
 
+  private pagination: PaginationModel;
+
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
@@ -40,6 +43,7 @@ class GaragePageModel implements PageInterface {
     this.createCarForm = new CreateCarFormModel();
     this.changeCarForm = new ChangeCarFormModel();
     this.previewCar = new PreviewCarModel();
+    this.pagination = new PaginationModel();
     this.page = this.garagePageView.getHTML();
     this.init();
   }
@@ -67,10 +71,6 @@ class GaragePageModel implements PageInterface {
     )
       .then((data) => {
         if (data) {
-          StoreModel.dispatch({
-            type: ACTIONS.GET_CARS,
-            payload: data,
-          });
           this.drawRaceTracks(data);
         }
         return data;
@@ -105,6 +105,10 @@ class GaragePageModel implements PageInterface {
           const maxPage = Math.ceil(
             cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT,
           );
+          StoreModel.dispatch({
+            type: ACTIONS.setTotalGaragePages,
+            payload: maxPage,
+          });
           const currentPage = StoreModel.getState().garagePage;
           const textContent = `Page: ${currentPage} / ${maxPage} `;
           pageInfo.textContent = textContent;
@@ -114,11 +118,16 @@ class GaragePageModel implements PageInterface {
   }
 
   private drawRaceTracks(cars: CarInterface[]): void {
-    cars.forEach((car) => {
-      const raceTrack = new RaceTrackModel(car);
-      this.removeButtons.push(raceTrack.getView().getRemoveCarButton());
-      this.garagePageView.getRaceTracksList().append(raceTrack.getHTML());
-    });
+    if (
+      this.garagePageView.getRaceTracksList().children.length <
+      QUERY_VALUES.DEFAULT_CARS_LIMIT
+    ) {
+      cars.forEach((car) => {
+        const raceTrack = new RaceTrackModel(car);
+        this.removeButtons.push(raceTrack.getView().getRemoveCarButton());
+        this.garagePageView.getRaceTracksList().append(raceTrack.getHTML());
+      });
+    }
   }
 
   private redrawCarsInfo(): void {
@@ -137,12 +146,37 @@ class GaragePageModel implements PageInterface {
             type: ACTIONS.GET_CARS,
             payload: [car],
           });
+          this.drawRaceTracks([car]);
         })
         .then(() => {
           this.redrawCarsInfo();
         })
         .catch(() => {});
     });
+  }
+
+  private drawCurrentPage(): void {
+    const currentPage = StoreModel.getState().garagePage;
+    const textContent = `Page: ${currentPage} / ${StoreModel.getState().totalPages} `;
+    const pageInfo = this.garagePageView.getPageInfo();
+    pageInfo.textContent = textContent;
+
+    ApiModel.getCars(
+      new Map(
+        Object.entries({
+          [QUERY_PARAMS.PAGE]: currentPage,
+          [QUERY_PARAMS.LIMIT]: QUERY_VALUES.DEFAULT_CARS_LIMIT,
+        }),
+      ),
+    )
+      .then((data) => {
+        if (data) {
+          this.garagePageView.getRaceTracksList().innerHTML = '';
+          this.drawRaceTracks(data);
+        }
+        return data;
+      })
+      .catch(() => {});
   }
 
   private init(): void {
@@ -171,13 +205,20 @@ class GaragePageModel implements PageInterface {
       });
     });
 
-    this.garagePageView
-      .getRaceTrackTopWrapper()
-      .append(
-        this.createCarForm.getHTML(),
-        this.previewCar.getHTML(),
-        this.changeCarForm.getHTML(),
-      );
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
+      this.drawCurrentPage();
+    });
+
+    const raceTrackTopWrapper = this.garagePageView.getRaceTrackTopWrapper();
+    const raceTrackBottomWrapper =
+      this.garagePageView.getRaceTrackBottomWrapper();
+
+    raceTrackBottomWrapper.append(this.pagination.getHTML());
+    raceTrackTopWrapper.append(
+      this.createCarForm.getHTML(),
+      this.previewCar.getHTML(),
+      this.changeCarForm.getHTML(),
+    );
   }
 }
 
