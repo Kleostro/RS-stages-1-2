@@ -10,7 +10,9 @@
     font: var(--small-font);
     letter-spacing: 1px;
     white-space: nowrap;
+    text-align: center;
     text-overflow: ellipsis;
+    text-transform: capitalize;
     color: var(--garage-title-color);
   }
 

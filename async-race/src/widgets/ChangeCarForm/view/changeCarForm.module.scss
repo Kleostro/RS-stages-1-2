@@ -17,8 +17,14 @@
     background-color: var(--form-input-bg);
     transition:
       outline-offset 0.3s,
-      background-color 0.3s;
+      background-color 0.3s,
+      opacity 0.3s;
     cursor: pointer;
+
+    &:disabled {
+      opacity: 0.2;
+      pointer-events: none;
+    }
 
     &[type='text'] {
       padding-left: calc(var(--small-offset) / 2);

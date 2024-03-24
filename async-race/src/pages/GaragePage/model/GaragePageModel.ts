@@ -10,7 +10,9 @@ import RaceTrackModel from '../../../entities/RaceTrack/model/RaceTrackModel.ts'
 import CreateCarFormModel from '../../../widgets/CreateCarForm/model/CreateCarFormModel.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
-import PreviewCarModel from '../../../entities/PreviewCar/model/PreviewCarModel.ts';
+import PreviewCarModel from '../../../features/PreviewCar/model/PreviewCarModel.ts';
+import ChangeCarFormModel from '../../../widgets/ChangeCarForm/model/ChangeCarFormModel.ts';
+import type ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
 
 class GaragePageModel implements PageInterface {
   private parent: HTMLDivElement;
@@ -21,6 +23,10 @@ class GaragePageModel implements PageInterface {
 
   private createCarForm: CreateCarFormModel;
 
+  private removeButtons: ButtonModel[] = [];
+
+  private changeCarForm: ChangeCarFormModel;
+
   private previewCar: PreviewCarModel;
 
   private page: HTMLDivElement;
@@ -30,6 +36,7 @@ class GaragePageModel implements PageInterface {
     this.singletonMediator = MediatorModel.getInstance();
     this.garagePageView = new GaragePageView(this.parent);
     this.createCarForm = new CreateCarFormModel();
+    this.changeCarForm = new ChangeCarFormModel();
     this.previewCar = new PreviewCarModel();
     this.page = this.garagePageView.getHTML();
     this.init();
@@ -87,6 +94,7 @@ class GaragePageModel implements PageInterface {
     const currentCars = cars.slice(start, end);
     currentCars.forEach((car) => {
       const raceTrack = new RaceTrackModel(car);
+      this.removeButtons.push(raceTrack.getView().getRemoveCarButton());
       this.garagePageView.getRaceTracksList().append(raceTrack.getHTML());
     });
   }
@@ -101,8 +109,8 @@ class GaragePageModel implements PageInterface {
     this.hide();
     this.getInitialDataCars();
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
-      const allCarsCount = StoreModel.getState().cars.length;
-      const newCar = [StoreModel.getState().cars[allCarsCount - 1]];
+      const allCars = StoreModel.getState().cars;
+      const newCar = [allCars[allCars.length - 1]];
       this.redrawCarsInfo();
       this.drawRaceTracks(newCar);
     });
@@ -112,9 +120,19 @@ class GaragePageModel implements PageInterface {
       this.redrawCarsInfo.bind(this),
     );
 
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, () => {
+      this.removeButtons.forEach((button) => {
+        button.setEnabled();
+      });
+    });
+
     this.garagePageView
       .getRaceTrackTopWrapper()
-      .append(this.createCarForm.getHTML(), this.previewCar.getHTML());
+      .append(
+        this.createCarForm.getHTML(),
+        this.previewCar.getHTML(),
+        this.changeCarForm.getHTML(),
+      );
   }
 }
 

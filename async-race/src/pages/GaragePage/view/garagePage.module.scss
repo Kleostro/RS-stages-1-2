@@ -6,6 +6,10 @@
   &_top-wrapper {
     display: flex;
     gap: calc(var(--small-offset) / 2);
+
+    @media (max-width: (850px)) {
+      flex-direction: column;
+    }
   }
 
   &_list {

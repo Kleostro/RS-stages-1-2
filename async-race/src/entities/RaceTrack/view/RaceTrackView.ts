@@ -49,6 +49,14 @@ class RaceTrackView {
     return this.removeCarButton;
   }
 
+  public getNameCarSpan(): HTMLSpanElement {
+    return this.nameCarSpan;
+  }
+
+  public getCarSvg(): SVGSVGElement {
+    return this.carSVG;
+  }
+
   private createSelectCarButton(): ButtonModel {
     this.selectCarButton = new ButtonModel({
       text: RACE_TRACK_BUTTON_TEXT.SELECT_CAR,

@@ -92,7 +92,7 @@ class ApiModel {
   }
 
   public static async updateCarById(
-    id: string,
+    id: number,
     car: CarInterface,
   ): Promise<CarInterface | undefined> {
     const url = `${API_URLS.CARS}${id}`;
@@ -100,7 +100,7 @@ class ApiModel {
   }
 
   public static async updateWinnerById(
-    id: string,
+    id: number,
     winner: WinnerInterface,
   ): Promise<WinnerInterface | undefined> {
     const url = `${API_URLS.WINNERS}${id}`;

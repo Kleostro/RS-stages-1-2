@@ -5,6 +5,8 @@ const MEDIATOR_EVENTS = {
   DELETE_WINNER: 'deleteWinner',
   NEW_CAR: 'newCar',
   NEW_WINNER: 'newWinner',
+  SELECT_CAR: 'selectCar',
+  UPDATE_CAR: 'updateCar',
   CHANGE_COLOR_PREVIEW_CAR: 'changeColorPreviewCar',
   CHANGE_NAME_PREVIEW_CAR: 'changeNamePreviewCar',
 } as const;
