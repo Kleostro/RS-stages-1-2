@@ -3,14 +3,14 @@
   margin-bottom: var(--small-offset);
   border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 2);
-  width: 100%;
-  max-width: max-content;
+  max-width: 70%;
   background-color: var(--form-bg);
   gap: calc(var(--small-offset) / 2);
 
   input {
     outline: 2px solid var(--white);
     border-radius: var(--border-radius);
+    min-width: 50px;
     font: var(--small-font);
     letter-spacing: 1px;
     color: var(--form-input-color);

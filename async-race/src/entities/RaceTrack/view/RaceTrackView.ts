@@ -41,6 +41,14 @@ class RaceTrackView {
     return this.raceTrack;
   }
 
+  public getSelectCarButton(): ButtonModel {
+    return this.selectCarButton;
+  }
+
+  public getRemoveCarButton(): ButtonModel {
+    return this.removeCarButton;
+  }
+
   private createSelectCarButton(): ButtonModel {
     this.selectCarButton = new ButtonModel({
       text: RACE_TRACK_BUTTON_TEXT.SELECT_CAR,

@@ -50,6 +50,12 @@ class CreateCarFormModel {
 
     await ApiModel.createCar(newCarData);
 
+    const carsWithoutCreated = await ApiModel.getCars(new Map());
+
+    if (!carsWithoutCreated) {
+      return;
+    }
+
     StoreModel.dispatch({
       type: ACTIONS.GET_CARS,
       payload: [newCarData],
@@ -57,12 +63,14 @@ class CreateCarFormModel {
 
     StoreModel.dispatch({
       type: ACTIONS.ADD_NEW_CAR,
-      payload: [newCarData],
+      payload: carsWithoutCreated,
     });
 
     carNameInput.clear();
+    const initColor = '#000000';
+    carColorInput.getHTML().value = initColor;
     submitButton.setDisabled();
-    this.singletonMediator.notify(MEDIATOR_EVENTS.NEW_CAR, newCarData);
+    this.singletonMediator.notify(MEDIATOR_EVENTS.NEW_CAR, '');
   }
 
   private init(): void {

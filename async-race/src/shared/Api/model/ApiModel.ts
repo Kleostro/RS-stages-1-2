@@ -78,14 +78,14 @@ class ApiModel {
   }
 
   public static async deleteCarById(
-    id: string,
+    id: number,
   ): Promise<CarInterface | undefined> {
     const url = `${API_URLS.CARS}${id}`;
     return this.fetchData<CarInterface>(url, API_METHODS.DELETE);
   }
 
   public static async deleteWinnerById(
-    id: string,
+    id: number,
   ): Promise<WinnerInterface | undefined> {
     const url = `${API_URLS.WINNERS}${id}`;
     return this.fetchData<WinnerInterface>(url, API_METHODS.DELETE);

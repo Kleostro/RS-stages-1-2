@@ -22,3 +22,10 @@ export const addNewCar = (
   payload: value,
   type: ACTIONS.ADD_NEW_CAR,
 });
+
+export const deleteCar = (
+  value: CarInterface[],
+): ActionWithPayload<CarInterface[], typeof ACTIONS.DELETE_CAR> => ({
+  payload: value,
+  type: ACTIONS.DELETE_CAR,
+});

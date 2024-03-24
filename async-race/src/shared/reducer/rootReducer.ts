@@ -20,7 +20,12 @@ export const rootReducer: Reducer<State, Action> = (
     case 'addNewCar':
       return {
         ...state,
-        newCar: [...state.newCar, ...action.payload],
+        cars: [...action.payload],
+      };
+    case 'deleteCar':
+      return {
+        ...state,
+        cars: [...action.payload],
       };
     default:
       return state;

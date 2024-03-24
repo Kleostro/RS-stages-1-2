@@ -93,15 +93,6 @@ class GaragePageModel implements PageInterface {
 
   private redrawCarsInfo(): void {
     const allCarsCount = StoreModel.getState().cars.length;
-
-    ApiModel.getCarById(allCarsCount)
-      .then((newCar) => {
-        if (newCar) {
-          this.drawRaceTracks([newCar]);
-        }
-      })
-      .catch(() => {});
-
     this.drawGarageTitle(allCarsCount);
     this.drawPageInfo();
   }
@@ -109,8 +100,15 @@ class GaragePageModel implements PageInterface {
   private init(): void {
     this.hide();
     this.getInitialDataCars();
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
+      const allCarsCount = StoreModel.getState().cars.length;
+      const newCar = [StoreModel.getState().cars[allCarsCount - 1]];
+      this.redrawCarsInfo();
+      this.drawRaceTracks(newCar);
+    });
+
     this.singletonMediator.subscribe(
-      MEDIATOR_EVENTS.NEW_CAR,
+      MEDIATOR_EVENTS.DELETE_CAR,
       this.redrawCarsInfo.bind(this),
     );
 

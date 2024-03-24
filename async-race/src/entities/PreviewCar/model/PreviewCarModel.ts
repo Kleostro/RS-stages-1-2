@@ -30,6 +30,11 @@ class PreviewCarModel {
     this.previewCarView.getCarName().textContent = name;
   }
 
+  private setInitialStateFields(): void {
+    this.previewCarView.getCarName().textContent = '';
+    this.previewCarView.getCarSVG().removeAttribute('fill');
+  }
+
   private init(): void {
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
@@ -48,6 +53,10 @@ class PreviewCarModel {
         }
       },
     );
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
+      this.setInitialStateFields();
+    });
   }
 }
 
