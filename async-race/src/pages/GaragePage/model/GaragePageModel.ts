@@ -10,6 +10,7 @@ import RaceTrackModel from '../../../entities/RaceTrack/model/RaceTrackModel.ts'
 import CreateCarFormModel from '../../../widgets/CreateCarForm/model/CreateCarFormModel.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
+import PreviewCarModel from '../../../entities/PreviewCar/model/PreviewCarModel.ts';
 
 class GaragePageModel implements PageInterface {
   private parent: HTMLDivElement;
@@ -20,6 +21,8 @@ class GaragePageModel implements PageInterface {
 
   private createCarForm: CreateCarFormModel;
 
+  private previewCar: PreviewCarModel;
+
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
@@ -27,6 +30,7 @@ class GaragePageModel implements PageInterface {
     this.singletonMediator = MediatorModel.getInstance();
     this.garagePageView = new GaragePageView(this.parent);
     this.createCarForm = new CreateCarFormModel();
+    this.previewCar = new PreviewCarModel();
     this.page = this.garagePageView.getHTML();
     this.init();
   }
@@ -109,7 +113,10 @@ class GaragePageModel implements PageInterface {
       MEDIATOR_EVENTS.NEW_CAR,
       this.redrawCarsInfo.bind(this),
     );
-    this.page.prepend(this.createCarForm.getHTML());
+
+    this.garagePageView
+      .getRaceTrackTopWrapper()
+      .append(this.createCarForm.getHTML(), this.previewCar.getHTML());
   }
 }
 

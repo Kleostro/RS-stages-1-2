@@ -3,6 +3,11 @@
   opacity: 1;
   transition: opacity 0.5s;
 
+  &_top-wrapper {
+    display: flex;
+    gap: calc(var(--small-offset) / 2);
+  }
+
   &_list {
     display: flex;
     flex-direction: column;

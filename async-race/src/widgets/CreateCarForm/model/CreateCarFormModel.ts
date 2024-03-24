@@ -71,10 +71,18 @@ class CreateCarFormModel {
 
     carNameInput.addEventListener(EVENT_NAMES.INPUT, () => {
       this.checkForm();
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
+        carNameInput.value,
+      );
     });
 
     carColorInput.addEventListener(EVENT_NAMES.INPUT, () => {
       this.checkForm();
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
+        carColorInput.value,
+      );
     });
 
     this.getHTML().addEventListener(

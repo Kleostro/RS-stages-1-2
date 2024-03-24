@@ -1,0 +1,20 @@
+.preview-car {
+  display: flex;
+  flex-direction: column;
+  height: 57px;
+
+  &_name {
+    overflow: hidden;
+    min-height: 16px;
+    max-width: 100px;
+    font: var(--small-font);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--garage-title-color);
+  }
+
+  &_img {
+    max-width: 100px;
+  }
+}

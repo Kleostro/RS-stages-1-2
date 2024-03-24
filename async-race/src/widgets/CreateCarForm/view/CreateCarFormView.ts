@@ -39,8 +39,10 @@ class CreateCarFormView {
   }
 
   private createCarNameInput(): InputModel {
+    const placeholder = 'Car name';
     this.carNameInput = new InputModel({
       type: INPUT_TYPES.TEXT,
+      placeholder,
     });
 
     return this.carNameInput;

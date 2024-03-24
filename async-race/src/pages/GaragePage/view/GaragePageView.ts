@@ -5,6 +5,8 @@ import GARAGE_PAGE_STYLES from './garagePage.module.scss';
 class GaragePageView {
   private parent: HTMLDivElement;
 
+  private raceTrackTopWrapper: HTMLDivElement;
+
   private garageTitle: HTMLHeadingElement;
 
   private pageInfo: HTMLHeadingElement;
@@ -15,6 +17,7 @@ class GaragePageView {
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.raceTrackTopWrapper = this.createRaceTrackTopWrapper();
     this.garageTitle = this.createGarageTitle();
     this.pageInfo = this.createPageInfo();
     this.raceTracksList = this.createRaceTracksList();
@@ -23,6 +26,10 @@ class GaragePageView {
 
   public getHTML(): HTMLDivElement {
     return this.page;
+  }
+
+  public getRaceTrackTopWrapper(): HTMLDivElement {
+    return this.raceTrackTopWrapper;
   }
 
   public getGarageTitle(): HTMLHeadingElement {
@@ -63,6 +70,15 @@ class GaragePageView {
     return this.raceTracksList;
   }
 
+  private createRaceTrackTopWrapper(): HTMLDivElement {
+    this.raceTrackTopWrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [GARAGE_PAGE_STYLES['garage-page_top-wrapper']],
+    });
+
+    return this.raceTrackTopWrapper;
+  }
+
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       tag: TAG_NAMES.DIV,
@@ -79,7 +95,7 @@ class GaragePageView {
       this.pageInfo,
       this.raceTracksList,
     );
-    this.page.append(garageBottomWrapper);
+    this.page.append(this.raceTrackTopWrapper, garageBottomWrapper);
     this.parent.append(this.page);
     return this.page;
   }

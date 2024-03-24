@@ -20,6 +20,15 @@
       background-color 0.3s;
     cursor: pointer;
 
+    &[type='text'] {
+      padding-left: calc(var(--small-offset) / 2);
+    }
+
+    &[type='color']::-webkit-color-swatch {
+      border: none;
+      border-radius: var(--border-radius);
+    }
+
     @media (hover: hover) {
       &:hover {
         outline-offset: 3px;
