@@ -1,0 +1,427 @@
+._garage-page_3cu24_1 {
+  padding: 0 var(--small-offset);
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+._garage-page_top-wrapper_3cu24_6 {
+  display: flex;
+  gap: calc(var(--small-offset) / 2);
+}
+@media (max-width: 1000px) {
+  ._garage-page_top-wrapper_3cu24_6 {
+    flex-direction: column;
+  }
+}
+._garage-page_bottom-wrapper_3cu24_15 {
+  display: grid;
+  grid-template-columns: repeat(9, max-content);
+  gap: calc(var(--small-offset) / 2);
+}
+._garage-page_more-button_3cu24_20 {
+  border-radius: 4px;
+  padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
+  width: -moz-max-content;
+  width: max-content;
+  height: -moz-max-content;
+  height: max-content;
+  color: var(--car-button-color);
+  background-color: var(--car-button-bg);
+  transition: color 0.3s, background-color 0.3s, opacity 0.3s;
+}
+@media (hover: hover) {
+  ._garage-page_more-button_3cu24_20:hover {
+    color: var(--car-button-color-hover);
+    background-color: var(--car-button-bg-hover);
+  }
+}
+._garage-page_list_3cu24_35 {
+  display: flex;
+  flex-direction: column;
+  grid-column: 12 span;
+  grid-row: 3;
+  gap: 20px;
+}
+._garage-page_title_3cu24_42 {
+  grid-column: 3 span;
+  grid-row: 1;
+}
+._garage-page_info_3cu24_46 {
+  grid-column: 3 span;
+  grid-row: 2;
+}
+._garage-page--hidden_3cu24_50 {
+  opacity: 0;
+}
+._garage-page_title_3cu24_42, ._garage-page_info_3cu24_46 {
+  font: var(--second-font);
+  letter-spacing: 1px;
+  color: var(--garage-title-color);
+}._race-track_v0cb4_1 {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--small-offset) / 2);
+}
+._race-track__top-wrapper_v0cb4_6 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--small-offset) / 4);
+}
+._race-track__bottom-wrapper_v0cb4_11 {
+  position: relative;
+  display: flex;
+  border-bottom: 3px solid var(--white);
+  border-bottom-style: dashed;
+  gap: calc(var(--small-offset) / 4);
+}
+._race-track__car-svg-wrapper_v0cb4_18 {
+  display: flex;
+  max-width: 100px;
+  max-height: 40px;
+}
+._race-track_car-button_v0cb4_23 {
+  border-radius: 4px;
+  padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
+  color: var(--car-button-color);
+  background-color: var(--car-button-bg);
+  transition: color 0.3s, background-color 0.3s, opacity 0.3s;
+}
+._race-track_car-button_v0cb4_23:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  ._race-track_car-button_v0cb4_23:hover {
+    color: var(--car-button-color-hover);
+    background-color: var(--car-button-bg-hover);
+  }
+}
+._race-track_engine-button_v0cb4_40 {
+  border-radius: 4px;
+  padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
+  height: -moz-max-content;
+  height: max-content;
+  color: var(--engine-button-color);
+  background-color: var(--engine-button-bg);
+  transition: color 0.3s, background-color 0.3s opacity 0.3s;
+}
+._race-track_engine-button_v0cb4_40:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  ._race-track_engine-button_v0cb4_40:hover {
+    color: var(--engine-button-color-hover);
+    background-color: var(--engine-button-bg-hover);
+  }
+}
+._race-track__name-car_v0cb4_58 {
+  font: var(--small-font);
+  letter-spacing: 1px;
+  color: var(--car-name-color);
+}
+._race-track__flag-img_v0cb4_63 {
+  position: absolute;
+  right: 15%;
+  bottom: 0;
+  width: 50px;
+  height: 50px;
+}._form_d3y50_1 {
+  display: flex;
+  margin-bottom: var(--small-offset);
+  border-radius: var(--border-radius);
+  padding: calc(var(--small-offset) / 2);
+  max-width: 100%;
+  background-color: var(--form-bg);
+  gap: calc(var(--small-offset) / 2);
+}
+._form_d3y50_1 input {
+  outline: 2px solid var(--white);
+  border-radius: var(--border-radius);
+  min-width: 50px;
+  font: var(--small-font);
+  letter-spacing: 1px;
+  color: var(--form-input-color);
+  background-color: var(--form-input-bg);
+  transition: outline-offset 0.3s, background-color 0.3s;
+  cursor: pointer;
+}
+._form_d3y50_1 input[type=text] {
+  padding-left: calc(var(--small-offset) / 2);
+}
+._form_d3y50_1 input[type=color]::-webkit-color-swatch {
+  border: none;
+  border-radius: var(--border-radius);
+}
+@media (hover: hover) {
+  ._form_d3y50_1 input:hover {
+    outline-offset: 3px;
+    background-color: var(--form-input-bg-hover);
+  }
+}
+._form_submit-button_d3y50_34 {
+  border-radius: 4px;
+  padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
+  height: -moz-max-content;
+  height: max-content;
+  color: var(--engine-button-color);
+  background-color: var(--engine-button-bg);
+  transition: color 0.3s, background-color 0.3s, opacity 0.3s;
+}
+._form_submit-button_d3y50_34:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  ._form_submit-button_d3y50_34:hover {
+    color: var(--engine-button-color-hover);
+    background-color: var(--engine-button-bg-hover);
+  }
+}._preview-car_109cx_1 {
+  display: flex;
+  flex-direction: column;
+  height: 57px;
+}
+._preview-car_name_109cx_6 {
+  overflow: hidden;
+  min-height: 16px;
+  max-width: 100px;
+  font: var(--small-font);
+  letter-spacing: 1px;
+  white-space: nowrap;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  color: var(--garage-title-color);
+}
+._preview-car_img_109cx_18 {
+  max-width: 100px;
+}._form_193dy_1 {
+  display: flex;
+  margin-bottom: var(--small-offset);
+  border-radius: var(--border-radius);
+  padding: calc(var(--small-offset) / 2);
+  max-width: 100%;
+  background-color: var(--form-bg);
+  gap: calc(var(--small-offset) / 2);
+}
+._form_193dy_1 input {
+  outline: 2px solid var(--white);
+  border-radius: var(--border-radius);
+  min-width: 50px;
+  font: var(--small-font);
+  letter-spacing: 1px;
+  color: var(--form-input-color);
+  background-color: var(--form-input-bg);
+  transition: outline-offset 0.3s, background-color 0.3s, opacity 0.3s;
+  cursor: pointer;
+}
+._form_193dy_1 input:disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+._form_193dy_1 input[type=text] {
+  padding-left: calc(var(--small-offset) / 2);
+}
+._form_193dy_1 input[type=color]::-webkit-color-swatch {
+  border: none;
+  border-radius: var(--border-radius);
+}
+@media (hover: hover) {
+  ._form_193dy_1 input:hover {
+    outline-offset: 3px;
+    background-color: var(--form-input-bg-hover);
+  }
+}
+._form_submit-button_193dy_38 {
+  border-radius: 4px;
+  padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
+  height: -moz-max-content;
+  height: max-content;
+  color: var(--engine-button-color);
+  background-color: var(--engine-button-bg);
+  transition: color 0.3s, background-color 0.3s, opacity 0.3s;
+}
+._form_submit-button_193dy_38:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  ._form_submit-button_193dy_38:hover {
+    color: var(--engine-button-color-hover);
+    background-color: var(--engine-button-bg-hover);
+  }
+}._pagination_wrapper_ywqiz_1 {
+  display: flex;
+  align-items: center;
+  grid-row: 2;
+  gap: calc(var(--small-offset) / 4);
+}
+._pagination_button_ywqiz_7 {
+  border-radius: var(--border-radius);
+  padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
+  width: -moz-max-content;
+  width: max-content;
+  height: -moz-max-content;
+  height: max-content;
+  color: var(--car-button-color);
+  background-color: var(--car-button-bg);
+  transition: color 0.3s, background-color 0.3s, opacity 0.3s;
+}
+._pagination_button_ywqiz_7:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  ._pagination_button_ywqiz_7:hover {
+    color: var(--car-button-color-hover);
+    background-color: var(--car-button-bg-hover);
+  }
+}._winners-page_1umj9_1 {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+._winners-page--hidden_1umj9_5 {
+  opacity: 0;
+}._header_36v5w_1 {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--medium-offset);
+  padding: var(--small-offset);
+  background-color: var(--header-bg);
+  gap: var(--small-offset);
+}
+
+._header__garage-button_36v5w_10,
+._header__winners-button_36v5w_11 {
+  border-radius: var(--border-radius);
+  padding: calc(var(--little-offset) / 2) var(--little-offset);
+  width: -moz-max-content;
+  width: max-content;
+  font: var(--small-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--button-color);
+  background-color: var(--button-bg);
+  transition: background-color 0.3s, color 0.3s;
+}
+@media (hover: hover) {
+  ._header__garage-button_36v5w_10:hover,
+  ._header__winners-button_36v5w_11:hover {
+    color: var(--white);
+    background-color: var(--button-bg-hover);
+  }
+}ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  outline: none;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input,
+textarea {
+  outline: none;
+  border: none;
+}
+
+.visually-hidden {
+  position: fixed;
+  transform: scale(0);
+}
+
+.lock {
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.stop-scroll {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0 auto;
+  min-width: 320px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  background-color: var(--body-bg);
+  scroll-behavior: smooth;
+}
+
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+.stop-scroll {
+  overflow: hidden;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 var(--small-offset);
+  max-width: 1440px;
+}
+
+:root {
+  --little-offset: 20px;
+  --small-offset: 30px;
+  --medium-offset: 50px;
+  --large-offset: 100px;
+  --border-radius: 10px;
+  --white: #fff;
+  --black: #000;
+  --body-bg: #454545;
+  --header-bg: #2b2b2b;
+  --button-bg: #416440;
+  --button-bg-hover: #3e803c;
+  --button-color: #f3ffbd;
+  --garage-title-color: #e2e8c3e0;
+  --car-button-bg: #ffe8bc;
+  --car-button-bg-hover: #a9720e;
+  --car-button-color: #8e4200;
+  --car-button-color-hover: #ffdfbd;
+  --car-name-color: #cdc5fb;
+  --engine-button-bg: #abeab0;
+  --engine-button-bg-hover: #336b38;
+  --engine-button-color: #6b3201;
+  --engine-button-color-hover: #daa577;
+  --form-bg: #9a94bcbd;
+  --form-input-bg: #c9c2ede1;
+  --form-input-color: #416440;
+  --form-input-bg-hover: #9e8cdf;
+  --small-font: 400 14px "Roboto", sans-serif;
+  --second-font: 600 25px "Roboto", sans-serif;
+}
