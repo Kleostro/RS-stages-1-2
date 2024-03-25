@@ -1,23 +1,26 @@
-._garage-page_3cu24_1 {
+._garage-page_367ny_1 {
   padding: 0 var(--small-offset);
   opacity: 1;
   transition: opacity 0.5s;
 }
-._garage-page_top-wrapper_3cu24_6 {
+._garage-page_top-wrapper_367ny_6 {
   display: flex;
+  justify-content: center;
   gap: calc(var(--small-offset) / 2);
 }
 @media (max-width: 1000px) {
-  ._garage-page_top-wrapper_3cu24_6 {
+  ._garage-page_top-wrapper_367ny_6 {
     flex-direction: column;
+    align-items: center;
   }
 }
-._garage-page_bottom-wrapper_3cu24_15 {
+._garage-page_bottom-wrapper_367ny_17 {
   display: grid;
   grid-template-columns: repeat(9, max-content);
   gap: calc(var(--small-offset) / 2);
 }
-._garage-page_more-button_3cu24_20 {
+._garage-page_more-button_367ny_22 {
+  margin-top: calc(var(--small-offset) / 2);
   border-radius: 4px;
   padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
   width: -moz-max-content;
@@ -29,103 +32,126 @@
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
 @media (hover: hover) {
-  ._garage-page_more-button_3cu24_20:hover {
+  ._garage-page_more-button_367ny_22:hover {
     color: var(--car-button-color-hover);
     background-color: var(--car-button-bg-hover);
   }
 }
-._garage-page_list_3cu24_35 {
+._garage-page_list_367ny_38 {
+  position: relative;
   display: flex;
   flex-direction: column;
   grid-column: 12 span;
   grid-row: 3;
+  min-height: 737px;
   gap: 20px;
 }
-._garage-page_title_3cu24_42 {
-  grid-column: 3 span;
+._garage-page_title_367ny_47 {
+  position: relative;
+  grid-column: 5 span;
   grid-row: 1;
-}
-._garage-page_info_3cu24_46 {
-  grid-column: 3 span;
-  grid-row: 2;
-}
-._garage-page--hidden_3cu24_50 {
-  opacity: 0;
-}
-._garage-page_title_3cu24_42, ._garage-page_info_3cu24_46 {
+  width: 100%;
+  min-height: 28px;
   font: var(--second-font);
   letter-spacing: 1px;
   color: var(--garage-title-color);
-}._race-track_v0cb4_1 {
+}
+._garage-page--hidden_367ny_57 {
+  opacity: 0;
+}._race-track_87bl1_1 {
   display: flex;
   flex-direction: column;
   gap: calc(var(--small-offset) / 2);
 }
-._race-track__top-wrapper_v0cb4_6 {
+._race-track__top-wrapper_87bl1_6 {
   display: flex;
   align-items: center;
   gap: calc(var(--small-offset) / 4);
 }
-._race-track__bottom-wrapper_v0cb4_11 {
+._race-track__bottom-wrapper_87bl1_11 {
   position: relative;
   display: flex;
   border-bottom: 3px solid var(--white);
   border-bottom-style: dashed;
   gap: calc(var(--small-offset) / 4);
 }
-._race-track__car-svg-wrapper_v0cb4_18 {
+._race-track__car-svg-wrapper_87bl1_18 {
   display: flex;
   max-width: 100px;
   max-height: 40px;
 }
-._race-track_car-button_v0cb4_23 {
+._race-track_car-button_87bl1_23 {
+  position: relative;
   border-radius: 4px;
   padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
   color: var(--car-button-color);
   background-color: var(--car-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._race-track_car-button_v0cb4_23:disabled {
+._race-track_car-button_87bl1_23:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._race-track_car-button_v0cb4_23:hover {
+  ._race-track_car-button_87bl1_23:hover {
     color: var(--car-button-color-hover);
     background-color: var(--car-button-bg-hover);
   }
 }
-._race-track_engine-button_v0cb4_40 {
+._race-track_engine-button_87bl1_41 {
+  position: relative;
   border-radius: 4px;
   padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
   height: -moz-max-content;
   height: max-content;
   color: var(--engine-button-color);
   background-color: var(--engine-button-bg);
-  transition: color 0.3s, background-color 0.3s opacity 0.3s;
+  transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._race-track_engine-button_v0cb4_40:disabled {
+._race-track_engine-button_87bl1_41:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._race-track_engine-button_v0cb4_40:hover {
+  ._race-track_engine-button_87bl1_41:hover {
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
 }
-._race-track__name-car_v0cb4_58 {
+._race-track__name-car_87bl1_60 {
   font: var(--small-font);
   letter-spacing: 1px;
   color: var(--car-name-color);
 }
-._race-track__flag-img_v0cb4_63 {
+._race-track__flag-img_87bl1_65 {
   position: absolute;
-  right: 15%;
+  right: 5%;
   bottom: 0;
   width: 50px;
   height: 50px;
-}._form_d3y50_1 {
+}
+@media (max-width: 1000px) {
+  ._race-track__flag-img_87bl1_65 {
+    right: 14%;
+  }
+}._loader_146rx_1 {
+  position: absolute;
+  border-radius: var(--border-radius);
+  background: linear-gradient(to right, var(--body-bg) 8%, #bdbdbd 18%, var(--body-bg) 33%);
+  background-position: center;
+  background-color: var(--body-bg);
+  animation: _spin_146rx_1 5s ease-in-out infinite;
+  inset: -2px;
+}
+
+@keyframes _spin_146rx_1 {
+  0% {
+    background-position: center;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}._form_1bod2_1 {
   display: flex;
   margin-bottom: var(--small-offset);
   border-radius: var(--border-radius);
@@ -134,7 +160,7 @@
   background-color: var(--form-bg);
   gap: calc(var(--small-offset) / 2);
 }
-._form_d3y50_1 input {
+._form_1bod2_1 input {
   outline: 2px solid var(--white);
   border-radius: var(--border-radius);
   min-width: 50px;
@@ -145,20 +171,21 @@
   transition: outline-offset 0.3s, background-color 0.3s;
   cursor: pointer;
 }
-._form_d3y50_1 input[type=text] {
+._form_1bod2_1 input[type=text] {
   padding-left: calc(var(--small-offset) / 2);
 }
-._form_d3y50_1 input[type=color]::-webkit-color-swatch {
+._form_1bod2_1 input[type=color]::-webkit-color-swatch {
   border: none;
   border-radius: var(--border-radius);
 }
 @media (hover: hover) {
-  ._form_d3y50_1 input:hover {
+  ._form_1bod2_1 input:hover {
     outline-offset: 3px;
     background-color: var(--form-input-bg-hover);
   }
 }
-._form_submit-button_d3y50_34 {
+._form_submit-button_1bod2_34 {
+  position: relative;
   border-radius: 4px;
   padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
   height: -moz-max-content;
@@ -167,12 +194,12 @@
   background-color: var(--engine-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._form_submit-button_d3y50_34:disabled {
+._form_submit-button_1bod2_34:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._form_submit-button_d3y50_34:hover {
+  ._form_submit-button_1bod2_34:hover {
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
@@ -195,7 +222,7 @@
 }
 ._preview-car_img_109cx_18 {
   max-width: 100px;
-}._form_193dy_1 {
+}._form_e7sft_1 {
   display: flex;
   margin-bottom: var(--small-offset);
   border-radius: var(--border-radius);
@@ -204,7 +231,7 @@
   background-color: var(--form-bg);
   gap: calc(var(--small-offset) / 2);
 }
-._form_193dy_1 input {
+._form_e7sft_1 input {
   outline: 2px solid var(--white);
   border-radius: var(--border-radius);
   min-width: 50px;
@@ -215,25 +242,26 @@
   transition: outline-offset 0.3s, background-color 0.3s, opacity 0.3s;
   cursor: pointer;
 }
-._form_193dy_1 input:disabled {
+._form_e7sft_1 input:disabled {
   opacity: 0.2;
   pointer-events: none;
 }
-._form_193dy_1 input[type=text] {
+._form_e7sft_1 input[type=text] {
   padding-left: calc(var(--small-offset) / 2);
 }
-._form_193dy_1 input[type=color]::-webkit-color-swatch {
+._form_e7sft_1 input[type=color]::-webkit-color-swatch {
   border: none;
   border-radius: var(--border-radius);
 }
 @media (hover: hover) {
-  ._form_193dy_1 input:hover {
+  ._form_e7sft_1 input:hover {
     outline-offset: 3px;
     background-color: var(--form-input-bg-hover);
   }
 }
-._form_submit-button_193dy_38 {
-  border-radius: 4px;
+._form_submit-button_e7sft_38 {
+  position: relative;
+  border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
   height: -moz-max-content;
   height: max-content;
@@ -241,22 +269,30 @@
   background-color: var(--engine-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._form_submit-button_193dy_38:disabled {
+._form_submit-button_e7sft_38:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._form_submit-button_193dy_38:hover {
+  ._form_submit-button_e7sft_38:hover {
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
-}._pagination_wrapper_ywqiz_1 {
+}._pagination_wrapper_3hr9r_1 {
+  position: relative;
   display: flex;
   align-items: center;
   grid-row: 2;
+  width: 100%;
+  min-height: 30px;
   gap: calc(var(--small-offset) / 4);
 }
-._pagination_button_ywqiz_7 {
+._pagination_current_page_3hr9r_10 {
+  font: var(--second-font);
+  letter-spacing: 1px;
+  color: var(--garage-title-color);
+}
+._pagination_button_3hr9r_15 {
   border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
   width: -moz-max-content;
@@ -267,12 +303,12 @@
   background-color: var(--car-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._pagination_button_ywqiz_7:disabled {
+._pagination_button_3hr9r_15:disabled {
   opacity: 0.3;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._pagination_button_ywqiz_7:hover {
+  ._pagination_button_3hr9r_15:hover {
     color: var(--car-button-color-hover);
     background-color: var(--car-button-bg-hover);
   }
@@ -282,17 +318,18 @@
 }
 ._winners-page--hidden_1umj9_5 {
   opacity: 0;
-}._header_36v5w_1 {
+}._header_kx9jt_1 {
   display: flex;
   align-items: center;
-  margin-bottom: var(--medium-offset);
+  justify-content: center;
+  margin-bottom: var(--small-offset);
   padding: var(--small-offset);
   background-color: var(--header-bg);
   gap: var(--small-offset);
 }
 
-._header__garage-button_36v5w_10,
-._header__winners-button_36v5w_11 {
+._header__garage-button_kx9jt_11,
+._header__winners-button_kx9jt_12 {
   border-radius: var(--border-radius);
   padding: calc(var(--little-offset) / 2) var(--little-offset);
   width: -moz-max-content;
@@ -305,8 +342,8 @@
   transition: background-color 0.3s, color 0.3s;
 }
 @media (hover: hover) {
-  ._header__garage-button_36v5w_10:hover,
-  ._header__winners-button_36v5w_11:hover {
+  ._header__garage-button_kx9jt_11:hover,
+  ._header__winners-button_kx9jt_12:hover {
     color: var(--white);
     background-color: var(--button-bg-hover);
   }
@@ -422,6 +459,8 @@ img {
   --form-input-bg: #c9c2ede1;
   --form-input-color: #416440;
   --form-input-bg-hover: #9e8cdf;
+  --load-bg: #416440;
+  --load-bg--accent: #f3ffbd;
   --small-font: 400 14px "Roboto", sans-serif;
   --second-font: 600 25px "Roboto", sans-serif;
 }

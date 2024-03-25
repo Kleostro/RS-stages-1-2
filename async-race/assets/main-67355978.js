@@ -210,7 +210,10 @@ const QUERY_VALUES = {
   DEFAULT_CARS_LIMIT: 7,
   DEFAULT_WINNERS_LIMIT: 10,
   NO_CARS_LIMIT: 0,
-  NO_WINNERS_LIMIT: 0
+  NO_WINNERS_LIMIT: 0,
+  STARTED: "started",
+  STOPPED: "stopped",
+  DRIVE: "drive"
 };
 const API_HEADERS = {
   CONTENT_TYPE: "Content-Type",
@@ -220,6 +223,18 @@ const API_URLS = {
   CARS: "http://127.0.0.1:3000/garage/",
   WINNERS: "http://127.0.0.1:3000/winners/",
   ENGINE: "http://127.0.0.1:3000/engine/"
+};
+const STATUS_CODES = {
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+  BAD_GATEWAY: 502,
+  SERVICE_UNAVAILABLE: 503
 };
 const API_ERRORS = {
   INCORRECT_PARAMS: "Incorrect params"
@@ -235,7 +250,7 @@ const rootReducer = (state, action) => {
     case "getCars":
       return {
         ...state,
-        cars: [...state.cars, ...action.payload]
+        cars: [...action.payload]
       };
     case "getWinners":
       return {
@@ -245,7 +260,7 @@ const rootReducer = (state, action) => {
     case "addNewCar":
       return {
         ...state,
-        cars: [...action.payload]
+        cars: [...state.cars, ...action.payload]
       };
     case "deleteCar":
       return {
@@ -269,22 +284,27 @@ const rootReducer = (state, action) => {
 const _StoreModel = class _StoreModel {
   static dispatch(action) {
     _StoreModel.state = _StoreModel.rootReducer(_StoreModel.state, action);
-    _StoreModel.listeners.forEach((listener) => {
-      listener();
+    _StoreModel.listeners.forEach((_, key) => {
+      if (key in _StoreModel.state) {
+        const currentListener = _StoreModel.listeners.get(key);
+        if (currentListener) {
+          currentListener();
+        }
+      }
     });
     return action;
   }
   static getState() {
     return structuredClone(_StoreModel.state);
   }
-  static subscribe(listener) {
-    _StoreModel.listeners.add(listener);
+  static subscribe(key, listener) {
+    _StoreModel.listeners.set(key, listener);
     return () => {
-      _StoreModel.listeners.delete(listener);
+      _StoreModel.listeners.delete(key);
     };
   }
 };
-__publicField(_StoreModel, "listeners", /* @__PURE__ */ new Set());
+__publicField(_StoreModel, "listeners", /* @__PURE__ */ new Map());
 __publicField(_StoreModel, "rootReducer", rootReducer);
 __publicField(_StoreModel, "state", INITIAL_DATA);
 let StoreModel = _StoreModel;
@@ -327,14 +347,13 @@ class ButtonModel {
   }
 }
 const GARAGE_PAGE_STYLES = {
-  "garage-page": "_garage-page_3cu24_1",
-  "garage-page_top-wrapper": "_garage-page_top-wrapper_3cu24_6",
-  "garage-page_bottom-wrapper": "_garage-page_bottom-wrapper_3cu24_15",
-  "garage-page_more-button": "_garage-page_more-button_3cu24_20",
-  "garage-page_list": "_garage-page_list_3cu24_35",
-  "garage-page_title": "_garage-page_title_3cu24_42",
-  "garage-page_info": "_garage-page_info_3cu24_46",
-  "garage-page--hidden": "_garage-page--hidden_3cu24_50"
+  "garage-page": "_garage-page_367ny_1",
+  "garage-page_top-wrapper": "_garage-page_top-wrapper_367ny_6",
+  "garage-page_bottom-wrapper": "_garage-page_bottom-wrapper_367ny_17",
+  "garage-page_more-button": "_garage-page_more-button_367ny_22",
+  "garage-page_list": "_garage-page_list_367ny_38",
+  "garage-page_title": "_garage-page_title_367ny_47",
+  "garage-page--hidden": "_garage-page--hidden_367ny_57"
 };
 class GaragePageView {
   constructor(parent) {
@@ -342,7 +361,6 @@ class GaragePageView {
     __publicField(this, "raceTrackTopWrapper");
     __publicField(this, "raceTrackBottomWrapper");
     __publicField(this, "garageTitle");
-    __publicField(this, "pageInfo");
     __publicField(this, "moreCarsButton");
     __publicField(this, "raceTracksList");
     __publicField(this, "page");
@@ -350,7 +368,6 @@ class GaragePageView {
     this.moreCarsButton = this.createMoreCarsButton();
     this.raceTrackTopWrapper = this.createRaceTrackTopWrapper();
     this.garageTitle = this.createGarageTitle();
-    this.pageInfo = this.createPageInfo();
     this.raceTracksList = this.createRaceTracksList();
     this.raceTrackBottomWrapper = this.createRaceTrackBottomWrapper();
     this.page = this.createHTML();
@@ -364,11 +381,11 @@ class GaragePageView {
   getRaceTrackBottomWrapper() {
     return this.raceTrackBottomWrapper;
   }
+  clearRaceTracksList() {
+    this.raceTracksList.innerHTML = "";
+  }
   getGarageTitle() {
     return this.garageTitle;
-  }
-  getPageInfo() {
-    return this.pageInfo;
   }
   getRaceTracksList() {
     return this.raceTracksList;
@@ -382,13 +399,6 @@ class GaragePageView {
       cssClasses: [GARAGE_PAGE_STYLES["garage-page_title"]]
     });
     return this.garageTitle;
-  }
-  createPageInfo() {
-    this.pageInfo = createBaseElement({
-      tag: TAG_NAMES.H3,
-      cssClasses: [GARAGE_PAGE_STYLES["garage-page_info"]]
-    });
-    return this.pageInfo;
   }
   createRaceTracksList() {
     this.raceTracksList = createBaseElement({
@@ -429,11 +439,7 @@ class GaragePageView {
       tag: TAG_NAMES.DIV,
       cssClasses: [GARAGE_PAGE_STYLES["garage-page_bottom-wrapper"]]
     });
-    this.raceTrackBottomWrapper.append(
-      this.garageTitle,
-      this.pageInfo,
-      this.raceTracksList
-    );
+    this.raceTrackBottomWrapper.append(this.garageTitle, this.raceTracksList);
     this.page.append(this.raceTrackTopWrapper, this.raceTrackBottomWrapper);
     this.parent.append(this.page);
     return this.page;
@@ -443,10 +449,8 @@ class ApiModel {
   static async getCars(params) {
     const pageParam = params.get(QUERY_PARAMS.PAGE);
     const limitParam = params.get(QUERY_PARAMS.LIMIT);
-    let url = "";
-    if (!pageParam || !limitParam) {
-      url = `${API_URLS.CARS}/`;
-    } else {
+    let url = `${API_URLS.CARS}`;
+    if (pageParam && limitParam) {
       url = `${API_URLS.CARS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}`;
     }
     return this.fetchData(url, API_METHODS.GET);
@@ -503,7 +507,7 @@ class ApiModel {
     if (!idParam || !statusParam) {
       throw new Error(API_ERRORS.INCORRECT_PARAMS);
     }
-    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}/${QUERY_PARAMS.STATUS}=${statusParam}`;
+    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}&${QUERY_PARAMS.STATUS}=${statusParam}`;
     return this.fetchData(url, API_METHODS.PATCH);
   }
   static async stopCarEngine(params) {
@@ -512,7 +516,7 @@ class ApiModel {
     if (!idParam || !statusParam) {
       throw new Error(API_ERRORS.INCORRECT_PARAMS);
     }
-    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}/${QUERY_PARAMS.STATUS}=${statusParam}`;
+    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}&${QUERY_PARAMS.STATUS}=${statusParam}`;
     return this.fetchData(url, API_METHODS.PATCH);
   }
   static async driveCarEngine(params) {
@@ -521,7 +525,7 @@ class ApiModel {
     if (!idParam || !statusParam) {
       throw new Error(API_ERRORS.INCORRECT_PARAMS);
     }
-    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}/${QUERY_PARAMS.STATUS}=${statusParam}`;
+    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}&${QUERY_PARAMS.STATUS}=${statusParam}`;
     return this.fetchData(url, API_METHODS.PATCH);
   }
   static async fetchData(url, method, body) {
@@ -531,7 +535,9 @@ class ApiModel {
         [API_HEADERS.CONTENT_TYPE]: API_HEADERS.APPLICATION_JSON
       },
       body: body ? JSON.stringify(body) : null
-    }).then((response) => response.json()).then((json) => json).catch(() => void 0);
+    }).then((response) => response.json()).then((json) => json).catch(() => {
+      throw new Error(`${STATUS_CODES.INTERNAL_SERVER_ERROR}`);
+    });
   }
 }
 const ACTIONS = {
@@ -540,17 +546,17 @@ const ACTIONS = {
   ADD_NEW_CAR: "addNewCar",
   DELETE_CAR: "deleteCar",
   CHANGE_GARAGE_PAGE: "changeGaragePage",
-  setTotalGaragePages: "setTotalGaragePages"
+  SET_TOTAL_GARAGE_PAGES: "setTotalGaragePages"
 };
 const RACE_TRACK_STYLES = {
-  "race-track": "_race-track_v0cb4_1",
-  "race-track__top-wrapper": "_race-track__top-wrapper_v0cb4_6",
-  "race-track__bottom-wrapper": "_race-track__bottom-wrapper_v0cb4_11",
-  "race-track__car-svg-wrapper": "_race-track__car-svg-wrapper_v0cb4_18",
-  "race-track_car-button": "_race-track_car-button_v0cb4_23",
-  "race-track_engine-button": "_race-track_engine-button_v0cb4_40",
-  "race-track__name-car": "_race-track__name-car_v0cb4_58",
-  "race-track__flag-img": "_race-track__flag-img_v0cb4_63"
+  "race-track": "_race-track_87bl1_1",
+  "race-track__top-wrapper": "_race-track__top-wrapper_87bl1_6",
+  "race-track__bottom-wrapper": "_race-track__bottom-wrapper_87bl1_11",
+  "race-track__car-svg-wrapper": "_race-track__car-svg-wrapper_87bl1_18",
+  "race-track_car-button": "_race-track_car-button_87bl1_23",
+  "race-track_engine-button": "_race-track_engine-button_87bl1_41",
+  "race-track__name-car": "_race-track__name-car_87bl1_60",
+  "race-track__flag-img": "_race-track__flag-img_87bl1_65"
 };
 const RACE_TRACK_BUTTON_TEXT = {
   SELECT_CAR: "Select",
@@ -596,8 +602,17 @@ class RaceTrackView {
   getRemoveCarButton() {
     return this.removeCarButton;
   }
+  getStartEngineButton() {
+    return this.startEngineButton;
+  }
+  getStopEngineButton() {
+    return this.stopEngineButton;
+  }
   getNameCarSpan() {
     return this.nameCarSpan;
+  }
+  getCarSvgWrapper() {
+    return this.carSVGWrapper;
   }
   getCarSvg() {
     return this.carSVG;
@@ -730,22 +745,59 @@ const MEDIATOR_EVENTS = {
   GET_CURRENT_WINNERS: "getCurrentWinners",
   DELETE_CAR: "deleteCar",
   DELETE_WINNER: "deleteWinner",
-  NEW_CAR: "newCar",
-  NEW_WINNER: "newWinner",
+  CREATE_CAR: "createCar",
+  CREATE_WINNER: "createWinner",
+  CREATE_MORE_CARS: "createMoreCars",
   SELECT_CAR: "selectCar",
   UPDATE_CAR: "updateCar",
   CHANGE_COLOR_PREVIEW_CAR: "changeColorPreviewCar",
   CHANGE_NAME_PREVIEW_CAR: "changeNamePreviewCar",
   CHANGE_GARAGE_PAGE: "changeGaragePage",
+  CHANGE_TOTAL_GARAGE_PAGES: "changeTotalGaragePages",
   CHANGE_WINNER_PAGE: "changeWinnerPage"
 };
+const loader = "_loader_146rx_1";
+const spin = "_spin_146rx_1";
+const LOADER_STYLES = {
+  loader,
+  spin
+};
+class LoaderView {
+  constructor() {
+    __publicField(this, "loader");
+    this.loader = this.createHTML();
+  }
+  getHTML() {
+    return this.loader;
+  }
+  createHTML() {
+    this.loader = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [LOADER_STYLES.loader]
+    });
+    return this.loader;
+  }
+}
+class LoaderModel {
+  constructor() {
+    __publicField(this, "loaderView");
+    __publicField(this, "loader");
+    this.loaderView = new LoaderView();
+    this.loader = this.loaderView.getHTML();
+  }
+  getHTML() {
+    return this.loader;
+  }
+}
 class RaceTrackModel {
   constructor(carData) {
     __publicField(this, "carData");
+    __publicField(this, "carAnimation");
     __publicField(this, "singletonMediator");
     __publicField(this, "raceTrackView");
     __publicField(this, "raceTrack");
     this.carData = carData;
+    this.carAnimation = null;
     this.singletonMediator = MediatorModel.getInstance();
     this.raceTrackView = new RaceTrackView(this.carData);
     this.raceTrack = this.raceTrackView.getHTML();
@@ -757,9 +809,82 @@ class RaceTrackModel {
   getView() {
     return this.raceTrackView;
   }
+  createCarAnimation(duration) {
+    const raceTrackWidth = this.raceTrack.clientWidth;
+    const carWidth = this.raceTrackView.getCarSvg().clientWidth;
+    const startEngineButtonWidth = this.raceTrackView.getStartEngineButton().getHTML().clientWidth;
+    const stopEngineButtonWidth = this.raceTrackView.getStopEngineButton().getHTML().clientWidth;
+    const carXPosition = raceTrackWidth - carWidth - startEngineButtonWidth - stopEngineButtonWidth;
+    const startTransition = "translateX(0)";
+    const endTransition = `translateX(${carXPosition}px)`;
+    const fill = "forwards";
+    return this.raceTrackView.getCarSvgWrapper().animate([{ transform: startTransition }, { transform: endTransition }], {
+      duration,
+      fill
+    });
+  }
+  driveCarEngine() {
+    if (!this.carData.id) {
+      return;
+    }
+    const driveQueryParams = /* @__PURE__ */ new Map();
+    driveQueryParams.set(QUERY_PARAMS.ID, this.carData.id);
+    driveQueryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.DRIVE);
+    ApiModel.driveCarEngine(driveQueryParams).then(() => {
+    }).catch((error) => {
+      var _a;
+      if (Number(error.message) === STATUS_CODES.INTERNAL_SERVER_ERROR) {
+        (_a = this.carAnimation) == null ? void 0 : _a.pause();
+      }
+    });
+  }
+  startEngineHandler() {
+    if (!this.carData.id) {
+      return;
+    }
+    this.raceTrackView.getStartEngineButton().setDisabled();
+    this.raceTrackView.getStopEngineButton().setEnabled();
+    const queryParams = /* @__PURE__ */ new Map();
+    queryParams.set(QUERY_PARAMS.ID, this.carData.id);
+    queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STARTED);
+    const loader2 = new LoaderModel();
+    this.raceTrackView.getStartEngineButton().getHTML().append(loader2.getHTML());
+    ApiModel.startCarEngine(queryParams).then((data) => {
+      if (data) {
+        loader2.getHTML().remove();
+        const duration = data.distance / data.velocity;
+        this.carAnimation = this.createCarAnimation(duration);
+        this.driveCarEngine();
+      }
+    }).catch(() => {
+    });
+  }
+  stopEngineHandler() {
+    var _a;
+    this.raceTrackView.getStartEngineButton().setEnabled();
+    this.raceTrackView.getStopEngineButton().setDisabled();
+    (_a = this.carAnimation) == null ? void 0 : _a.pause();
+    if (!this.carData.id) {
+      return;
+    }
+    const queryParams = /* @__PURE__ */ new Map();
+    queryParams.set(QUERY_PARAMS.ID, this.carData.id);
+    queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STOPPED);
+    const loader2 = new LoaderModel();
+    this.raceTrackView.getStopEngineButton().getHTML().append(loader2.getHTML());
+    ApiModel.stopCarEngine(queryParams).then(() => {
+      var _a2;
+      loader2.getHTML().remove();
+      (_a2 = this.carAnimation) == null ? void 0 : _a2.cancel();
+    }).catch(() => {
+    });
+  }
   deleteCarHandler() {
     if (this.carData.id) {
+      const loader2 = new LoaderModel();
+      this.raceTrackView.getRemoveCarButton().getHTML().append(loader2.getHTML());
       ApiModel.deleteCarById(this.carData.id).then(() => {
+        loader2.getHTML().remove();
         const { cars } = StoreModel.getState();
         const carsWithoutDeleted = cars.filter(
           (car) => car.id !== this.carData.id
@@ -768,8 +893,8 @@ class RaceTrackModel {
           type: ACTIONS.DELETE_CAR,
           payload: carsWithoutDeleted
         });
-        this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_CAR, "");
         this.raceTrack.remove();
+        this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_CAR, "");
       }).catch(() => {
       });
     }
@@ -789,6 +914,8 @@ class RaceTrackModel {
   setHandlerToButtons() {
     const removeCarButton = this.raceTrackView.getRemoveCarButton();
     const selectCarButton = this.raceTrackView.getSelectCarButton().getHTML();
+    const startEngineButton = this.raceTrackView.getStartEngineButton().getHTML();
+    const stopEngineButton = this.raceTrackView.getStopEngineButton().getHTML();
     removeCarButton.getHTML().addEventListener(EVENT_NAMES.CLICK, this.deleteCarHandler.bind(this));
     selectCarButton.addEventListener(EVENT_NAMES.CLICK, () => {
       removeCarButton.setDisabled();
@@ -797,6 +924,14 @@ class RaceTrackModel {
         this.carData.id
       );
     });
+    startEngineButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.startEngineHandler.bind(this)
+    );
+    stopEngineButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.stopEngineHandler.bind(this)
+    );
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, (params) => {
       if (this.carData.id === params) {
         this.updateCarView();
@@ -841,10 +976,10 @@ class InputModel {
     this.input.value = "";
   }
 }
-const form$1 = "_form_d3y50_1";
+const form$1 = "_form_1bod2_1";
 const CREATE_CAR_FORM_STYLES = {
   form: form$1,
-  "form_submit-button": "_form_submit-button_d3y50_34"
+  "form_submit-button": "_form_submit-button_1bod2_34"
 };
 const INPUT_TYPES = {
   TEXT: "text",
@@ -954,24 +1089,23 @@ class CreateCarFormModel {
       name: formatText(carNameInput.getHTML().value),
       color: formatText(carColorInput.getHTML().value)
     };
+    const loader2 = new LoaderModel();
+    submitButton.getHTML().append(loader2.getHTML());
     await ApiModel.createCar(newCarData);
     const carsWithoutCreated = await ApiModel.getCars(/* @__PURE__ */ new Map());
+    loader2.getHTML().remove();
     if (!carsWithoutCreated) {
       return;
     }
     StoreModel.dispatch({
       type: ACTIONS.GET_CARS,
-      payload: [newCarData]
-    });
-    StoreModel.dispatch({
-      type: ACTIONS.ADD_NEW_CAR,
       payload: carsWithoutCreated
     });
     carNameInput.clear();
     const initColor = "#000000";
     carColorInput.getHTML().value = initColor;
     submitButton.setDisabled();
-    this.singletonMediator.notify(MEDIATOR_EVENTS.NEW_CAR, "");
+    this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_CAR, "");
   }
   init() {
     const carNameInput = this.createCarFormView.getCarNameInput().getHTML();
@@ -1069,7 +1203,8 @@ class PreviewCarModel {
   }
   setInitialStateFields() {
     this.previewCarView.getCarName().textContent = "";
-    this.previewCarView.getCarSVG().removeAttribute("fill");
+    const attr = "fill";
+    this.previewCarView.getCarSVG().removeAttribute(attr);
   }
   init() {
     this.singletonMediator.subscribe(
@@ -1088,7 +1223,7 @@ class PreviewCarModel {
         }
       }
     );
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
       this.setInitialStateFields();
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, () => {
@@ -1096,10 +1231,10 @@ class PreviewCarModel {
     });
   }
 }
-const form = "_form_193dy_1";
+const form = "_form_e7sft_1";
 const CHANGE_CAR_FORM_STYLES = {
   form,
-  "form_submit-button": "_form_submit-button_193dy_38"
+  "form_submit-button": "_form_submit-button_e7sft_38"
 };
 class ChangeCarFormView {
   constructor() {
@@ -1184,8 +1319,11 @@ class ChangeCarFormModel {
   }
   getSelectCar(id) {
     if (typeof id === "number") {
+      const loader2 = new LoaderModel();
+      this.changeCarFormView.getSubmitButton().getHTML().append(loader2.getHTML());
       ApiModel.getCarById(id).then((car) => {
         if (car) {
+          loader2.getHTML().remove();
           this.selectCar = car;
           this.unDisableForm();
           this.singletonMediator.notify(
@@ -1233,8 +1371,11 @@ class ChangeCarFormModel {
     if (!this.selectCar || !this.selectCar.id) {
       return;
     }
+    const loader2 = new LoaderModel();
+    this.changeCarFormView.getSubmitButton().getHTML().append(loader2.getHTML());
     await ApiModel.updateCarById(this.selectCar.id, newCarData);
     const carWithoutChange = await ApiModel.getCarById(this.selectCar.id);
+    loader2.getHTML().remove();
     if (!carWithoutChange || !carWithoutChange.id) {
       return;
     }
@@ -1334,17 +1475,21 @@ const createRandomDataCars = (countCars) => {
   }
   return cars;
 };
-const pagination_wrapper = "_pagination_wrapper_ywqiz_1";
-const pagination_button = "_pagination_button_ywqiz_7";
+const pagination_wrapper = "_pagination_wrapper_3hr9r_1";
+const pagination_current_page = "_pagination_current_page_3hr9r_10";
+const pagination_button = "_pagination_button_3hr9r_15";
 const PAGINATION_STYLES = {
   pagination_wrapper,
+  pagination_current_page,
   pagination_button
 };
 class PaginationView {
   constructor() {
     __publicField(this, "paginationWrapper");
+    __publicField(this, "currentPageSpan");
     __publicField(this, "prevButton");
     __publicField(this, "nextButton");
+    this.currentPageSpan = this.createCurrentPageSpan();
     this.prevButton = this.createPrevButton();
     this.nextButton = this.createNextButton();
     this.paginationWrapper = this.createHTML();
@@ -1352,11 +1497,21 @@ class PaginationView {
   getHTML() {
     return this.paginationWrapper;
   }
+  getCurrentPageSpan() {
+    return this.currentPageSpan;
+  }
   getPrevButton() {
     return this.prevButton;
   }
   getNextButton() {
     return this.nextButton;
+  }
+  createCurrentPageSpan() {
+    this.currentPageSpan = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [PAGINATION_STYLES.pagination_current_page]
+    });
+    return this.currentPageSpan;
   }
   createPrevButton() {
     const text = "prev";
@@ -1381,12 +1536,19 @@ class PaginationView {
       cssClasses: [PAGINATION_STYLES.pagination_wrapper]
     });
     this.paginationWrapper.append(
+      this.currentPageSpan,
       this.prevButton.getHTML(),
       this.nextButton.getHTML()
     );
     return this.paginationWrapper;
   }
 }
+const STORE_FIELDS = {
+  CARS: "cars",
+  WINNERS: "winners",
+  GARAGE_PAGE: "garagePage",
+  TOTAL_GARAGE_PAGES: "totalPages"
+};
 class PaginationModel {
   constructor() {
     __publicField(this, "singletonMediator");
@@ -1400,8 +1562,34 @@ class PaginationModel {
   getHTML() {
     return this.pagination;
   }
+  initPageInfo() {
+    const pageSpan = this.paginationView.getCurrentPageSpan();
+    const loader2 = new LoaderModel();
+    this.pagination.append(loader2.getHTML());
+    ApiModel.getCars(/* @__PURE__ */ new Map()).then((cars) => {
+      if (cars) {
+        loader2.getHTML().remove();
+        const maxPage = Math.ceil(
+          cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT
+        );
+        StoreModel.dispatch({
+          type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
+          payload: maxPage
+        });
+        const currentPage = StoreModel.getState().garagePage;
+        const textContent = `Page: ${currentPage} / ${maxPage} `;
+        pageSpan.textContent = textContent;
+      }
+    }).catch(() => {
+    });
+  }
+  redrawPageInfo(currentPage) {
+    const pageSpan = this.paginationView.getCurrentPageSpan();
+    const maxPage = StoreModel.getState().totalPages;
+    const textContent = `Page: ${currentPage} / ${maxPage} `;
+    pageSpan.textContent = textContent;
+  }
   prevButtonHandler() {
-    const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
     nextButton.setEnabled();
     const garagePageCountDec = StoreModel.getState().garagePage - 1;
@@ -1409,34 +1597,64 @@ class PaginationModel {
       type: ACTIONS.CHANGE_GARAGE_PAGE,
       payload: garagePageCountDec
     });
-    if (StoreModel.getState().garagePage === 0) {
-      const garagePageDefault = 1;
-      StoreModel.dispatch({
-        type: ACTIONS.CHANGE_GARAGE_PAGE,
-        payload: garagePageDefault
-      });
-      prevButton.setDisabled();
-    }
+    this.allButtonsDisabled();
+    this.redrawPageInfo(garagePageCountDec);
   }
   nextButtonHandler() {
     const prevButton = this.paginationView.getPrevButton();
-    const nextButton = this.paginationView.getNextButton();
     prevButton.setEnabled();
     const garagePageCountInc = StoreModel.getState().garagePage + 1;
     StoreModel.dispatch({
       type: ACTIONS.CHANGE_GARAGE_PAGE,
       payload: garagePageCountInc
     });
-    if (StoreModel.getState().garagePage > StoreModel.getState().totalPages) {
-      const garagePageDefault = StoreModel.getState().totalPages;
-      StoreModel.dispatch({
-        type: ACTIONS.CHANGE_GARAGE_PAGE,
-        payload: garagePageDefault
-      });
+    this.allButtonsDisabled();
+    this.redrawPageInfo(garagePageCountInc);
+  }
+  allButtonsDisabled() {
+    const prevButton = this.paginationView.getPrevButton();
+    const nextButton = this.paginationView.getNextButton();
+    const { garagePage } = StoreModel.getState();
+    const { totalPages } = StoreModel.getState();
+    if (garagePage === totalPages || totalPages === 0) {
       nextButton.setDisabled();
+    } else {
+      nextButton.setEnabled();
+    }
+    if (StoreModel.getState().garagePage === 1) {
+      prevButton.setDisabled();
+    } else {
+      prevButton.setEnabled();
     }
   }
+  setSubscribeToMediator() {
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
+      () => {
+        this.initPageInfo();
+      }
+    );
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
+      this.initPageInfo();
+      this.allButtonsDisabled();
+    });
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
+      () => {
+        this.allButtonsDisabled();
+      }
+    );
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
+      this.initPageInfo();
+      this.allButtonsDisabled();
+    });
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
+      this.allButtonsDisabled();
+    });
+  }
   init() {
+    this.initPageInfo();
+    this.allButtonsDisabled();
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
     prevButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
@@ -1446,6 +1664,10 @@ class PaginationModel {
     nextButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
       this.nextButtonHandler();
       this.singletonMediator.notify(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, "");
+    });
+    this.setSubscribeToMediator();
+    StoreModel.subscribe(STORE_FIELDS.TOTAL_GARAGE_PAGES, () => {
+      this.allButtonsDisabled();
     });
   }
 }
@@ -1480,57 +1702,51 @@ class GaragePageModel {
     this.page.classList.remove(GARAGE_PAGE_STYLES["garage-page--hidden"]);
   }
   getInitialDataCars() {
-    ApiModel.getCars(
-      new Map(
-        Object.entries({
-          [QUERY_PARAMS.PAGE]: QUERY_VALUES.DEFAULT_PAGE,
-          [QUERY_PARAMS.LIMIT]: QUERY_VALUES.DEFAULT_CARS_LIMIT
-        })
-      )
-    ).then((data) => {
-      if (data) {
-        this.drawRaceTracks(data);
+    const queryParams = /* @__PURE__ */ new Map();
+    queryParams.set(QUERY_PARAMS.PAGE, QUERY_VALUES.DEFAULT_PAGE);
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+    const loader2 = new LoaderModel();
+    this.garagePageView.getRaceTracksList().append(loader2.getHTML());
+    ApiModel.getCars(queryParams).then((cars) => {
+      if (cars) {
+        this.drawRaceTracks(cars);
+        loader2.getHTML().remove();
       }
-      return data;
     }).catch(() => {
     });
+    this.getAllCars();
+  }
+  getAllCars() {
+    const loader2 = new LoaderModel();
+    this.garagePageView.getGarageTitle().append(loader2.getHTML());
     ApiModel.getCars(/* @__PURE__ */ new Map()).then((cars) => {
       if (cars) {
         StoreModel.dispatch({
           type: ACTIONS.GET_CARS,
           payload: cars
         });
-        this.drawGarageTitle(cars.length);
-        this.drawPageInfo();
+        StoreModel.dispatch({
+          type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
+          payload: Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT)
+        });
+        this.singletonMediator.notify(
+          MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
+          ""
+        );
+        this.drawGarageTitle();
       }
     }).catch(() => {
     });
   }
-  drawGarageTitle(countCars) {
+  drawGarageTitle() {
     const title = this.garagePageView.getGarageTitle();
+    const countCars = StoreModel.getState().cars.length;
     const textContent = `Garage (${countCars})`;
     title.textContent = textContent;
   }
-  drawPageInfo() {
-    const pageInfo = this.garagePageView.getPageInfo();
-    ApiModel.getCars(/* @__PURE__ */ new Map()).then((cars) => {
-      if (cars) {
-        const maxPage = Math.ceil(
-          cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT
-        );
-        StoreModel.dispatch({
-          type: ACTIONS.setTotalGaragePages,
-          payload: maxPage
-        });
-        const currentPage = StoreModel.getState().garagePage;
-        const textContent = `Page: ${currentPage} / ${maxPage} `;
-        pageInfo.textContent = textContent;
-      }
-    }).catch(() => {
-    });
-  }
   drawRaceTracks(cars) {
-    if (this.garagePageView.getRaceTracksList().children.length < QUERY_VALUES.DEFAULT_CARS_LIMIT) {
+    const countCarsToList = this.garagePageView.getRaceTracksList().children.length;
+    if (countCarsToList < QUERY_VALUES.DEFAULT_CARS_LIMIT) {
       cars.forEach((car) => {
         const raceTrack = new RaceTrackModel(car);
         this.removeButtons.push(raceTrack.getView().getRemoveCarButton());
@@ -1538,74 +1754,83 @@ class GaragePageModel {
       });
     }
   }
-  redrawCarsInfo() {
-    const allCarsCount = StoreModel.getState().cars.length;
-    this.drawGarageTitle(allCarsCount);
-    this.drawPageInfo();
-  }
   moreCarsHandler() {
     const carsCount = 100;
     const cars = createRandomDataCars(carsCount);
+    StoreModel.dispatch({
+      type: ACTIONS.ADD_NEW_CAR,
+      payload: cars
+    });
+    const loader2 = new LoaderModel();
+    this.garagePageView.getRaceTracksList().append(loader2.getHTML());
     cars.forEach((car) => {
       ApiModel.createCar(car).then(() => {
-        StoreModel.dispatch({
-          type: ACTIONS.GET_CARS,
-          payload: [car]
-        });
         this.drawRaceTracks([car]);
-      }).then(() => {
-        this.redrawCarsInfo();
+        this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_MORE_CARS, "");
       }).catch(() => {
       });
     });
+    loader2.getHTML().remove();
   }
-  drawCurrentPage() {
+  redrawCurrentPage() {
     const currentPage = StoreModel.getState().garagePage;
-    const textContent = `Page: ${currentPage} / ${StoreModel.getState().totalPages} `;
-    const pageInfo = this.garagePageView.getPageInfo();
-    pageInfo.textContent = textContent;
-    ApiModel.getCars(
-      new Map(
-        Object.entries({
-          [QUERY_PARAMS.PAGE]: currentPage,
-          [QUERY_PARAMS.LIMIT]: QUERY_VALUES.DEFAULT_CARS_LIMIT
-        })
-      )
-    ).then((data) => {
+    const queryParams = /* @__PURE__ */ new Map();
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+    if (this.garagePageView.getRaceTracksList().children.length === 0) {
+      const prevPage = currentPage - 1;
+      queryParams.set(QUERY_PARAMS.PAGE, prevPage);
+      StoreModel.dispatch({
+        type: ACTIONS.CHANGE_GARAGE_PAGE,
+        payload: prevPage
+      });
+    } else {
+      queryParams.set(QUERY_PARAMS.PAGE, currentPage);
+    }
+    const loader2 = new LoaderModel();
+    this.garagePageView.getRaceTracksList().append(loader2.getHTML());
+    ApiModel.getCars(new Map(queryParams)).then((data) => {
       if (data) {
-        this.garagePageView.getRaceTracksList().innerHTML = "";
+        this.garagePageView.clearRaceTracksList();
         this.drawRaceTracks(data);
       }
       return data;
     }).catch(() => {
     });
   }
+  setSubscribeToMediator() {
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
+      this.drawGarageTitle();
+      this.redrawCurrentPage();
+      this.getAllCars();
+    });
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
+      this.drawGarageTitle();
+      this.redrawCurrentPage();
+      this.getAllCars();
+    });
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
+      this.drawGarageTitle();
+      this.redrawCurrentPage();
+    });
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, () => {
+      this.removeButtons.forEach((button) => {
+        button.setEnabled();
+      });
+      this.redrawCurrentPage();
+    });
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
+      this.redrawCurrentPage();
+    });
+  }
   init() {
     this.hide();
     this.getInitialDataCars();
+    this.setSubscribeToMediator();
     const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
     moreCarsButton.addEventListener(
       EVENT_NAMES.CLICK,
       this.moreCarsHandler.bind(this)
     );
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
-      const allCars = StoreModel.getState().cars;
-      const newCar = [allCars[allCars.length - 1]];
-      this.redrawCarsInfo();
-      this.drawRaceTracks(newCar);
-    });
-    this.singletonMediator.subscribe(
-      MEDIATOR_EVENTS.DELETE_CAR,
-      this.redrawCarsInfo.bind(this)
-    );
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, () => {
-      this.removeButtons.forEach((button) => {
-        button.setEnabled();
-      });
-    });
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
-      this.drawCurrentPage();
-    });
     const raceTrackTopWrapper = this.garagePageView.getRaceTrackTopWrapper();
     const raceTrackBottomWrapper = this.garagePageView.getRaceTrackBottomWrapper();
     raceTrackBottomWrapper.append(this.pagination.getHTML());
@@ -1671,11 +1896,11 @@ const HEADER_BUTTON_TEXT = {
   GARAGE_BTN: "To winners",
   WINNERS_BTN: "To garage"
 };
-const header = "_header_36v5w_1";
+const header = "_header_kx9jt_1";
 const HEADER_STYLES = {
   header,
-  "header__garage-button": "_header__garage-button_36v5w_10",
-  "header__winners-button": "_header__winners-button_36v5w_11"
+  "header__garage-button": "_header__garage-button_kx9jt_11",
+  "header__winners-button": "_header__winners-button_kx9jt_12"
 };
 class HeaderView {
   constructor() {
@@ -1776,4 +2001,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-5c4c1ab1.js.map
+//# sourceMappingURL=main-67355978.js.map
