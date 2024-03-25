@@ -24,6 +24,7 @@
   }
 
   &_car-button {
+    position: relative;
     border-radius: 4px;
     padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
     color: var(--car-button-color);
@@ -47,6 +48,7 @@
   }
 
   &_engine-button {
+    position: relative;
     border-radius: 4px;
     padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
     height: max-content;
@@ -78,9 +80,13 @@
 
   &__flag-img {
     position: absolute;
-    right: 15%;
+    right: 5%;
     bottom: 0;
     width: 50px;
     height: 50px;
+
+    @media (max-width: (1000px)) {
+      right: 14%;
+    }
   }
 }

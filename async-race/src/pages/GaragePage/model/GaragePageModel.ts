@@ -16,6 +16,7 @@ import type ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import createRandomDataCars from '../../../utils/createRandomDataCars.ts';
 import PaginationModel from '../../../features/Pagination/model/PaginationModel.ts';
+import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class GaragePageModel implements PageInterface {
   private parent: HTMLDivElement;
@@ -64,10 +65,14 @@ class GaragePageModel implements PageInterface {
     const queryParams: Map<string, number> = new Map();
     queryParams.set(QUERY_PARAMS.PAGE, QUERY_VALUES.DEFAULT_PAGE);
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+    const loader = new LoaderModel();
+
+    this.garagePageView.getRaceTracksList().append(loader.getHTML());
     ApiModel.getCars(queryParams)
       .then((cars) => {
         if (cars) {
           this.drawRaceTracks(cars);
+          loader.getHTML().remove();
         }
       })
       .catch(() => {});
@@ -76,6 +81,8 @@ class GaragePageModel implements PageInterface {
   }
 
   private getAllCars(): void {
+    const loader = new LoaderModel();
+    this.garagePageView.getGarageTitle().append(loader.getHTML());
     ApiModel.getCars(new Map())
       .then((cars) => {
         if (cars) {
@@ -125,6 +132,8 @@ class GaragePageModel implements PageInterface {
       type: ACTIONS.ADD_NEW_CAR,
       payload: cars,
     });
+    const loader = new LoaderModel();
+    this.garagePageView.getRaceTracksList().append(loader.getHTML());
     cars.forEach((car) => {
       ApiModel.createCar(car)
         .then(() => {
@@ -133,6 +142,7 @@ class GaragePageModel implements PageInterface {
         })
         .catch(() => {});
     });
+    loader.getHTML().remove();
   }
 
   private redrawCurrentPage(): void {
@@ -150,6 +160,8 @@ class GaragePageModel implements PageInterface {
       queryParams.set(QUERY_PARAMS.PAGE, currentPage);
     }
 
+    const loader = new LoaderModel();
+    this.garagePageView.getRaceTracksList().append(loader.getHTML());
     ApiModel.getCars(new Map(queryParams))
       .then((data) => {
         if (data) {

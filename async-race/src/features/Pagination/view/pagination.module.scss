@@ -1,8 +1,11 @@
 .pagination {
   &_wrapper {
+    position: relative;
     display: flex;
     align-items: center;
     grid-row: 2;
+    width: 100%;
+    min-height: 30px;
     gap: calc(var(--small-offset) / 4);
   }
 

@@ -42,19 +42,23 @@
   }
 
   &_list {
+    position: relative;
     display: flex;
     flex-direction: column;
     grid-column: 12 span;
     grid-row: 3;
+    min-height: 737px;
     gap: 20px;
   }
 
   &_title {
+    position: relative;
     grid-column: 5 span;
     grid-row: 1;
+    width: 100%;
+    min-height: 28px;
     font: var(--second-font);
     letter-spacing: 1px;
-    text-align: center;
     color: var(--garage-title-color);
   }
 

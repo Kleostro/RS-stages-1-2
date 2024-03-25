@@ -32,7 +32,8 @@ class PreviewCarModel {
 
   private setInitialStateFields(): void {
     this.previewCarView.getCarName().textContent = '';
-    this.previewCarView.getCarSVG().removeAttribute('fill');
+    const attr = 'fill';
+    this.previewCarView.getCarSVG().removeAttribute(attr);
   }
 
   private init(): void {

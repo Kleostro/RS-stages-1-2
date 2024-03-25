@@ -7,6 +7,7 @@ import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import ApiModel from '../../../shared/Api/model/ApiModel.ts';
 import { QUERY_VALUES } from '../../../shared/Api/types/enums.ts';
 import STORE_FIELDS from '../../../shared/Store/types/enums.ts';
+import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class PaginationModel {
   private singletonMediator: MediatorModel<unknown>;
@@ -28,9 +29,12 @@ class PaginationModel {
 
   private initPageInfo(): void {
     const pageSpan = this.paginationView.getCurrentPageSpan();
+    const loader = new LoaderModel();
+    this.pagination.append(loader.getHTML());
     ApiModel.getCars(new Map())
       .then((cars) => {
         if (cars) {
+          loader.getHTML().remove();
           const maxPage = Math.ceil(
             cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT,
           );

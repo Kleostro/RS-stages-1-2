@@ -38,6 +38,7 @@
   }
 
   &_submit-button {
+    position: relative;
     border-radius: 4px;
     padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
     height: max-content;

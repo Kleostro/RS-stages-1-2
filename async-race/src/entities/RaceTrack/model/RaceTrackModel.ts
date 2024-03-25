@@ -12,6 +12,7 @@ import {
   QUERY_VALUES,
   STATUS_CODES,
 } from '../../../shared/Api/types/enums.ts';
+import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class RaceTrackModel {
   private carData: CarInterface;
@@ -92,9 +93,15 @@ class RaceTrackModel {
     const queryParams: Map<string, string | number> = new Map();
     queryParams.set(QUERY_PARAMS.ID, this.carData.id);
     queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STARTED);
+    const loader = new LoaderModel();
+    this.raceTrackView
+      .getStartEngineButton()
+      .getHTML()
+      .append(loader.getHTML());
     ApiModel.startCarEngine(queryParams)
       .then((data) => {
         if (data) {
+          loader.getHTML().remove();
           const duration = data.distance / data.velocity;
           this.carAnimation = this.createCarAnimation(duration);
           this.driveCarEngine();
@@ -113,8 +120,11 @@ class RaceTrackModel {
     const queryParams: Map<string, string | number> = new Map();
     queryParams.set(QUERY_PARAMS.ID, this.carData.id);
     queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STOPPED);
+    const loader = new LoaderModel();
+    this.raceTrackView.getStopEngineButton().getHTML().append(loader.getHTML());
     ApiModel.stopCarEngine(queryParams)
       .then(() => {
+        loader.getHTML().remove();
         this.carAnimation?.cancel();
       })
       .catch(() => {});
@@ -122,8 +132,14 @@ class RaceTrackModel {
 
   private deleteCarHandler(): void {
     if (this.carData.id) {
+      const loader = new LoaderModel();
+      this.raceTrackView
+        .getRemoveCarButton()
+        .getHTML()
+        .append(loader.getHTML());
       ApiModel.deleteCarById(this.carData.id)
         .then(() => {
+          loader.getHTML().remove();
           const { cars } = StoreModel.getState();
           const carsWithoutDeleted = cars.filter(
             (car) => car.id !== this.carData.id,

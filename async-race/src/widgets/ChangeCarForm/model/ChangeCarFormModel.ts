@@ -7,6 +7,7 @@ import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import formatText from '../../../utils/formatText.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
+import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class ChangeCarFormModel {
   private singletonMediator: MediatorModel<unknown>;
@@ -33,9 +34,15 @@ class ChangeCarFormModel {
 
   private getSelectCar(id: unknown): void {
     if (typeof id === 'number') {
+      const loader = new LoaderModel();
+      this.changeCarFormView
+        .getSubmitButton()
+        .getHTML()
+        .append(loader.getHTML());
       ApiModel.getCarById(id)
         .then((car) => {
           if (car) {
+            loader.getHTML().remove();
             this.selectCar = car;
             this.unDisableForm();
             this.singletonMediator.notify(
@@ -89,10 +96,14 @@ class ChangeCarFormModel {
     if (!this.selectCar || !this.selectCar.id) {
       return;
     }
+    const loader = new LoaderModel();
+    this.changeCarFormView.getSubmitButton().getHTML().append(loader.getHTML());
 
     await ApiModel.updateCarById(this.selectCar.id, newCarData);
 
     const carWithoutChange = await ApiModel.getCarById(this.selectCar.id);
+
+    loader.getHTML().remove();
 
     if (!carWithoutChange || !carWithoutChange.id) {
       return;

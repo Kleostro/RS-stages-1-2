@@ -1,0 +1,24 @@
+.loader {
+  position: absolute;
+  border-radius: var(--border-radius);
+  background: linear-gradient(
+    to right,
+    var(--body-bg) 8%,
+    #bdbdbd 18%,
+    var(--body-bg) 33%
+  );
+  background-position: center;
+  background-color: var(--body-bg);
+  animation: spin 5s ease-in-out infinite;
+  inset: -2px;
+}
+
+@keyframes spin {
+  0% {
+    background-position: center;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}

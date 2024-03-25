@@ -7,6 +7,7 @@ import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import formatText from '../../../utils/formatText.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
+import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class CreateCarFormModel {
   private singletonMediator: MediatorModel<unknown>;
@@ -48,9 +49,15 @@ class CreateCarFormModel {
       color: formatText(carColorInput.getHTML().value),
     };
 
+    const loader = new LoaderModel();
+
+    submitButton.getHTML().append(loader.getHTML());
+
     await ApiModel.createCar(newCarData);
 
     const carsWithoutCreated = await ApiModel.getCars(new Map());
+
+    loader.getHTML().remove();
 
     if (!carsWithoutCreated) {
       return;
