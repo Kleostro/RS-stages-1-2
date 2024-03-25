@@ -26,6 +26,9 @@ export const QUERY_VALUES = {
   DEFAULT_WINNERS_LIMIT: 10,
   NO_CARS_LIMIT: 0,
   NO_WINNERS_LIMIT: 0,
+  STARTED: 'started',
+  STOPPED: 'stopped',
+  DRIVE: 'drive',
 } as const;
 
 export const API_HEADERS = {

@@ -5,6 +5,7 @@ import {
   API_URLS,
   QUERY_PARAMS,
   QUERY_VALUES,
+  STATUS_CODES,
 } from '../types/enums.ts';
 import type {
   CarInterface,
@@ -106,14 +107,14 @@ class ApiModel {
   }
 
   public static async startCarEngine(
-    params: Map<string, EngineInterface>,
+    params: Map<string, string | number>,
   ): Promise<EngineCarDataInterface | undefined> {
     const idParam = Number(params.get(QUERY_PARAMS.ID));
     const statusParam = String(params.get(QUERY_PARAMS.STATUS));
     if (!idParam || !statusParam) {
       throw new Error(API_ERRORS.INCORRECT_PARAMS);
     }
-    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}/${QUERY_PARAMS.STATUS}=${statusParam}`;
+    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}&${QUERY_PARAMS.STATUS}=${statusParam}`;
     return this.fetchData<EngineCarDataInterface>(url, API_METHODS.PATCH);
   }
 
@@ -130,14 +131,14 @@ class ApiModel {
   }
 
   public static async driveCarEngine(
-    params: Map<string, EngineInterface>,
+    params: Map<string, string | number>,
   ): Promise<EngineCarDriveInterface | undefined> {
     const idParam = Number(params.get(QUERY_PARAMS.ID));
     const statusParam = String(params.get(QUERY_PARAMS.STATUS));
     if (!idParam || !statusParam) {
       throw new Error(API_ERRORS.INCORRECT_PARAMS);
     }
-    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}/${QUERY_PARAMS.STATUS}=${statusParam}`;
+    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}&${QUERY_PARAMS.STATUS}=${statusParam}`;
     return this.fetchData<EngineCarDriveInterface>(url, API_METHODS.PATCH);
   }
 
@@ -155,7 +156,9 @@ class ApiModel {
     })
       .then((response) => response.json())
       .then((json: T) => json)
-      .catch(() => undefined);
+      .catch(() => {
+        throw new Error(`${STATUS_CODES.INTERNAL_SERVER_ERROR}`);
+      });
   }
 }
 

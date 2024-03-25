@@ -49,8 +49,20 @@ class RaceTrackView {
     return this.removeCarButton;
   }
 
+  public getStartEngineButton(): ButtonModel {
+    return this.startEngineButton;
+  }
+
+  public getStopEngineButton(): ButtonModel {
+    return this.stopEngineButton;
+  }
+
   public getNameCarSpan(): HTMLSpanElement {
     return this.nameCarSpan;
+  }
+
+  public getCarSvgWrapper(): HTMLDivElement {
+    return this.carSVGWrapper;
   }
 
   public getCarSvg(): SVGSVGElement {

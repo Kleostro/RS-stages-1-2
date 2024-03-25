@@ -54,7 +54,8 @@
     background-color: var(--engine-button-bg);
     transition:
       color 0.3s,
-      background-color 0.3s opacity 0.3s;
+      background-color 0.3s,
+      opacity 0.3s;
 
     &:disabled {
       opacity: 0.5;

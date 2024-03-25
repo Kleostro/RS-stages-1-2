@@ -183,6 +183,7 @@ class GaragePageModel implements PageInterface {
       this.removeButtons.forEach((button) => {
         button.setEnabled();
       });
+      this.redrawCurrentPage();
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
