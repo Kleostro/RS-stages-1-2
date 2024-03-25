@@ -1,5 +1,5 @@
 /* eslint-disable max-lines-per-function */
-import type Reducer from '../Store/types/types.ts';
+import type Reducer from '../types/types.ts';
 import type { State } from './types/interfaces.ts';
 import type { Action } from './types/types.ts';
 
@@ -11,7 +11,7 @@ export const rootReducer: Reducer<State, Action> = (
     case 'getCars':
       return {
         ...state,
-        cars: [...state.cars, ...action.payload],
+        cars: [...action.payload],
       };
     case 'getWinners':
       return {
@@ -21,7 +21,7 @@ export const rootReducer: Reducer<State, Action> = (
     case 'addNewCar':
       return {
         ...state,
-        cars: [...action.payload],
+        cars: [...state.cars, ...action.payload],
       };
     case 'deleteCar':
       return {

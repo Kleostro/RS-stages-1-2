@@ -12,8 +12,6 @@ class GaragePageView {
 
   private garageTitle: HTMLHeadingElement;
 
-  private pageInfo: HTMLHeadingElement;
-
   private moreCarsButton: ButtonModel;
 
   private raceTracksList: HTMLUListElement;
@@ -25,7 +23,6 @@ class GaragePageView {
     this.moreCarsButton = this.createMoreCarsButton();
     this.raceTrackTopWrapper = this.createRaceTrackTopWrapper();
     this.garageTitle = this.createGarageTitle();
-    this.pageInfo = this.createPageInfo();
     this.raceTracksList = this.createRaceTracksList();
     this.raceTrackBottomWrapper = this.createRaceTrackBottomWrapper();
     this.page = this.createHTML();
@@ -43,12 +40,12 @@ class GaragePageView {
     return this.raceTrackBottomWrapper;
   }
 
-  public getGarageTitle(): HTMLHeadingElement {
-    return this.garageTitle;
+  public clearRaceTracksList(): void {
+    this.raceTracksList.innerHTML = '';
   }
 
-  public getPageInfo(): HTMLHeadingElement {
-    return this.pageInfo;
+  public getGarageTitle(): HTMLHeadingElement {
+    return this.garageTitle;
   }
 
   public getRaceTracksList(): HTMLUListElement {
@@ -65,15 +62,6 @@ class GaragePageView {
       cssClasses: [GARAGE_PAGE_STYLES['garage-page_title']],
     });
     return this.garageTitle;
-  }
-
-  private createPageInfo(): HTMLHeadingElement {
-    this.pageInfo = createBaseElement({
-      tag: TAG_NAMES.H3,
-      cssClasses: [GARAGE_PAGE_STYLES['garage-page_info']],
-    });
-
-    return this.pageInfo;
   }
 
   private createRaceTracksList(): HTMLUListElement {
@@ -124,11 +112,7 @@ class GaragePageView {
       cssClasses: [GARAGE_PAGE_STYLES['garage-page_bottom-wrapper']],
     });
 
-    this.raceTrackBottomWrapper.append(
-      this.garageTitle,
-      this.pageInfo,
-      this.raceTracksList,
-    );
+    this.raceTrackBottomWrapper.append(this.garageTitle, this.raceTracksList);
     this.page.append(this.raceTrackTopWrapper, this.raceTrackBottomWrapper);
     this.parent.append(this.page);
     return this.page;

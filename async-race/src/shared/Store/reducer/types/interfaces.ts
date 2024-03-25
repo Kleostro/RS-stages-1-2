@@ -1,7 +1,7 @@
 import type {
   CarInterface,
   WinnerInterface,
-} from '../../Api/types/interfaces.ts';
+} from '../../../Api/types/interfaces.ts';
 
 export interface State {
   cars: CarInterface[];

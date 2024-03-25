@@ -1,7 +1,8 @@
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: var(--medium-offset);
+  justify-content: center;
+  margin-bottom: var(--small-offset);
   padding: var(--small-offset);
   background-color: var(--header-bg);
   gap: var(--small-offset);

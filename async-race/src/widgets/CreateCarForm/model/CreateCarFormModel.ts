@@ -3,7 +3,7 @@ import ApiModel from '../../../shared/Api/model/ApiModel.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import CreateCarFormView from '../view/CreateCarFormView.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
-import ACTIONS from '../../../shared/actions/types/enums.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import formatText from '../../../utils/formatText.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
@@ -58,11 +58,6 @@ class CreateCarFormModel {
 
     StoreModel.dispatch({
       type: ACTIONS.GET_CARS,
-      payload: [newCarData],
-    });
-
-    StoreModel.dispatch({
-      type: ACTIONS.ADD_NEW_CAR,
       payload: carsWithoutCreated,
     });
 
@@ -70,7 +65,7 @@ class CreateCarFormModel {
     const initColor = '#000000';
     carColorInput.getHTML().value = initColor;
     submitButton.setDisabled();
-    this.singletonMediator.notify(MEDIATOR_EVENTS.NEW_CAR, '');
+    this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_CAR, '');
   }
 
   private init(): void {

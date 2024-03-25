@@ -1,4 +1,7 @@
-import type { CarInterface, WinnerInterface } from '../Api/types/interfaces.ts';
+import type {
+  CarInterface,
+  WinnerInterface,
+} from '../../Api/types/interfaces.ts';
 import ACTIONS from './types/enums.ts';
 import type ActionWithPayload from './types/interfaces.ts';
 
@@ -32,9 +35,9 @@ export const deleteCar = (
 
 export const setTotalGaragePages = (
   value: number,
-): ActionWithPayload<number, typeof ACTIONS.setTotalGaragePages> => ({
+): ActionWithPayload<number, typeof ACTIONS.SET_TOTAL_GARAGE_PAGES> => ({
   payload: value,
-  type: ACTIONS.setTotalGaragePages,
+  type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
 });
 
 export const changeGaragePage = (

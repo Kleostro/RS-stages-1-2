@@ -6,11 +6,14 @@ import PAGINATION_STYLES from './pagination.module.scss';
 class PaginationView {
   private paginationWrapper: HTMLDivElement;
 
+  private currentPageSpan: HTMLSpanElement;
+
   private prevButton: ButtonModel;
 
   private nextButton: ButtonModel;
 
   constructor() {
+    this.currentPageSpan = this.createCurrentPageSpan();
     this.prevButton = this.createPrevButton();
     this.nextButton = this.createNextButton();
     this.paginationWrapper = this.createHTML();
@@ -20,12 +23,24 @@ class PaginationView {
     return this.paginationWrapper;
   }
 
+  public getCurrentPageSpan(): HTMLSpanElement {
+    return this.currentPageSpan;
+  }
+
   public getPrevButton(): ButtonModel {
     return this.prevButton;
   }
 
   public getNextButton(): ButtonModel {
     return this.nextButton;
+  }
+
+  private createCurrentPageSpan(): HTMLSpanElement {
+    this.currentPageSpan = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [PAGINATION_STYLES.pagination_current_page],
+    });
+    return this.currentPageSpan;
   }
 
   private createPrevButton(): ButtonModel {
@@ -56,6 +71,7 @@ class PaginationView {
     });
 
     this.paginationWrapper.append(
+      this.currentPageSpan,
       this.prevButton.getHTML(),
       this.nextButton.getHTML(),
     );

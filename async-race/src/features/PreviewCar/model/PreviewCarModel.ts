@@ -54,7 +54,7 @@ class PreviewCarModel {
       },
     );
 
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
       this.setInitialStateFields();
     });
 

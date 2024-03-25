@@ -1,4 +1,4 @@
-import type { State } from '../reducer/types/interfaces.ts';
+import type { State } from './reducer/types/interfaces.ts';
 
 const INITIAL_DATA: State = {
   cars: [],

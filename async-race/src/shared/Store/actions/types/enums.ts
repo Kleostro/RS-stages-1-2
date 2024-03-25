@@ -4,7 +4,7 @@ const ACTIONS = {
   ADD_NEW_CAR: 'addNewCar',
   DELETE_CAR: 'deleteCar',
   CHANGE_GARAGE_PAGE: 'changeGaragePage',
-  setTotalGaragePages: 'setTotalGaragePages',
+  SET_TOTAL_GARAGE_PAGES: 'setTotalGaragePages',
 } as const;
 
 export default ACTIONS;

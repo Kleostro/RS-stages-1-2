@@ -3,7 +3,7 @@ import ApiModel from '../../../shared/Api/model/ApiModel.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import ChangeCarFormView from '../view/ChangeCarFormView.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
-import ACTIONS from '../../../shared/actions/types/enums.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import formatText from '../../../utils/formatText.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';

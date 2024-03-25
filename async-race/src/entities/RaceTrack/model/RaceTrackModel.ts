@@ -3,7 +3,7 @@ import type { CarInterface } from '../../../shared/Api/types/interfaces.ts';
 import RaceTrackView from '../view/RaceTrackView.ts';
 import ApiModel from '../../../shared/Api/model/ApiModel.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
-import ACTIONS from '../../../shared/actions/types/enums.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import { changeSVGFill } from '../../../utils/createCarImg.ts';
@@ -41,12 +41,14 @@ class RaceTrackModel {
           const carsWithoutDeleted = cars.filter(
             (car) => car.id !== this.carData.id,
           );
+
           StoreModel.dispatch({
             type: ACTIONS.DELETE_CAR,
             payload: carsWithoutDeleted,
           });
-          this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_CAR, '');
           this.raceTrack.remove();
+
+          this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_CAR, '');
         })
         .catch(() => {});
     }

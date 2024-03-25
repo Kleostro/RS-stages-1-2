@@ -4,7 +4,7 @@ import type PageInterface from '../../types/interfaces.ts';
 import GaragePageView from '../view/GaragePageView.ts';
 import GARAGE_PAGE_STYLES from '../view/garagePage.module.scss';
 import ApiModel from '../../../shared/Api/model/ApiModel.ts';
-import ACTIONS from '../../../shared/actions/types/enums.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import type { CarInterface } from '../../../shared/Api/types/interfaces.ts';
 import RaceTrackModel from '../../../entities/RaceTrack/model/RaceTrackModel.ts';
 import CreateCarFormModel from '../../../widgets/CreateCarForm/model/CreateCarFormModel.ts';
@@ -61,22 +61,21 @@ class GaragePageModel implements PageInterface {
   }
 
   private getInitialDataCars(): void {
-    ApiModel.getCars(
-      new Map(
-        Object.entries({
-          [QUERY_PARAMS.PAGE]: QUERY_VALUES.DEFAULT_PAGE,
-          [QUERY_PARAMS.LIMIT]: QUERY_VALUES.DEFAULT_CARS_LIMIT,
-        }),
-      ),
-    )
-      .then((data) => {
-        if (data) {
-          this.drawRaceTracks(data);
+    const queryParams: Map<string, number> = new Map();
+    queryParams.set(QUERY_PARAMS.PAGE, QUERY_VALUES.DEFAULT_PAGE);
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+    ApiModel.getCars(queryParams)
+      .then((cars) => {
+        if (cars) {
+          this.drawRaceTracks(cars);
         }
-        return data;
       })
       .catch(() => {});
 
+    this.getAllCars();
+  }
+
+  private getAllCars(): void {
     ApiModel.getCars(new Map())
       .then((cars) => {
         if (cars) {
@@ -84,44 +83,33 @@ class GaragePageModel implements PageInterface {
             type: ACTIONS.GET_CARS,
             payload: cars,
           });
-          this.drawGarageTitle(cars.length);
-          this.drawPageInfo();
+
+          StoreModel.dispatch({
+            type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
+            payload: Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT),
+          });
+          this.singletonMediator.notify(
+            MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
+            '',
+          );
+          this.drawGarageTitle();
         }
       })
       .catch(() => {});
   }
 
-  private drawGarageTitle(countCars: number): void {
+  private drawGarageTitle(): void {
     const title = this.garagePageView.getGarageTitle();
+    const countCars = StoreModel.getState().cars.length;
     const textContent = `Garage (${countCars})`;
     title.textContent = textContent;
   }
 
-  private drawPageInfo(): void {
-    const pageInfo = this.garagePageView.getPageInfo();
-    ApiModel.getCars(new Map())
-      .then((cars) => {
-        if (cars) {
-          const maxPage = Math.ceil(
-            cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT,
-          );
-          StoreModel.dispatch({
-            type: ACTIONS.setTotalGaragePages,
-            payload: maxPage,
-          });
-          const currentPage = StoreModel.getState().garagePage;
-          const textContent = `Page: ${currentPage} / ${maxPage} `;
-          pageInfo.textContent = textContent;
-        }
-      })
-      .catch(() => {});
-  }
-
   private drawRaceTracks(cars: CarInterface[]): void {
-    if (
-      this.garagePageView.getRaceTracksList().children.length <
-      QUERY_VALUES.DEFAULT_CARS_LIMIT
-    ) {
+    const countCarsToList =
+      this.garagePageView.getRaceTracksList().children.length;
+
+    if (countCarsToList < QUERY_VALUES.DEFAULT_CARS_LIMIT) {
       cars.forEach((car) => {
         const raceTrack = new RaceTrackModel(car);
         this.removeButtons.push(raceTrack.getView().getRemoveCarButton());
@@ -130,48 +118,42 @@ class GaragePageModel implements PageInterface {
     }
   }
 
-  private redrawCarsInfo(): void {
-    const allCarsCount = StoreModel.getState().cars.length;
-    this.drawGarageTitle(allCarsCount);
-    this.drawPageInfo();
-  }
-
   private moreCarsHandler(): void {
     const carsCount = 100;
     const cars = createRandomDataCars(carsCount);
+    StoreModel.dispatch({
+      type: ACTIONS.ADD_NEW_CAR,
+      payload: cars,
+    });
     cars.forEach((car) => {
       ApiModel.createCar(car)
         .then(() => {
-          StoreModel.dispatch({
-            type: ACTIONS.GET_CARS,
-            payload: [car],
-          });
           this.drawRaceTracks([car]);
-        })
-        .then(() => {
-          this.redrawCarsInfo();
+          this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_MORE_CARS, '');
         })
         .catch(() => {});
     });
   }
 
-  private drawCurrentPage(): void {
+  private redrawCurrentPage(): void {
     const currentPage = StoreModel.getState().garagePage;
-    const textContent = `Page: ${currentPage} / ${StoreModel.getState().totalPages} `;
-    const pageInfo = this.garagePageView.getPageInfo();
-    pageInfo.textContent = textContent;
+    const queryParams: Map<string, number> = new Map();
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+    if (this.garagePageView.getRaceTracksList().children.length === 0) {
+      const prevPage = currentPage - 1;
+      queryParams.set(QUERY_PARAMS.PAGE, prevPage);
+      StoreModel.dispatch({
+        type: ACTIONS.CHANGE_GARAGE_PAGE,
+        payload: prevPage,
+      });
+    } else {
+      queryParams.set(QUERY_PARAMS.PAGE, currentPage);
+    }
 
-    ApiModel.getCars(
-      new Map(
-        Object.entries({
-          [QUERY_PARAMS.PAGE]: currentPage,
-          [QUERY_PARAMS.LIMIT]: QUERY_VALUES.DEFAULT_CARS_LIMIT,
-        }),
-      ),
-    )
+    ApiModel.getCars(new Map(queryParams))
       .then((data) => {
         if (data) {
-          this.garagePageView.getRaceTracksList().innerHTML = '';
+          this.garagePageView.clearRaceTracksList();
           this.drawRaceTracks(data);
         }
         return data;
@@ -179,25 +161,23 @@ class GaragePageModel implements PageInterface {
       .catch(() => {});
   }
 
-  private init(): void {
-    this.hide();
-    this.getInitialDataCars();
-    const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
-    moreCarsButton.addEventListener(
-      EVENT_NAMES.CLICK,
-      this.moreCarsHandler.bind(this),
-    );
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_CAR, () => {
-      const allCars = StoreModel.getState().cars;
-      const newCar = [allCars[allCars.length - 1]];
-      this.redrawCarsInfo();
-      this.drawRaceTracks(newCar);
+  private setSubscribeToMediator(): void {
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
+      this.drawGarageTitle();
+      this.redrawCurrentPage();
+      this.getAllCars();
     });
 
-    this.singletonMediator.subscribe(
-      MEDIATOR_EVENTS.DELETE_CAR,
-      this.redrawCarsInfo.bind(this),
-    );
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
+      this.drawGarageTitle();
+      this.redrawCurrentPage();
+      this.getAllCars();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
+      this.drawGarageTitle();
+      this.redrawCurrentPage();
+    });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, () => {
       this.removeButtons.forEach((button) => {
@@ -206,8 +186,20 @@ class GaragePageModel implements PageInterface {
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
-      this.drawCurrentPage();
+      this.redrawCurrentPage();
     });
+  }
+
+  private init(): void {
+    this.hide();
+    this.getInitialDataCars();
+    this.setSubscribeToMediator();
+
+    const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
+    moreCarsButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.moreCarsHandler.bind(this),
+    );
 
     const raceTrackTopWrapper = this.garagePageView.getRaceTrackTopWrapper();
     const raceTrackBottomWrapper =

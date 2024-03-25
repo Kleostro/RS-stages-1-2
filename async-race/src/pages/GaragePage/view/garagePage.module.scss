@@ -5,10 +5,12 @@
 
   &_top-wrapper {
     display: flex;
+    justify-content: center;
     gap: calc(var(--small-offset) / 2);
 
     @media (max-width: (1000px)) {
       flex-direction: column;
+      align-items: center;
     }
   }
 
@@ -19,6 +21,7 @@
   }
 
   &_more-button {
+    margin-top: calc(var(--small-offset) / 2);
     border-radius: 4px;
     padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
     width: max-content;
@@ -47,23 +50,15 @@
   }
 
   &_title {
-    grid-column: 3 span;
+    grid-column: 5 span;
     grid-row: 1;
-  }
-
-  &_info {
-    grid-column: 3 span;
-    grid-row: 2;
+    font: var(--second-font);
+    letter-spacing: 1px;
+    text-align: center;
+    color: var(--garage-title-color);
   }
 
   &--hidden {
     opacity: 0;
-  }
-
-  &_title,
-  &_info {
-    font: var(--second-font);
-    letter-spacing: 1px;
-    color: var(--garage-title-color);
   }
 }

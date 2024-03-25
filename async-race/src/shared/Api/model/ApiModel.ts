@@ -22,10 +22,8 @@ class ApiModel {
     const pageParam = params.get(QUERY_PARAMS.PAGE);
     const limitParam = params.get(QUERY_PARAMS.LIMIT);
 
-    let url = '';
-    if (!pageParam || !limitParam) {
-      url = `${API_URLS.CARS}/`;
-    } else {
+    let url = `${API_URLS.CARS}`;
+    if (pageParam && limitParam) {
       url = `${API_URLS.CARS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}`;
     }
     return this.fetchData<CarInterface[]>(url, API_METHODS.GET);
