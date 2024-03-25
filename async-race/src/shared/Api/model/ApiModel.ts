@@ -11,7 +11,6 @@ import type {
   CarInterface,
   EngineCarDataInterface,
   EngineCarDriveInterface,
-  EngineInterface,
   WinnerInterface,
   WinnersQueryParamsInterface,
 } from '../types/interfaces.ts';
@@ -119,14 +118,14 @@ class ApiModel {
   }
 
   public static async stopCarEngine(
-    params: Map<string, EngineInterface>,
+    params: Map<string, string | number>,
   ): Promise<EngineCarDataInterface | undefined> {
     const idParam = Number(params.get(QUERY_PARAMS.ID));
     const statusParam = String(params.get(QUERY_PARAMS.STATUS));
     if (!idParam || !statusParam) {
       throw new Error(API_ERRORS.INCORRECT_PARAMS);
     }
-    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}/${QUERY_PARAMS.STATUS}=${statusParam}`;
+    const url = `${API_URLS.ENGINE}?${QUERY_PARAMS.ID}=${idParam}&${QUERY_PARAMS.STATUS}=${statusParam}`;
     return this.fetchData<EngineCarDataInterface>(url, API_METHODS.PATCH);
   }
 

@@ -16,6 +16,8 @@ import {
 class RaceTrackModel {
   private carData: CarInterface;
 
+  private carAnimation: Animation | null;
+
   private singletonMediator: MediatorModel<unknown>;
 
   private raceTrackView: RaceTrackView;
@@ -24,6 +26,7 @@ class RaceTrackModel {
 
   constructor(carData: CarInterface) {
     this.carData = carData;
+    this.carAnimation = null;
     this.singletonMediator = MediatorModel.getInstance();
     this.raceTrackView = new RaceTrackView(this.carData);
     this.raceTrack = this.raceTrackView.getHTML();
@@ -63,7 +66,7 @@ class RaceTrackModel {
       });
   }
 
-  private driveCarEngine(carAnimation: Animation): void {
+  private driveCarEngine(): void {
     if (!this.carData.id) {
       return;
     }
@@ -75,7 +78,7 @@ class RaceTrackModel {
       .then(() => {})
       .catch((error: Error) => {
         if (Number(error.message) === STATUS_CODES.INTERNAL_SERVER_ERROR) {
-          carAnimation.pause();
+          this.carAnimation?.pause();
         }
       });
   }
@@ -93,9 +96,26 @@ class RaceTrackModel {
       .then((data) => {
         if (data) {
           const duration = data.distance / data.velocity;
-          const carAnimation = this.createCarAnimation(duration);
-          this.driveCarEngine(carAnimation);
+          this.carAnimation = this.createCarAnimation(duration);
+          this.driveCarEngine();
         }
+      })
+      .catch(() => {});
+  }
+
+  private stopEngineHandler(): void {
+    this.raceTrackView.getStartEngineButton().setEnabled();
+    this.raceTrackView.getStopEngineButton().setDisabled();
+    this.carAnimation?.pause();
+    if (!this.carData.id) {
+      return;
+    }
+    const queryParams: Map<string, string | number> = new Map();
+    queryParams.set(QUERY_PARAMS.ID, this.carData.id);
+    queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STOPPED);
+    ApiModel.stopCarEngine(queryParams)
+      .then(() => {
+        this.carAnimation?.cancel();
       })
       .catch(() => {});
   }
@@ -137,7 +157,10 @@ class RaceTrackModel {
   private setHandlerToButtons(): void {
     const removeCarButton = this.raceTrackView.getRemoveCarButton();
     const selectCarButton = this.raceTrackView.getSelectCarButton().getHTML();
-    const startEngineButton = this.raceTrackView.getStartEngineButton();
+    const startEngineButton = this.raceTrackView
+      .getStartEngineButton()
+      .getHTML();
+    const stopEngineButton = this.raceTrackView.getStopEngineButton().getHTML();
     removeCarButton
       .getHTML()
       .addEventListener(EVENT_NAMES.CLICK, this.deleteCarHandler.bind(this));
@@ -150,9 +173,15 @@ class RaceTrackModel {
       );
     });
 
-    startEngineButton
-      .getHTML()
-      .addEventListener(EVENT_NAMES.CLICK, this.startEngineHandler.bind(this));
+    startEngineButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.startEngineHandler.bind(this),
+    );
+
+    stopEngineButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.stopEngineHandler.bind(this),
+    );
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, (params) => {
       if (this.carData.id === params) {
