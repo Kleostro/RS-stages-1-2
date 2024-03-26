@@ -17,7 +17,7 @@ import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 class RaceTrackModel {
   private carData: CarInterface;
 
-  private carAnimation: Animation | null;
+  private carAnimation: Animation | null = null;
 
   private singletonMediator: MediatorModel<unknown>;
 
@@ -27,7 +27,6 @@ class RaceTrackModel {
 
   constructor(carData: CarInterface) {
     this.carData = carData;
-    this.carAnimation = null;
     this.singletonMediator = MediatorModel.getInstance();
     this.raceTrackView = new RaceTrackView(this.carData);
     this.raceTrack = this.raceTrackView.getHTML();
@@ -88,6 +87,7 @@ class RaceTrackModel {
     if (!this.carData.id) {
       return;
     }
+
     this.raceTrackView.getStartEngineButton().setDisabled();
     this.raceTrackView.getStopEngineButton().setEnabled();
     const queryParams: Map<string, string | number> = new Map();
@@ -189,10 +189,9 @@ class RaceTrackModel {
       );
     });
 
-    startEngineButton.addEventListener(
-      EVENT_NAMES.CLICK,
-      this.startEngineHandler.bind(this),
-    );
+    startEngineButton.addEventListener(EVENT_NAMES.CLICK, () => {
+      this.startEngineHandler();
+    });
 
     stopEngineButton.addEventListener(
       EVENT_NAMES.CLICK,
@@ -205,6 +204,11 @@ class RaceTrackModel {
         removeCarButton.setEnabled();
       }
     });
+
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.START_RACE,
+      this.startEngineHandler.bind(this),
+    );
   }
 }
 

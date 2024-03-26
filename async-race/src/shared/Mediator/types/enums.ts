@@ -13,6 +13,7 @@ const MEDIATOR_EVENTS = {
   CHANGE_GARAGE_PAGE: 'changeGaragePage',
   CHANGE_TOTAL_GARAGE_PAGES: 'changeTotalGaragePages',
   CHANGE_WINNER_PAGE: 'changeWinnerPage',
+  START_RACE: 'startRace',
 } as const;
 
 export default MEDIATOR_EVENTS;

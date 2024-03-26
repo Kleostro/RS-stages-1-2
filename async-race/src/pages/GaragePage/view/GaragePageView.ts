@@ -16,11 +16,14 @@ class GaragePageView {
 
   private raceTracksList: HTMLUListElement;
 
+  private startRaceButton: ButtonModel;
+
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.moreCarsButton = this.createMoreCarsButton();
+    this.startRaceButton = this.createStartRaceButton();
     this.raceTrackTopWrapper = this.createRaceTrackTopWrapper();
     this.garageTitle = this.createGarageTitle();
     this.raceTracksList = this.createRaceTracksList();
@@ -56,6 +59,10 @@ class GaragePageView {
     return this.moreCarsButton;
   }
 
+  public getStartRaceButton(): ButtonModel {
+    return this.startRaceButton;
+  }
+
   private createGarageTitle(): HTMLHeadingElement {
     this.garageTitle = createBaseElement({
       tag: TAG_NAMES.H2,
@@ -89,7 +96,10 @@ class GaragePageView {
       cssClasses: [GARAGE_PAGE_STYLES['garage-page_top-wrapper']],
     });
 
-    this.raceTrackTopWrapper.append(this.moreCarsButton.getHTML());
+    this.raceTrackTopWrapper.append(
+      this.moreCarsButton.getHTML(),
+      this.startRaceButton.getHTML(),
+    );
     return this.raceTrackTopWrapper;
   }
 
@@ -99,6 +109,16 @@ class GaragePageView {
       cssClasses: [GARAGE_PAGE_STYLES['garage-page_bottom-wrapper']],
     });
     return this.raceTrackBottomWrapper;
+  }
+
+  private createStartRaceButton(): ButtonModel {
+    const text = 'Race';
+    this.startRaceButton = new ButtonModel({
+      text,
+      classes: [GARAGE_PAGE_STYLES['garage-page_race-button']],
+    });
+
+    return this.startRaceButton;
   }
 
   private createHTML(): HTMLDivElement {

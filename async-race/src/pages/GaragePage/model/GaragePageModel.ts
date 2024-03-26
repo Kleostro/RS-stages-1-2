@@ -173,6 +173,20 @@ class GaragePageModel implements PageInterface {
       .catch(() => {});
   }
 
+  private startRaceHandler(): void {
+    const queryParams: Map<string, number> = new Map();
+    queryParams.set(QUERY_PARAMS.PAGE, StoreModel.getState().garagePage);
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+    ApiModel.getCars(queryParams)
+      .then((cars) => {
+        if (cars) {
+          this.garagePageView.getStartRaceButton().setDisabled();
+          this.singletonMediator.notify(MEDIATOR_EVENTS.START_RACE, '');
+        }
+      })
+      .catch(() => {});
+  }
+
   private setSubscribeToMediator(): void {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
       this.drawGarageTitle();
@@ -217,6 +231,12 @@ class GaragePageModel implements PageInterface {
     const raceTrackTopWrapper = this.garagePageView.getRaceTrackTopWrapper();
     const raceTrackBottomWrapper =
       this.garagePageView.getRaceTrackBottomWrapper();
+
+    const startRaceButton = this.garagePageView.getStartRaceButton().getHTML();
+    startRaceButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.startRaceHandler.bind(this),
+    );
 
     raceTrackBottomWrapper.append(this.pagination.getHTML());
     raceTrackTopWrapper.append(

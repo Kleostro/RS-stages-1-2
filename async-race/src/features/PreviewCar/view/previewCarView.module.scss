@@ -1,6 +1,7 @@
 .preview-car {
   display: flex;
   flex-direction: column;
+  grid-row: 1;
   height: 57px;
 
   &_name {
@@ -18,5 +19,9 @@
 
   &_img {
     max-width: 100px;
+  }
+
+  @media (max-width: (1000px)) {
+    grid-row: 2;
   }
 }

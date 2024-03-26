@@ -1,5 +1,6 @@
 .form {
   display: flex;
+  grid-row: 1;
   margin-bottom: var(--small-offset);
   border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 2);
@@ -66,5 +67,9 @@
         background-color: var(--engine-button-bg-hover);
       }
     }
+  }
+
+  @media (max-width: (1000px)) {
+    grid-row: 3;
   }
 }
