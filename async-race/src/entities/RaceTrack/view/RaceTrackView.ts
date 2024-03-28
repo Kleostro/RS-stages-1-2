@@ -23,6 +23,8 @@ class RaceTrackView {
 
   private carSVG: SVGSVGElement;
 
+  private fireSVG: SVGSVGElement;
+
   private carSVGWrapper: HTMLDivElement;
 
   private raceTrack: HTMLLIElement;
@@ -35,6 +37,7 @@ class RaceTrackView {
     this.startEngineButton = this.createStartEngineButton();
     this.stopEngineButton = this.createStopEngineButton();
     this.carSVG = this.createCarSVG();
+    this.fireSVG = this.createFireSVG();
     this.carSVGWrapper = this.createCarSVGWrapper();
     this.raceTrack = this.createHTML();
   }
@@ -69,6 +72,10 @@ class RaceTrackView {
 
   public getCarSvg(): SVGSVGElement {
     return this.carSVG;
+  }
+
+  public getFireSvg(): SVGSVGElement {
+    return this.fireSVG;
   }
 
   private createSelectCarButton(): ButtonModel {
@@ -118,6 +125,16 @@ class RaceTrackView {
     return this.stopEngineButton;
   }
 
+  private createFireSVG(): SVGSVGElement {
+    this.fireSVG = document.createElementNS(
+      RACE_TRACK_SVG_DETAILS.SVG_URL,
+      TAG_NAMES.SVG,
+    );
+    this.fireSVG.classList.add(RACE_TRACK_STYLES['race-track__fire-img']);
+    this.fireSVG.appendChild(createSVGUse(RACE_TRACK_SVG_DETAILS.FIRE_ID));
+    return this.fireSVG;
+  }
+
   private createCarSVG(): SVGSVGElement {
     this.carSVG = document.createElementNS(
       RACE_TRACK_SVG_DETAILS.SVG_URL,
@@ -135,7 +152,7 @@ class RaceTrackView {
       cssClasses: [RACE_TRACK_STYLES['race-track__car-svg-wrapper']],
     });
 
-    this.carSVGWrapper.append(this.carSVG);
+    this.carSVGWrapper.append(this.carSVG, this.fireSVG);
     return this.carSVGWrapper;
   }
 

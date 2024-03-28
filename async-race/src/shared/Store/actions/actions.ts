@@ -46,3 +46,17 @@ export const changeGaragePage = (
   payload: value,
   type: ACTIONS.CHANGE_GARAGE_PAGE,
 });
+
+export const setTotalWinnersPages = (
+  value: number,
+): ActionWithPayload<number, typeof ACTIONS.SET_TOTAL_WINNERS_PAGES> => ({
+  payload: value,
+  type: ACTIONS.SET_TOTAL_WINNERS_PAGES,
+});
+
+export const changeWinnersPage = (
+  value: number,
+): ActionWithPayload<number, typeof ACTIONS.CHANGE_WINNERS_PAGE> => ({
+  payload: value,
+  type: ACTIONS.CHANGE_WINNERS_PAGE,
+});

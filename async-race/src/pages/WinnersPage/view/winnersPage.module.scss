@@ -1,5 +1,78 @@
 .winners-page {
   display: block;
+  padding: 0 var(--small-offset);
+
+  &_title {
+    position: relative;
+    grid-column: 1 span;
+    grid-row: 1;
+    width: 100%;
+    min-height: 28px;
+    font: var(--second-font);
+    letter-spacing: 1px;
+    color: var(--title-color);
+  }
+
+  &_table {
+    width: 100%;
+    max-width: 50%;
+    background-color: var(--winners-table-bg);
+
+    &_head {
+      color: var(--winners-table-head-color);
+
+      &-td {
+        outline: 2px solid var(--winners-table-border);
+        padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
+        font: var(--medium-font);
+        letter-spacing: 1px;
+        text-align: center;
+        text-transform: capitalize;
+        color: var(--engine-button-color);
+        transition: background-color 0.2s ease-out;
+        cursor: pointer;
+
+        &.sort {
+          background-color: var(--winners-table-head-tr--accent);
+        }
+
+        @media (hover: hover) {
+          &:hover {
+            background-color: var(--winners-table-head-tr--accent);
+          }
+        }
+      }
+    }
+
+    &_body {
+      background-color: var(--winners-table-body-bg);
+
+      &-tr {
+        transition: background-color 0.2s ease-out;
+
+        @media (hover: hover) {
+          &:hover {
+            background-color: var(--winners-table-body-tr-bg);
+          }
+        }
+      }
+
+      &-td {
+        outline: 2px solid var(--winners-table-border);
+        padding: calc(var(--little-offset) / 4) calc(var(--small-offset) / 4);
+        font: var(--small-font);
+        letter-spacing: 1px;
+        text-align: center;
+        text-transform: capitalize;
+        color: var(--engine-button-color);
+
+        svg {
+          width: 100px;
+          height: 50px;
+        }
+      }
+    }
+  }
 
   &--hidden {
     display: none;

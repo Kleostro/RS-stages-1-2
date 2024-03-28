@@ -12,7 +12,6 @@ import type {
   EngineCarDataInterface,
   EngineCarDriveInterface,
   WinnerInterface,
-  WinnersQueryParamsInterface,
 } from '../types/interfaces.ts';
 
 class ApiModel {
@@ -37,7 +36,7 @@ class ApiModel {
   }
 
   public static async getWinners(
-    params: Map<string, WinnersQueryParamsInterface>,
+    params: Map<string, number | string>,
   ): Promise<WinnerInterface[] | undefined> {
     const pageParam = Number(
       params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE,

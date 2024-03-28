@@ -5,7 +5,7 @@ export interface CarInterface {
 }
 
 export interface WinnerInterface {
-  id: number;
+  id?: number;
   wins: number;
   time: number;
 }

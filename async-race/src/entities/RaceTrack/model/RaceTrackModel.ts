@@ -7,6 +7,7 @@ import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import { changeSVGFill } from '../../../utils/createCarImg.ts';
+import RACE_TRACK_STYLES from '../view/raceTrack.module.scss';
 import {
   QUERY_PARAMS,
   QUERY_VALUES,
@@ -113,6 +114,13 @@ class RaceTrackModel {
     return new Winner(this.carData.name, 1, time, this.carData.id);
   }
 
+  private visuallyBrokenCar(): void {
+    this.raceTrackView
+      .getFireSvg()
+      .classList.add(RACE_TRACK_STYLES['race-track__fire-img--active']);
+    this.carAnimation?.pause();
+  }
+
   private driveCarEngine(duration: number, mod?: string): void {
     if (!this.carData.id) {
       return;
@@ -135,7 +143,7 @@ class RaceTrackModel {
             Number(error.message) === STATUS_CODES.INTERNAL_SERVER_ERROR &&
             this.carData.id
           ) {
-            this.carAnimation?.pause();
+            this.visuallyBrokenCar();
             ApiModel.stopCarEngine(
               new Map(
                 Object.entries({
@@ -163,6 +171,9 @@ class RaceTrackModel {
     queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STOPPED);
     const loader = new LoaderModel();
     this.raceTrackView.getStopEngineButton().getHTML().append(loader.getHTML());
+    this.raceTrackView
+      .getFireSvg()
+      .classList.remove(RACE_TRACK_STYLES['race-track__fire-img--active']);
 
     ApiModel.stopCarEngine(queryParams)
       .then(() => {

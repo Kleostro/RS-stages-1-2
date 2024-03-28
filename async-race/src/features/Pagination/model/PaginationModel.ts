@@ -51,7 +51,7 @@ class PaginationModel {
 
   private redrawPageInfo(currentPage: number): void {
     const pageSpan = this.paginationView.getCurrentPageSpan();
-    const maxPage = StoreModel.getState().totalPages;
+    const maxPage = StoreModel.getState().totalGaragePages;
     const textContent = `Page: ${currentPage} / ${maxPage} `;
     pageSpan.textContent = textContent;
   }
@@ -84,8 +84,8 @@ class PaginationModel {
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
     const { garagePage } = StoreModel.getState();
-    const { totalPages } = StoreModel.getState();
-    if (garagePage === totalPages || totalPages === 0) {
+    const { totalGaragePages } = StoreModel.getState();
+    if (garagePage === totalGaragePages || totalGaragePages === 0) {
       nextButton.setDisabled();
     } else {
       nextButton.setEnabled();

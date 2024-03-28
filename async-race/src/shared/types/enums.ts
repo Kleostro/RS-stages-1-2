@@ -40,6 +40,13 @@ export const TAG_NAMES = {
   BLOCKQUOTE: 'blockquote',
   ADDRESS: 'address',
   DIVIDER: 'hr',
+  TABLE: 'table',
+  THEAD: 'thead',
+  TBODY: 'tbody',
+  TFOOT: 'tfoot',
+  TR: 'tr',
+  TD: 'td',
+  TH: 'th',
 } as const;
 
 export const EVENT_NAMES = {

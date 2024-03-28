@@ -31,12 +31,22 @@ export const rootReducer: Reducer<State, Action> = (
     case 'setTotalGaragePages':
       return {
         ...state,
-        totalPages: action.payload,
+        totalGaragePages: action.payload,
       };
     case 'changeGaragePage':
       return {
         ...state,
         garagePage: action.payload,
+      };
+    case 'setTotalWinnersPages':
+      return {
+        ...state,
+        totalWinnersPages: action.payload,
+      };
+    case 'changeWinnersPage':
+      return {
+        ...state,
+        winnersPage: action.payload,
       };
     default:
       return state;

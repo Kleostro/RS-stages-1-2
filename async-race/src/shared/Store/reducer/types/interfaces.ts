@@ -7,5 +7,7 @@ export interface State {
   cars: CarInterface[];
   winners: WinnerInterface[];
   garagePage: number;
-  totalPages: number;
+  totalGaragePages: number;
+  winnersPage: number;
+  totalWinnersPages: number;
 }

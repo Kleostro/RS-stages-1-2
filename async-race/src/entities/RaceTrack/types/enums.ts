@@ -11,6 +11,7 @@ export const RACE_TRACK_SVG_DETAILS = {
   SVG_URL: 'http://www.w3.org/2000/svg',
   CAR_ID: 'car',
   FLAG_ID: 'race-flag',
+  FIRE_ID: 'fire',
 } as const;
 
 export const TRANSITION_STATE = {

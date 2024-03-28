@@ -172,7 +172,7 @@ class GaragePageModel implements PageInterface {
 
     const loader = new LoaderModel();
     this.garagePageView.getRaceTracksList().append(loader.getHTML());
-    ApiModel.getCars(new Map(queryParams))
+    ApiModel.getCars(queryParams)
       .then((data) => {
         if (data) {
           this.garagePageView.clearRaceTracksList();
@@ -220,9 +220,15 @@ class GaragePageModel implements PageInterface {
         time: this.winner.time < winner.time ? this.winner.time : winner.time,
       };
 
-      ApiModel.updateWinnerById(currentWinner.id, currentWinner).catch(
-        () => {},
-      );
+      if (!currentWinner.id) {
+        return;
+      }
+
+      ApiModel.updateWinnerById(currentWinner.id, currentWinner)
+        .then(() => {
+          this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, '');
+        })
+        .catch(() => {});
     } else {
       if (!this.winner.id) {
         return;
@@ -232,7 +238,11 @@ class GaragePageModel implements PageInterface {
         wins: this.winner.wins,
         time: this.winner.time,
       };
-      ApiModel.createWinner(newWinnerData).catch(() => {});
+      ApiModel.createWinner(newWinnerData)
+        .then(() => {
+          this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, '');
+        })
+        .catch(() => {});
     }
   }
 

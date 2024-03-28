@@ -22,6 +22,7 @@ const MEDIATOR_EVENTS = {
   EMPTY_RACE: 'emptyRace',
   SINGLE_RACE_START: 'singleRaceStart',
   SINGLE_RACE_RESET: 'singleRaceReset',
+  DRAW_NEW_WINNER: 'drawNewWinner',
 } as const;
 
 export default MEDIATOR_EVENTS;

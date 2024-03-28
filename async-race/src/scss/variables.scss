@@ -16,7 +16,7 @@
   --button-bg: #416440;
   --button-bg-hover: #3e803c;
   --button-color: #f3ffbd;
-  --garage-title-color: #e2e8c3e0;
+  --title-color: #e2e8c3e0;
   --car-button-bg: #ffe8bc;
   --car-button-bg-hover: #a9720e;
   --car-button-color: #8e4200;
@@ -32,8 +32,15 @@
   --form-input-bg-hover: #9e8cdf;
   --load-bg: #416440;
   --load-bg--accent: #f3ffbd;
+  --winners-table-bg: #ffdfbd;
+  --winners-table-head-color: #0d6f39;
+  --winners-table-head-tr--accent: #d69860;
+  --winners-table-border: #b34a13;
+  --winners-table-body-bg: #e1be85b8;
+  --winners-table-body-tr-bg: #daab5db8;
 
   // fonts
   --small-font: 400 14px 'Roboto', sans-serif;
+  --medium-font: 400 20px 'Roboto', sans-serif;
   --second-font: 600 25px 'Roboto', sans-serif;
 }
