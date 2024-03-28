@@ -4,27 +4,24 @@ import InputView from '../view/InputView.ts';
 class InputModel {
   private view: InputView;
 
-  private input: HTMLInputElement;
-
   constructor(attrs: Record<string, string>) {
     this.view = new InputView(attrs);
-    this.input = this.view.getHTML();
   }
 
   public getHTML(): HTMLInputElement {
-    return this.input;
+    return this.view.getHTML();
   }
 
   public setDisabled(): void {
-    this.input.disabled = IS_DISABLED.DISABLED;
+    this.view.getHTML().disabled = IS_DISABLED.DISABLED;
   }
 
   public setEnabled(): void {
-    this.input.disabled = IS_DISABLED.ENABLED;
+    this.view.getHTML().disabled = IS_DISABLED.ENABLED;
   }
 
   public clear(): void {
-    this.input.value = '';
+    this.view.getHTML().value = '';
   }
 }
 

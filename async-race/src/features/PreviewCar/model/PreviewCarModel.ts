@@ -4,21 +4,17 @@ import { changeSVGFill } from '../../../utils/createCarImg.ts';
 import PreviewCarView from '../view/PreviewCarView.ts';
 
 class PreviewCarModel {
-  private previewCarView: PreviewCarView;
+  private previewCarView: PreviewCarView = new PreviewCarView();
 
-  private singletonMediator: MediatorModel<unknown>;
-
-  private previewCar: HTMLDivElement;
+  private singletonMediator: MediatorModel<unknown> =
+    MediatorModel.getInstance();
 
   constructor() {
-    this.previewCarView = new PreviewCarView();
-    this.singletonMediator = MediatorModel.getInstance();
-    this.previewCar = this.previewCarView.getHTML();
     this.init();
   }
 
   public getHTML(): HTMLDivElement {
-    return this.previewCar;
+    return this.previewCarView.getHTML();
   }
 
   private setColorCar(color: string): void {

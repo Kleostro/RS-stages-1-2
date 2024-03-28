@@ -7,29 +7,22 @@ import WinnersPageModel from '../../../pages/WinnersPage/model/WinnersPageModel.
 import HeaderModel from '../../../widgets/Header/model/HeaderModel.ts';
 
 class AppModel {
-  private appView: AppView;
-
-  private parent: HTMLDivElement;
+  private appView: AppView = new AppView();
 
   private router: RouterModel;
 
   constructor() {
-    this.appView = new AppView();
-    this.parent = this.appView.getHTML();
-
-    const routes = this.initPages();
-    this.router = new RouterModel(routes);
-    const header = new HeaderModel(this.router);
-    this.parent.prepend(header.getHTML());
+    this.router = new RouterModel(this.initPages());
+    this.appView.getHTML().prepend(new HeaderModel(this.router).getHTML());
   }
 
   public getHTML(): HTMLDivElement {
-    return this.parent;
+    return this.appView.getHTML();
   }
 
   private initPages(): Map<string, PageInterface> {
-    const garagePage = new GaragePageModel(this.parent);
-    const winnersPage = new WinnersPageModel(this.parent);
+    const garagePage = new GaragePageModel(this.appView.getHTML());
+    const winnersPage = new WinnersPageModel(this.appView.getHTML());
     const pages: Map<string, PageInterface> = new Map(
       Object.entries({
         [PAGES_IDS.DEFAULT_PAGE]: garagePage,

@@ -3,7 +3,9 @@ import type { CarInterface } from '../../../shared/Api/types/interfaces.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import RACE_TRACK_STYLES from './raceTrack.module.scss';
-import RACE_TRACK_BUTTON_TEXT from '../types/enums.ts';
+import RACE_TRACK_BUTTON_TEXT, {
+  RACE_TRACK_SVG_DETAILS,
+} from '../types/enums.ts';
 import { changeSVGFill, createSVGUse } from '../../../utils/createCarImg.ts';
 
 class RaceTrackView {
@@ -117,11 +119,12 @@ class RaceTrackView {
   }
 
   private createCarSVG(): SVGSVGElement {
-    const svgURL = 'http://www.w3.org/2000/svg';
-    const carID = 'car';
-    this.carSVG = document.createElementNS(svgURL, TAG_NAMES.SVG);
+    this.carSVG = document.createElementNS(
+      RACE_TRACK_SVG_DETAILS.SVG_URL,
+      TAG_NAMES.SVG,
+    );
     this.carSVG.classList.add(RACE_TRACK_STYLES['race-track__car-img']);
-    this.carSVG.appendChild(createSVGUse(carID));
+    this.carSVG.appendChild(createSVGUse(RACE_TRACK_SVG_DETAILS.CAR_ID));
     changeSVGFill(this.carSVG, this.carData.color);
     return this.carSVG;
   }
@@ -158,11 +161,12 @@ class RaceTrackView {
       cssClasses: [RACE_TRACK_STYLES['race-track__bottom-wrapper']],
     });
 
-    const svgURL = 'http://www.w3.org/2000/svg';
-    const flagID = 'race-flag';
-    const raceFlag = document.createElementNS(svgURL, TAG_NAMES.SVG);
+    const raceFlag = document.createElementNS(
+      RACE_TRACK_SVG_DETAILS.SVG_URL,
+      TAG_NAMES.SVG,
+    );
     raceFlag.classList.add(RACE_TRACK_STYLES['race-track__flag-img']);
-    raceFlag.appendChild(createSVGUse(flagID));
+    raceFlag.appendChild(createSVGUse(RACE_TRACK_SVG_DETAILS.FLAG_ID));
 
     bottomRaceTrackWrapper.append(
       this.startEngineButton.getHTML(),

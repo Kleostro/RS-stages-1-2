@@ -10,15 +10,14 @@ import STORE_FIELDS from '../../../shared/Store/types/enums.ts';
 import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class PaginationModel {
-  private singletonMediator: MediatorModel<unknown>;
+  private singletonMediator: MediatorModel<unknown> =
+    MediatorModel.getInstance();
 
-  private paginationView: PaginationView;
+  private paginationView: PaginationView = new PaginationView();
 
   private pagination: HTMLDivElement;
 
   constructor() {
-    this.singletonMediator = MediatorModel.getInstance();
-    this.paginationView = new PaginationView();
     this.pagination = this.paginationView.getHTML();
     this.init();
   }
@@ -65,7 +64,7 @@ class PaginationModel {
       type: ACTIONS.CHANGE_GARAGE_PAGE,
       payload: garagePageCountDec,
     });
-    this.allButtonsDisabled();
+    this.checkButtons();
     this.redrawPageInfo(garagePageCountDec);
   }
 
@@ -77,11 +76,11 @@ class PaginationModel {
       type: ACTIONS.CHANGE_GARAGE_PAGE,
       payload: garagePageCountInc,
     });
-    this.allButtonsDisabled();
+    this.checkButtons();
     this.redrawPageInfo(garagePageCountInc);
   }
 
-  private allButtonsDisabled(): void {
+  private checkButtons(): void {
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
     const { garagePage } = StoreModel.getState();
@@ -99,38 +98,54 @@ class PaginationModel {
   }
 
   private setSubscribeToMediator(): void {
+    const prevButton = this.paginationView.getPrevButton();
+    const nextButton = this.paginationView.getNextButton();
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
-      () => {
-        this.initPageInfo();
-      },
+      this.initPageInfo.bind(this),
     );
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
       this.initPageInfo();
-      this.allButtonsDisabled();
+      this.checkButtons();
     });
 
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
-      () => {
-        this.allButtonsDisabled();
-      },
+      this.checkButtons.bind(this),
     );
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
       this.initPageInfo();
-      this.allButtonsDisabled();
+      this.checkButtons();
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
-      this.allButtonsDisabled();
+      this.checkButtons();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.START_RACE, () => {
+      prevButton.setDisabled();
+      nextButton.setDisabled();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.EMPTY_RACE, () => {
+      this.checkButtons();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.SINGLE_RACE_START, () => {
+      prevButton.setDisabled();
+      nextButton.setDisabled();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.SINGLE_RACE_RESET, () => {
+      this.checkButtons();
     });
   }
 
   private init(): void {
     this.initPageInfo();
-    this.allButtonsDisabled();
+    this.checkButtons();
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
     prevButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
@@ -145,7 +160,7 @@ class PaginationModel {
     this.setSubscribeToMediator();
 
     StoreModel.subscribe(STORE_FIELDS.TOTAL_GARAGE_PAGES, () => {
-      this.allButtonsDisabled();
+      this.checkButtons();
     });
   }
 }

@@ -3,11 +3,7 @@ import type ListenerCallback from '../types/types.ts';
 class MediatorModel<T> {
   private static mediator = new MediatorModel();
 
-  private listeners: Map<string, Array<ListenerCallback<T>>>;
-
-  constructor() {
-    this.listeners = new Map();
-  }
+  private listeners: Map<string, Array<ListenerCallback<T>>> = new Map();
 
   public static getInstance(): MediatorModel<unknown> {
     return MediatorModel.mediator;

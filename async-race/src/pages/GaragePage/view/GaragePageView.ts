@@ -1,3 +1,4 @@
+import { GARAGE_BUTTONS_TEXT } from '../../types/enums.ts';
 import ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
@@ -18,14 +19,20 @@ class GaragePageView {
 
   private startRaceButton: ButtonModel;
 
+  private resetRaceButton: ButtonModel;
+
+  private raceResult: HTMLDivElement;
+
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.moreCarsButton = this.createMoreCarsButton();
     this.startRaceButton = this.createStartRaceButton();
+    this.resetRaceButton = this.createResetRaceButton();
     this.raceTrackTopWrapper = this.createRaceTrackTopWrapper();
     this.garageTitle = this.createGarageTitle();
+    this.raceResult = this.createRaceResult();
     this.raceTracksList = this.createRaceTracksList();
     this.raceTrackBottomWrapper = this.createRaceTrackBottomWrapper();
     this.page = this.createHTML();
@@ -63,6 +70,14 @@ class GaragePageView {
     return this.startRaceButton;
   }
 
+  public getResetRaceButton(): ButtonModel {
+    return this.resetRaceButton;
+  }
+
+  public getRaceResult(): HTMLDivElement {
+    return this.raceResult;
+  }
+
   private createGarageTitle(): HTMLHeadingElement {
     this.garageTitle = createBaseElement({
       tag: TAG_NAMES.H2,
@@ -81,9 +96,8 @@ class GaragePageView {
   }
 
   private createMoreCarsButton(): ButtonModel {
-    const buttonText = 'Create 100 cars';
     this.moreCarsButton = new ButtonModel({
-      text: buttonText,
+      text: GARAGE_BUTTONS_TEXT.CREATE_MORE_CARS,
       classes: [GARAGE_PAGE_STYLES['garage-page_more-button']],
     });
 
@@ -99,6 +113,7 @@ class GaragePageView {
     this.raceTrackTopWrapper.append(
       this.moreCarsButton.getHTML(),
       this.startRaceButton.getHTML(),
+      this.resetRaceButton.getHTML(),
     );
     return this.raceTrackTopWrapper;
   }
@@ -112,13 +127,36 @@ class GaragePageView {
   }
 
   private createStartRaceButton(): ButtonModel {
-    const text = 'Race';
     this.startRaceButton = new ButtonModel({
-      text,
-      classes: [GARAGE_PAGE_STYLES['garage-page_race-button']],
+      text: GARAGE_BUTTONS_TEXT.START_RACE,
+      classes: [
+        GARAGE_PAGE_STYLES['garage-page_race-button'],
+        GARAGE_PAGE_STYLES['garage-page_race-button_start'],
+      ],
     });
 
     return this.startRaceButton;
+  }
+
+  private createResetRaceButton(): ButtonModel {
+    this.resetRaceButton = new ButtonModel({
+      text: GARAGE_BUTTONS_TEXT.RESET_RACE,
+      classes: [
+        GARAGE_PAGE_STYLES['garage-page_race-button'],
+        GARAGE_PAGE_STYLES['garage-page_race-button_reset'],
+      ],
+    });
+
+    return this.resetRaceButton;
+  }
+
+  private createRaceResult(): HTMLDivElement {
+    this.raceResult = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [GARAGE_PAGE_STYLES['garage-page_race-result']],
+    });
+
+    return this.raceResult;
   }
 
   private createHTML(): HTMLDivElement {
@@ -132,7 +170,11 @@ class GaragePageView {
       cssClasses: [GARAGE_PAGE_STYLES['garage-page_bottom-wrapper']],
     });
 
-    this.raceTrackBottomWrapper.append(this.garageTitle, this.raceTracksList);
+    this.raceTrackBottomWrapper.append(
+      this.garageTitle,
+      this.raceTracksList,
+      this.raceResult,
+    );
     this.page.append(this.raceTrackTopWrapper, this.raceTrackBottomWrapper);
     this.parent.append(this.page);
     return this.page;

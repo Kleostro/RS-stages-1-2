@@ -1,8 +1,7 @@
 /* stylelint-disable order/order */
 .garage-page {
+  display: block;
   padding: 0 var(--small-offset);
-  opacity: 1;
-  transition: opacity 0.5s;
 
   &_top-wrapper {
     display: grid;
@@ -17,9 +16,30 @@
   }
 
   &_bottom-wrapper {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(3, max-content);
     gap: calc(var(--small-offset) / 2);
+  }
+
+  &_race-result {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    border-radius: var(--border-radius);
+    padding: calc(var(--small-offset) / 2) var(--small-offset);
+    font: var(--second-font);
+    letter-spacing: 1px;
+    color: var(--car-button-color);
+    background-color: var(--car-button-bg);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
+
+    &_show {
+      opacity: 1;
+    }
   }
 
   &_list {
@@ -44,12 +64,13 @@
   }
 
   &--hidden {
-    opacity: 0;
+    display: none;
   }
 
   &_more-button,
   &_race-button {
     grid-row: 2;
+    margin: 0 auto;
     margin-top: calc(var(--small-offset) / 2);
     border-radius: 4px;
     padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
@@ -61,6 +82,18 @@
       color 0.3s,
       background-color 0.3s,
       opacity 0.3s;
+
+    &_start {
+      @media (max-width: (1000px)) {
+        grid-row: 4;
+      }
+    }
+
+    &_reset {
+      @media (max-width: (1000px)) {
+        grid-row: 5;
+      }
+    }
 
     &:disabled {
       opacity: 0.5;
@@ -75,15 +108,9 @@
     }
   }
 
-  &_race-button {
-    @media (max-width: (1000px)) {
-      grid-row: 4;
-    }
-  }
-
   &_more-button {
     @media (max-width: (1000px)) {
-      grid-row: 5;
+      grid-row: 6;
     }
   }
 }

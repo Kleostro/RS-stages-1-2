@@ -4,21 +4,17 @@ import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import HeaderView from '../view/HeaderView.ts';
 
 class HeaderModel {
-  private headerView: HeaderView;
-
-  private header: HTMLElement;
+  private headerView: HeaderView = new HeaderView();
 
   private router: RouterModel;
 
   constructor(router: RouterModel) {
     this.router = router;
-    this.headerView = new HeaderView();
-    this.header = this.headerView.getHTML();
     this.setHandlerToButtons();
   }
 
   public getHTML(): HTMLElement {
-    return this.header;
+    return this.headerView.getHTML();
   }
 
   private setHandlerToButtons(): void {

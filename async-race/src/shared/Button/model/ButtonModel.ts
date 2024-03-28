@@ -5,23 +5,20 @@ import ButtonView from '../view/ButtonView.ts';
 class ButtonModel {
   private view: ButtonView;
 
-  private button: HTMLButtonElement;
-
   constructor(params: ButtonInterface) {
     this.view = new ButtonView(params);
-    this.button = this.view.getHTML();
   }
 
   public getHTML(): HTMLButtonElement {
-    return this.button;
+    return this.view.getHTML();
   }
 
   public setDisabled(): void {
-    this.button.disabled = IS_DISABLED.DISABLED;
+    this.view.getHTML().disabled = IS_DISABLED.DISABLED;
   }
 
   public setEnabled(): void {
-    this.button.disabled = IS_DISABLED.ENABLED;
+    this.view.getHTML().disabled = IS_DISABLED.ENABLED;
   }
 }
 

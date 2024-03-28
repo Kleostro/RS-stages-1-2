@@ -10,53 +10,41 @@ import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class ChangeCarFormModel {
-  private singletonMediator: MediatorModel<unknown>;
+  private singletonMediator: MediatorModel<unknown> =
+    MediatorModel.getInstance();
 
   private selectCar: CarInterface | null = null;
 
-  private changeCarFormView: ChangeCarFormView;
-
-  private form: HTMLFormElement;
+  private changeCarFormView: ChangeCarFormView = new ChangeCarFormView();
 
   constructor() {
-    this.singletonMediator = MediatorModel.getInstance();
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.SELECT_CAR, (params) => {
-      this.getSelectCar(params);
-    });
-    this.changeCarFormView = new ChangeCarFormView();
-    this.form = this.changeCarFormView.getHTML();
     this.init();
   }
 
   public getHTML(): HTMLFormElement {
-    return this.form;
+    return this.changeCarFormView.getHTML();
   }
 
-  private getSelectCar(id: unknown): void {
-    if (typeof id === 'number') {
-      const loader = new LoaderModel();
-      this.changeCarFormView
-        .getSubmitButton()
-        .getHTML()
-        .append(loader.getHTML());
-      ApiModel.getCarById(id)
-        .then((car) => {
-          if (car) {
-            loader.getHTML().remove();
-            this.selectCar = car;
-            this.unDisableForm();
-            this.singletonMediator.notify(
-              MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
-              car.name,
-            );
-            this.singletonMediator.notify(
-              MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
-              car.color,
-            );
-          }
-        })
-        .catch(() => {});
-    }
+  private getSelectCar(id: number): void {
+    const loader = new LoaderModel();
+    this.changeCarFormView.getSubmitButton().getHTML().append(loader.getHTML());
+    ApiModel.getCarById(id)
+      .then((car) => {
+        if (car) {
+          loader.getHTML().remove();
+          this.selectCar = car;
+          this.unDisableForm();
+          this.singletonMediator.notify(
+            MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
+            car.name,
+          );
+          this.singletonMediator.notify(
+            MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
+            car.color,
+          );
+        }
+      })
+      .catch(() => {});
   }
 
   private unDisableForm(): void {
@@ -158,6 +146,12 @@ class ChangeCarFormModel {
         this.submitHandler().catch(() => {});
       },
     );
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.SELECT_CAR, (params) => {
+      if (typeof params === 'number') {
+        this.getSelectCar(params);
+      }
+    });
   }
 }
 

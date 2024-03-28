@@ -61,7 +61,7 @@ class ChangeCarFormView {
   }
 
   private createSubmitButton(): ButtonModel {
-    const buttonText = 'Save';
+    const buttonText = 'Update';
     this.submitButton = new ButtonModel({
       text: buttonText,
       classes: [CHANGE_CAR_FORM_STYLES['form_submit-button']],

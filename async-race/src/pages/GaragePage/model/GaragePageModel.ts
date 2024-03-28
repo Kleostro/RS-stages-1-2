@@ -5,7 +5,10 @@ import GaragePageView from '../view/GaragePageView.ts';
 import GARAGE_PAGE_STYLES from '../view/garagePage.module.scss';
 import ApiModel from '../../../shared/Api/model/ApiModel.ts';
 import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
-import type { CarInterface } from '../../../shared/Api/types/interfaces.ts';
+import type {
+  CarInterface,
+  WinnerInterface,
+} from '../../../shared/Api/types/interfaces.ts';
 import RaceTrackModel from '../../../entities/RaceTrack/model/RaceTrackModel.ts';
 import CreateCarFormModel from '../../../widgets/CreateCarForm/model/CreateCarFormModel.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
@@ -17,48 +20,52 @@ import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import createRandomDataCars from '../../../utils/createRandomDataCars.ts';
 import PaginationModel from '../../../features/Pagination/model/PaginationModel.ts';
 import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
+import { MORE_COUNT_CARS } from '../../types/enums.ts';
+import type NewWinner from '../../../entities/RaceTrack/types/interfaces.ts';
+import Winner from '../../../utils/isWinner.ts';
 
 class GaragePageModel implements PageInterface {
-  private parent: HTMLDivElement;
-
-  private singletonMediator: MediatorModel<unknown>;
+  private singletonMediator: MediatorModel<unknown> =
+    MediatorModel.getInstance();
 
   private garagePageView: GaragePageView;
 
-  private createCarForm: CreateCarFormModel;
+  private raceTracks: RaceTrackModel[] = [];
+
+  private createCarForm: CreateCarFormModel = new CreateCarFormModel();
 
   private removeButtons: ButtonModel[] = [];
 
-  private changeCarForm: ChangeCarFormModel;
+  private countCarsInRace = 0;
 
-  private previewCar: PreviewCarModel;
+  private changeCarForm: ChangeCarFormModel = new ChangeCarFormModel();
 
-  private pagination: PaginationModel;
+  private isWinner = false;
 
-  private page: HTMLDivElement;
+  private winner: NewWinner = {
+    id: 0,
+    wins: 0,
+    time: 0,
+    name: '',
+  };
+
+  private previewCar: PreviewCarModel = new PreviewCarModel();
+
+  private pagination: PaginationModel = new PaginationModel();
 
   constructor(parent: HTMLDivElement) {
-    this.parent = parent;
-    this.singletonMediator = MediatorModel.getInstance();
-    this.garagePageView = new GaragePageView(this.parent);
-    this.createCarForm = new CreateCarFormModel();
-    this.changeCarForm = new ChangeCarFormModel();
-    this.previewCar = new PreviewCarModel();
-    this.pagination = new PaginationModel();
-    this.page = this.garagePageView.getHTML();
+    this.garagePageView = new GaragePageView(parent);
     this.init();
   }
 
   public getHTML(): HTMLDivElement {
-    return this.page;
+    return this.garagePageView.getHTML();
   }
 
-  public hide(): void {
-    this.page.classList.add(GARAGE_PAGE_STYLES['garage-page--hidden']);
-  }
-
-  public show(): void {
-    this.page.classList.remove(GARAGE_PAGE_STYLES['garage-page--hidden']);
+  private switchVisible(): void {
+    this.garagePageView
+      .getHTML()
+      .classList.toggle(GARAGE_PAGE_STYLES['garage-page--hidden']);
   }
 
   private getInitialDataCars(): void {
@@ -113,12 +120,14 @@ class GaragePageModel implements PageInterface {
   }
 
   private drawRaceTracks(cars: CarInterface[]): void {
+    this.raceTracks = [];
     const countCarsToList =
       this.garagePageView.getRaceTracksList().children.length;
 
     if (countCarsToList < QUERY_VALUES.DEFAULT_CARS_LIMIT) {
       cars.forEach((car) => {
         const raceTrack = new RaceTrackModel(car);
+        this.raceTracks.push(raceTrack);
         this.removeButtons.push(raceTrack.getView().getRemoveCarButton());
         this.garagePageView.getRaceTracksList().append(raceTrack.getHTML());
       });
@@ -126,8 +135,7 @@ class GaragePageModel implements PageInterface {
   }
 
   private moreCarsHandler(): void {
-    const carsCount = 100;
-    const cars = createRandomDataCars(carsCount);
+    const cars = createRandomDataCars(MORE_COUNT_CARS);
     StoreModel.dispatch({
       type: ACTIONS.ADD_NEW_CAR,
       payload: cars,
@@ -135,10 +143,12 @@ class GaragePageModel implements PageInterface {
     const loader = new LoaderModel();
     this.garagePageView.getRaceTracksList().append(loader.getHTML());
     cars.forEach((car) => {
+      this.garagePageView.getStartRaceButton().setDisabled();
       ApiModel.createCar(car)
         .then(() => {
           this.drawRaceTracks([car]);
           this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_MORE_CARS, '');
+          this.garagePageView.getStartRaceButton().setEnabled();
         })
         .catch(() => {});
     });
@@ -168,23 +178,96 @@ class GaragePageModel implements PageInterface {
           this.garagePageView.clearRaceTracksList();
           this.drawRaceTracks(data);
         }
-        return data;
       })
       .catch(() => {});
   }
 
   private startRaceHandler(): void {
-    const queryParams: Map<string, number> = new Map();
-    queryParams.set(QUERY_PARAMS.PAGE, StoreModel.getState().garagePage);
-    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-    ApiModel.getCars(queryParams)
-      .then((cars) => {
-        if (cars) {
-          this.garagePageView.getStartRaceButton().setDisabled();
-          this.singletonMediator.notify(MEDIATOR_EVENTS.START_RACE, '');
+    this.countCarsInRace = this.raceTracks.length;
+    this.allDisabled();
+    this.raceTracks.forEach((raceTrack) => {
+      raceTrack.startEngineHandler().catch(() => {});
+    });
+    this.singletonMediator.notify(MEDIATOR_EVENTS.START_RACE, '');
+  }
+
+  private resetRaceHandler(): void {
+    this.garagePageView
+      .getRaceResult()
+      .classList.remove(GARAGE_PAGE_STYLES['garage-page_race-result_show']);
+    this.garagePageView.getRaceResult().innerHTML = '';
+    this.isWinner = false;
+    this.raceTracks.forEach((raceTrack) => {
+      raceTrack.stopEngineHandler();
+    });
+    this.singletonMediator.notify(MEDIATOR_EVENTS.RESET_RACE, '');
+  }
+
+  private drawWinner(): void {
+    this.garagePageView
+      .getRaceResult()
+      .classList.add(GARAGE_PAGE_STYLES['garage-page_race-result_show']);
+    this.garagePageView.getRaceResult().innerHTML = '';
+    const text = `Winner: ${this.winner.name} - ${this.winner.time}s`;
+    this.garagePageView.getRaceResult().textContent = text;
+  }
+
+  private hasWinner(winner: WinnerInterface): void {
+    if (winner.wins) {
+      const currentWinner = {
+        id: winner.id,
+        wins: winner.wins + 1,
+        time: this.winner.time < winner.time ? this.winner.time : winner.time,
+      };
+
+      ApiModel.updateWinnerById(currentWinner.id, currentWinner).catch(
+        () => {},
+      );
+    } else {
+      if (!this.winner.id) {
+        return;
+      }
+      const newWinnerData: WinnerInterface = {
+        id: this.winner.id,
+        wins: this.winner.wins,
+        time: this.winner.time,
+      };
+      ApiModel.createWinner(newWinnerData).catch(() => {});
+    }
+  }
+
+  private addNewWinner(): void {
+    if (!this.winner.id) {
+      return;
+    }
+
+    ApiModel.getWinnerById(this.winner.id)
+      .then((winner) => {
+        if (winner) {
+          this.hasWinner(winner);
         }
       })
       .catch(() => {});
+  }
+
+  private allDisabled(): void {
+    this.garagePageView.getMoreCarsButton().setDisabled();
+    this.garagePageView.getStartRaceButton().setDisabled();
+    this.garagePageView.getResetRaceButton().setDisabled();
+    this.raceTracks.forEach((raceTrack) => {
+      raceTrack.getView().getSelectCarButton().setDisabled();
+      raceTrack.getView().getRemoveCarButton().setDisabled();
+    });
+  }
+
+  private allEnabled(): void {
+    this.garagePageView.getMoreCarsButton().setEnabled();
+    this.garagePageView.getStartRaceButton().setEnabled();
+    this.garagePageView.getResetRaceButton().setEnabled();
+    this.raceTracks.forEach((raceTrack) => {
+      raceTrack.getView().getSelectCarButton().setEnabled();
+      raceTrack.getView().getRemoveCarButton().setEnabled();
+    });
   }
 
   private setSubscribeToMediator(): void {
@@ -215,12 +298,63 @@ class GaragePageModel implements PageInterface {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
       this.redrawCurrentPage();
     });
+
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.SINGLE_RACE_START,
+      this.allDisabled.bind(this),
+    );
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.NEW_WINNER, (params) => {
+      this.decCarInRace();
+      if (!this.isWinner && Winner.isWinner(params)) {
+        this.winner = params;
+        this.isWinner = true;
+        this.drawWinner();
+        this.addNewWinner();
+      }
+    });
+  }
+
+  private decCarInRace(): void {
+    this.countCarsInRace -= 1;
+    if (this.countCarsInRace === 0) {
+      this.garagePageView.getResetRaceButton().setEnabled();
+    }
+  }
+
+  private incCarInRace(): void {
+    this.countCarsInRace += 1;
+    if (this.countCarsInRace === this.raceTracks.length) {
+      this.garagePageView.getResetRaceButton().setDisabled();
+      this.garagePageView.getStartRaceButton().setEnabled();
+      this.garagePageView.getMoreCarsButton().setEnabled();
+      this.singletonMediator.notify(MEDIATOR_EVENTS.EMPTY_RACE, '');
+    }
+  }
+
+  private setSubscribeToMediator2(): void {
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, () => {
+      this.switchVisible();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CAR_BROKEN, () => {
+      this.decCarInRace();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.RESET_CURRENT_CAR, () => {
+      this.incCarInRace();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.SINGLE_RACE_RESET, () => {
+      this.allEnabled();
+    });
   }
 
   private init(): void {
-    this.hide();
     this.getInitialDataCars();
     this.setSubscribeToMediator();
+    this.setSubscribeToMediator2();
+    this.switchVisible();
 
     const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
     moreCarsButton.addEventListener(
@@ -236,6 +370,12 @@ class GaragePageModel implements PageInterface {
     startRaceButton.addEventListener(
       EVENT_NAMES.CLICK,
       this.startRaceHandler.bind(this),
+    );
+
+    const resetRaceButton = this.garagePageView.getResetRaceButton().getHTML();
+    resetRaceButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.resetRaceHandler.bind(this),
     );
 
     raceTrackBottomWrapper.append(this.pagination.getHTML());

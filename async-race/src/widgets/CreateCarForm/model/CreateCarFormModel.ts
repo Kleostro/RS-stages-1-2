@@ -10,21 +10,17 @@ import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
 class CreateCarFormModel {
-  private singletonMediator: MediatorModel<unknown>;
+  private singletonMediator: MediatorModel<unknown> =
+    MediatorModel.getInstance();
 
-  private createCarFormView: CreateCarFormView;
-
-  private form: HTMLFormElement;
+  private createCarFormView: CreateCarFormView = new CreateCarFormView();
 
   constructor() {
-    this.singletonMediator = MediatorModel.getInstance();
-    this.createCarFormView = new CreateCarFormView();
-    this.form = this.createCarFormView.getHTML();
     this.init();
   }
 
   public getHTML(): HTMLFormElement {
-    return this.form;
+    return this.createCarFormView.getHTML();
   }
 
   private checkForm(): void {
@@ -75,23 +71,32 @@ class CreateCarFormModel {
     this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_CAR, '');
   }
 
-  private init(): void {
-    const carNameInput = this.createCarFormView.getCarNameInput().getHTML();
-    const carColorInput = this.createCarFormView.getCarColorInput().getHTML();
+  private allDisabled(): void {
+    const carNameInput = this.createCarFormView.getCarNameInput();
+    const carColorInput = this.createCarFormView.getCarColorInput();
+    const submitButton = this.createCarFormView.getSubmitButton();
+    carNameInput.setDisabled();
+    carColorInput.setDisabled();
+    submitButton.setDisabled();
+  }
 
-    carNameInput.addEventListener(EVENT_NAMES.INPUT, () => {
+  private init(): void {
+    const carNameInput = this.createCarFormView.getCarNameInput();
+    const carColorInput = this.createCarFormView.getCarColorInput();
+
+    carNameInput.getHTML().addEventListener(EVENT_NAMES.INPUT, () => {
       this.checkForm();
       this.singletonMediator.notify(
         MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
-        carNameInput.value,
+        carNameInput.getHTML().value,
       );
     });
 
-    carColorInput.addEventListener(EVENT_NAMES.INPUT, () => {
+    carColorInput.getHTML().addEventListener(EVENT_NAMES.INPUT, () => {
       this.checkForm();
       this.singletonMediator.notify(
         MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
-        carColorInput.value,
+        carColorInput.getHTML().value,
       );
     });
 
@@ -102,6 +107,24 @@ class CreateCarFormModel {
         this.submitHandler().catch(() => {});
       },
     );
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.START_RACE, () => {
+      this.allDisabled();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.SINGLE_RACE_START, () => {
+      this.allDisabled();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.SINGLE_RACE_RESET, () => {
+      carColorInput.setEnabled();
+      carNameInput.setEnabled();
+    });
+
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.EMPTY_RACE, () => {
+      carColorInput.setEnabled();
+      carNameInput.setEnabled();
+    });
   }
 }
 

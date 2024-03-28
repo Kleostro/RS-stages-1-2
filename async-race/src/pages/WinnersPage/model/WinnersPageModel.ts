@@ -1,33 +1,34 @@
+import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
+import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import WinnersPageView from '../view/WinnersPageView.ts';
 import WINNERS_PAGE_STYLES from '../view/winnersPage.module.scss';
 
 class WinnersPageModel implements PageInterface {
-  private parent: HTMLDivElement;
-
   private winnersPageView: WinnersPageView;
 
-  private page: HTMLDivElement;
+  private singletonMediator: MediatorModel<unknown> =
+    MediatorModel.getInstance();
 
   constructor(parent: HTMLDivElement) {
-    this.parent = parent;
-    this.winnersPageView = new WinnersPageView(this.parent);
-    this.page = this.winnersPageView.getHTML();
-    this.hide();
+    this.winnersPageView = new WinnersPageView(parent);
+    this.init();
   }
 
   public getHTML(): HTMLDivElement {
-    return this.page;
+    return this.winnersPageView.getHTML();
   }
 
-  public hide(): void {
-    this.getHTML().classList.add(WINNERS_PAGE_STYLES['winners-page--hidden']);
+  private switchVisible(): void {
+    this.winnersPageView
+      .getHTML()
+      .classList.toggle(WINNERS_PAGE_STYLES['winners-page--hidden']);
   }
 
-  public show(): void {
-    this.getHTML().classList.remove(
-      WINNERS_PAGE_STYLES['winners-page--hidden'],
-    );
+  private init(): void {
+    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, () => {
+      this.switchVisible();
+    });
   }
 }
 

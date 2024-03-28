@@ -1,4 +1,5 @@
 const MEDIATOR_EVENTS = {
+  CHANGE_PAGE: 'changePage',
   GET_CURRENT_CARS: 'getCurrentCars',
   GET_CURRENT_WINNERS: 'getCurrentWinners',
   DELETE_CAR: 'deleteCar',
@@ -14,6 +15,13 @@ const MEDIATOR_EVENTS = {
   CHANGE_TOTAL_GARAGE_PAGES: 'changeTotalGaragePages',
   CHANGE_WINNER_PAGE: 'changeWinnerPage',
   START_RACE: 'startRace',
+  RESET_RACE: 'resetRace',
+  NEW_WINNER: 'newWinner',
+  CAR_BROKEN: 'carBroken',
+  RESET_CURRENT_CAR: 'resetCurrentCar',
+  EMPTY_RACE: 'emptyRace',
+  SINGLE_RACE_START: 'singleRaceStart',
+  SINGLE_RACE_RESET: 'singleRaceReset',
 } as const;
 
 export default MEDIATOR_EVENTS;
