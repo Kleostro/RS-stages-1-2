@@ -214,7 +214,7 @@ class RouterModel {
       const currentPath = window.location.pathname.split(ROUTER_DETAILS.DEFAULT_SEGMENT).slice(
         ROUTER_DETAILS.PATH_SEGMENTS_TO_KEEP + ROUTER_DETAILS.NEXT_SEGMENT
       ).join(ROUTER_DETAILS.DEFAULT_SEGMENT);
-      console.log(currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT));
+      this.navigateTo(currentPath);
       this.singletonMediator.notify(
         MEDIATOR_EVENTS.CHANGE_PAGE,
         currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join()
@@ -225,10 +225,6 @@ class RouterModel {
         ROUTER_DETAILS.PATH_SEGMENTS_TO_KEEP + ROUTER_DETAILS.NEXT_SEGMENT
       ).join(ROUTER_DETAILS.DEFAULT_SEGMENT);
       this.handleRequest(currentPath);
-      this.singletonMediator.notify(
-        MEDIATOR_EVENTS.CHANGE_PAGE,
-        currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join()
-      );
     });
   }
   navigateTo(route) {
@@ -243,13 +239,11 @@ class RouterModel {
   handleRequest(path) {
     const pathParts = path.split(ROUTER_DETAILS.DEFAULT_SEGMENT);
     const hasRoute = this.pages.has(pathParts.join(""));
-    console.log(pathParts);
     if (!hasRoute) {
-      console.log(pathParts);
-      window.location.pathname = `winners/${PAGES_IDS.GARAGE_PAGE}`;
+      window.location.pathname = `winners/${PAGES_IDS.DEFAULT_PAGE}`;
       this.singletonMediator.notify(
         MEDIATOR_EVENTS.CHANGE_PAGE,
-        PAGES_IDS.GARAGE_PAGE
+        PAGES_IDS.DEFAULT_PAGE
       );
       return;
     }
@@ -2269,7 +2263,7 @@ class GaragePageModel {
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.CHANGE_PAGE,
       (params) => {
-        if (typeof params === "string" && params === PAGES_IDS.GARAGE_PAGE) {
+        if (typeof params === "string" && params === PAGES_IDS.GARAGE_PAGE || params === PAGES_IDS.DEFAULT_PAGE) {
           this.visible();
         } else {
           this.hidden();
@@ -2816,4 +2810,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-fca563f9.js.map
+//# sourceMappingURL=main-e7664061.js.map
