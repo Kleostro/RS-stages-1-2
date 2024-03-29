@@ -922,8 +922,7 @@ class LoaderView {
 }
 class LoaderModel {
   constructor() {
-    __publicField(this, "loaderView");
-    this.loaderView = new LoaderView();
+    __publicField(this, "loaderView", new LoaderView());
   }
   getHTML() {
     return this.loaderView.getHTML();
@@ -1422,6 +1421,7 @@ class PreviewCarView {
     return this.previewCar;
   }
 }
+const attr = "fill";
 class PreviewCarModel {
   constructor() {
     __publicField(this, "previewCarView", new PreviewCarView());
@@ -1440,7 +1440,6 @@ class PreviewCarModel {
   }
   setInitialStateFields() {
     this.previewCarView.getCarName().textContent = "";
-    const attr = "fill";
     this.previewCarView.getCarSVG().removeAttribute(attr);
   }
   init() {
@@ -1842,7 +1841,7 @@ class PaginationModel {
     } else {
       maxPage = StoreModel.getState().totalWinnersPages;
     }
-    const textContent = `Page: ${currentPage} / ${maxPage} `;
+    const textContent = `Page: ${currentPage} / ${maxPage}`;
     pageSpan.textContent = textContent;
   }
   prevButtonHandler() {
@@ -2809,4 +2808,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-8f39c783.js.map
+//# sourceMappingURL=main-19a5a626.js.map
