@@ -268,13 +268,13 @@
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
-}._preview-car_1hrk7_1 {
+}._preview-car_15z8n_1 {
   display: flex;
   flex-direction: column;
   grid-row: 1;
   height: 57px;
 }
-._preview-car_name_1hrk7_7 {
+._preview-car_name_15z8n_7 {
   overflow: hidden;
   min-height: 16px;
   max-width: 100px;
@@ -284,13 +284,13 @@
   text-align: center;
   text-overflow: ellipsis;
   text-transform: capitalize;
-  color: var(--garage-title-color);
+  color: var(--title-color);
 }
-._preview-car_img_1hrk7_19 {
+._preview-car_img_15z8n_19 {
   max-width: 100px;
 }
 @media (max-width: 1000px) {
-  ._preview-car_1hrk7_1 {
+  ._preview-car_15z8n_1 {
     grid-row: 2;
   }
 }._form_1ncl9_1 {
@@ -390,15 +390,15 @@
     background-color: var(--car-button-bg-hover);
   }
 }
-._winners-page_uoz25_2 {
+._winners-page_1enh4_2 {
   display: block;
   padding: 0 var(--small-offset);
 }
-._winners-page_wrapper_uoz25_6 {
+._winners-page_wrapper_1enh4_6 {
   display: grid;
   gap: var(--small-offset);
 }
-._winners-page_title_uoz25_10 {
+._winners-page_title_1enh4_10 {
   position: relative;
   width: 100%;
   min-height: 28px;
@@ -406,16 +406,15 @@
   letter-spacing: 1px;
   color: var(--title-color);
 }
-._winners-page_table_uoz25_18 {
+._winners-page_table_1enh4_18 {
   width: 100%;
-  min-height: 560px;
-  max-width: 50%;
+  min-height: 400px;
   background-color: var(--winners-table-bg);
 }
-._winners-page_table_head_uoz25_24 {
+._winners-page_table_head_1enh4_23 {
   color: var(--winners-table-head-color);
 }
-._winners-page_table_head-td_uoz25_27 {
+._winners-page_table_head-td_1enh4_26 {
   position: relative;
   outline: 2px solid var(--winners-table-border);
   padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
@@ -427,63 +426,67 @@
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
 }
-._winners-page_table_head-td_uoz25_27::after {
+._winners-page_table_head-td_1enh4_26::after {
   content: "↑";
   position: absolute;
   transition: transform 0.3s;
 }
-._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2)) {
+._winners-page_table_head-td_1enh4_26:not(:nth-last-child(-n+2)) {
   pointer-events: none;
 }
-._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2))::after {
+._winners-page_table_head-td_1enh4_26:not(:nth-last-child(-n+2))::after {
   content: "";
 }
-._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2))._top_uoz25_50, ._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2))._bottom_uoz25_50 {
+._winners-page_table_head-td_1enh4_26:not(:nth-last-child(-n+2))._top_1enh4_49, ._winners-page_table_head-td_1enh4_26:not(:nth-last-child(-n+2))._bottom_1enh4_49 {
   background-color: var(--winners-table-head-tr);
 }
-._winners-page_table_head-td_uoz25_27._top_uoz25_50 {
+._winners-page_table_head-td_1enh4_26._top_1enh4_49 {
   background-color: var(--engine-button-bg);
 }
-._winners-page_table_head-td_uoz25_27._top_uoz25_50::after {
+._winners-page_table_head-td_1enh4_26._top_1enh4_49::after {
   transform: rotate(0);
 }
-._winners-page_table_head-td_uoz25_27._bottom_uoz25_50 {
+._winners-page_table_head-td_1enh4_26._bottom_1enh4_49 {
   background-color: var(--engine-button-bg);
 }
-._winners-page_table_head-td_uoz25_27._bottom_uoz25_50::after {
+._winners-page_table_head-td_1enh4_26._bottom_1enh4_49::after {
   transform: rotate(180deg);
 }
 @media (hover: hover) {
-  ._winners-page_table_head-td_uoz25_27:hover {
+  ._winners-page_table_head-td_1enh4_26:hover {
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
 }
-._winners-page_table_body_uoz25_71 {
+._winners-page_table_body_1enh4_70 {
   background-color: var(--winners-table-body-bg);
 }
-._winners-page_table_body-tr_uoz25_74 {
+._winners-page_table_body-tr_1enh4_73 {
   transition: background-color 0.2s ease-out;
 }
 @media (hover: hover) {
-  ._winners-page_table_body-tr_uoz25_74:hover {
+  ._winners-page_table_body-tr_1enh4_73:hover {
     background-color: var(--winners-table-body-tr-bg);
   }
 }
-._winners-page_table_body-td_uoz25_82 {
+._winners-page_table_body-td_1enh4_81 {
+  overflow: hidden;
   outline: 2px solid var(--winners-table-border);
   padding: calc(var(--little-offset) / 4) calc(var(--small-offset) / 4);
+  max-width: 100px;
   font: var(--small-font);
   letter-spacing: 1px;
+  white-space: nowrap;
   text-align: center;
+  text-overflow: ellipsis;
   text-transform: capitalize;
   color: var(--engine-button-color);
 }
-._winners-page_table_body-td_uoz25_82 svg {
+._winners-page_table_body-td_1enh4_81 svg {
   width: 70px;
   height: 45px;
 }
-._winners-page--hidden_uoz25_95 {
+._winners-page--hidden_1enh4_98 {
   display: none;
 }/* stylelint-disable order/order */
 ._header_19dtq_2 {

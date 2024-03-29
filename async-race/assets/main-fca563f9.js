@@ -214,13 +214,21 @@ class RouterModel {
       const currentPath = window.location.pathname.split(ROUTER_DETAILS.DEFAULT_SEGMENT).slice(
         ROUTER_DETAILS.PATH_SEGMENTS_TO_KEEP + ROUTER_DETAILS.NEXT_SEGMENT
       ).join(ROUTER_DETAILS.DEFAULT_SEGMENT);
-      this.navigateTo(currentPath);
+      console.log(currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT));
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_PAGE,
+        currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join()
+      );
     });
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
       const currentPath = window.location.pathname.split(ROUTER_DETAILS.DEFAULT_SEGMENT).slice(
         ROUTER_DETAILS.PATH_SEGMENTS_TO_KEEP + ROUTER_DETAILS.NEXT_SEGMENT
       ).join(ROUTER_DETAILS.DEFAULT_SEGMENT);
       this.handleRequest(currentPath);
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_PAGE,
+        currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join()
+      );
     });
   }
   navigateTo(route) {
@@ -234,12 +242,21 @@ class RouterModel {
   }
   handleRequest(path) {
     const pathParts = path.split(ROUTER_DETAILS.DEFAULT_SEGMENT);
-    const hasRoute = this.pages.has(pathParts[ROUTER_DETAILS.CURRENT_SEGMENT]);
+    const hasRoute = this.pages.has(pathParts.join(""));
+    console.log(pathParts);
     if (!hasRoute) {
-      window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
+      console.log(pathParts);
+      window.location.pathname = `winners/${PAGES_IDS.GARAGE_PAGE}`;
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_PAGE,
+        PAGES_IDS.GARAGE_PAGE
+      );
       return;
     }
-    this.singletonMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, "");
+    this.singletonMediator.notify(
+      MEDIATOR_EVENTS.CHANGE_PAGE,
+      pathParts.join()
+    );
   }
 }
 const createBaseElement = ({
@@ -1364,9 +1381,9 @@ class CreateCarFormModel {
   }
 }
 const PREVIEW_CAR_STYLES = {
-  "preview-car": "_preview-car_1hrk7_1",
-  "preview-car_name": "_preview-car_name_1hrk7_7",
-  "preview-car_img": "_preview-car_img_1hrk7_19"
+  "preview-car": "_preview-car_15z8n_1",
+  "preview-car_name": "_preview-car_name_15z8n_7",
+  "preview-car_img": "_preview-car_img_15z8n_19"
 };
 class PreviewCarView {
   constructor() {
@@ -2017,19 +2034,19 @@ class GaragePageModel {
   getHTML() {
     return this.garagePageView.getHTML();
   }
-  switchVisible() {
-    this.garagePageView.getHTML().classList.toggle(GARAGE_PAGE_STYLES["garage-page--hidden"]);
+  visible() {
+    this.garagePageView.getHTML().classList.remove(GARAGE_PAGE_STYLES["garage-page--hidden"]);
+  }
+  hidden() {
+    this.garagePageView.getHTML().classList.add(GARAGE_PAGE_STYLES["garage-page--hidden"]);
   }
   getInitialDataCars() {
     const queryParams = /* @__PURE__ */ new Map();
     queryParams.set(QUERY_PARAMS.PAGE, QUERY_VALUES.DEFAULT_PAGE);
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-    const loader2 = new LoaderModel();
-    this.garagePageView.getRaceTracksList().append(loader2.getHTML());
     ApiModel.getCars(queryParams).then((cars) => {
       if (cars) {
         this.drawRaceTracks(cars);
-        loader2.getHTML().remove();
       }
     }).catch(() => {
     });
@@ -2081,8 +2098,6 @@ class GaragePageModel {
       type: ACTIONS.ADD_NEW_CAR,
       payload: cars
     });
-    const loader2 = new LoaderModel();
-    this.garagePageView.getRaceTracksList().append(loader2.getHTML());
     cars.forEach((car) => {
       this.garagePageView.getStartRaceButton().setDisabled();
       ApiModel.createCar(car).then(() => {
@@ -2092,7 +2107,6 @@ class GaragePageModel {
       }).catch(() => {
       });
     });
-    loader2.getHTML().remove();
   }
   redrawCurrentPage() {
     const currentPage = StoreModel.getState().garagePage;
@@ -2108,8 +2122,6 @@ class GaragePageModel {
     } else {
       queryParams.set(QUERY_PARAMS.PAGE, currentPage);
     }
-    const loader2 = new LoaderModel();
-    this.garagePageView.getRaceTracksList().append(loader2.getHTML());
     ApiModel.getCars(queryParams).then((data) => {
       if (data) {
         this.garagePageView.clearRaceTracksList();
@@ -2254,9 +2266,16 @@ class GaragePageModel {
     }
   }
   setSubscribeToMediator2() {
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, () => {
-      this.switchVisible();
-    });
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.CHANGE_PAGE,
+      (params) => {
+        if (typeof params === "string" && params === PAGES_IDS.GARAGE_PAGE) {
+          this.visible();
+        } else {
+          this.hidden();
+        }
+      }
+    );
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CAR_BROKEN, () => {
       this.decCarInRace();
     });
@@ -2271,7 +2290,6 @@ class GaragePageModel {
     this.getInitialDataCars();
     this.setSubscribeToMediator();
     this.setSubscribeToMediator2();
-    this.switchVisible();
     const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
     moreCarsButton.addEventListener(
       EVENT_NAMES.CLICK,
@@ -2297,21 +2315,21 @@ class GaragePageModel {
     );
   }
 }
-const top = "_top_uoz25_50";
-const bottom = "_bottom_uoz25_50";
+const top = "_top_1enh4_49";
+const bottom = "_bottom_1enh4_49";
 const WINNERS_PAGE_STYLES = {
-  "winners-page": "_winners-page_uoz25_2",
-  "winners-page_wrapper": "_winners-page_wrapper_uoz25_6",
-  "winners-page_title": "_winners-page_title_uoz25_10",
-  "winners-page_table": "_winners-page_table_uoz25_18",
-  "winners-page_table_head": "_winners-page_table_head_uoz25_24",
-  "winners-page_table_head-td": "_winners-page_table_head-td_uoz25_27",
+  "winners-page": "_winners-page_1enh4_2",
+  "winners-page_wrapper": "_winners-page_wrapper_1enh4_6",
+  "winners-page_title": "_winners-page_title_1enh4_10",
+  "winners-page_table": "_winners-page_table_1enh4_18",
+  "winners-page_table_head": "_winners-page_table_head_1enh4_23",
+  "winners-page_table_head-td": "_winners-page_table_head-td_1enh4_26",
   top,
   bottom,
-  "winners-page_table_body": "_winners-page_table_body_uoz25_71",
-  "winners-page_table_body-tr": "_winners-page_table_body-tr_uoz25_74",
-  "winners-page_table_body-td": "_winners-page_table_body-td_uoz25_82",
-  "winners-page--hidden": "_winners-page--hidden_uoz25_95"
+  "winners-page_table_body": "_winners-page_table_body_1enh4_70",
+  "winners-page_table_body-tr": "_winners-page_table_body-tr_1enh4_73",
+  "winners-page_table_body-td": "_winners-page_table_body-td_1enh4_81",
+  "winners-page--hidden": "_winners-page--hidden_1enh4_98"
 };
 class WinnersPageView {
   constructor(parent) {
@@ -2498,8 +2516,11 @@ class WinnersPageModel {
   getHTML() {
     return this.winnersPageView.getHTML();
   }
-  switchVisible() {
-    this.winnersPageView.getHTML().classList.toggle(WINNERS_PAGE_STYLES["winners-page--hidden"]);
+  visible() {
+    this.winnersPageView.getHTML().classList.remove(WINNERS_PAGE_STYLES["winners-page--hidden"]);
+  }
+  hidden() {
+    this.winnersPageView.getHTML().classList.add(WINNERS_PAGE_STYLES["winners-page--hidden"]);
   }
   async getWinnerInfo(winner) {
     if (winner.id) {
@@ -2576,9 +2597,16 @@ class WinnersPageModel {
     });
   }
   subscribeToMediator() {
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, () => {
-      this.switchVisible();
-    });
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.CHANGE_PAGE,
+      (params) => {
+        if (typeof params === "string" && params === PAGES_IDS.WINNERS_PAGE) {
+          this.visible();
+        } else {
+          this.hidden();
+        }
+      }
+    );
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DRAW_NEW_WINNER, () => {
       this.redrawCurrentPage().catch(() => {
       });
@@ -2788,4 +2816,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-fe4fda7a.js.map
+//# sourceMappingURL=main-fca563f9.js.map
