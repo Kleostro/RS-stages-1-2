@@ -1,25 +1,69 @@
-._garage-page_367ny_1 {
+@charset "UTF-8";/* stylelint-disable order/order */
+._garage-page_oojhp_2 {
+  display: block;
   padding: 0 var(--small-offset);
-  opacity: 1;
-  transition: opacity 0.5s;
 }
-._garage-page_top-wrapper_367ny_6 {
-  display: flex;
+._garage-page_top-wrapper_oojhp_6 {
+  display: grid;
   justify-content: center;
-  gap: calc(var(--small-offset) / 2);
+  grid-template-columns: repeat(3, max-content);
+  margin-bottom: var(--small-offset);
 }
 @media (max-width: 1000px) {
-  ._garage-page_top-wrapper_367ny_6 {
-    flex-direction: column;
+  ._garage-page_top-wrapper_oojhp_6 {
     align-items: center;
+    grid-template-columns: repeat(2, max-content);
   }
 }
-._garage-page_bottom-wrapper_367ny_17 {
+._garage-page_bottom-wrapper_oojhp_18 {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(9, max-content);
+  grid-template-columns: repeat(3, max-content);
   gap: calc(var(--small-offset) / 2);
 }
-._garage-page_more-button_367ny_22 {
+._garage-page_race-result_oojhp_24 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  border-radius: var(--border-radius);
+  padding: calc(var(--small-offset) / 2) var(--small-offset);
+  font: var(--second-font);
+  letter-spacing: 1px;
+  color: var(--car-button-color);
+  background-color: var(--car-button-bg);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+._garage-page_race-result_show_oojhp_39 {
+  opacity: 1;
+}
+._garage-page_list_oojhp_42 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  grid-column: 4 span;
+  grid-row: 3;
+  min-height: 737px;
+  gap: 20px;
+}
+._garage-page_title_oojhp_51 {
+  position: relative;
+  grid-column: 1 span;
+  grid-row: 1;
+  width: 100%;
+  min-height: 28px;
+  font: var(--second-font);
+  letter-spacing: 1px;
+  color: var(--title-color);
+}
+._garage-page--hidden_oojhp_61 {
+  display: none;
+}
+._garage-page_more-button_oojhp_64, ._garage-page_race-button_oojhp_64 {
+  grid-row: 2;
+  margin: 0 auto;
   margin-top: calc(var(--small-offset) / 2);
   border-radius: 4px;
   padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
@@ -31,56 +75,54 @@
   background-color: var(--car-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
+@media (max-width: 1000px) {
+  ._garage-page_more-button_start_oojhp_77, ._garage-page_race-button_start_oojhp_77 {
+    grid-row: 4;
+  }
+}
+@media (max-width: 1000px) {
+  ._garage-page_more-button_reset_oojhp_82, ._garage-page_race-button_reset_oojhp_82 {
+    grid-row: 5;
+  }
+}
+._garage-page_more-button_oojhp_64:disabled, ._garage-page_race-button_oojhp_64:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 @media (hover: hover) {
-  ._garage-page_more-button_367ny_22:hover {
+  ._garage-page_more-button_oojhp_64:hover, ._garage-page_race-button_oojhp_64:hover {
     color: var(--car-button-color-hover);
     background-color: var(--car-button-bg-hover);
   }
 }
-._garage-page_list_367ny_38 {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  grid-column: 12 span;
-  grid-row: 3;
-  min-height: 737px;
-  gap: 20px;
-}
-._garage-page_title_367ny_47 {
-  position: relative;
-  grid-column: 5 span;
-  grid-row: 1;
-  width: 100%;
-  min-height: 28px;
-  font: var(--second-font);
-  letter-spacing: 1px;
-  color: var(--garage-title-color);
-}
-._garage-page--hidden_367ny_57 {
-  opacity: 0;
-}._race-track_87bl1_1 {
+@media (max-width: 1000px) {
+  ._garage-page_more-button_oojhp_64 {
+    grid-row: 6;
+  }
+}._race-track_1ss8h_1 {
   display: flex;
   flex-direction: column;
   gap: calc(var(--small-offset) / 2);
 }
-._race-track__top-wrapper_87bl1_6 {
+._race-track__top-wrapper_1ss8h_6 {
   display: flex;
   align-items: center;
   gap: calc(var(--small-offset) / 4);
 }
-._race-track__bottom-wrapper_87bl1_11 {
+._race-track__bottom-wrapper_1ss8h_11 {
   position: relative;
   display: flex;
   border-bottom: 3px solid var(--white);
   border-bottom-style: dashed;
   gap: calc(var(--small-offset) / 4);
 }
-._race-track__car-svg-wrapper_87bl1_18 {
+._race-track__car-svg-wrapper_1ss8h_18 {
+  position: relative;
   display: flex;
   max-width: 100px;
   max-height: 40px;
 }
-._race-track_car-button_87bl1_23 {
+._race-track_car-button_1ss8h_24 {
   position: relative;
   border-radius: 4px;
   padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
@@ -88,17 +130,17 @@
   background-color: var(--car-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._race-track_car-button_87bl1_23:disabled {
+._race-track_car-button_1ss8h_24:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._race-track_car-button_87bl1_23:hover {
+  ._race-track_car-button_1ss8h_24:hover {
     color: var(--car-button-color-hover);
     background-color: var(--car-button-bg-hover);
   }
 }
-._race-track_engine-button_87bl1_41 {
+._race-track_engine-button_1ss8h_42 {
   position: relative;
   border-radius: 4px;
   padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
@@ -108,22 +150,28 @@
   background-color: var(--engine-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._race-track_engine-button_87bl1_41:disabled {
+._race-track_engine-button_1ss8h_42:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._race-track_engine-button_87bl1_41:hover {
+  ._race-track_engine-button_1ss8h_42:hover {
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
 }
-._race-track__name-car_87bl1_60 {
+._race-track__name-car_1ss8h_61 {
+  overflow: hidden;
+  max-width: 200px;
   font: var(--small-font);
   letter-spacing: 1px;
+  white-space: nowrap;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
   color: var(--car-name-color);
 }
-._race-track__flag-img_87bl1_65 {
+._race-track__flag-img_1ss8h_72 {
   position: absolute;
   right: 5%;
   bottom: 0;
@@ -131,9 +179,21 @@
   height: 50px;
 }
 @media (max-width: 1000px) {
-  ._race-track__flag-img_87bl1_65 {
+  ._race-track__flag-img_1ss8h_72 {
     right: 14%;
   }
+}
+._race-track__fire-img_1ss8h_84 {
+  position: absolute;
+  right: 0;
+  top: -40%;
+  width: 35px;
+  height: 35px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+._race-track__fire-img--active_1ss8h_93 {
+  opacity: 1;
 }._loader_146rx_1 {
   position: absolute;
   border-radius: var(--border-radius);
@@ -151,8 +211,9 @@
   100% {
     background-position: 1000px 0;
   }
-}._form_1bod2_1 {
+}._form_1k1dk_1 {
   display: flex;
+  grid-row: 1;
   margin-bottom: var(--small-offset);
   border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 2);
@@ -160,7 +221,7 @@
   background-color: var(--form-bg);
   gap: calc(var(--small-offset) / 2);
 }
-._form_1bod2_1 input {
+._form_1k1dk_1 input {
   outline: 2px solid var(--white);
   border-radius: var(--border-radius);
   min-width: 50px;
@@ -168,23 +229,27 @@
   letter-spacing: 1px;
   color: var(--form-input-color);
   background-color: var(--form-input-bg);
-  transition: outline-offset 0.3s, background-color 0.3s;
+  transition: outline-offset 0.3s, background-color 0.3s, opacity 0.3s;
   cursor: pointer;
 }
-._form_1bod2_1 input[type=text] {
+._form_1k1dk_1 input:disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+._form_1k1dk_1 input[type=text] {
   padding-left: calc(var(--small-offset) / 2);
 }
-._form_1bod2_1 input[type=color]::-webkit-color-swatch {
+._form_1k1dk_1 input[type=color]::-webkit-color-swatch {
   border: none;
   border-radius: var(--border-radius);
 }
 @media (hover: hover) {
-  ._form_1bod2_1 input:hover {
+  ._form_1k1dk_1 input:hover {
     outline-offset: 3px;
     background-color: var(--form-input-bg-hover);
   }
 }
-._form_submit-button_1bod2_34 {
+._form_submit-button_1k1dk_39 {
   position: relative;
   border-radius: 4px;
   padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
@@ -194,21 +259,22 @@
   background-color: var(--engine-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._form_submit-button_1bod2_34:disabled {
+._form_submit-button_1k1dk_39:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._form_submit-button_1bod2_34:hover {
+  ._form_submit-button_1k1dk_39:hover {
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
-}._preview-car_109cx_1 {
+}._preview-car_1hrk7_1 {
   display: flex;
   flex-direction: column;
+  grid-row: 1;
   height: 57px;
 }
-._preview-car_name_109cx_6 {
+._preview-car_name_1hrk7_7 {
   overflow: hidden;
   min-height: 16px;
   max-width: 100px;
@@ -220,10 +286,16 @@
   text-transform: capitalize;
   color: var(--garage-title-color);
 }
-._preview-car_img_109cx_18 {
+._preview-car_img_1hrk7_19 {
   max-width: 100px;
-}._form_e7sft_1 {
+}
+@media (max-width: 1000px) {
+  ._preview-car_1hrk7_1 {
+    grid-row: 2;
+  }
+}._form_1ncl9_1 {
   display: flex;
+  grid-row: 1;
   margin-bottom: var(--small-offset);
   border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 2);
@@ -231,7 +303,7 @@
   background-color: var(--form-bg);
   gap: calc(var(--small-offset) / 2);
 }
-._form_e7sft_1 input {
+._form_1ncl9_1 input {
   outline: 2px solid var(--white);
   border-radius: var(--border-radius);
   min-width: 50px;
@@ -242,24 +314,24 @@
   transition: outline-offset 0.3s, background-color 0.3s, opacity 0.3s;
   cursor: pointer;
 }
-._form_e7sft_1 input:disabled {
+._form_1ncl9_1 input:disabled {
   opacity: 0.2;
   pointer-events: none;
 }
-._form_e7sft_1 input[type=text] {
+._form_1ncl9_1 input[type=text] {
   padding-left: calc(var(--small-offset) / 2);
 }
-._form_e7sft_1 input[type=color]::-webkit-color-swatch {
+._form_1ncl9_1 input[type=color]::-webkit-color-swatch {
   border: none;
   border-radius: var(--border-radius);
 }
 @media (hover: hover) {
-  ._form_e7sft_1 input:hover {
+  ._form_1ncl9_1 input:hover {
     outline-offset: 3px;
     background-color: var(--form-input-bg-hover);
   }
 }
-._form_submit-button_e7sft_38 {
+._form_submit-button_1ncl9_39 {
   position: relative;
   border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
@@ -269,16 +341,21 @@
   background-color: var(--engine-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._form_submit-button_e7sft_38:disabled {
+._form_submit-button_1ncl9_39:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._form_submit-button_e7sft_38:hover {
+  ._form_submit-button_1ncl9_39:hover {
     color: var(--engine-button-color-hover);
     background-color: var(--engine-button-bg-hover);
   }
-}._pagination_wrapper_3hr9r_1 {
+}
+@media (max-width: 1000px) {
+  ._form_1ncl9_1 {
+    grid-row: 3;
+  }
+}._pagination_wrapper_9d82z_1 {
   position: relative;
   display: flex;
   align-items: center;
@@ -287,12 +364,12 @@
   min-height: 30px;
   gap: calc(var(--small-offset) / 4);
 }
-._pagination_current_page_3hr9r_10 {
+._pagination_current_page_9d82z_10 {
   font: var(--second-font);
   letter-spacing: 1px;
-  color: var(--garage-title-color);
+  color: var(--title-color);
 }
-._pagination_button_3hr9r_15 {
+._pagination_button_9d82z_15 {
   border-radius: var(--border-radius);
   padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
   width: -moz-max-content;
@@ -303,22 +380,113 @@
   background-color: var(--car-button-bg);
   transition: color 0.3s, background-color 0.3s, opacity 0.3s;
 }
-._pagination_button_3hr9r_15:disabled {
+._pagination_button_9d82z_15:disabled {
   opacity: 0.3;
   pointer-events: none;
 }
 @media (hover: hover) {
-  ._pagination_button_3hr9r_15:hover {
+  ._pagination_button_9d82z_15:hover {
     color: var(--car-button-color-hover);
     background-color: var(--car-button-bg-hover);
   }
-}._winners-page_1umj9_1 {
-  opacity: 1;
-  transition: opacity 0.5s;
 }
-._winners-page--hidden_1umj9_5 {
-  opacity: 0;
-}._header_kx9jt_1 {
+._winners-page_uoz25_2 {
+  display: block;
+  padding: 0 var(--small-offset);
+}
+._winners-page_wrapper_uoz25_6 {
+  display: grid;
+  gap: var(--small-offset);
+}
+._winners-page_title_uoz25_10 {
+  position: relative;
+  width: 100%;
+  min-height: 28px;
+  font: var(--second-font);
+  letter-spacing: 1px;
+  color: var(--title-color);
+}
+._winners-page_table_uoz25_18 {
+  width: 100%;
+  min-height: 560px;
+  max-width: 50%;
+  background-color: var(--winners-table-bg);
+}
+._winners-page_table_head_uoz25_24 {
+  color: var(--winners-table-head-color);
+}
+._winners-page_table_head-td_uoz25_27 {
+  position: relative;
+  outline: 2px solid var(--winners-table-border);
+  padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
+  font: var(--medium-font);
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: capitalize;
+  color: var(--engine-button-color);
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+._winners-page_table_head-td_uoz25_27::after {
+  content: "↑";
+  position: absolute;
+  transition: transform 0.3s;
+}
+._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2)) {
+  pointer-events: none;
+}
+._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2))::after {
+  content: "";
+}
+._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2))._top_uoz25_50, ._winners-page_table_head-td_uoz25_27:not(:nth-last-child(-n+2))._bottom_uoz25_50 {
+  background-color: var(--winners-table-head-tr);
+}
+._winners-page_table_head-td_uoz25_27._top_uoz25_50 {
+  background-color: var(--engine-button-bg);
+}
+._winners-page_table_head-td_uoz25_27._top_uoz25_50::after {
+  transform: rotate(0);
+}
+._winners-page_table_head-td_uoz25_27._bottom_uoz25_50 {
+  background-color: var(--engine-button-bg);
+}
+._winners-page_table_head-td_uoz25_27._bottom_uoz25_50::after {
+  transform: rotate(180deg);
+}
+@media (hover: hover) {
+  ._winners-page_table_head-td_uoz25_27:hover {
+    color: var(--engine-button-color-hover);
+    background-color: var(--engine-button-bg-hover);
+  }
+}
+._winners-page_table_body_uoz25_71 {
+  background-color: var(--winners-table-body-bg);
+}
+._winners-page_table_body-tr_uoz25_74 {
+  transition: background-color 0.2s ease-out;
+}
+@media (hover: hover) {
+  ._winners-page_table_body-tr_uoz25_74:hover {
+    background-color: var(--winners-table-body-tr-bg);
+  }
+}
+._winners-page_table_body-td_uoz25_82 {
+  outline: 2px solid var(--winners-table-border);
+  padding: calc(var(--little-offset) / 4) calc(var(--small-offset) / 4);
+  font: var(--small-font);
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: capitalize;
+  color: var(--engine-button-color);
+}
+._winners-page_table_body-td_uoz25_82 svg {
+  width: 70px;
+  height: 45px;
+}
+._winners-page--hidden_uoz25_95 {
+  display: none;
+}/* stylelint-disable order/order */
+._header_19dtq_2 {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -328,8 +496,8 @@
   gap: var(--small-offset);
 }
 
-._header__garage-button_kx9jt_11,
-._header__winners-button_kx9jt_12 {
+._header__garage-button_19dtq_12,
+._header__winners-button_19dtq_13 {
   border-radius: var(--border-radius);
   padding: calc(var(--little-offset) / 2) var(--little-offset);
   width: -moz-max-content;
@@ -339,14 +507,19 @@
   text-transform: uppercase;
   color: var(--button-color);
   background-color: var(--button-bg);
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s, opacity 0.3s;
 }
 @media (hover: hover) {
-  ._header__garage-button_kx9jt_11:hover,
-  ._header__winners-button_kx9jt_12:hover {
+  ._header__garage-button_19dtq_12:hover,
+  ._header__winners-button_19dtq_13:hover {
     color: var(--white);
     background-color: var(--button-bg-hover);
   }
+}
+._header__garage-button_19dtq_12:disabled,
+._header__winners-button_19dtq_13:disabled {
+  opacity: 0.2;
+  pointer-events: none;
 }ul {
   list-style: none;
   margin: 0;
@@ -445,7 +618,7 @@ img {
   --button-bg: #416440;
   --button-bg-hover: #3e803c;
   --button-color: #f3ffbd;
-  --garage-title-color: #e2e8c3e0;
+  --title-color: #e2e8c3e0;
   --car-button-bg: #ffe8bc;
   --car-button-bg-hover: #a9720e;
   --car-button-color: #8e4200;
@@ -461,6 +634,13 @@ img {
   --form-input-bg-hover: #9e8cdf;
   --load-bg: #416440;
   --load-bg--accent: #f3ffbd;
+  --winners-table-bg: #ffdfbd;
+  --winners-table-head-color: #0d6f39;
+  --winners-table-head-tr--accent: #d69860;
+  --winners-table-border: #b34a13;
+  --winners-table-body-bg: #e1be85b8;
+  --winners-table-body-tr-bg: #daab5db8;
   --small-font: 400 14px "Roboto", sans-serif;
+  --medium-font: 400 20px "Roboto", sans-serif;
   --second-font: 600 25px "Roboto", sans-serif;
 }
