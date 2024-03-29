@@ -3,6 +3,8 @@ import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import { changeSVGFill } from '../../../utils/createCarImg.ts';
 import PreviewCarView from '../view/PreviewCarView.ts';
 
+const attr = 'fill';
+
 class PreviewCarModel {
   private previewCarView: PreviewCarView = new PreviewCarView();
 
@@ -28,7 +30,6 @@ class PreviewCarModel {
 
   private setInitialStateFields(): void {
     this.previewCarView.getCarName().textContent = '';
-    const attr = 'fill';
     this.previewCarView.getCarSVG().removeAttribute(attr);
   }
 

@@ -41,10 +41,6 @@ class PaginationModel {
     if (data) {
       const pageSpan = this.paginationView.getCurrentPageSpan();
       const maxPage = Math.ceil(data.length / limit);
-      StoreModel.dispatch({
-        type,
-        payload: maxPage,
-      });
       const currentPage =
         type === ACTIONS.SET_TOTAL_GARAGE_PAGES
           ? StoreModel.getState().garagePage
@@ -85,7 +81,7 @@ class PaginationModel {
     } else {
       maxPage = StoreModel.getState().totalWinnersPages;
     }
-    const textContent = `Page: ${currentPage} / ${maxPage} `;
+    const textContent = `Page: ${currentPage} / ${maxPage}`;
     pageSpan.textContent = textContent;
   }
 
