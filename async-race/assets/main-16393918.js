@@ -123,7 +123,7 @@ const IS_DISABLED = {
   ENABLED: false
 };
 const PAGES_IDS = {
-  FOR_DEPLOY: "kleostro-JSFE2023Q4/async-race/",
+  FOR_DEPLOY: "winners/",
   DEFAULT_PAGE: "",
   GARAGE_PAGE: "garage",
   WINNERS_PAGE: "winners"
@@ -320,9 +320,9 @@ const API_HEADERS = {
   APPLICATION_JSON: "application/json"
 };
 const API_URLS = {
-  CARS: "http://127.0.0.1:3000/garage/",
-  WINNERS: "http://127.0.0.1:3000/winners/",
-  ENGINE: "http://127.0.0.1:3000/engine/"
+  CARS: "http://localhost:3000/garage/",
+  WINNERS: "http://localhost:3000/winners/",
+  ENGINE: "http://localhost:3000/engine/"
 };
 const STATUS_CODES = {
   OK: 200,
@@ -1281,6 +1281,7 @@ class CreateCarFormView {
   }
 }
 const formatText = (text) => text.trim().split(" ").map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase()).join(" ");
+const BASE_COLOR = "#000000";
 class CreateCarFormModel {
   constructor() {
     __publicField(this, "singletonMediator", MediatorModel.getInstance());
@@ -1321,8 +1322,7 @@ class CreateCarFormModel {
       payload: carsWithoutCreated
     });
     carNameInput.clear();
-    const initColor = "#000000";
-    carColorInput.getHTML().value = initColor;
+    carColorInput.getHTML().value = BASE_COLOR;
     submitButton.setDisabled();
     this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_CAR, "");
   }
@@ -1708,6 +1708,10 @@ const createRandomDataCars = (countCars) => {
   }
   return cars;
 };
+const TEXT_CONTENT_BUTTONS = {
+  PREV: "prev",
+  NEXT: "next"
+};
 const pagination_wrapper = "_pagination_wrapper_9d82z_1";
 const pagination_current_page = "_pagination_current_page_9d82z_10";
 const pagination_button = "_pagination_button_9d82z_15";
@@ -1747,18 +1751,16 @@ class PaginationView {
     return this.currentPageSpan;
   }
   createPrevButton() {
-    const text = "prev";
     this.prevButton = new ButtonModel({
-      text,
+      text: TEXT_CONTENT_BUTTONS.PREV,
       classes: [PAGINATION_STYLES.pagination_button]
     });
     this.prevButton.setDisabled();
     return this.prevButton;
   }
   createNextButton() {
-    const text = "next";
     this.nextButton = new ButtonModel({
-      text,
+      text: TEXT_CONTENT_BUTTONS.NEXT,
       classes: [PAGINATION_STYLES.pagination_button]
     });
     return this.nextButton;
@@ -1807,10 +1809,6 @@ class PaginationModel {
     if (data) {
       const pageSpan = this.paginationView.getCurrentPageSpan();
       const maxPage = Math.ceil(data.length / limit);
-      StoreModel.dispatch({
-        type,
-        payload: maxPage
-      });
       const currentPage = type === ACTIONS.SET_TOTAL_GARAGE_PAGES ? StoreModel.getState().garagePage : StoreModel.getState().winnersPage;
       const textContent = `Page: ${currentPage} / ${maxPage} `;
       pageSpan.textContent = textContent;
@@ -2811,4 +2809,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-9bc5db31.js.map
+//# sourceMappingURL=main-16393918.js.map
