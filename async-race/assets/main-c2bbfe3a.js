@@ -123,7 +123,7 @@ const IS_DISABLED = {
   ENABLED: false
 };
 const PAGES_IDS = {
-  FOR_DEPLOY: "winners/",
+  FOR_DEPLOY: "kleostro-JSFE2023Q4/async-race/",
   DEFAULT_PAGE: "",
   GARAGE_PAGE: "garage",
   WINNERS_PAGE: "winners"
@@ -2809,4 +2809,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-16393918.js.map
+//# sourceMappingURL=main-c2bbfe3a.js.map
