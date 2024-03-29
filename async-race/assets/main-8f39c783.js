@@ -320,9 +320,9 @@ const API_HEADERS = {
   APPLICATION_JSON: "application/json"
 };
 const API_URLS = {
-  CARS: "http://localhost:3000/garage/",
-  WINNERS: "http://localhost:3000/winners/",
-  ENGINE: "http://localhost:3000/engine/"
+  CARS: "http://127.0.0.1:3000/garage/",
+  WINNERS: "http://127.0.0.1:3000/winners/",
+  ENGINE: "http://127.0.0.1:3000/engine/"
 };
 const STATUS_CODES = {
   OK: 200,
@@ -2809,4 +2809,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-c2bbfe3a.js.map
+//# sourceMappingURL=main-8f39c783.js.map
