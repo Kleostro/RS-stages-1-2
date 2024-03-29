@@ -18,14 +18,14 @@
 
   &_table {
     width: 100%;
-    min-height: 560px;
-    max-width: 50%;
+    min-height: 400px;
     background-color: var(--winners-table-bg);
 
     &_head {
       color: var(--winners-table-head-color);
 
       &-td {
+        position: relative;
         outline: 2px solid var(--winners-table-border);
         padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
         font: var(--medium-font);
@@ -33,16 +33,50 @@
         text-align: center;
         text-transform: capitalize;
         color: var(--engine-button-color);
-        transition: background-color 0.2s ease-out;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
         cursor: pointer;
 
-        &.sort {
-          background-color: var(--winners-table-head-tr--accent);
+        &::after {
+          content: '\2191';
+          position: absolute;
+          transition: transform 0.3s;
+        }
+
+        &:not(:nth-last-child(-n + 2)) {
+          pointer-events: none;
+
+          &::after {
+            content: '';
+          }
+
+          &.top,
+          &.bottom {
+            background-color: var(--winners-table-head-tr);
+          }
+        }
+
+        &.top {
+          background-color: var(--engine-button-bg);
+
+          &::after {
+            transform: rotate(0);
+          }
+        }
+
+        &.bottom {
+          background-color: var(--engine-button-bg);
+
+          &::after {
+            transform: rotate(180deg);
+          }
         }
 
         @media (hover: hover) {
           &:hover {
-            background-color: var(--winners-table-head-tr--accent);
+            color: var(--engine-button-color-hover);
+            background-color: var(--engine-button-bg-hover);
           }
         }
       }
@@ -62,11 +96,15 @@
       }
 
       &-td {
+        overflow: hidden;
         outline: 2px solid var(--winners-table-border);
         padding: calc(var(--little-offset) / 4) calc(var(--small-offset) / 4);
+        max-width: 100px;
         font: var(--small-font);
         letter-spacing: 1px;
+        white-space: nowrap;
         text-align: center;
+        text-overflow: ellipsis;
         text-transform: capitalize;
         color: var(--engine-button-color);
 

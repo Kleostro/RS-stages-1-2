@@ -74,14 +74,11 @@ class GaragePageModel implements PageInterface {
     const queryParams: Map<string, number> = new Map();
     queryParams.set(QUERY_PARAMS.PAGE, QUERY_VALUES.DEFAULT_PAGE);
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-    const loader = new LoaderModel();
 
-    this.garagePageView.getRaceTracksList().append(loader.getHTML());
     ApiModel.getCars(queryParams)
       .then((cars) => {
         if (cars) {
           this.drawRaceTracks(cars);
-          loader.getHTML().remove();
         }
       })
       .catch(() => {});
@@ -141,8 +138,6 @@ class GaragePageModel implements PageInterface {
       type: ACTIONS.ADD_NEW_CAR,
       payload: cars,
     });
-    const loader = new LoaderModel();
-    this.garagePageView.getRaceTracksList().append(loader.getHTML());
     cars.forEach((car) => {
       this.garagePageView.getStartRaceButton().setDisabled();
       ApiModel.createCar(car)
@@ -153,7 +148,6 @@ class GaragePageModel implements PageInterface {
         })
         .catch(() => {});
     });
-    loader.getHTML().remove();
   }
 
   private redrawCurrentPage(): void {
@@ -171,8 +165,6 @@ class GaragePageModel implements PageInterface {
       queryParams.set(QUERY_PARAMS.PAGE, currentPage);
     }
 
-    const loader = new LoaderModel();
-    this.garagePageView.getRaceTracksList().append(loader.getHTML());
     ApiModel.getCars(queryParams)
       .then((data) => {
         if (data) {

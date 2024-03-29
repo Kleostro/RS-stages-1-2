@@ -11,7 +11,7 @@ import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import PaginationModel from '../../../features/Pagination/model/PaginationModel.ts';
 import PAGES_IDS from '../../types/enums.ts';
-// import { EVENT_NAMES } from '../../../shared/types/enums.ts';
+import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 
 class WinnersPageModel implements PageInterface {
   private winnersPageView: WinnersPageView;
@@ -30,6 +30,10 @@ class WinnersPageModel implements PageInterface {
       color: '',
     },
   };
+
+  private bySort = QUERY_VALUES.ID;
+
+  private byOrder = QUERY_VALUES.ASC;
 
   private allWinnersData: WinnerInfo[] = [];
 
@@ -83,7 +87,7 @@ class WinnersPageModel implements PageInterface {
   }
 
   private async fetchAndDrawWinnersData(
-    queryParams: Map<string, number>,
+    queryParams: Map<string, number | string>,
   ): Promise<void> {
     const winners = await ApiModel.getWinners(queryParams);
     if (!winners) {
@@ -112,9 +116,11 @@ class WinnersPageModel implements PageInterface {
 
   private async redrawCurrentPage(): Promise<void> {
     const currentPage = StoreModel.getState().winnersPage;
-    const queryParams: Map<string, number> = new Map();
+    const queryParams: Map<string, number | string> = new Map();
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_WINNERS_LIMIT);
     queryParams.set(QUERY_PARAMS.PAGE, currentPage);
+    queryParams.set(QUERY_PARAMS.SORT, this.bySort);
+    queryParams.set(QUERY_PARAMS.ORDER, this.byOrder);
     await ApiModel.getWinners(queryParams)
       .then((winners) => {
         if (!winners?.length) {
@@ -167,12 +173,53 @@ class WinnersPageModel implements PageInterface {
     });
   }
 
-  // private setTableHeadHandler(): void {
-  //   const winnersTableTheadTr = this.winnersPageView.getWinnersTableTheadTr();
-  //   winnersTableTheadTr.addEventListener(EVENT_NAMES.CLICK, ({target}: Target) => {
-  //     event.target?.text
-  //   });
-  // }
+  private setTableHeadHandler(): void {
+    const winnersTableTheadTr = this.winnersPageView.getWinnersTableTheadTr();
+    winnersTableTheadTr.addEventListener(
+      EVENT_NAMES.CLICK,
+      (event: MouseEvent) => {
+        const { target } = event;
+        if (target instanceof HTMLElement) {
+          if (target.id === QUERY_VALUES.WINS) {
+            this.sortByWinsOrTime(target, target.id).catch(() => {});
+          } else if (target.id === QUERY_VALUES.TIME) {
+            this.sortByWinsOrTime(target, target.id).catch(() => {});
+          }
+        }
+      },
+    );
+  }
+
+  private async sortByWinsOrTime(
+    target: HTMLElement,
+    sortBy: string,
+  ): Promise<void> {
+    const currentPage = StoreModel.getState().winnersPage;
+    this.bySort = sortBy;
+    const queryParams: Map<string, number | string> = new Map();
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_WINNERS_LIMIT);
+    queryParams.set(QUERY_PARAMS.PAGE, currentPage);
+    queryParams.set(QUERY_PARAMS.SORT, this.bySort);
+
+    if (target.classList.contains(WINNERS_PAGE_STYLES.bottom)) {
+      this.byOrder = QUERY_VALUES.DESC;
+      target.classList.replace(
+        WINNERS_PAGE_STYLES.bottom,
+        WINNERS_PAGE_STYLES.top,
+      );
+    } else {
+      this.byOrder = QUERY_VALUES.ASC;
+      target.classList.replace(
+        WINNERS_PAGE_STYLES.top,
+        WINNERS_PAGE_STYLES.bottom,
+      );
+    }
+
+    queryParams.set(QUERY_PARAMS.ORDER, this.byOrder);
+
+    const fetch = await this.fetchAndDrawWinnersData(queryParams);
+    return fetch;
+  }
 
   private async init(): Promise<void> {
     this.subscribeToMediator();
@@ -184,7 +231,7 @@ class WinnersPageModel implements PageInterface {
         [QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_WINNERS_LIMIT],
       ]),
     );
-    // this.setTableHeadHandler();
+    this.setTableHeadHandler();
   }
 }
 

@@ -121,7 +121,6 @@ class WinnersPageView {
     this.winnersTitle = createBaseElement({
       tag: TAG_NAMES.H2,
       cssClasses: [WINNERS_PAGE_STYLES['winners-page_title']],
-      innerContent: 'winners',
     });
     return this.winnersTitle;
   }
@@ -153,7 +152,10 @@ class WinnersPageView {
   private createWinnersTableTheadTd(id: string): void {
     const winnersTableTheadTd = createBaseElement({
       tag: TAG_NAMES.TD,
-      cssClasses: [WINNERS_PAGE_STYLES['winners-page_table_head-td']],
+      cssClasses: [
+        WINNERS_PAGE_STYLES['winners-page_table_head-td'],
+        WINNERS_PAGE_STYLES.top,
+      ],
       attributes: {
         id,
       },

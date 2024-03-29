@@ -16,8 +16,8 @@ export const QUERY_PARAMS = {
 } as const;
 
 export const QUERY_VALUES = {
-  ASC: 'asc',
-  DESC: 'desc',
+  ASC: 'ASC',
+  DESC: 'DESC',
   WINS: 'wins',
   TIME: 'time',
   ID: 'id',
@@ -29,7 +29,7 @@ export const QUERY_VALUES = {
   STARTED: 'started',
   STOPPED: 'stopped',
   DRIVE: 'drive',
-} as const;
+};
 
 export const API_HEADERS = {
   CONTENT_TYPE: 'Content-Type',
