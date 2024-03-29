@@ -6,7 +6,6 @@ import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import ApiModel from '../../../shared/Api/model/ApiModel.ts';
 import { QUERY_VALUES } from '../../../shared/Api/types/enums.ts';
-import STORE_FIELDS from '../../../shared/Store/types/enums.ts';
 import PAGES_IDS from '../../../pages/types/enums.ts';
 
 class PaginationModel {
@@ -40,13 +39,34 @@ class PaginationModel {
 
     if (data) {
       const pageSpan = this.paginationView.getCurrentPageSpan();
-      const maxPage = Math.ceil(data.length / limit);
+      const maxPagesCount = Math.ceil(data.length / limit);
+      const maxPage = maxPagesCount === 0 ? 1 : maxPagesCount;
       const currentPage =
         type === ACTIONS.SET_TOTAL_GARAGE_PAGES
           ? StoreModel.getState().garagePage
           : StoreModel.getState().winnersPage;
       const textContent = `Page: ${currentPage} / ${maxPage} `;
       pageSpan.textContent = textContent;
+
+      if (
+        (type === ACTIONS.SET_TOTAL_GARAGE_PAGES && maxPage) !==
+        StoreModel.getState().totalGaragePages
+      ) {
+        StoreModel.dispatch({
+          type,
+          payload: maxPage,
+        });
+        this.checkButtons();
+      } else if (
+        (type === ACTIONS.SET_TOTAL_WINNERS_PAGES && maxPage) !==
+        StoreModel.getState().totalWinnersPages
+      ) {
+        StoreModel.dispatch({
+          type,
+          payload: maxPage,
+        });
+        this.checkButtons();
+      }
     }
   }
 
@@ -176,20 +196,13 @@ class PaginationModel {
       this.checkButtons();
     });
 
-    this.singletonMediator.subscribe(
-      MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
-      () => {
-        this.initPageInfo();
-        this.checkButtons();
-      },
-    );
-
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
       this.initPageInfo();
       this.checkButtons();
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
+      this.initPageInfo();
       this.checkButtons();
     });
 
@@ -252,11 +265,6 @@ class PaginationModel {
     } else {
       this.setSubscribeToMediatorWinners();
     }
-
-    StoreModel.subscribe(STORE_FIELDS.WINNERS_PAGE, () => {
-      this.initPageInfo();
-      this.checkButtons();
-    });
   }
 }
 

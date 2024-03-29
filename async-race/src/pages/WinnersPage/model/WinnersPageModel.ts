@@ -142,6 +142,22 @@ class WinnersPageModel implements PageInterface {
         }
       })
       .catch(() => {});
+    ApiModel.getWinners(new Map())
+      .then((winners) => {
+        if (winners) {
+          StoreModel.dispatch({
+            type: ACTIONS.SET_TOTAL_WINNERS_PAGES,
+            payload:
+              Math.ceil(winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT) ===
+              0
+                ? 1
+                : Math.ceil(
+                    winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT,
+                  ),
+          });
+        }
+      })
+      .catch(() => {});
 
     await this.fetchAndDrawWinnersData(queryParams);
   }

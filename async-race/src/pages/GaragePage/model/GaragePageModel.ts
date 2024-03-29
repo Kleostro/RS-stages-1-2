@@ -104,7 +104,10 @@ class GaragePageModel implements PageInterface {
           });
           StoreModel.dispatch({
             type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
-            payload: Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT),
+            payload:
+              Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT) === 0
+                ? 1
+                : Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT),
           });
           this.singletonMediator.notify(
             MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
@@ -160,7 +163,10 @@ class GaragePageModel implements PageInterface {
     const currentPage = StoreModel.getState().garagePage;
     const queryParams: Map<string, number> = new Map();
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-    if (this.garagePageView.getRaceTracksList().children.length === 0) {
+    if (
+      this.garagePageView.getRaceTracksList().children.length === 0 &&
+      currentPage !== 1
+    ) {
       const prevPage = currentPage - 1;
       queryParams.set(QUERY_PARAMS.PAGE, prevPage);
       StoreModel.dispatch({
