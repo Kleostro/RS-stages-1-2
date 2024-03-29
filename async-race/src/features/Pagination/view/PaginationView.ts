@@ -1,6 +1,7 @@
 import ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
+import TEXT_CONTENT_BUTTONS from '../types/enums.ts';
 import PAGINATION_STYLES from './pagination.module.scss';
 
 class PaginationView {
@@ -44,9 +45,8 @@ class PaginationView {
   }
 
   private createPrevButton(): ButtonModel {
-    const text = 'prev';
     this.prevButton = new ButtonModel({
-      text,
+      text: TEXT_CONTENT_BUTTONS.PREV,
       classes: [PAGINATION_STYLES.pagination_button],
     });
 
@@ -55,9 +55,8 @@ class PaginationView {
   }
 
   private createNextButton(): ButtonModel {
-    const text = 'next';
     this.nextButton = new ButtonModel({
-      text,
+      text: TEXT_CONTENT_BUTTONS.NEXT,
       classes: [PAGINATION_STYLES.pagination_button],
     });
 

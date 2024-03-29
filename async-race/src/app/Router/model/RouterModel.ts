@@ -21,6 +21,10 @@ export default class RouterModel {
         )
         .join(ROUTER_DETAILS.DEFAULT_SEGMENT);
       this.navigateTo(currentPath);
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_PAGE,
+        currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join(),
+      );
     });
 
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
@@ -50,12 +54,19 @@ export default class RouterModel {
 
   private handleRequest(path: string): void {
     const pathParts = path.split(ROUTER_DETAILS.DEFAULT_SEGMENT);
-    const hasRoute = this.pages.has(pathParts[ROUTER_DETAILS.CURRENT_SEGMENT]);
+    const hasRoute = this.pages.has(pathParts.join(''));
     if (!hasRoute) {
-      window.location.pathname = PAGES_IDS.DEFAULT_PAGE;
+      window.location.pathname = `${PAGES_IDS.FOR_DEPLOY}`;
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_PAGE,
+        PAGES_IDS.DEFAULT_PAGE,
+      );
       return;
     }
 
-    this.singletonMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, '');
+    this.singletonMediator.notify(
+      MEDIATOR_EVENTS.CHANGE_PAGE,
+      pathParts.join(),
+    );
   }
 }

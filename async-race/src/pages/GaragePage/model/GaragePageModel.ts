@@ -64,10 +64,16 @@ class GaragePageModel implements PageInterface {
     return this.garagePageView.getHTML();
   }
 
-  private switchVisible(): void {
+  private visible(): void {
     this.garagePageView
       .getHTML()
-      .classList.toggle(GARAGE_PAGE_STYLES['garage-page--hidden']);
+      .classList.remove(GARAGE_PAGE_STYLES['garage-page--hidden']);
+  }
+
+  private hidden(): void {
+    this.garagePageView
+      .getHTML()
+      .classList.add(GARAGE_PAGE_STYLES['garage-page--hidden']);
   }
 
   private getInitialDataCars(): void {
@@ -336,9 +342,19 @@ class GaragePageModel implements PageInterface {
   }
 
   private setSubscribeToMediator2(): void {
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, () => {
-      this.switchVisible();
-    });
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.CHANGE_PAGE,
+      (params: unknown) => {
+        if (
+          (typeof params === 'string' && params === PAGES_IDS.GARAGE_PAGE) ||
+          params === PAGES_IDS.DEFAULT_PAGE
+        ) {
+          this.visible();
+        } else {
+          this.hidden();
+        }
+      },
+    );
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CAR_BROKEN, () => {
       this.decCarInRace();
@@ -357,7 +373,6 @@ class GaragePageModel implements PageInterface {
     this.getInitialDataCars();
     this.setSubscribeToMediator();
     this.setSubscribeToMediator2();
-    this.switchVisible();
 
     const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
     moreCarsButton.addEventListener(

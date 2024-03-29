@@ -9,6 +9,8 @@ import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
 
+const BASE_COLOR = '#000000';
+
 class CreateCarFormModel {
   private singletonMediator: MediatorModel<unknown> =
     MediatorModel.getInstance();
@@ -65,8 +67,7 @@ class CreateCarFormModel {
     });
 
     carNameInput.clear();
-    const initColor = '#000000';
-    carColorInput.getHTML().value = initColor;
+    carColorInput.getHTML().value = BASE_COLOR;
     submitButton.setDisabled();
     this.singletonMediator.notify(MEDIATOR_EVENTS.CREATE_CAR, '');
   }

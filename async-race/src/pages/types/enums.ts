@@ -1,4 +1,5 @@
 const PAGES_IDS = {
+  FOR_DEPLOY: 'kleostro-JSFE2023Q4/async-race/',
   DEFAULT_PAGE: '',
   GARAGE_PAGE: 'garage',
   WINNERS_PAGE: 'winners',

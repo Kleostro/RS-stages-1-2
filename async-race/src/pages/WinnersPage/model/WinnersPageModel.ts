@@ -49,10 +49,16 @@ class WinnersPageModel implements PageInterface {
     return this.winnersPageView.getHTML();
   }
 
-  private switchVisible(): void {
+  private visible(): void {
     this.winnersPageView
       .getHTML()
-      .classList.toggle(WINNERS_PAGE_STYLES['winners-page--hidden']);
+      .classList.remove(WINNERS_PAGE_STYLES['winners-page--hidden']);
+  }
+
+  private hidden(): void {
+    this.winnersPageView
+      .getHTML()
+      .classList.add(WINNERS_PAGE_STYLES['winners-page--hidden']);
   }
 
   private async getWinnerInfo(
@@ -151,9 +157,16 @@ class WinnersPageModel implements PageInterface {
   }
 
   private subscribeToMediator(): void {
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, () => {
-      this.switchVisible();
-    });
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.CHANGE_PAGE,
+      (params: unknown) => {
+        if (typeof params === 'string' && params === PAGES_IDS.WINNERS_PAGE) {
+          this.visible();
+        } else {
+          this.hidden();
+        }
+      },
+    );
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DRAW_NEW_WINNER, () => {
       this.redrawCurrentPage().catch(() => {});
