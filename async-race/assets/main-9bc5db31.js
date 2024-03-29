@@ -123,6 +123,7 @@ const IS_DISABLED = {
   ENABLED: false
 };
 const PAGES_IDS = {
+  FOR_DEPLOY: "kleostro-JSFE2023Q4/async-race/",
   DEFAULT_PAGE: "",
   GARAGE_PAGE: "garage",
   WINNERS_PAGE: "winners"
@@ -240,7 +241,7 @@ class RouterModel {
     const pathParts = path.split(ROUTER_DETAILS.DEFAULT_SEGMENT);
     const hasRoute = this.pages.has(pathParts.join(""));
     if (!hasRoute) {
-      window.location.pathname = `winners/${PAGES_IDS.DEFAULT_PAGE}`;
+      window.location.pathname = `${PAGES_IDS.FOR_DEPLOY}`;
       this.singletonMediator.notify(
         MEDIATOR_EVENTS.CHANGE_PAGE,
         PAGES_IDS.DEFAULT_PAGE
@@ -2810,4 +2811,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-e7664061.js.map
+//# sourceMappingURL=main-9bc5db31.js.map
