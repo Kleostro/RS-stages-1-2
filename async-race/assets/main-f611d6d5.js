@@ -1777,14 +1777,6 @@ class PaginationView {
     return this.paginationWrapper;
   }
 }
-const STORE_FIELDS = {
-  CARS: "cars",
-  WINNERS: "winners",
-  GARAGE_PAGE: "garagePage",
-  WINNERS_PAGE: "winnersPage",
-  TOTAL_GARAGE_PAGES: "totalGaragePages",
-  TOTAL_WINNERS_PAGES: "totalWinnersPages"
-};
 class PaginationModel {
   constructor(pageID) {
     __publicField(this, "singletonMediator", MediatorModel.getInstance());
@@ -1807,10 +1799,24 @@ class PaginationModel {
     }
     if (data) {
       const pageSpan = this.paginationView.getCurrentPageSpan();
-      const maxPage = Math.ceil(data.length / limit);
+      const maxPagesCount = Math.ceil(data.length / limit);
+      const maxPage = maxPagesCount === 0 ? 1 : maxPagesCount;
       const currentPage = type === ACTIONS.SET_TOTAL_GARAGE_PAGES ? StoreModel.getState().garagePage : StoreModel.getState().winnersPage;
       const textContent = `Page: ${currentPage} / ${maxPage} `;
       pageSpan.textContent = textContent;
+      if ((type === ACTIONS.SET_TOTAL_GARAGE_PAGES && maxPage) !== StoreModel.getState().totalGaragePages) {
+        StoreModel.dispatch({
+          type,
+          payload: maxPage
+        });
+        this.checkButtons();
+      } else if ((type === ACTIONS.SET_TOTAL_WINNERS_PAGES && maxPage) !== StoreModel.getState().totalWinnersPages) {
+        StoreModel.dispatch({
+          type,
+          payload: maxPage
+        });
+        this.checkButtons();
+      }
     }
   }
   initPageInfo() {
@@ -1930,18 +1936,12 @@ class PaginationModel {
       this.initPageInfo();
       this.checkButtons();
     });
-    this.singletonMediator.subscribe(
-      MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
-      () => {
-        this.initPageInfo();
-        this.checkButtons();
-      }
-    );
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
       this.initPageInfo();
       this.checkButtons();
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
+      this.initPageInfo();
       this.checkButtons();
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.START_RACE, () => {
@@ -1994,10 +1994,6 @@ class PaginationModel {
     } else {
       this.setSubscribeToMediatorWinners();
     }
-    StoreModel.subscribe(STORE_FIELDS.WINNERS_PAGE, () => {
-      this.initPageInfo();
-      this.checkButtons();
-    });
   }
 }
 class GaragePageModel {
@@ -2055,7 +2051,7 @@ class GaragePageModel {
         });
         StoreModel.dispatch({
           type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
-          payload: Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT)
+          payload: Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT) === 0 ? 1 : Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT)
         });
         this.singletonMediator.notify(
           MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
@@ -2104,7 +2100,7 @@ class GaragePageModel {
     const currentPage = StoreModel.getState().garagePage;
     const queryParams = /* @__PURE__ */ new Map();
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-    if (this.garagePageView.getRaceTracksList().children.length === 0) {
+    if (this.garagePageView.getRaceTracksList().children.length === 0 && currentPage !== 1) {
       const prevPage = currentPage - 1;
       queryParams.set(QUERY_PARAMS.PAGE, prevPage);
       StoreModel.dispatch({
@@ -2578,6 +2574,17 @@ class WinnersPageModel {
       }
     }).catch(() => {
     });
+    ApiModel.getWinners(/* @__PURE__ */ new Map()).then((winners) => {
+      if (winners) {
+        StoreModel.dispatch({
+          type: ACTIONS.SET_TOTAL_WINNERS_PAGES,
+          payload: Math.ceil(winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT) === 0 ? 1 : Math.ceil(
+            winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT
+          )
+        });
+      }
+    }).catch(() => {
+    });
     await this.fetchAndDrawWinnersData(queryParams);
   }
   drawWinnersTitle() {
@@ -2808,4 +2815,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-19a5a626.js.map
+//# sourceMappingURL=main-f611d6d5.js.map
