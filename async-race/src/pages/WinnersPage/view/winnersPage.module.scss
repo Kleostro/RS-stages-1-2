@@ -2,10 +2,13 @@
   display: block;
   padding: 0 var(--small-offset);
 
+  &_wrapper {
+    display: grid;
+    gap: var(--small-offset);
+  }
+
   &_title {
     position: relative;
-    grid-column: 1 span;
-    grid-row: 1;
     width: 100%;
     min-height: 28px;
     font: var(--second-font);
@@ -15,6 +18,7 @@
 
   &_table {
     width: 100%;
+    min-height: 560px;
     max-width: 50%;
     background-color: var(--winners-table-bg);
 
@@ -67,8 +71,8 @@
         color: var(--engine-button-color);
 
         svg {
-          width: 100px;
-          height: 50px;
+          width: 70px;
+          height: 45px;
         }
       }
     }

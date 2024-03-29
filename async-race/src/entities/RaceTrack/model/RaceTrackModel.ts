@@ -214,6 +214,20 @@ class RaceTrackModel {
           this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_CAR, '');
         })
         .catch(() => {});
+      ApiModel.getWinnerById(this.carData.id)
+        .then((winner) => {
+          if (winner && winner.id) {
+            ApiModel.deleteWinnerById(winner.id)
+              .then(() => {
+                this.singletonMediator.notify(
+                  MEDIATOR_EVENTS.DELETE_WINNER,
+                  '',
+                );
+              })
+              .catch(() => {});
+          }
+        })
+        .catch(() => {});
     }
   }
 

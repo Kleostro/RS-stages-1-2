@@ -38,18 +38,17 @@ class ApiModel {
   public static async getWinners(
     params: Map<string, number | string>,
   ): Promise<WinnerInterface[] | undefined> {
-    const pageParam = Number(
-      params.get(QUERY_PARAMS.PAGE) ?? QUERY_VALUES.DEFAULT_PAGE,
-    );
-    const limitParam = Number(
-      params.get(QUERY_PARAMS.LIMIT) ?? QUERY_VALUES.NO_WINNERS_LIMIT,
-    );
-    const sortParam = String(params.get(QUERY_PARAMS.SORT) ?? QUERY_VALUES.ID);
-    const orderParam = String(
-      params.get(QUERY_PARAMS.ORDER) ?? QUERY_VALUES.ASC,
-    );
+    const pageParam = params.get(QUERY_PARAMS.PAGE);
+    const limitParam = params.get(QUERY_PARAMS.LIMIT);
+    const sortParam = params.get(QUERY_PARAMS.SORT) ?? QUERY_VALUES.ID;
+    const orderParam = params.get(QUERY_PARAMS.ORDER) ?? QUERY_VALUES.ASC;
 
-    const url = `${API_URLS.WINNERS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}&${QUERY_PARAMS.SORT}=${sortParam}&${QUERY_PARAMS.ORDER}=${orderParam}`;
+    let url = `${API_URLS.WINNERS}`;
+
+    if (pageParam && limitParam) {
+      url = `${API_URLS.WINNERS}?${QUERY_PARAMS.PAGE}=${pageParam}&${QUERY_PARAMS.LIMIT}=${limitParam}&${QUERY_PARAMS.SORT}=${sortParam}&${QUERY_PARAMS.ORDER}=${orderParam}`;
+    }
+
     return this.fetchData<WinnerInterface[]>(url, API_METHODS.GET);
   }
 

@@ -20,6 +20,8 @@ class WinnersPageView {
 
   private winnersTable: HTMLTableElement;
 
+  private pageWrapper: HTMLDivElement;
+
   private page: HTMLDivElement;
 
   constructor(parent: HTMLDivElement) {
@@ -28,6 +30,7 @@ class WinnersPageView {
     this.winnersTableTheadTr = this.createWinnersTableTheadTr();
     this.winnersTableThead = this.createWinnersTableThead();
     this.winnersTable = this.createWinnersTable();
+    this.pageWrapper = this.createPageWrapper();
     this.page = this.createHTML(parent);
   }
 
@@ -47,8 +50,16 @@ class WinnersPageView {
     return this.winnersTableTbody;
   }
 
+  public getWinnersTableTheadTr(): HTMLTableRowElement {
+    return this.winnersTableTheadTr;
+  }
+
   public clearWinnersTableTbody(): void {
     this.winnersTableTbody.innerHTML = '';
+  }
+
+  public getPageWrapper(): HTMLDivElement {
+    return this.pageWrapper;
   }
 
   public createWinnersTableBodyTr(winner: WinnerInfo): HTMLTableRowElement {
@@ -159,6 +170,15 @@ class WinnersPageView {
     return this.winnersTableTbody;
   }
 
+  private createPageWrapper(): HTMLDivElement {
+    this.pageWrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [WINNERS_PAGE_STYLES['winners-page_wrapper']],
+    });
+
+    return this.pageWrapper;
+  }
+
   private createHTML(parent: HTMLDivElement): HTMLDivElement {
     this.page = createBaseElement({
       tag: TAG_NAMES.DIV,
@@ -171,7 +191,8 @@ class WinnersPageView {
     this.winnersTableTheadTr.append(...this.winnersTableTheadTdArr);
     this.winnersTableThead.append(this.winnersTableTheadTr);
     this.winnersTable.append(this.winnersTableThead, this.winnersTableTbody);
-    this.page.append(this.winnersTitle, this.winnersTable);
+    this.pageWrapper.append(this.winnersTitle, this.winnersTable);
+    this.page.append(this.pageWrapper);
     parent.append(this.page);
 
     return this.page;

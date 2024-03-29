@@ -20,7 +20,7 @@ import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import createRandomDataCars from '../../../utils/createRandomDataCars.ts';
 import PaginationModel from '../../../features/Pagination/model/PaginationModel.ts';
 import LoaderModel from '../../../shared/Loader/model/LoaderModel.ts';
-import { MORE_COUNT_CARS } from '../../types/enums.ts';
+import PAGES_IDS, { MORE_COUNT_CARS } from '../../types/enums.ts';
 import type NewWinner from '../../../entities/RaceTrack/types/interfaces.ts';
 import Winner from '../../../utils/isWinner.ts';
 
@@ -51,7 +51,9 @@ class GaragePageModel implements PageInterface {
 
   private previewCar: PreviewCarModel = new PreviewCarModel();
 
-  private pagination: PaginationModel = new PaginationModel();
+  private pagination: PaginationModel = new PaginationModel(
+    PAGES_IDS.GARAGE_PAGE,
+  );
 
   constructor(parent: HTMLDivElement) {
     this.garagePageView = new GaragePageView(parent);
@@ -97,7 +99,6 @@ class GaragePageModel implements PageInterface {
             type: ACTIONS.GET_CARS,
             payload: cars,
           });
-
           StoreModel.dispatch({
             type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
             payload: Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT),
