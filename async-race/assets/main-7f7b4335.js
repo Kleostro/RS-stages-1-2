@@ -942,6 +942,8 @@ const _Winner = class _Winner {
 };
 __publicField(_Winner, "isWinner", (winner) => winner instanceof _Winner);
 let Winner = _Winner;
+const CONVERSION_FACTOR = 100;
+const ROUNDING_FACTOR = 10;
 class RaceTrackModel {
   constructor(carData) {
     __publicField(this, "carData");
@@ -949,9 +951,17 @@ class RaceTrackModel {
     __publicField(this, "singletonMediator", MediatorModel.getInstance());
     __publicField(this, "raceTrackView");
     __publicField(this, "raceTrack");
+    __publicField(this, "startEngineButton");
+    __publicField(this, "stopEngineButton");
+    __publicField(this, "removeCarButton");
+    __publicField(this, "selectCarButton");
     this.carData = carData;
     this.raceTrackView = new RaceTrackView(this.carData);
     this.raceTrack = this.raceTrackView.getHTML();
+    this.startEngineButton = this.raceTrackView.getStartEngineButton();
+    this.stopEngineButton = this.raceTrackView.getStopEngineButton();
+    this.removeCarButton = this.raceTrackView.getRemoveCarButton();
+    this.selectCarButton = this.raceTrackView.getSelectCarButton();
     this.setHandlerToButtons();
   }
   getHTML() {
@@ -960,33 +970,25 @@ class RaceTrackModel {
   getView() {
     return this.raceTrackView;
   }
-  async startEngineHandler(mod) {
-    if (!this.carData.id) {
-      return;
-    }
+  async startEngineHandler(mode) {
     const queryParams = /* @__PURE__ */ new Map();
     queryParams.set(QUERY_PARAMS.ID, this.carData.id);
     queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STARTED);
     const loader2 = new LoaderModel();
-    this.raceTrackView.getStartEngineButton().getHTML().append(loader2.getHTML());
-    await ApiModel.stopCarEngine(queryParams).catch(() => {
-    });
-    await ApiModel.startCarEngine(queryParams).then((data) => {
-      if (data) {
-        loader2.getHTML().remove();
-        const duration = data.distance / data.velocity;
-        this.carAnimation = this.createCarAnimation(duration);
-        this.driveCarEngine(duration, mod);
-      }
-    }).catch(() => {
-    });
+    this.startEngineButton.getHTML().append(loader2.getHTML());
+    await ApiModel.stopCarEngine(queryParams);
+    const engineData = await ApiModel.startCarEngine(queryParams);
+    if (engineData) {
+      loader2.getHTML().remove();
+      const duration = engineData.distance / engineData.velocity;
+      this.carAnimation = this.createCarAnimation(duration);
+      await this.driveCarEngine(duration, mode);
+    }
   }
   createCarAnimation(duration) {
     const raceTrackWidth = this.raceTrack.clientWidth;
     const carWidth = this.raceTrackView.getCarSvg().clientWidth;
-    const startEngineButtonWidth = this.raceTrackView.getStartEngineButton().getHTML().clientWidth;
-    const stopEngineButtonWidth = this.raceTrackView.getStopEngineButton().getHTML().clientWidth;
-    const carXPosition = raceTrackWidth - carWidth - startEngineButtonWidth - stopEngineButtonWidth;
+    const carXPosition = raceTrackWidth - carWidth - this.startEngineButton.getHTML().clientWidth - this.stopEngineButton.getHTML().clientWidth;
     const endTransition = `translateX(${carXPosition}px)`;
     return this.raceTrackView.getCarSvgWrapper().animate(
       [{ transform: TRANSITION_STATE.START }, { transform: endTransition }],
@@ -996,17 +998,16 @@ class RaceTrackModel {
       }
     );
   }
-  switchEngineButtons(mod) {
-    this.raceTrackView.getStartEngineButton().setDisabled();
-    this.raceTrackView.getStopEngineButton().setEnabled();
-    if (!mod) {
-      this.raceTrackView.getStopEngineButton().setDisabled();
+  switchEngineButtons(mode) {
+    this.startEngineButton.setDisabled();
+    if (mode) {
+      this.stopEngineButton.setEnabled();
+    } else {
+      this.stopEngineButton.setDisabled();
     }
   }
   getWinnerData(duration) {
-    const hundred = 100;
-    const ten = 10;
-    const time = Math.ceil(duration / hundred) / ten;
+    const time = Math.ceil(duration / CONVERSION_FACTOR) / ROUNDING_FACTOR;
     return new Winner(this.carData.name, 1, time, this.carData.id);
   }
   visuallyBrokenCar() {
@@ -1014,152 +1015,116 @@ class RaceTrackModel {
     this.raceTrackView.getFireSvg().classList.add(RACE_TRACK_STYLES["race-track__fire-img--active"]);
     (_a = this.carAnimation) == null ? void 0 : _a.pause();
   }
-  driveCarEngine(duration, mod) {
-    if (!this.carData.id) {
+  async driveCarEngine(duration, mode) {
+    this.switchEngineButtons(mode);
+    if (mode) {
       return;
     }
-    const driveQueryParams = /* @__PURE__ */ new Map();
-    driveQueryParams.set(QUERY_PARAMS.ID, this.carData.id);
-    driveQueryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.DRIVE);
-    this.switchEngineButtons(mod);
-    if (!mod) {
-      ApiModel.driveCarEngine(driveQueryParams).then(() => {
-        this.singletonMediator.notify(
-          MEDIATOR_EVENTS.NEW_WINNER,
-          this.getWinnerData(duration)
-        );
-      }).catch((error) => {
-        if (Number(error.message) === STATUS_CODES.INTERNAL_SERVER_ERROR && this.carData.id) {
-          this.visuallyBrokenCar();
-          ApiModel.stopCarEngine(
-            new Map(
-              Object.entries({
-                [QUERY_PARAMS.ID]: this.carData.id,
-                [QUERY_PARAMS.STATUS]: QUERY_VALUES.STOPPED
-              })
-            )
-          ).catch(() => {
-          });
-          this.singletonMediator.notify(
-            MEDIATOR_EVENTS.CAR_BROKEN,
-            this.carData
-          );
-        }
-      });
+    const engineQueryParams = /* @__PURE__ */ new Map();
+    engineQueryParams.set(QUERY_PARAMS.ID, this.carData.id);
+    engineQueryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.DRIVE);
+    try {
+      await ApiModel.driveCarEngine(engineQueryParams);
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.NEW_WINNER,
+        this.getWinnerData(duration)
+      );
+    } catch (error) {
+      if (error instanceof Error && Number(error.message) === STATUS_CODES.INTERNAL_SERVER_ERROR) {
+        this.visuallyBrokenCar();
+        engineQueryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STOPPED);
+        await ApiModel.stopCarEngine(engineQueryParams);
+        this.singletonMediator.notify(MEDIATOR_EVENTS.CAR_BROKEN, this.carData);
+      }
     }
   }
-  stopEngineHandler(mod) {
-    var _a;
+  async stopEngineHandler(mode) {
+    var _a, _b;
     (_a = this.carAnimation) == null ? void 0 : _a.pause();
-    if (!this.carData.id) {
-      return;
-    }
+    const loader2 = new LoaderModel();
+    this.stopEngineButton.getHTML().append(loader2.getHTML());
+    const fireSvg = this.raceTrackView.getFireSvg();
+    fireSvg.classList.remove(RACE_TRACK_STYLES["race-track__fire-img--active"]);
     const queryParams = /* @__PURE__ */ new Map();
     queryParams.set(QUERY_PARAMS.ID, this.carData.id);
     queryParams.set(QUERY_PARAMS.STATUS, QUERY_VALUES.STOPPED);
-    const loader2 = new LoaderModel();
-    this.raceTrackView.getStopEngineButton().getHTML().append(loader2.getHTML());
-    this.raceTrackView.getFireSvg().classList.remove(RACE_TRACK_STYLES["race-track__fire-img--active"]);
-    ApiModel.stopCarEngine(queryParams).then(() => {
-      var _a2;
-      loader2.getHTML().remove();
-      (_a2 = this.carAnimation) == null ? void 0 : _a2.cancel();
-      if (!mod) {
-        this.singletonMediator.notify(MEDIATOR_EVENTS.RESET_CURRENT_CAR, "");
-      } else {
-        this.singletonMediator.notify(MEDIATOR_EVENTS.SINGLE_RACE_RESET, "");
-        this.raceTrackView.getStartEngineButton().setEnabled();
-        this.raceTrackView.getStopEngineButton().setDisabled();
-      }
-    }).catch(() => {
-    });
+    await ApiModel.stopCarEngine(queryParams);
+    loader2.getHTML().remove();
+    (_b = this.carAnimation) == null ? void 0 : _b.cancel();
+    if (!mode) {
+      this.singletonMediator.notify(MEDIATOR_EVENTS.RESET_CURRENT_CAR, "");
+    } else {
+      this.singletonMediator.notify(MEDIATOR_EVENTS.SINGLE_RACE_RESET, "");
+      this.startEngineButton.setEnabled();
+      this.stopEngineButton.setDisabled();
+    }
   }
-  deleteCarHandler() {
-    if (this.carData.id) {
-      const loader2 = new LoaderModel();
-      this.raceTrackView.getRemoveCarButton().getHTML().append(loader2.getHTML());
-      ApiModel.deleteCarById(this.carData.id).then(() => {
-        loader2.getHTML().remove();
-        const { cars } = StoreModel.getState();
-        const carsWithoutDeleted = cars.filter(
-          (car) => car.id !== this.carData.id
-        );
-        StoreModel.dispatch({
-          type: ACTIONS.DELETE_CAR,
-          payload: carsWithoutDeleted
-        });
-        this.raceTrack.remove();
-        this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_CAR, "");
-      }).catch(() => {
-      });
-      ApiModel.getWinnerById(this.carData.id).then((winner) => {
-        if (winner && winner.id) {
-          ApiModel.deleteWinnerById(winner.id).then(() => {
-            this.singletonMediator.notify(
-              MEDIATOR_EVENTS.DELETE_WINNER,
-              ""
-            );
-          }).catch(() => {
-          });
-        }
-      }).catch(() => {
-      });
+  async deleteCarHandler() {
+    const loader2 = new LoaderModel();
+    this.removeCarButton.getHTML().append(loader2.getHTML());
+    await ApiModel.deleteCarById(this.carData.id);
+    loader2.getHTML().remove();
+    const { cars } = StoreModel.getState();
+    const carsWithoutDeleted = cars.filter((car) => car.id !== this.carData.id);
+    StoreModel.dispatch({
+      type: ACTIONS.DELETE_CAR,
+      payload: carsWithoutDeleted
+    });
+    this.raceTrack.remove();
+    this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_CAR, "");
+    const winner = await ApiModel.getWinnerById(this.carData.id);
+    if (winner && winner.id) {
+      await ApiModel.deleteWinnerById(winner.id);
+      this.singletonMediator.notify(MEDIATOR_EVENTS.DELETE_WINNER, "");
     }
   }
   updateCarView() {
-    if (!this.carData.id) {
-      return;
-    }
-    const carNameSpan = this.raceTrackView.getNameCarSpan();
-    const carSVG = this.raceTrackView.getCarSvg();
     const carState = StoreModel.getState().cars.find(
       (car) => car.id === this.carData.id
     );
+    const carNameSpan = this.raceTrackView.getNameCarSpan();
+    const carSVG = this.raceTrackView.getCarSvg();
     carNameSpan.textContent = (carState == null ? void 0 : carState.name) || this.carData.name;
     changeSVGFill(carSVG, (carState == null ? void 0 : carState.color) || this.carData.color);
   }
   resetRace() {
-    const removeCarButton = this.raceTrackView.getRemoveCarButton();
-    const selectCarButton = this.raceTrackView.getSelectCarButton();
-    const stopEngineButton = this.raceTrackView.getStopEngineButton();
-    const startEngineButton = this.raceTrackView.getStartEngineButton();
-    removeCarButton.setEnabled();
-    selectCarButton.setEnabled();
-    stopEngineButton.setDisabled();
-    startEngineButton.setEnabled();
+    this.removeCarButton.setEnabled();
+    this.selectCarButton.setEnabled();
+    this.stopEngineButton.setDisabled();
+    this.startEngineButton.setEnabled();
   }
   subscribeToMediator() {
-    const removeCarButton = this.raceTrackView.getRemoveCarButton();
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, (params) => {
       if (this.carData.id === params) {
         this.updateCarView();
-        removeCarButton.setEnabled();
+        this.removeCarButton.setEnabled();
       }
     });
-    this.singletonMediator.subscribe(MEDIATOR_EVENTS.EMPTY_RACE, () => {
-      this.resetRace();
-    });
+    this.singletonMediator.subscribe(
+      MEDIATOR_EVENTS.EMPTY_RACE,
+      this.resetRace.bind(this)
+    );
   }
   setHandlerToButtons() {
-    const removeCarButton = this.raceTrackView.getRemoveCarButton();
-    const selectCarButton = this.raceTrackView.getSelectCarButton();
-    const startEngineButton = this.raceTrackView.getStartEngineButton().getHTML();
-    const stopEngineButton = this.raceTrackView.getStopEngineButton();
-    removeCarButton.getHTML().addEventListener(EVENT_NAMES.CLICK, this.deleteCarHandler.bind(this));
-    selectCarButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
-      removeCarButton.setDisabled();
+    this.removeCarButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
+      this.deleteCarHandler().catch(() => {
+      });
+    });
+    this.selectCarButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
+      this.removeCarButton.setDisabled();
       this.singletonMediator.notify(
         MEDIATOR_EVENTS.SELECT_CAR,
         this.carData.id
       );
     });
-    startEngineButton.addEventListener(EVENT_NAMES.CLICK, () => {
+    this.startEngineButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
       this.startEngineHandler(SINGLE_RACE).catch(() => {
       });
       this.singletonMediator.notify(MEDIATOR_EVENTS.SINGLE_RACE_START, "");
     });
-    stopEngineButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
-      this.stopEngineHandler(SINGLE_RACE);
+    this.stopEngineButton.getHTML().addEventListener(EVENT_NAMES.CLICK, () => {
+      this.stopEngineHandler(SINGLE_RACE).catch(() => {
+      });
     });
     this.subscribeToMediator();
   }
@@ -1305,6 +1270,7 @@ class CreateCarFormModel {
     const carColorInput = this.createCarFormView.getCarColorInput();
     const submitButton = this.createCarFormView.getSubmitButton();
     const newCarData = {
+      id: 0,
       name: formatText(carNameInput.getHTML().value),
       color: formatText(carColorInput.getHTML().value)
     };
@@ -1546,25 +1512,23 @@ class ChangeCarFormModel {
   getHTML() {
     return this.changeCarFormView.getHTML();
   }
-  getSelectCar(id) {
+  async getSelectCar(id) {
     const loader2 = new LoaderModel();
     this.changeCarFormView.getSubmitButton().getHTML().append(loader2.getHTML());
-    ApiModel.getCarById(id).then((car) => {
-      if (car) {
-        loader2.getHTML().remove();
-        this.selectCar = car;
-        this.unDisableForm();
-        this.singletonMediator.notify(
-          MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
-          car.name
-        );
-        this.singletonMediator.notify(
-          MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
-          car.color
-        );
-      }
-    }).catch(() => {
-    });
+    const car = await ApiModel.getCarById(id);
+    if (car) {
+      loader2.getHTML().remove();
+      this.selectCar = car;
+      this.unDisableForm();
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
+        car.name
+      );
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
+        car.color
+      );
+    }
   }
   unDisableForm() {
     var _a, _b;
@@ -1591,13 +1555,14 @@ class ChangeCarFormModel {
     const carNameInput = this.changeCarFormView.getCarNameInput();
     const carColorInput = this.changeCarFormView.getCarColorInput();
     const submitButton = this.changeCarFormView.getSubmitButton();
+    if (!this.selectCar) {
+      return;
+    }
     const newCarData = {
+      id: this.selectCar.id,
       name: formatText(carNameInput.getHTML().value),
       color: formatText(carColorInput.getHTML().value)
     };
-    if (!this.selectCar || !this.selectCar.id) {
-      return;
-    }
     const loader2 = new LoaderModel();
     this.changeCarFormView.getSubmitButton().getHTML().append(loader2.getHTML());
     await ApiModel.updateCarById(this.selectCar.id, newCarData);
@@ -1651,7 +1616,8 @@ class ChangeCarFormModel {
     );
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.SELECT_CAR, (params) => {
       if (typeof params === "number") {
-        this.getSelectCar(params);
+        this.getSelectCar(params).catch(() => {
+        });
       }
     });
   }
@@ -1701,6 +1667,7 @@ const createRandomDataCars = (countCars) => {
   const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   for (let i = 0; i < countCars; i += 1) {
     cars.push({
+      id: 0,
       name: `${getRandomBrand()} ${getRandomModel()}`,
       color: getRandomColor()
     });
@@ -1819,24 +1786,20 @@ class PaginationModel {
       }
     }
   }
-  initPageInfo() {
+  async initPageInfo() {
     if (this.pageID === PAGES_IDS.GARAGE_PAGE) {
-      ApiModel.getCars(/* @__PURE__ */ new Map()).then((cars) => {
-        if (cars) {
-          this.loadDataAndSetPageInfo(cars, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-        }
-      }).catch(() => {
-      });
+      const cars = await ApiModel.getCars(/* @__PURE__ */ new Map());
+      if (cars) {
+        this.loadDataAndSetPageInfo(cars, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+      }
     } else {
-      ApiModel.getWinners(/* @__PURE__ */ new Map()).then((winners) => {
-        if (winners) {
-          this.loadDataAndSetPageInfo(
-            winners,
-            QUERY_VALUES.DEFAULT_WINNERS_LIMIT
-          );
-        }
-      }).catch(() => {
-      });
+      const winners = await ApiModel.getWinners(/* @__PURE__ */ new Map());
+      if (winners) {
+        this.loadDataAndSetPageInfo(
+          winners,
+          QUERY_VALUES.DEFAULT_WINNERS_LIMIT
+        );
+      }
     }
   }
   redrawPageInfo(currentPage) {
@@ -1933,15 +1896,18 @@ class PaginationModel {
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {
+      });
       this.checkButtons();
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {
+      });
       this.checkButtons();
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {
+      });
       this.checkButtons();
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.START_RACE, () => {
@@ -1960,16 +1926,19 @@ class PaginationModel {
   }
   setSubscribeToMediatorWinners() {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_WINNER, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {
+      });
       this.checkButtons();
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DRAW_NEW_WINNER, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {
+      });
       this.checkButtons();
     });
   }
   init() {
-    this.initPageInfo();
+    this.initPageInfo().catch(() => {
+    });
     this.checkButtons();
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
@@ -2028,39 +1997,39 @@ class GaragePageModel {
   hidden() {
     this.garagePageView.getHTML().classList.add(GARAGE_PAGE_STYLES["garage-page--hidden"]);
   }
-  getInitialDataCars() {
+  async getInitialDataCars() {
     const queryParams = /* @__PURE__ */ new Map();
     queryParams.set(QUERY_PARAMS.PAGE, QUERY_VALUES.DEFAULT_PAGE);
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-    ApiModel.getCars(queryParams).then((cars) => {
-      if (cars) {
-        this.drawRaceTracks(cars);
-      }
-    }).catch(() => {
+    const cars = await ApiModel.getCars(queryParams);
+    if (cars) {
+      this.drawRaceTracks(cars);
+    }
+    this.getAllCars().catch(() => {
     });
-    this.getAllCars();
   }
-  getAllCars() {
+  async getAllCars() {
     const loader2 = new LoaderModel();
     this.garagePageView.getGarageTitle().append(loader2.getHTML());
-    ApiModel.getCars(/* @__PURE__ */ new Map()).then((cars) => {
-      if (cars) {
-        StoreModel.dispatch({
-          type: ACTIONS.GET_CARS,
-          payload: cars
-        });
-        StoreModel.dispatch({
-          type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
-          payload: Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT) === 0 ? 1 : Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT)
-        });
-        this.singletonMediator.notify(
-          MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
-          ""
-        );
-        this.drawGarageTitle();
-      }
-    }).catch(() => {
-    });
+    const cars = await ApiModel.getCars(/* @__PURE__ */ new Map());
+    if (cars) {
+      StoreModel.dispatch({
+        type: ACTIONS.GET_CARS,
+        payload: cars
+      });
+      const maxPageCount = Math.ceil(
+        cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT
+      );
+      StoreModel.dispatch({
+        type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
+        payload: maxPageCount === 0 ? 1 : maxPageCount
+      });
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
+        ""
+      );
+      this.drawGarageTitle();
+    }
   }
   drawGarageTitle() {
     const title = this.garagePageView.getGarageTitle();
@@ -2096,7 +2065,7 @@ class GaragePageModel {
       });
     });
   }
-  redrawCurrentPage() {
+  async redrawCurrentPage() {
     const currentPage = StoreModel.getState().garagePage;
     const queryParams = /* @__PURE__ */ new Map();
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
@@ -2110,13 +2079,11 @@ class GaragePageModel {
     } else {
       queryParams.set(QUERY_PARAMS.PAGE, currentPage);
     }
-    ApiModel.getCars(queryParams).then((data) => {
-      if (data) {
-        this.garagePageView.clearRaceTracksList();
-        this.drawRaceTracks(data);
-      }
-    }).catch(() => {
-    });
+    const cars = await ApiModel.getCars(queryParams);
+    if (cars) {
+      this.garagePageView.clearRaceTracksList();
+      this.drawRaceTracks(cars);
+    }
   }
   startRaceHandler() {
     this.countCarsInRace = this.raceTracks.length;
@@ -2132,7 +2099,8 @@ class GaragePageModel {
     this.garagePageView.getRaceResult().innerHTML = "";
     this.isWinner = false;
     this.raceTracks.forEach((raceTrack) => {
-      raceTrack.stopEngineHandler();
+      raceTrack.stopEngineHandler().catch(() => {
+      });
     });
     this.singletonMediator.notify(MEDIATOR_EVENTS.RESET_RACE, "");
   }
@@ -2142,45 +2110,31 @@ class GaragePageModel {
     const text = `Winner: ${this.winner.name} - ${this.winner.time}s`;
     this.garagePageView.getRaceResult().textContent = text;
   }
-  hasWinner(winner) {
+  async hasWinner(winner) {
     if (winner.wins) {
       const currentWinner = {
         id: winner.id,
         wins: winner.wins + 1,
         time: this.winner.time < winner.time ? this.winner.time : winner.time
       };
-      if (!currentWinner.id) {
-        return;
-      }
-      ApiModel.updateWinnerById(currentWinner.id, currentWinner).then(() => {
-        this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, "");
-      }).catch(() => {
-      });
+      await ApiModel.updateWinnerById(currentWinner.id, currentWinner);
+      this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, "");
     } else {
-      if (!this.winner.id) {
-        return;
-      }
       const newWinnerData = {
         id: this.winner.id,
         wins: this.winner.wins,
         time: this.winner.time
       };
-      ApiModel.createWinner(newWinnerData).then(() => {
-        this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, "");
-      }).catch(() => {
-      });
+      await ApiModel.createWinner(newWinnerData);
+      this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, "");
     }
   }
-  addNewWinner() {
-    if (!this.winner.id) {
-      return;
+  async addNewWinner() {
+    const newWinner = await ApiModel.getWinnerById(this.winner.id);
+    if (newWinner) {
+      this.hasWinner(newWinner).catch(() => {
+      });
     }
-    ApiModel.getWinnerById(this.winner.id).then((winner) => {
-      if (winner) {
-        this.hasWinner(winner);
-      }
-    }).catch(() => {
-    });
   }
   allDisabled() {
     this.garagePageView.getMoreCarsButton().setDisabled();
@@ -2203,26 +2157,33 @@ class GaragePageModel {
   setSubscribeToMediator() {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
       this.drawGarageTitle();
-      this.redrawCurrentPage();
-      this.getAllCars();
+      this.redrawCurrentPage().catch(() => {
+      });
+      this.getAllCars().catch(() => {
+      });
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
       this.drawGarageTitle();
-      this.redrawCurrentPage();
-      this.getAllCars();
+      this.redrawCurrentPage().catch(() => {
+      });
+      this.getAllCars().catch(() => {
+      });
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
       this.drawGarageTitle();
-      this.redrawCurrentPage();
+      this.redrawCurrentPage().catch(() => {
+      });
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, () => {
       this.removeButtons.forEach((button) => {
         button.setEnabled();
       });
-      this.redrawCurrentPage();
+      this.redrawCurrentPage().catch(() => {
+      });
     });
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
-      this.redrawCurrentPage();
+      this.redrawCurrentPage().catch(() => {
+      });
     });
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.SINGLE_RACE_START,
@@ -2234,7 +2195,8 @@ class GaragePageModel {
         this.winner = params;
         this.isWinner = true;
         this.drawWinner();
-        this.addNewWinner();
+        this.addNewWinner().catch(() => {
+        });
       }
     });
   }
@@ -2275,7 +2237,8 @@ class GaragePageModel {
     });
   }
   init() {
-    this.getInitialDataCars();
+    this.getInitialDataCars().catch(() => {
+    });
     this.setSubscribeToMediator();
     this.setSubscribeToMediator2();
     const moreCarsButton = this.garagePageView.getMoreCarsButton().getHTML();
@@ -2511,16 +2474,14 @@ class WinnersPageModel {
     this.winnersPageView.getHTML().classList.add(WINNERS_PAGE_STYLES["winners-page--hidden"]);
   }
   async getWinnerInfo(winner) {
-    if (winner.id) {
-      const car = await ApiModel.getCarById(winner.id);
-      if (car && winner.id) {
-        this.winnerInfo = {
-          id: winner.id,
-          time: winner.time,
-          wins: winner.wins,
-          car
-        };
-      }
+    const car = await ApiModel.getCarById(winner.id);
+    if (car) {
+      this.winnerInfo = {
+        id: winner.id,
+        time: winner.time,
+        wins: winner.wins,
+        car
+      };
     }
     return this.winnerInfo;
   }
@@ -2560,46 +2521,41 @@ class WinnersPageModel {
     queryParams.set(QUERY_PARAMS.PAGE, currentPage);
     queryParams.set(QUERY_PARAMS.SORT, this.bySort);
     queryParams.set(QUERY_PARAMS.ORDER, this.byOrder);
-    await ApiModel.getWinners(queryParams).then((winners) => {
-      if (!(winners == null ? void 0 : winners.length)) {
-        const prevPage = currentPage - 1;
-        queryParams.delete(QUERY_PARAMS.PAGE);
-        queryParams.set(QUERY_PARAMS.PAGE, prevPage);
-        StoreModel.dispatch({
-          type: ACTIONS.CHANGE_WINNERS_PAGE,
-          payload: prevPage
-        });
-      } else {
-        queryParams.set(QUERY_PARAMS.PAGE, currentPage);
-      }
-    }).catch(() => {
-    });
-    ApiModel.getWinners(/* @__PURE__ */ new Map()).then((winners) => {
-      if (winners) {
-        StoreModel.dispatch({
-          type: ACTIONS.SET_TOTAL_WINNERS_PAGES,
-          payload: Math.ceil(winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT) === 0 ? 1 : Math.ceil(
-            winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT
-          )
-        });
-      }
-    }).catch(() => {
-    });
+    const winnersCurrentPage = await ApiModel.getWinners(queryParams);
+    if (!(winnersCurrentPage == null ? void 0 : winnersCurrentPage.length)) {
+      const prevPage = currentPage - 1;
+      queryParams.delete(QUERY_PARAMS.PAGE);
+      queryParams.set(QUERY_PARAMS.PAGE, prevPage);
+      StoreModel.dispatch({
+        type: ACTIONS.CHANGE_WINNERS_PAGE,
+        payload: prevPage
+      });
+    } else {
+      queryParams.set(QUERY_PARAMS.PAGE, currentPage);
+    }
+    const allWinners = await ApiModel.getWinners(/* @__PURE__ */ new Map());
+    if (allWinners) {
+      const maxPagesCount = Math.ceil(
+        allWinners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT
+      );
+      StoreModel.dispatch({
+        type: ACTIONS.SET_TOTAL_WINNERS_PAGES,
+        payload: maxPagesCount === 0 ? 1 : maxPagesCount
+      });
+    }
     await this.fetchAndDrawWinnersData(queryParams);
   }
-  drawWinnersTitle() {
+  async drawWinnersTitle() {
     const winnersTitle = this.winnersPageView.getWinnersTitle();
-    ApiModel.getWinners(/* @__PURE__ */ new Map()).then((winners) => {
-      const textContent = `Winners (${winners == null ? void 0 : winners.length})`;
-      winnersTitle.textContent = textContent;
-    }).catch(() => {
-    });
+    const winners = await ApiModel.getWinners(/* @__PURE__ */ new Map());
+    const textContent = `Winners (${winners == null ? void 0 : winners.length})`;
+    winnersTitle.textContent = textContent;
   }
   subscribeToMediator() {
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.CHANGE_PAGE,
       (params) => {
-        if (typeof params === "string" && params === PAGES_IDS.WINNERS_PAGE) {
+        if (params === PAGES_IDS.WINNERS_PAGE) {
           this.visible();
         } else {
           this.hidden();
@@ -2609,7 +2565,8 @@ class WinnersPageModel {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DRAW_NEW_WINNER, () => {
       this.redrawCurrentPage().catch(() => {
       });
-      this.drawWinnersTitle();
+      this.drawWinnersTitle().catch(() => {
+      });
     });
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.CHANGE_WINNERS_PAGE,
@@ -2621,7 +2578,8 @@ class WinnersPageModel {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_WINNER, () => {
       this.redrawCurrentPage().catch(() => {
       });
-      this.drawWinnersTitle();
+      this.drawWinnersTitle().catch(() => {
+      });
     });
   }
   setTableHeadHandler() {
@@ -2668,14 +2626,13 @@ class WinnersPageModel {
   }
   async init() {
     this.subscribeToMediator();
-    this.drawWinnersTitle();
+    this.drawWinnersTitle().catch(() => {
+    });
     this.winnersPageView.getPageWrapper().append(this.pagination.getHTML());
-    await this.fetchAndDrawWinnersData(
-      /* @__PURE__ */ new Map([
-        [QUERY_PARAMS.PAGE, StoreModel.getState().winnersPage],
-        [QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_WINNERS_LIMIT]
-      ])
-    );
+    const queryParams = /* @__PURE__ */ new Map();
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_WINNERS_LIMIT);
+    queryParams.set(QUERY_PARAMS.PAGE, StoreModel.getState().winnersPage);
+    await this.fetchAndDrawWinnersData(queryParams);
     this.setTableHeadHandler();
   }
 }
@@ -2815,4 +2772,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-f611d6d5.js.map
+//# sourceMappingURL=main-7f7b4335.js.map
