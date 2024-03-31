@@ -64,16 +64,14 @@ class WinnersPageModel implements PageInterface {
   private async getWinnerInfo(
     winner: WinnerInterface,
   ): Promise<WinnerInfo | undefined> {
-    if (winner.id) {
-      const car = await ApiModel.getCarById(winner.id);
-      if (car && winner.id) {
-        this.winnerInfo = {
-          id: winner.id,
-          time: winner.time,
-          wins: winner.wins,
-          car,
-        };
-      }
+    const car = await ApiModel.getCarById(winner.id);
+    if (car) {
+      this.winnerInfo = {
+        id: winner.id,
+        time: winner.time,
+        wins: winner.wins,
+        car,
+      };
     }
 
     return this.winnerInfo;
@@ -127,56 +125,45 @@ class WinnersPageModel implements PageInterface {
     queryParams.set(QUERY_PARAMS.PAGE, currentPage);
     queryParams.set(QUERY_PARAMS.SORT, this.bySort);
     queryParams.set(QUERY_PARAMS.ORDER, this.byOrder);
-    await ApiModel.getWinners(queryParams)
-      .then((winners) => {
-        if (!winners?.length) {
-          const prevPage = currentPage - 1;
-          queryParams.delete(QUERY_PARAMS.PAGE);
-          queryParams.set(QUERY_PARAMS.PAGE, prevPage);
-          StoreModel.dispatch({
-            type: ACTIONS.CHANGE_WINNERS_PAGE,
-            payload: prevPage,
-          });
-        } else {
-          queryParams.set(QUERY_PARAMS.PAGE, currentPage);
-        }
-      })
-      .catch(() => {});
-    ApiModel.getWinners(new Map())
-      .then((winners) => {
-        if (winners) {
-          StoreModel.dispatch({
-            type: ACTIONS.SET_TOTAL_WINNERS_PAGES,
-            payload:
-              Math.ceil(winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT) ===
-              0
-                ? 1
-                : Math.ceil(
-                    winners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT,
-                  ),
-          });
-        }
-      })
-      .catch(() => {});
+    const winnersCurrentPage = await ApiModel.getWinners(queryParams);
+    if (!winnersCurrentPage?.length) {
+      const prevPage = currentPage - 1;
+      queryParams.delete(QUERY_PARAMS.PAGE);
+      queryParams.set(QUERY_PARAMS.PAGE, prevPage);
+      StoreModel.dispatch({
+        type: ACTIONS.CHANGE_WINNERS_PAGE,
+        payload: prevPage,
+      });
+    } else {
+      queryParams.set(QUERY_PARAMS.PAGE, currentPage);
+    }
+
+    const allWinners = await ApiModel.getWinners(new Map());
+    if (allWinners) {
+      const maxPagesCount = Math.ceil(
+        allWinners.length / QUERY_VALUES.DEFAULT_WINNERS_LIMIT,
+      );
+      StoreModel.dispatch({
+        type: ACTIONS.SET_TOTAL_WINNERS_PAGES,
+        payload: maxPagesCount === 0 ? 1 : maxPagesCount,
+      });
+    }
 
     await this.fetchAndDrawWinnersData(queryParams);
   }
 
-  private drawWinnersTitle(): void {
+  private async drawWinnersTitle(): Promise<void> {
     const winnersTitle = this.winnersPageView.getWinnersTitle();
-    ApiModel.getWinners(new Map())
-      .then((winners) => {
-        const textContent = `Winners (${winners?.length})`;
-        winnersTitle.textContent = textContent;
-      })
-      .catch(() => {});
+    const winners = await ApiModel.getWinners(new Map());
+    const textContent = `Winners (${winners?.length})`;
+    winnersTitle.textContent = textContent;
   }
 
   private subscribeToMediator(): void {
     this.singletonMediator.subscribe(
       MEDIATOR_EVENTS.CHANGE_PAGE,
       (params: unknown) => {
-        if (typeof params === 'string' && params === PAGES_IDS.WINNERS_PAGE) {
+        if (params === PAGES_IDS.WINNERS_PAGE) {
           this.visible();
         } else {
           this.hidden();
@@ -186,7 +173,7 @@ class WinnersPageModel implements PageInterface {
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DRAW_NEW_WINNER, () => {
       this.redrawCurrentPage().catch(() => {});
-      this.drawWinnersTitle();
+      this.drawWinnersTitle().catch(() => {});
     });
 
     this.singletonMediator.subscribe(
@@ -198,7 +185,7 @@ class WinnersPageModel implements PageInterface {
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_WINNER, () => {
       this.redrawCurrentPage().catch(() => {});
-      this.drawWinnersTitle();
+      this.drawWinnersTitle().catch(() => {});
     });
   }
 
@@ -252,14 +239,12 @@ class WinnersPageModel implements PageInterface {
 
   private async init(): Promise<void> {
     this.subscribeToMediator();
-    this.drawWinnersTitle();
+    this.drawWinnersTitle().catch(() => {});
     this.winnersPageView.getPageWrapper().append(this.pagination.getHTML());
-    await this.fetchAndDrawWinnersData(
-      new Map([
-        [QUERY_PARAMS.PAGE, StoreModel.getState().winnersPage],
-        [QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_WINNERS_LIMIT],
-      ]),
-    );
+    const queryParams: Map<string, number | string> = new Map();
+    queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_WINNERS_LIMIT);
+    queryParams.set(QUERY_PARAMS.PAGE, StoreModel.getState().winnersPage);
+    await this.fetchAndDrawWinnersData(queryParams);
     this.setTableHeadHandler();
   }
 }

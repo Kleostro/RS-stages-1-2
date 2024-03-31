@@ -43,6 +43,7 @@ class CreateCarFormModel {
     const submitButton = this.createCarFormView.getSubmitButton();
 
     const newCarData: CarInterface = {
+      id: 0,
       name: formatText(carNameInput.getHTML().value),
       color: formatText(carColorInput.getHTML().value),
     };

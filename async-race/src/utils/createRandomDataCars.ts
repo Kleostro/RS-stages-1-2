@@ -48,6 +48,7 @@ const createRandomDataCars = (countCars: number): CarInterface[] => {
     `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   for (let i = 0; i < countCars; i += 1) {
     cars.push({
+      id: 0,
       name: `${getRandomBrand()} ${getRandomModel()}`,
       color: getRandomColor(),
     });

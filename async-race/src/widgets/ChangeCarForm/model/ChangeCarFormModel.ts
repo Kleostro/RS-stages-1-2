@@ -25,26 +25,23 @@ class ChangeCarFormModel {
     return this.changeCarFormView.getHTML();
   }
 
-  private getSelectCar(id: number): void {
+  private async getSelectCar(id: number): Promise<void> {
     const loader = new LoaderModel();
     this.changeCarFormView.getSubmitButton().getHTML().append(loader.getHTML());
-    ApiModel.getCarById(id)
-      .then((car) => {
-        if (car) {
-          loader.getHTML().remove();
-          this.selectCar = car;
-          this.unDisableForm();
-          this.singletonMediator.notify(
-            MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
-            car.name,
-          );
-          this.singletonMediator.notify(
-            MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
-            car.color,
-          );
-        }
-      })
-      .catch(() => {});
+    const car = await ApiModel.getCarById(id);
+    if (car) {
+      loader.getHTML().remove();
+      this.selectCar = car;
+      this.unDisableForm();
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_NAME_PREVIEW_CAR,
+        car.name,
+      );
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_COLOR_PREVIEW_CAR,
+        car.color,
+      );
+    }
   }
 
   private unDisableForm(): void {
@@ -76,14 +73,16 @@ class ChangeCarFormModel {
     const carColorInput = this.changeCarFormView.getCarColorInput();
     const submitButton = this.changeCarFormView.getSubmitButton();
 
+    if (!this.selectCar) {
+      return;
+    }
+
     const newCarData: CarInterface = {
+      id: this.selectCar.id,
       name: formatText(carNameInput.getHTML().value),
       color: formatText(carColorInput.getHTML().value),
     };
 
-    if (!this.selectCar || !this.selectCar.id) {
-      return;
-    }
     const loader = new LoaderModel();
     this.changeCarFormView.getSubmitButton().getHTML().append(loader.getHTML());
 
@@ -149,7 +148,7 @@ class ChangeCarFormModel {
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.SELECT_CAR, (params) => {
       if (typeof params === 'number') {
-        this.getSelectCar(params);
+        this.getSelectCar(params).catch(() => {});
       }
     });
   }

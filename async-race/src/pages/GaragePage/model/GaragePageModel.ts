@@ -76,47 +76,42 @@ class GaragePageModel implements PageInterface {
       .classList.add(GARAGE_PAGE_STYLES['garage-page--hidden']);
   }
 
-  private getInitialDataCars(): void {
+  private async getInitialDataCars(): Promise<void> {
     const queryParams: Map<string, number> = new Map();
     queryParams.set(QUERY_PARAMS.PAGE, QUERY_VALUES.DEFAULT_PAGE);
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
 
-    ApiModel.getCars(queryParams)
-      .then((cars) => {
-        if (cars) {
-          this.drawRaceTracks(cars);
-        }
-      })
-      .catch(() => {});
+    const cars = await ApiModel.getCars(queryParams);
 
-    this.getAllCars();
+    if (cars) {
+      this.drawRaceTracks(cars);
+    }
+
+    this.getAllCars().catch(() => {});
   }
 
-  private getAllCars(): void {
+  private async getAllCars(): Promise<void> {
     const loader = new LoaderModel();
     this.garagePageView.getGarageTitle().append(loader.getHTML());
-    ApiModel.getCars(new Map())
-      .then((cars) => {
-        if (cars) {
-          StoreModel.dispatch({
-            type: ACTIONS.GET_CARS,
-            payload: cars,
-          });
-          StoreModel.dispatch({
-            type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
-            payload:
-              Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT) === 0
-                ? 1
-                : Math.ceil(cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT),
-          });
-          this.singletonMediator.notify(
-            MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
-            '',
-          );
-          this.drawGarageTitle();
-        }
-      })
-      .catch(() => {});
+    const cars = await ApiModel.getCars(new Map());
+    if (cars) {
+      StoreModel.dispatch({
+        type: ACTIONS.GET_CARS,
+        payload: cars,
+      });
+      const maxPageCount = Math.ceil(
+        cars.length / QUERY_VALUES.DEFAULT_CARS_LIMIT,
+      );
+      StoreModel.dispatch({
+        type: ACTIONS.SET_TOTAL_GARAGE_PAGES,
+        payload: maxPageCount === 0 ? 1 : maxPageCount,
+      });
+      this.singletonMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_TOTAL_GARAGE_PAGES,
+        '',
+      );
+      this.drawGarageTitle();
+    }
   }
 
   private drawGarageTitle(): void {
@@ -159,7 +154,7 @@ class GaragePageModel implements PageInterface {
     });
   }
 
-  private redrawCurrentPage(): void {
+  private async redrawCurrentPage(): Promise<void> {
     const currentPage = StoreModel.getState().garagePage;
     const queryParams: Map<string, number> = new Map();
     queryParams.set(QUERY_PARAMS.LIMIT, QUERY_VALUES.DEFAULT_CARS_LIMIT);
@@ -177,14 +172,12 @@ class GaragePageModel implements PageInterface {
       queryParams.set(QUERY_PARAMS.PAGE, currentPage);
     }
 
-    ApiModel.getCars(queryParams)
-      .then((data) => {
-        if (data) {
-          this.garagePageView.clearRaceTracksList();
-          this.drawRaceTracks(data);
-        }
-      })
-      .catch(() => {});
+    const cars = await ApiModel.getCars(queryParams);
+
+    if (cars) {
+      this.garagePageView.clearRaceTracksList();
+      this.drawRaceTracks(cars);
+    }
   }
 
   private startRaceHandler(): void {
@@ -203,7 +196,7 @@ class GaragePageModel implements PageInterface {
     this.garagePageView.getRaceResult().innerHTML = '';
     this.isWinner = false;
     this.raceTracks.forEach((raceTrack) => {
-      raceTrack.stopEngineHandler();
+      raceTrack.stopEngineHandler().catch(() => {});
     });
     this.singletonMediator.notify(MEDIATOR_EVENTS.RESET_RACE, '');
   }
@@ -217,7 +210,7 @@ class GaragePageModel implements PageInterface {
     this.garagePageView.getRaceResult().textContent = text;
   }
 
-  private hasWinner(winner: WinnerInterface): void {
+  private async hasWinner(winner: WinnerInterface): Promise<void> {
     if (winner.wins) {
       const currentWinner = {
         id: winner.id,
@@ -225,44 +218,25 @@ class GaragePageModel implements PageInterface {
         time: this.winner.time < winner.time ? this.winner.time : winner.time,
       };
 
-      if (!currentWinner.id) {
-        return;
-      }
-
-      ApiModel.updateWinnerById(currentWinner.id, currentWinner)
-        .then(() => {
-          this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, '');
-        })
-        .catch(() => {});
+      await ApiModel.updateWinnerById(currentWinner.id, currentWinner);
+      this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, '');
     } else {
-      if (!this.winner.id) {
-        return;
-      }
       const newWinnerData: WinnerInterface = {
         id: this.winner.id,
         wins: this.winner.wins,
         time: this.winner.time,
       };
-      ApiModel.createWinner(newWinnerData)
-        .then(() => {
-          this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, '');
-        })
-        .catch(() => {});
+      await ApiModel.createWinner(newWinnerData);
+      this.singletonMediator.notify(MEDIATOR_EVENTS.DRAW_NEW_WINNER, '');
     }
   }
 
-  private addNewWinner(): void {
-    if (!this.winner.id) {
-      return;
-    }
+  private async addNewWinner(): Promise<void> {
+    const newWinner = await ApiModel.getWinnerById(this.winner.id);
 
-    ApiModel.getWinnerById(this.winner.id)
-      .then((winner) => {
-        if (winner) {
-          this.hasWinner(winner);
-        }
-      })
-      .catch(() => {});
+    if (newWinner) {
+      this.hasWinner(newWinner).catch(() => {});
+    }
   }
 
   private allDisabled(): void {
@@ -288,30 +262,30 @@ class GaragePageModel implements PageInterface {
   private setSubscribeToMediator(): void {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
       this.drawGarageTitle();
-      this.redrawCurrentPage();
-      this.getAllCars();
+      this.redrawCurrentPage().catch(() => {});
+      this.getAllCars().catch(() => {});
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
       this.drawGarageTitle();
-      this.redrawCurrentPage();
-      this.getAllCars();
+      this.redrawCurrentPage().catch(() => {});
+      this.getAllCars().catch(() => {});
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
       this.drawGarageTitle();
-      this.redrawCurrentPage();
+      this.redrawCurrentPage().catch(() => {});
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.UPDATE_CAR, () => {
       this.removeButtons.forEach((button) => {
         button.setEnabled();
       });
-      this.redrawCurrentPage();
+      this.redrawCurrentPage().catch(() => {});
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CHANGE_GARAGE_PAGE, () => {
-      this.redrawCurrentPage();
+      this.redrawCurrentPage().catch(() => {});
     });
 
     this.singletonMediator.subscribe(
@@ -325,7 +299,7 @@ class GaragePageModel implements PageInterface {
         this.winner = params;
         this.isWinner = true;
         this.drawWinner();
-        this.addNewWinner();
+        this.addNewWinner().catch(() => {});
       }
     });
   }
@@ -376,7 +350,7 @@ class GaragePageModel implements PageInterface {
   }
 
   private init(): void {
-    this.getInitialDataCars();
+    this.getInitialDataCars().catch(() => {});
     this.setSubscribeToMediator();
     this.setSubscribeToMediator2();
 

@@ -70,26 +70,20 @@ class PaginationModel {
     }
   }
 
-  private initPageInfo(): void {
+  private async initPageInfo(): Promise<void> {
     if (this.pageID === PAGES_IDS.GARAGE_PAGE) {
-      ApiModel.getCars(new Map())
-        .then((cars) => {
-          if (cars) {
-            this.loadDataAndSetPageInfo(cars, QUERY_VALUES.DEFAULT_CARS_LIMIT);
-          }
-        })
-        .catch(() => {});
+      const cars = await ApiModel.getCars(new Map());
+      if (cars) {
+        this.loadDataAndSetPageInfo(cars, QUERY_VALUES.DEFAULT_CARS_LIMIT);
+      }
     } else {
-      ApiModel.getWinners(new Map())
-        .then((winners) => {
-          if (winners) {
-            this.loadDataAndSetPageInfo(
-              winners,
-              QUERY_VALUES.DEFAULT_WINNERS_LIMIT,
-            );
-          }
-        })
-        .catch(() => {});
+      const winners = await ApiModel.getWinners(new Map());
+      if (winners) {
+        this.loadDataAndSetPageInfo(
+          winners,
+          QUERY_VALUES.DEFAULT_WINNERS_LIMIT,
+        );
+      }
     }
   }
 
@@ -192,17 +186,17 @@ class PaginationModel {
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_MORE_CARS, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {});
       this.checkButtons();
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_CAR, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {});
       this.checkButtons();
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.CREATE_CAR, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {});
       this.checkButtons();
     });
 
@@ -226,18 +220,18 @@ class PaginationModel {
 
   private setSubscribeToMediatorWinners(): void {
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DELETE_WINNER, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {});
       this.checkButtons();
     });
 
     this.singletonMediator.subscribe(MEDIATOR_EVENTS.DRAW_NEW_WINNER, () => {
-      this.initPageInfo();
+      this.initPageInfo().catch(() => {});
       this.checkButtons();
     });
   }
 
   private init(): void {
-    this.initPageInfo();
+    this.initPageInfo().catch(() => {});
     this.checkButtons();
     const prevButton = this.paginationView.getPrevButton();
     const nextButton = this.paginationView.getNextButton();

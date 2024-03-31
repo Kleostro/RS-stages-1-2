@@ -1,7 +1,7 @@
 import type NewWinner from '../entities/RaceTrack/types/interfaces.ts';
 // Миша, надеюсь ты заметишь данный участок кода и скажешь мнение хороший ли это способ проверить данные или нет :)
 class Winner implements NewWinner {
-  public id?: number;
+  public id: number;
 
   public wins: number;
 
@@ -9,7 +9,7 @@ class Winner implements NewWinner {
 
   public name: string;
 
-  constructor(name: string, wins: number, time: number, id?: number) {
+  constructor(name: string, wins: number, time: number, id: number) {
     this.name = name;
     this.wins = wins;
     this.time = time;
