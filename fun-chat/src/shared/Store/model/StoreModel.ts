@@ -1,7 +1,6 @@
-import type Reducer from '../types/types.ts';
-import INITIAL_DATA from '../initialData.ts';
-import type { State } from '../reducer/types/interfaces.ts';
-import type { Action } from '../reducer/types/types.ts';
+import { INITIAL_STATE } from '../initialData.ts';
+import type { State } from '../initialData.ts';
+import type { Action, Reducer } from '../reducer/types/types.ts';
 import { rootReducer } from '../reducer/rootReducer.ts';
 
 class StoreModel {
@@ -9,7 +8,7 @@ class StoreModel {
 
   private static rootReducer: Reducer<State, Action> = rootReducer;
 
-  private static state: State = INITIAL_DATA;
+  private static state: State = INITIAL_STATE;
 
   public static dispatch(action: Action): Action {
     StoreModel.state = StoreModel.rootReducer(StoreModel.state, action);

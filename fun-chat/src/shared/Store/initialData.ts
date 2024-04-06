@@ -1,12 +1,10 @@
-import type { State } from './reducer/types/interfaces.ts';
+// state field typing
+export interface State {}
 
-const INITIAL_DATA: State = {
-  cars: [],
-  winners: [],
-  garagePage: 1,
-  totalGaragePages: 1,
-  winnersPage: 1,
-  totalWinnersPages: 1,
-} as const;
+// enumeration of state fields
+export const STATE_FIELDS = {} as const;
 
-export default INITIAL_DATA;
+// initial state values
+export const INITIAL_STATE: State = {} as const;
+
+export default INITIAL_STATE;
