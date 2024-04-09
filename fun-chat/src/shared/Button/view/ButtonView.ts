@@ -1,11 +1,11 @@
 import { TAG_NAMES } from '../../types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
-import type ButtonInterface from '../types/interfaces.ts';
+import type ButtonAttributesInterface from '../types/interfaces.ts';
 
 class ButtonView {
   private button: HTMLButtonElement;
 
-  constructor(params: ButtonInterface) {
+  constructor(params: ButtonAttributesInterface) {
     this.button = this.createHTML(params);
   }
 
@@ -13,7 +13,7 @@ class ButtonView {
     return this.button;
   }
 
-  private createHTML(params: ButtonInterface): HTMLButtonElement {
+  private createHTML(params: ButtonAttributesInterface): HTMLButtonElement {
     this.button = createBaseElement({
       tag: TAG_NAMES.BUTTON,
       cssClasses: params.classes,

@@ -12,6 +12,10 @@ class InputModel {
     return this.view.getHTML();
   }
 
+  public getValue(): string {
+    return this.view.getHTML().value;
+  }
+
   public setDisabled(): void {
     this.view.getHTML().disabled = IS_DISABLED.DISABLED;
   }

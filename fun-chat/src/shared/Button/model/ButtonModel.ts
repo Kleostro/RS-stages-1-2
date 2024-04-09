@@ -1,11 +1,11 @@
 import { IS_DISABLED } from '../../types/enums.ts';
-import type ButtonInterface from '../types/interfaces.ts';
+import type ButtonAttributesInterface from '../types/interfaces.ts';
 import ButtonView from '../view/ButtonView.ts';
 
 class ButtonModel {
   private view: ButtonView;
 
-  constructor(params: ButtonInterface) {
+  constructor(params: ButtonAttributesInterface) {
     this.view = new ButtonView(params);
   }
 

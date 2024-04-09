@@ -29,7 +29,10 @@ class StoreModel {
     return structuredClone(StoreModel.state);
   }
 
-  public static subscribe(key: string, listener: VoidFunction): VoidFunction {
+  public static subscribe(
+    key: keyof State,
+    listener: VoidFunction,
+  ): VoidFunction {
     StoreModel.listeners.set(key, listener);
 
     return () => {
