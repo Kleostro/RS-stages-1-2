@@ -3,6 +3,11 @@ import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import type InputFieldModel from '../../../entities/InputField/model/InputFieldModel.ts';
 import type { User } from '../../../shared/Store/initialData.ts';
 import { LOGIN_INPUT_FIELD_PARAMS } from '../types/enums.ts';
+import StoreModel from '../../../shared/Store/model/StoreModel.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
+import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
+import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
+import PAGES_IDS from '../../../pages/types/enums.ts';
 
 class LoginFormModel {
   private view: LoginFormView = new LoginFormView();
@@ -10,6 +15,8 @@ class LoginFormModel {
   private inputFields: InputFieldModel[] = [];
 
   private isValidInputFields: Record<string, boolean> = {};
+
+  private eventMediator = MediatorModel.getInstance();
 
   constructor() {
     this.init();
@@ -51,7 +58,16 @@ class LoginFormModel {
       } else {
         formData.password = inputValue;
       }
+
+      input.clear();
     });
+
+    StoreModel.dispatch({
+      type: ACTIONS.SET_CURRENT_USER,
+      payload: formData,
+    });
+
+    this.eventMediator.notify(MEDIATOR_EVENTS.NEW_USER, PAGES_IDS.MAIN_PAGE);
 
     return formData;
   }

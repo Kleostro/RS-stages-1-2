@@ -1,9 +1,3 @@
-export interface CurrentUser {
-  login: string;
-  password: string;
-  authorized: boolean;
-}
-
 interface Status {
   isDelivered: boolean;
   isEdited: boolean;
@@ -37,7 +31,7 @@ export interface Dialog {
 
 // state field typing
 export interface State {
-  currentUser: CurrentUser | null;
+  currentUser: User | null;
   currentAuthorizedUsers: User[];
   currentUnauthorizedUsers: User[];
   currentUserDialogs: Dialog[];

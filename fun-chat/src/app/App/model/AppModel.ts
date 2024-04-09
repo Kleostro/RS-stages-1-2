@@ -5,13 +5,17 @@ import PAGES_IDS from '../../../pages/types/enums.ts';
 import type PageInterface from '../../../pages/types/interfaces.ts';
 import RouterModel from '../../Router/model/RouterModel.ts';
 import AppView from '../view/AppView.ts';
+import HeaderModel from '../../../widgets/Header/model/HeaderModel.ts';
 
 class AppModel {
   private appView: AppView = new AppView();
 
+  private router = new RouterModel();
+
   constructor() {
-    const router = new RouterModel(this.initPages());
-    router.navigateTo(PAGES_IDS.DEFAULT_PAGE);
+    this.router.setPages(this.initPages());
+
+    this.getHTML().prepend(new HeaderModel(this.router).getHTML());
   }
 
   public getHTML(): HTMLDivElement {
@@ -19,7 +23,7 @@ class AppModel {
   }
 
   private initPages(): Map<string, PageInterface> {
-    const loginPage = new LoginPageModel(this.appView.getHTML());
+    const loginPage = new LoginPageModel(this.appView.getHTML(), this.router);
     const mainPage = new MainPageModel(this.appView.getHTML());
     const aboutPage = new AboutPageModel(this.appView.getHTML());
     const pages: Map<string, PageInterface> = new Map(

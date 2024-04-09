@@ -6,16 +6,22 @@ import LoginPageView from '../view/LoginPageView.ts';
 import LOGIN_PAGE_STYLES from '../view/loginPage.module.scss';
 import PAGES_IDS from '../../types/enums.ts';
 import LoginFormModel from '../../../widgets/LoginForm/model/LoginFormModel.ts';
+import StoreModel from '../../../shared/Store/model/StoreModel.ts';
+import type RouterModel from '../../../app/Router/model/RouterModel.ts';
+import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 
 class LoginPageModel implements PageInterface {
   private loginPageView: LoginPageView;
 
-  private mediator = MediatorModel.getInstance();
+  private router: RouterModel;
+
+  private eventMediator = MediatorModel.getInstance();
 
   private loginFormModel = new LoginFormModel();
 
-  constructor(parent: HTMLDivElement) {
+  constructor(parent: HTMLDivElement, router: RouterModel) {
     this.loginPageView = new LoginPageView(parent);
+    this.router = router;
     this.initPage();
   }
 
@@ -36,11 +42,16 @@ class LoginPageModel implements PageInterface {
   }
 
   private subscribeToMediator(): void {
-    this.mediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       if (
         params === PAGES_IDS.LOGIN_PAGE ||
         params === PAGES_IDS.DEFAULT_PAGE
       ) {
+        if (StoreModel.getState().currentUser) {
+          this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+        } else {
+          this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
+        }
         this.visible();
       } else {
         this.hidden();
@@ -49,7 +60,11 @@ class LoginPageModel implements PageInterface {
   }
 
   private initPage(): void {
-    this.getHTML().append(this.loginFormModel.getHTML());
+    const loginFormHTML = this.loginFormModel.getHTML();
+    this.getHTML().append(loginFormHTML);
+    loginFormHTML.addEventListener(EVENT_NAMES.SUBMIT, () => {
+      this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+    });
     this.subscribeToMediator();
   }
 }

@@ -1,11 +1,5 @@
-import type { CurrentUser, Dialog } from '../initialData.ts';
-
-const ACTIONS = {
-  SET_CURRENT_USER: 'setCurrentUser',
-  SET_CURRENT_AUTHORIZED_USERS: 'setCurrentAuthorizedUsers',
-  SET_CURRENT_UNAUTHORIZED_USERS: 'setCurrentUnauthorizedUsers',
-  SET_CURRENT_USER_DIALOGS: 'setCurrentUserDialogs',
-} as const;
+import type { User, Dialog } from '../initialData.ts';
+import ACTIONS from './types/enums.ts';
 
 type ActionType = (typeof ACTIONS)[keyof typeof ACTIONS];
 
@@ -15,26 +9,23 @@ interface ActionWithPayload<T, U extends ActionType> {
 }
 
 export const setCurrentUser = (
-  value: CurrentUser | null,
-): ActionWithPayload<CurrentUser | null, typeof ACTIONS.SET_CURRENT_USER> => ({
+  value: User | null,
+): ActionWithPayload<User | null, typeof ACTIONS.SET_CURRENT_USER> => ({
   payload: value,
   type: ACTIONS.SET_CURRENT_USER,
 });
 
 export const setCurrentAuthorizedUsers = (
-  value: CurrentUser[],
-): ActionWithPayload<
-  CurrentUser[],
-  typeof ACTIONS.SET_CURRENT_AUTHORIZED_USERS
-> => ({
+  value: User[],
+): ActionWithPayload<User[], typeof ACTIONS.SET_CURRENT_AUTHORIZED_USERS> => ({
   payload: value,
   type: ACTIONS.SET_CURRENT_AUTHORIZED_USERS,
 });
 
 export const setCurrentUnauthorizedUsers = (
-  value: CurrentUser[],
+  value: User[],
 ): ActionWithPayload<
-  CurrentUser[],
+  User[],
   typeof ACTIONS.SET_CURRENT_UNAUTHORIZED_USERS
 > => ({
   payload: value,

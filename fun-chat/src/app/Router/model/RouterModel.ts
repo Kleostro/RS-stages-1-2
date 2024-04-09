@@ -5,13 +5,12 @@ import ROUTER_DETAILS from '../types/enums.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 
-export default class RouterModel {
-  private pages: Map<string, PageInterface>;
+class RouterModel {
+  private pages: Map<string, PageInterface> = new Map();
 
-  private mediator = MediatorModel.getInstance();
+  private eventMediator = MediatorModel.getInstance();
 
-  constructor(pages: Map<string, PageInterface>) {
-    this.pages = pages;
+  constructor() {
     document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
       const currentPath = window.location.pathname
         .split(ROUTER_DETAILS.DEFAULT_SEGMENT)
@@ -20,7 +19,7 @@ export default class RouterModel {
         )
         .join(ROUTER_DETAILS.DEFAULT_SEGMENT);
       this.navigateTo(currentPath);
-      this.mediator.notify(
+      this.eventMediator.notify(
         MEDIATOR_EVENTS.CHANGE_PAGE,
         currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join(),
       );
@@ -35,6 +34,10 @@ export default class RouterModel {
         .join(ROUTER_DETAILS.DEFAULT_SEGMENT);
       this.handleRequest(currentPath);
     });
+  }
+
+  public setPages(pages: Map<string, PageInterface>): void {
+    this.pages = pages;
   }
 
   public navigateTo(route: string): void {
@@ -56,10 +59,15 @@ export default class RouterModel {
     const hasRoute = this.pages.has(pathParts.join(''));
     if (!hasRoute) {
       window.location.pathname = `${PAGES_IDS.FOR_DEPLOY}`;
-      this.mediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, PAGES_IDS.DEFAULT_PAGE);
+      this.eventMediator.notify(
+        MEDIATOR_EVENTS.CHANGE_PAGE,
+        PAGES_IDS.DEFAULT_PAGE,
+      );
       return;
     }
 
-    this.mediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join());
+    this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join());
   }
 }
+
+export default RouterModel;
