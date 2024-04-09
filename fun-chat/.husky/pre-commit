@@ -1,2 +1,2 @@
-cd async-race
+cd fun-chat
 npx lint-staged
