@@ -8,7 +8,6 @@ import PAGES_IDS from '../../types/enums.ts';
 import LoginFormModel from '../../../widgets/LoginForm/model/LoginFormModel.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type RouterModel from '../../../app/Router/model/RouterModel.ts';
-import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 
 class LoginPageModel implements PageInterface {
   private loginPageView: LoginPageView;
@@ -29,42 +28,39 @@ class LoginPageModel implements PageInterface {
     return this.loginPageView.getHTML();
   }
 
-  private visible(): void {
+  private show(): void {
     this.loginPageView
       .getHTML()
       .classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
   }
 
-  private hidden(): void {
+  private hide(): void {
     this.loginPageView
       .getHTML()
       .classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
   }
 
+  private switchPage(params: string): void {
+    if (params === PAGES_IDS.LOGIN_PAGE || params === PAGES_IDS.DEFAULT_PAGE) {
+      if (StoreModel.getState().currentUser) {
+        this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+        return;
+      }
+      this.show();
+    } else {
+      this.hide();
+    }
+  }
+
   private subscribeToMediator(): void {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
-      if (
-        params === PAGES_IDS.LOGIN_PAGE ||
-        params === PAGES_IDS.DEFAULT_PAGE
-      ) {
-        if (StoreModel.getState().currentUser) {
-          this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-        } else {
-          this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
-        }
-        this.visible();
-      } else {
-        this.hidden();
-      }
+      this.switchPage(String(params));
     });
   }
 
   private initPage(): void {
     const loginFormHTML = this.loginFormModel.getHTML();
     this.getHTML().append(loginFormHTML);
-    loginFormHTML.addEventListener(EVENT_NAMES.SUBMIT, () => {
-      this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-    });
     this.subscribeToMediator();
   }
 }

@@ -71,6 +71,9 @@ export const EVENT_NAMES = {
   POPSTATE: 'popstate',
   HASHCHANGE: 'hashchange',
   BEFOREUNLOAD: 'beforeunload',
+  OPEN: 'open',
+  CLOSE: 'close',
+  MESSAGE: 'message',
 } as const;
 
 export const IS_DISABLED = {

@@ -6,14 +6,19 @@ import type PageInterface from '../../../pages/types/interfaces.ts';
 import RouterModel from '../../Router/model/RouterModel.ts';
 import AppView from '../view/AppView.ts';
 import HeaderModel from '../../../widgets/Header/model/HeaderModel.ts';
+import ServerApiModel from '../../../shared/Server/ServerApi/model/ServerApiModel.ts';
 
 class AppModel {
   private appView: AppView = new AppView();
+
+  private serverApi = new ServerApiModel();
 
   private router = new RouterModel();
 
   constructor() {
     this.router.setPages(this.initPages());
+
+    this.serverApi.open();
 
     this.getHTML().prepend(new HeaderModel(this.router).getHTML());
   }
