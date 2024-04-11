@@ -8,16 +8,14 @@ class SocketModel {
 
   private isOpen = false;
 
-  constructor() {
-    this.open();
-  }
-
-  public open(): boolean {
-    this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
-      this.isOpen = true;
-      this.init();
+  public open(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
+        this.isOpen = true;
+        this.init();
+        resolve(true);
+      });
     });
-    return this.isOpen;
   }
 
   public isWorks(): boolean {

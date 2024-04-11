@@ -12,19 +12,31 @@ import type { Message } from '../../../utils/isFromServerMessage.ts';
 import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
 import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
+import type SessionStorageModel from '../../../shared/SessionStorage/model/SessionStorage.ts';
+import STORE_KEYS from '../../../shared/SessionStorage/types/enums.ts';
+import isUser from '../../../utils/isUser.ts';
+import type { User } from '../../../shared/Store/initialData.ts';
+import type LoginUser from '../../../shared/Server/ServerApi/types/interfaces.ts';
 
 class LoginPageModel implements PageInterface {
   private loginPageView: LoginPageView;
 
   private router: RouterModel;
 
+  private storage: SessionStorageModel;
+
   private eventMediator = MediatorModel.getInstance();
 
   private loginFormModel = new LoginFormModel();
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(
+    parent: HTMLDivElement,
+    router: RouterModel,
+    storage: SessionStorageModel,
+  ) {
     this.loginPageView = new LoginPageView(parent);
     this.router = router;
+    this.storage = storage;
     this.initPage();
   }
 
@@ -44,30 +56,73 @@ class LoginPageModel implements PageInterface {
       .classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
   }
 
-  private switchPage(params: string): void {
+  private checkAuthorizedUser(): User | null {
+    const currentUser = this.storage.get(STORE_KEYS.CURRENT_USER);
+
+    if (currentUser && isUser(currentUser)) {
+      const userData: LoginUser = {
+        id: null,
+        type: API_TYPES.USER_LOGIN,
+        payload: {
+          user: currentUser,
+        },
+      };
+
+      StoreModel.dispatch({
+        type: ACTIONS.SET_CURRENT_USER,
+        payload: currentUser,
+      });
+      this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
+      return currentUser;
+    }
+
+    return null;
+  }
+
+  private switchPage(params: string): boolean {
     if (params === PAGES_IDS.LOGIN_PAGE || params === PAGES_IDS.DEFAULT_PAGE) {
       if (StoreModel.getState().currentUser) {
         this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-        return;
+        this.hide();
+      } else {
+        this.show();
       }
-      this.show();
-    } else {
-      this.hide();
     }
+
+    return true;
   }
 
+  private handleSuccessMessage(): void {
+    const userData = this.loginFormModel.getUserData();
+    StoreModel.dispatch({
+      type: ACTIONS.SET_CURRENT_USER,
+      payload: userData,
+    });
+    this.storage.add(STORE_KEYS.CURRENT_USER, JSON.stringify(userData));
+    this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+    this.hide();
+  }
+
+  // private handleErrorMessage(checkedMessage: Message): void {
+  //   console.error(checkedMessage?.payload?.error);
+  // }
+
   private handleMessageFromServer(checkedMessage: Message): void {
-    if (checkedMessage?.type !== API_TYPES.ERROR) {
+    const savedUser = this.storage.get(STORE_KEYS.CURRENT_USER);
+    if (savedUser && isUser(savedUser)) {
       StoreModel.dispatch({
         type: ACTIONS.SET_CURRENT_USER,
-        payload: this.loginFormModel.getUserData(),
+        payload: savedUser,
       });
       this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-    } else if (
-      checkedMessage?.type === API_TYPES.ERROR &&
-      checkedMessage?.id === this.loginFormModel.getMessageID()
-    ) {
-      // console.error(checkedMessage.payload.error);
+      this.hide();
+      return;
+    }
+
+    if (checkedMessage?.type !== API_TYPES.ERROR) {
+      this.handleSuccessMessage();
+    } else if (checkedMessage?.id === this.loginFormModel.getMessageID()) {
+      // this.handleErrorMessage(checkedMessage);
     }
   }
 
@@ -85,9 +140,11 @@ class LoginPageModel implements PageInterface {
   }
 
   private initPage(): void {
+    this.checkAuthorizedUser();
+    this.subscribeToMediator();
+    this.hide();
     const loginFormHTML = this.loginFormModel.getHTML();
     this.getHTML().append(loginFormHTML);
-    this.subscribeToMediator();
   }
 }
 

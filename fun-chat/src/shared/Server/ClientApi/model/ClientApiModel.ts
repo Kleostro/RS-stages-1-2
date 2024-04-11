@@ -35,6 +35,10 @@ class ClientApiModel {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CREATE_NEW_USER, (message) => {
       this.sendMessage(message);
     });
+
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT, (message) => {
+      this.sendMessage(message);
+    });
     return true;
   }
 }
