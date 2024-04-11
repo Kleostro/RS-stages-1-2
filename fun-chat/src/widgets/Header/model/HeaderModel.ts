@@ -4,6 +4,7 @@ import HeaderView from '../view/HeaderView.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import { STATE_FIELDS } from '../../../shared/Store/initialData.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 
 class HeaderModel {
   private view: HeaderView = new HeaderView();
@@ -20,6 +21,8 @@ class HeaderModel {
   }
 
   private logoutButtonHandler(): void {
+    StoreModel.dispatch({ type: ACTIONS.SET_CURRENT_USER, payload: null });
+    this.view.getLogoutButton().setDisabled();
     this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
   }
 
@@ -35,6 +38,7 @@ class HeaderModel {
   private changeCurrentUserLogin(): void {
     const userLogin = this.view.getUserLogin();
     userLogin.textContent = StoreModel.getState().currentUser?.login || '';
+    this.view.getLogoutButton().setEnabled();
   }
 
   private init(): void {

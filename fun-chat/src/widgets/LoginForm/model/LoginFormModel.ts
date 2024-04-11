@@ -2,16 +2,21 @@ import LoginFormView from '../view/LoginFormView.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import type InputFieldModel from '../../../entities/InputField/model/InputFieldModel.ts';
 import type { User } from '../../../shared/Store/initialData.ts';
-import StoreModel from '../../../shared/Store/model/StoreModel.ts';
-import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
 import type LoginUser from '../../../shared/Server/ServerApi/types/interfaces.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
-import PAGES_IDS from '../../../pages/types/enums.ts';
+import isKeyOfUser from '../../../utils/isKeyOfUser.ts';
 
 class LoginFormModel {
   private view: LoginFormView = new LoginFormView();
+
+  private messageID = '';
+
+  private userData: User = {
+    login: '',
+    password: '',
+  };
 
   private inputFields: InputFieldModel[] = [];
 
@@ -25,6 +30,14 @@ class LoginFormModel {
 
   public getHTML(): HTMLFormElement {
     return this.view.getHTML();
+  }
+
+  public getMessageID(): string {
+    return this.messageID;
+  }
+
+  public getUserData(): User {
+    return this.userData;
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): void {
@@ -45,42 +58,27 @@ class LoginFormModel {
   }
 
   private getFormData(): User {
-    const formData: User = {
-      login: '',
-      password: '',
-    };
-
     this.inputFields.forEach((inputField) => {
       const input = inputField.getView().getInput();
       const inputHTML = input.getHTML();
       const inputValue = input.getValue();
 
-      function isKeyOfUser(key: string): key is keyof User {
-        return Object.prototype.hasOwnProperty.call(formData, key);
-      }
-
-      if (isKeyOfUser(inputHTML.id)) {
-        formData[inputHTML.id] = inputValue;
+      if (isKeyOfUser(this.userData, inputHTML.id)) {
+        this.userData[inputHTML.id] = inputValue;
+        this.isValidInputFields[inputHTML.id] = false;
       }
 
       input.clear();
-      this.isValidInputFields[inputHTML.id] = false;
     });
-    this.view.getSubmitFormButton().setDisabled();
-    return formData;
-  }
 
-  private saveNewUser(data: LoginUser): void {
-    StoreModel.dispatch({
-      type: ACTIONS.SET_CURRENT_USER,
-      payload: data.payload.user,
-    });
-    this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, PAGES_IDS.MAIN_PAGE);
+    this.view.getSubmitFormButton().setDisabled();
+    return this.userData;
   }
 
   private submitFormButtonHandler(): void {
+    this.messageID = crypto.randomUUID();
     const userData: LoginUser = {
-      id: crypto.randomUUID(),
+      id: this.messageID,
       type: API_TYPES.USER_LOGIN,
       payload: {
         user: this.getFormData(),
@@ -88,14 +86,6 @@ class LoginFormModel {
     };
 
     this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
-
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.SET_NEW_USER, (message) => {
-      if (message.type !== API_TYPES.ERROR) {
-        this.saveNewUser(userData);
-      } else {
-        console.log(message.payload.error);
-      }
-    });
   }
 
   private setSubmitFormButtonHandler(): void {

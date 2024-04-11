@@ -6,19 +6,19 @@ import type PageInterface from '../../../pages/types/interfaces.ts';
 import RouterModel from '../../Router/model/RouterModel.ts';
 import AppView from '../view/AppView.ts';
 import HeaderModel from '../../../widgets/Header/model/HeaderModel.ts';
-import ServerApiModel from '../../../shared/Server/ServerApi/model/ServerApiModel.ts';
+import SocketModel from '../../../shared/Server/Socket/model/SocketModel.ts';
 
 class AppModel {
   private appView: AppView = new AppView();
 
-  private serverApi = new ServerApiModel();
+  private serverApi = new SocketModel();
 
   private router = new RouterModel();
 
   constructor() {
     this.router.setPages(this.initPages());
 
-    this.serverApi.open();
+    this.serverApi.isWorks();
 
     this.getHTML().prepend(new HeaderModel(this.router).getHTML());
   }
@@ -28,9 +28,10 @@ class AppModel {
   }
 
   private initPages(): Map<string, PageInterface> {
-    const loginPage = new LoginPageModel(this.appView.getHTML(), this.router);
-    const mainPage = new MainPageModel(this.appView.getHTML());
-    const aboutPage = new AboutPageModel(this.appView.getHTML());
+    const root = this.getHTML();
+    const loginPage = new LoginPageModel(root, this.router);
+    const mainPage = new MainPageModel(root);
+    const aboutPage = new AboutPageModel(root);
     const pages: Map<string, PageInterface> = new Map(
       Object.entries({
         [PAGES_IDS.DEFAULT_PAGE]: loginPage,

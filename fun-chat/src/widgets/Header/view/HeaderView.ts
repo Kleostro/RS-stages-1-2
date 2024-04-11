@@ -57,6 +57,8 @@ class HeaderView {
       text: LOGOUT_BUTTON_TEXT,
     });
 
+    this.logoutButton.setDisabled();
+
     return this.logoutButton;
   }
 

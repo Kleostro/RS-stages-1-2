@@ -38,4 +38,11 @@
       background-color: var(--steam-green-400);
     }
   }
+
+  /* stylelint-disable-next-line order/order */
+  &:disabled {
+    color: var(--noble-black-300);
+    background-color: var(--noble-black-500);
+    pointer-events: none;
+  }
 }
