@@ -1,21 +1,41 @@
 import MEDIATOR_EVENTS from '../../../Mediator/types/enums.ts';
 import MediatorModel from '../../../Mediator/model/MediatorModel.ts';
-import type ServerApiModel from '../../ServerApi/model/ServerApiModel.ts';
 
 class ClientApiModel {
-  private serverApi: ServerApiModel;
+  private webSocket: WebSocket;
+
+  private isOpen: boolean;
 
   private eventMediator = MediatorModel.getInstance();
 
-  constructor(serverApi: ServerApiModel) {
-    this.serverApi = serverApi;
+  constructor(webSocket: WebSocket, isOpen: boolean) {
+    this.webSocket = webSocket;
+    this.isOpen = isOpen;
     this.subscribeToEventMediator();
   }
 
-  private subscribeToEventMediator(): void {
+  public isWorks(): boolean {
+    return this.isOpen;
+  }
+
+  private sendMessage(message: unknown): boolean {
+    if (!this.isOpen) {
+      return false;
+    }
+
+    this.webSocket.send(JSON.stringify(message));
+    return true;
+  }
+
+  private subscribeToEventMediator(): boolean {
+    if (!this.isOpen) {
+      return false;
+    }
+
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CREATE_NEW_USER, (message) => {
-      this.serverApi.sendMessage(message);
+      this.sendMessage(message);
     });
+    return true;
   }
 }
 

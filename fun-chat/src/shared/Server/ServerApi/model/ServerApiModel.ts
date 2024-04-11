@@ -1,54 +1,56 @@
 import MEDIATOR_EVENTS from '../../../Mediator/types/enums.ts';
 import MediatorModel from '../../../Mediator/model/MediatorModel.ts';
 import { EVENT_NAMES } from '../../../types/enums.ts';
-import ClientApiModel from '../../ClientApi/model/ClientApiModel.ts';
-import API_URL, { API_TYPES } from '../types/enums.ts';
+import { API_TYPES } from '../types/enums.ts';
+import type { Message } from '../../../../utils/isFromServerMessage.ts';
+import { isFromServerMessage } from '../../../../utils/isFromServerMessage.ts';
 
 class ServerApiModel {
-  private webSocket = new WebSocket(API_URL);
+  private webSocket: WebSocket;
 
-  private isOpen = false;
+  private isOpen: boolean;
 
   private eventMediator = MediatorModel.getInstance();
 
-  constructor() {
-    const clientApi = new ClientApiModel(this);
-    this.close();
+  constructor(webSocket: WebSocket, isOpen: boolean) {
+    this.webSocket = webSocket;
+    this.isOpen = isOpen;
     this.getMessage();
+  }
+
+  public isWorks(): boolean {
+    return this.isOpen;
+  }
+
+  private getMessage(): boolean {
     if (!this.isOpen) {
-      this.open();
+      return false;
     }
-  }
 
-  public open(): void {
-    this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
-      this.isOpen = true;
-    });
-  }
-
-  public sendMessage(message: unknown): void {
-    this.webSocket.send(JSON.stringify(message));
-  }
-
-  private getMessage(): void {
     this.webSocket.addEventListener(EVENT_NAMES.MESSAGE, ({ data }) => {
       const message: unknown = JSON.parse(String(data));
-      switch (message.type) {
-        case API_TYPES.USER_LOGIN: {
-          this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
-          break;
-        }
-        default: {
-          break;
-        }
+      const checkedMessage = isFromServerMessage(message);
+      if (checkedMessage) {
+        this.handleMessageType(checkedMessage);
       }
     });
+    return true;
   }
 
-  private close(): void {
-    this.webSocket.addEventListener(EVENT_NAMES.CLOSE, () => {
-      this.isOpen = false;
-    });
+  private handleMessageType(message: Message): null | boolean {
+    switch (message.type) {
+      case API_TYPES.USER_LOGIN: {
+        this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
+        return true;
+      }
+      case API_TYPES.ERROR: {
+        this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
+        return false;
+      }
+      default: {
+        return null;
+      }
+    }
   }
 }
 

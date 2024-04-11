@@ -1,4 +1,4 @@
-import type { User } from '@/shared/Store/initialData.ts';
+import type { User } from '../../../Store/initialData.ts';
 
 interface LoginUser {
   id: string;
