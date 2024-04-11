@@ -8,6 +8,10 @@ import PAGES_IDS from '../../types/enums.ts';
 import LoginFormModel from '../../../widgets/LoginForm/model/LoginFormModel.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type RouterModel from '../../../app/Router/model/RouterModel.ts';
+import type { Message } from '../../../utils/isFromServerMessage.ts';
+import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
+import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 
 class LoginPageModel implements PageInterface {
   private loginPageView: LoginPageView;
@@ -52,9 +56,31 @@ class LoginPageModel implements PageInterface {
     }
   }
 
+  private handleMessageFromServer(checkedMessage: Message): void {
+    if (checkedMessage?.type !== API_TYPES.ERROR) {
+      StoreModel.dispatch({
+        type: ACTIONS.SET_CURRENT_USER,
+        payload: this.loginFormModel.getUserData(),
+      });
+      this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+    } else if (
+      checkedMessage?.type === API_TYPES.ERROR &&
+      checkedMessage?.id === this.loginFormModel.getMessageID()
+    ) {
+      // console.error(checkedMessage.payload.error);
+    }
+  }
+
   private subscribeToMediator(): void {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       this.switchPage(String(params));
+    });
+
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SET_NEW_USER, (message) => {
+      const checkedMessage = isFromServerMessage(message);
+      if (checkedMessage) {
+        this.handleMessageFromServer(checkedMessage);
+      }
     });
   }
 
