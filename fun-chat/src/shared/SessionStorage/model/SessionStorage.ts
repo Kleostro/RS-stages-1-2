@@ -1,7 +1,9 @@
+import isSessionStorageData from '../../../utils/isSessionStorageData.ts';
 import STORE_KEYS from '../types/enums.ts';
+import type SessionStorageInterface from '../types/interfaces.ts';
 
 class SessionStorageModel {
-  private storage: Record<string, string>;
+  private storage: SessionStorageInterface;
 
   constructor() {
     this.storage = this.init();
@@ -9,7 +11,8 @@ class SessionStorageModel {
 
   public get(key: string): unknown {
     if (key in this.storage) {
-      const result: unknown = JSON.parse(this.storage[key]);
+      const data = this.storage[key];
+      const result: unknown = JSON.parse(data);
       return result;
     }
     return null;
@@ -43,12 +46,14 @@ class SessionStorageModel {
     return true;
   }
 
-  private init(): Record<string, string> {
+  private init(): SessionStorageInterface {
     const storedData = sessionStorage.getItem(STORE_KEYS.SS_NAME);
 
     if (storedData) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      this.storage = JSON.parse(storedData);
+      const parsedData: unknown = JSON.parse(storedData);
+      if (isSessionStorageData(parsedData)) {
+        this.storage = parsedData;
+      }
     } else {
       sessionStorage.setItem(STORE_KEYS.SS_NAME, '{}');
       this.storage = this.init();
