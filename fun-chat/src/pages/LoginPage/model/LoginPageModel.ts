@@ -89,6 +89,8 @@ class LoginPageModel implements PageInterface {
       } else {
         this.show();
       }
+    } else {
+      this.hide();
     }
 
     return true;

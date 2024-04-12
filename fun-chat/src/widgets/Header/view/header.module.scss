@@ -1,7 +1,6 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: var(--large-offset);
   border-bottom: 4px solid var(--noble-black-300);
   border-radius: calc(var(--border-radius) * 2);
@@ -11,6 +10,7 @@
 }
 
 .nameApp {
+  margin-right: auto;
   font: var(--big-font);
   letter-spacing: 2px;
   text-shadow: -10px 10px 20px;
@@ -18,13 +18,15 @@
 }
 
 .userLogin {
+  margin-right: auto;
   font: var(--second-font);
   letter-spacing: 2px;
   text-shadow: -10px 10px 20px;
   color: var(--steam-green-500);
 }
 
-.logoutButton {
+.logoutButton,
+.aboutButton {
   border-radius: var(--border-radius);
   padding: calc(var(--little-offset) / 2) var(--small-offset);
   font: var(--small-font);
@@ -47,4 +49,8 @@
     background-color: var(--noble-black-500);
     pointer-events: none;
   }
+}
+
+.aboutButton {
+  margin-right: 1%;
 }

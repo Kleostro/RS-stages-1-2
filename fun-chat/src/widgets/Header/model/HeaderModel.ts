@@ -50,10 +50,16 @@ class HeaderModel {
 
   private setLogoutButtonHandler(): void {
     const logoutButton = this.view.getLogoutButton().getHTML();
+    const aboutButton = this.view.getAboutButton().getHTML();
 
     logoutButton.addEventListener(
       EVENT_NAMES.CLICK,
       this.logoutButtonHandler.bind(this),
+    );
+
+    aboutButton.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.router.navigateTo.bind(this.router, PAGES_IDS.ABOUT_PAGE),
     );
   }
 

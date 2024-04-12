@@ -20,4 +20,9 @@ export const AUTHENTICATION_ANIMATE_DETAILS = {
   easing: 'cubic-bezier(0, 0.2, 0.58, 0.7)',
 };
 
+export const ABOUT_INFO_TEXT = {
+  text: 'This project was created for educational purposes.',
+  backButtonText: 'Go back',
+};
+
 export default PAGES_IDS;

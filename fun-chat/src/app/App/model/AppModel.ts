@@ -32,14 +32,12 @@ class AppModel {
     const root = this.getHTML();
     root.prepend(new HeaderModel(this.router, this.storage).getHTML());
     const loginPage = new LoginPageModel(root, this.router, this.storage);
-    const mainPage = new MainPageModel(root, this.router);
-    const aboutPage = new AboutPageModel(root);
     const pages: Map<string, PageInterface> = new Map(
       Object.entries({
         [PAGES_IDS.DEFAULT_PAGE]: loginPage,
         [PAGES_IDS.LOGIN_PAGE]: loginPage,
-        [PAGES_IDS.MAIN_PAGE]: mainPage,
-        [PAGES_IDS.ABOUT_PAGE]: aboutPage,
+        [PAGES_IDS.MAIN_PAGE]: new MainPageModel(root, this.router),
+        [PAGES_IDS.ABOUT_PAGE]: new AboutPageModel(root, this.router),
       }),
     );
     root.append(new FooterModel().getHTML());

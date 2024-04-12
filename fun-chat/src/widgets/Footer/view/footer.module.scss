@@ -38,21 +38,30 @@
 
 .githubLink {
   position: relative;
+  width: 140px;
 
   &::after {
     content: 'by kleostro';
     position: absolute;
-    left: 80%;
+    left: 30%;
     top: 50%;
     font: var(--small-font);
+    letter-spacing: 2px;
     white-space: nowrap;
     color: var(--white);
     transform: translate(0, -50%);
     transition: color 0.3s;
   }
+
+  svg {
+    position: absolute;
+    left: 0;
+    width: 40px;
+  }
 }
 
 .appYear {
   font: var(--small-font);
+  letter-spacing: 2px;
   color: var(--white);
 }
