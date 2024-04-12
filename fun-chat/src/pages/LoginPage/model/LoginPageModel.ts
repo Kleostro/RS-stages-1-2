@@ -4,7 +4,9 @@ import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import LoginPageView from '../view/LoginPageView.ts';
 import LOGIN_PAGE_STYLES from '../view/loginPage.module.scss';
-import PAGES_IDS from '../../types/enums.ts';
+import PAGES_IDS, {
+  AUTHENTICATION_ANIMATE_DETAILS,
+} from '../../types/enums.ts';
 import LoginFormModel from '../../../widgets/LoginForm/model/LoginFormModel.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type RouterModel from '../../../app/Router/model/RouterModel.ts';
@@ -103,9 +105,21 @@ class LoginPageModel implements PageInterface {
     this.hide();
   }
 
-  // private handleErrorMessage(checkedMessage: Message): void {
-  //   console.error(checkedMessage?.payload?.error);
-  // }
+  private showErrorMessage(error: string): void {
+    const authenticationWrapper =
+      this.loginPageView.getShowAuthenticationWrapper();
+    this.loginPageView.getShowAuthenticationMessage().textContent = error;
+    authenticationWrapper.animate(AUTHENTICATION_ANIMATE_DETAILS.params, {
+      duration: AUTHENTICATION_ANIMATE_DETAILS.duration,
+      easing: AUTHENTICATION_ANIMATE_DETAILS.easing,
+    });
+  }
+
+  private handleErrorMessage(checkedMessage: Message): void {
+    if (checkedMessage?.payload?.error) {
+      this.showErrorMessage(checkedMessage?.payload?.error);
+    }
+  }
 
   private handleMessageFromServer(checkedMessage: Message): void {
     const savedUser = this.storage.get(STORE_KEYS.CURRENT_USER);
@@ -122,7 +136,7 @@ class LoginPageModel implements PageInterface {
     if (checkedMessage?.type !== API_TYPES.ERROR) {
       this.handleSuccessMessage();
     } else if (checkedMessage?.id === this.loginFormModel.getMessageID()) {
-      // this.handleErrorMessage(checkedMessage);
+      this.handleErrorMessage(checkedMessage);
     }
   }
 

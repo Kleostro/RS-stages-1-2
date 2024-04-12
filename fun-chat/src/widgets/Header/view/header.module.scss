@@ -13,13 +13,15 @@
 .nameApp {
   font: var(--big-font);
   letter-spacing: 2px;
+  text-shadow: -10px 10px 20px;
   color: var(--white);
 }
 
 .userLogin {
   font: var(--second-font);
   letter-spacing: 2px;
-  color: var(--noble-black-300);
+  text-shadow: -10px 10px 20px;
+  color: var(--steam-green-500);
 }
 
 .logoutButton {
