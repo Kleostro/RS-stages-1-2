@@ -15,6 +15,7 @@ export const TAG_NAMES = {
   SPAN: 'span',
   DIV: 'div',
   SVG: 'svg',
+  A: 'a',
   I: 'i',
   P: 'p',
   UL: 'ul',

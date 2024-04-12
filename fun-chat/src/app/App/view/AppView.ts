@@ -16,7 +16,7 @@ class AppView {
   private createHTML(): HTMLDivElement {
     this.pagesContainer = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [APP_STYLES['site-wrapper']],
+      cssClasses: [APP_STYLES.siteWrapper],
     });
 
     return this.pagesContainer;

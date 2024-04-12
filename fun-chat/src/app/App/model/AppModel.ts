@@ -8,6 +8,7 @@ import AppView from '../view/AppView.ts';
 import HeaderModel from '../../../widgets/Header/model/HeaderModel.ts';
 import SocketModel from '../../../shared/Server/Socket/model/SocketModel.ts';
 import SessionStorageModel from '../../../shared/SessionStorage/model/SessionStorage.ts';
+import FooterModel from '../../../widgets/Footer/model/FooterModel.ts';
 
 class AppModel {
   private appView: AppView = new AppView();
@@ -20,7 +21,7 @@ class AppModel {
 
   constructor() {
     this.router.setPages(this.initPages());
-    this.serverApi.open().catch(() => {});
+    this.serverApi.open();
   }
 
   public getHTML(): HTMLDivElement {
@@ -41,6 +42,7 @@ class AppModel {
         [PAGES_IDS.ABOUT_PAGE]: aboutPage,
       }),
     );
+    root.append(new FooterModel().getHTML());
     return pages;
   }
 }
