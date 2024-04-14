@@ -51,14 +51,18 @@ const MEDIATOR_EVENTS = {
   SET_NEW_USER: "setNewUser",
   NEW_MESSAGE: "newMessage",
   LOG_IN: "logIn",
-  LOG_OUT: "logOut"
+  LOG_OUT: "logOut",
+  SOCKET_CONNECT: "socketConnect",
+  SOCKET_DISCONNECT: "socketDisconnect",
+  GET_ALL_AUTHENTICATED_USERS_REQUEST: "getAllAuthenticatedUsersRequest",
+  GET_ALL_AUTHENTICATED_USERS_RESPONSE: "getAllAuthenticatedUsersResponse"
 };
-const _MediatorModel = class _MediatorModel {
+const _EventMediatorModel = class _EventMediatorModel {
   constructor() {
     __publicField(this, "listeners", /* @__PURE__ */ new Map());
   }
   static getInstance() {
-    return _MediatorModel.mediator;
+    return _EventMediatorModel.mediator;
   }
   subscribe(eventName, listener) {
     if (this.listeners.has(eventName)) {
@@ -79,15 +83,20 @@ const _MediatorModel = class _MediatorModel {
   unsubscribe(eventName, listener) {
     if (this.listeners.has(eventName)) {
       const listeners = this.listeners.get(eventName);
-      const index2 = listeners == null ? void 0 : listeners.indexOf(listener);
-      if (index2 && index2 !== -1) {
+      const index2 = listeners == null ? void 0 : listeners.findIndex(
+        (l) => l.toString() === listener.toString()
+      );
+      if (index2 !== void 0 && index2 !== -1) {
         listeners == null ? void 0 : listeners.splice(index2, 1);
+        if (listeners) {
+          this.listeners.set(eventName, listeners);
+        }
       }
     }
   }
 };
-__publicField(_MediatorModel, "mediator", new _MediatorModel());
-let MediatorModel = _MediatorModel;
+__publicField(_EventMediatorModel, "mediator", new _EventMediatorModel());
+let EventMediatorModel = _EventMediatorModel;
 const TAG_NAMES = {
   MAIN: "main",
   HEADER: "header",
@@ -105,6 +114,7 @@ const TAG_NAMES = {
   SPAN: "span",
   DIV: "div",
   SVG: "svg",
+  A: "a",
   I: "i",
   P: "p",
   UL: "ul",
@@ -214,6 +224,22 @@ const PAGES_IDS = {
   MAIN_PAGE: "main",
   ABOUT_PAGE: "about"
 };
+const AUTHENTICATION_ANIMATE_PARAMS = [
+  { transform: "translateX(110%)" },
+  { transform: "translateX(-10%)" },
+  { transform: "translateX(-10%)" },
+  { transform: "translateX(-10%)", opacity: 1 },
+  { transform: "translate(-10%, -110%)", opacity: 0 }
+];
+const AUTHENTICATION_ANIMATE_DETAILS = {
+  params: AUTHENTICATION_ANIMATE_PARAMS,
+  duration: 5500,
+  easing: "cubic-bezier(0, 0.2, 0.58, 0.7)"
+};
+const ABOUT_INFO_TEXT = {
+  text: "This project was created for educational purposes.",
+  backButtonText: "Go back"
+};
 const STATE_FIELDS = {
   CURRENT_USER: "currentUser",
   CURRENT_AUTHORIZED_USERS: "currentAuthorizedUsers",
@@ -279,10 +305,125 @@ __publicField(_StoreModel, "listeners", /* @__PURE__ */ new Map());
 __publicField(_StoreModel, "rootReducer", rootReducer);
 __publicField(_StoreModel, "state", INITIAL_STATE);
 let StoreModel = _StoreModel;
+const USER_LIST_STYLES = {};
+class UserListView {
+  constructor() {
+    __publicField(this, "userList");
+    __publicField(this, "wrapper");
+    this.userList = this.createUserList();
+    this.wrapper = this.createHTML();
+  }
+  getHTML() {
+    return this.wrapper;
+  }
+  drawUser(userInfo) {
+    const user = createBaseElement({
+      tag: TAG_NAMES.LI,
+      cssClasses: [USER_LIST_STYLES.user],
+      innerContent: userInfo.login
+    });
+    this.userList.append(user);
+  }
+  clearUserList() {
+    this.userList.innerHTML = "";
+  }
+  createUserList() {
+    this.userList = createBaseElement({
+      tag: TAG_NAMES.UL,
+      cssClasses: [USER_LIST_STYLES.userList]
+    });
+    return this.userList;
+  }
+  createHTML() {
+    this.wrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [USER_LIST_STYLES.wrapper]
+    });
+    this.wrapper.append(this.userList);
+    return this.wrapper;
+  }
+}
+const isFromServerMessage = (message) => {
+  const isValidMessage = (msg) => typeof msg === "object" && msg !== null && "type" in msg && "id" in msg && "payload" in msg;
+  if (isValidMessage(message)) {
+    return message;
+  }
+  return null;
+};
+const ACTIONS = {
+  SET_CURRENT_USER: "setCurrentUser",
+  SET_CURRENT_AUTHORIZED_USERS: "setCurrentAuthorizedUsers",
+  SET_CURRENT_UNAUTHORIZED_USERS: "setCurrentUnauthorizedUsers",
+  SET_CURRENT_USER_DIALOGS: "setCurrentUserDialogs"
+};
+const setCurrentUser = (value) => ({
+  payload: value,
+  type: ACTIONS.SET_CURRENT_USER
+});
+const setCurrentAuthorizedUsers = (value) => ({
+  payload: value,
+  type: ACTIONS.SET_CURRENT_AUTHORIZED_USERS
+});
+class UserListModel {
+  constructor() {
+    __publicField(this, "view", new UserListView());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
+    this.subscribeToEventMediator();
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+  getActiveUsers() {
+    const requestMessage = {
+      id: "",
+      type: "USER_ACTIVE",
+      payload: null
+    };
+    this.eventMediator.notify(
+      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
+      requestMessage
+    );
+  }
+  drawActiveUsers(users) {
+    console.log(users);
+    this.view.clearUserList();
+    users.forEach((user) => {
+      this.view.drawUser(user);
+    });
+  }
+  saveCurrentActiveUsers(users) {
+    var _a;
+    const currentAuthUserLogin = (_a = StoreModel.getState().currentUser) == null ? void 0 : _a.login;
+    console.log(users, currentAuthUserLogin);
+    const copyUsers = [...users];
+    const currentUsers = copyUsers.filter(
+      (user) => user.login !== currentAuthUserLogin
+    );
+    StoreModel.dispatch(setCurrentAuthorizedUsers(currentUsers));
+    console.log(StoreModel.getState().currentAuthorizedUsers, currentUsers);
+    this.drawActiveUsers(currentUsers);
+  }
+  subscribeToEventMediator() {
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
+      (message) => {
+        const checkedMessage = isFromServerMessage(message);
+        if (checkedMessage) {
+          this.saveCurrentActiveUsers(checkedMessage.payload.users);
+        }
+      }
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.SET_NEW_USER,
+      this.getActiveUsers.bind(this)
+    );
+    return true;
+  }
+}
 class MainPageModel {
   constructor(parent, router) {
     __publicField(this, "router");
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     __publicField(this, "mainPageView");
     this.router = router;
     this.mainPageView = new MainPageView(parent);
@@ -293,9 +434,11 @@ class MainPageModel {
   }
   show() {
     this.mainPageView.getHTML().classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
   }
   hide() {
     this.mainPageView.getHTML().classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
   }
   switchPage(params) {
     if (params === PAGES_IDS.MAIN_PAGE) {
@@ -313,96 +456,15 @@ class MainPageModel {
       this.hide();
       this.switchPage(String(params));
     });
+    return true;
   }
   init() {
     this.hide();
     this.subscribeToMediator();
+    this.getHTML().append(new UserListModel().getHTML());
+    return true;
   }
 }
-const aboutPage = "_aboutPage_kebmh_1";
-const aboutPage_hidden = "_aboutPage_hidden_kebmh_5";
-const ABOUT_PAGE_STYLES = {
-  aboutPage,
-  aboutPage_hidden
-};
-let LoginPageView$1 = class LoginPageView {
-  constructor(parent) {
-    __publicField(this, "parent");
-    __publicField(this, "page");
-    this.parent = parent;
-    this.page = this.createHTML();
-  }
-  getHTML() {
-    return this.page;
-  }
-  createHTML() {
-    this.page = createBaseElement({
-      tag: TAG_NAMES.DIV,
-      cssClasses: [ABOUT_PAGE_STYLES.aboutPage]
-    });
-    this.parent.append(this.page);
-    return this.page;
-  }
-};
-class AboutPageModel {
-  constructor(parent) {
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
-    __publicField(this, "aboutPageView");
-    this.aboutPageView = new LoginPageView$1(parent);
-    this.init();
-  }
-  getHTML() {
-    return this.aboutPageView.getHTML();
-  }
-  visible() {
-    this.aboutPageView.getHTML().classList.remove(ABOUT_PAGE_STYLES.aboutPage_hidden);
-  }
-  hidden() {
-    this.aboutPageView.getHTML().classList.add(ABOUT_PAGE_STYLES.aboutPage_hidden);
-  }
-  subscribeToMediator() {
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
-      if (params === PAGES_IDS.ABOUT_PAGE) {
-        this.visible();
-      } else {
-        this.hidden();
-      }
-    });
-  }
-  init() {
-    this.subscribeToMediator();
-  }
-}
-const loginPage = "_loginPage_7wf9o_1";
-const loginPage_hidden = "_loginPage_hidden_7wf9o_6";
-const LOGIN_PAGE_STYLES = {
-  loginPage,
-  loginPage_hidden
-};
-class LoginPageView2 {
-  constructor(parent) {
-    __publicField(this, "parent");
-    __publicField(this, "page");
-    this.parent = parent;
-    this.page = this.createHTML();
-  }
-  getHTML() {
-    return this.page;
-  }
-  createHTML() {
-    this.page = createBaseElement({
-      tag: TAG_NAMES.DIV,
-      cssClasses: [LOGIN_PAGE_STYLES.loginPage]
-    });
-    this.parent.append(this.page);
-    return this.page;
-  }
-}
-const BUTTON_TYPES = {
-  SUBMIT: "submit",
-  RESET: "reset",
-  BUTTON: "button"
-};
 class ButtonView {
   constructor(params) {
     __publicField(this, "button");
@@ -439,6 +501,171 @@ class ButtonModel {
     this.view.getHTML().disabled = IS_DISABLED.ENABLED;
   }
 }
+const aboutPage = "_aboutPage_1eieo_1";
+const aboutPage_hidden = "_aboutPage_hidden_1eieo_7";
+const aboutText = "_aboutText_1eieo_11";
+const backButton = "_backButton_1eieo_18";
+const ABOUT_PAGE_STYLES = {
+  aboutPage,
+  aboutPage_hidden,
+  aboutText,
+  backButton
+};
+let LoginPageView$1 = class LoginPageView {
+  constructor(parent) {
+    __publicField(this, "parent");
+    __publicField(this, "aboutText");
+    __publicField(this, "backButton");
+    __publicField(this, "page");
+    this.parent = parent;
+    this.aboutText = this.createAboutText();
+    this.backButton = this.createBackButton();
+    this.page = this.createHTML();
+  }
+  getHTML() {
+    return this.page;
+  }
+  getBackButton() {
+    return this.backButton;
+  }
+  createAboutText() {
+    this.aboutText = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [ABOUT_PAGE_STYLES.aboutText],
+      innerContent: ABOUT_INFO_TEXT.text
+    });
+    return this.aboutText;
+  }
+  createBackButton() {
+    this.backButton = new ButtonModel({
+      text: ABOUT_INFO_TEXT.backButtonText,
+      classes: [ABOUT_PAGE_STYLES.backButton]
+    });
+    return this.backButton;
+  }
+  createHTML() {
+    this.page = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [ABOUT_PAGE_STYLES.aboutPage]
+    });
+    this.page.append(this.aboutText, this.backButton.getHTML());
+    this.parent.append(this.page);
+    return this.page;
+  }
+};
+class AboutPageModel {
+  constructor(parent, router) {
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
+    __publicField(this, "router");
+    __publicField(this, "view");
+    this.router = router;
+    this.view = new LoginPageView$1(parent);
+    this.init();
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+  show() {
+    this.view.getHTML().classList.remove(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
+  }
+  hide() {
+    this.view.getHTML().classList.add(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
+  }
+  subscribeToMediator() {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
+      if (params === PAGES_IDS.ABOUT_PAGE) {
+        this.show();
+      } else {
+        this.hide();
+      }
+    });
+    return true;
+  }
+  backButtonHandler() {
+    if (StoreModel.getState().currentUser) {
+      this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+    } else {
+      this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
+    }
+    this.hide();
+    return true;
+  }
+  setBackButtonHandler() {
+    const backButton2 = this.view.getBackButton().getHTML();
+    backButton2.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.backButtonHandler.bind(this)
+    );
+    return true;
+  }
+  init() {
+    this.subscribeToMediator();
+    this.setBackButtonHandler();
+    return true;
+  }
+}
+const loginPage = "_loginPage_uge6a_1";
+const loginPage_hidden = "_loginPage_hidden_uge6a_6";
+const authenticationWrapper = "_authenticationWrapper_uge6a_10";
+const authenticationMessage = "_authenticationMessage_uge6a_26";
+const LOGIN_PAGE_STYLES = {
+  loginPage,
+  loginPage_hidden,
+  authenticationWrapper,
+  authenticationMessage
+};
+class LoginPageView2 {
+  constructor(parent) {
+    __publicField(this, "parent");
+    __publicField(this, "authenticationMessage");
+    __publicField(this, "authenticationWrapper");
+    __publicField(this, "page");
+    this.parent = parent;
+    this.authenticationMessage = this.createAuthenticationMessage();
+    this.authenticationWrapper = this.createAuthenticationWrapper();
+    this.page = this.createHTML();
+  }
+  getHTML() {
+    return this.page;
+  }
+  getShowAuthenticationMessage() {
+    return this.authenticationMessage;
+  }
+  getShowAuthenticationWrapper() {
+    return this.authenticationWrapper;
+  }
+  createAuthenticationMessage() {
+    this.authenticationMessage = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [LOGIN_PAGE_STYLES.authenticationMessage]
+    });
+    return this.authenticationMessage;
+  }
+  createAuthenticationWrapper() {
+    this.authenticationWrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [LOGIN_PAGE_STYLES.authenticationWrapper]
+    });
+    this.authenticationWrapper.append(this.authenticationMessage);
+    return this.authenticationWrapper;
+  }
+  createHTML() {
+    this.page = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [LOGIN_PAGE_STYLES.loginPage]
+    });
+    this.page.append(this.authenticationWrapper);
+    this.parent.append(this.page);
+    return this.page;
+  }
+}
+const BUTTON_TYPES = {
+  SUBMIT: "submit",
+  RESET: "reset",
+  BUTTON: "button"
+};
 class InputFieldValidatorModel {
   constructor(validParams, isValid) {
     __publicField(this, "validParams");
@@ -636,12 +863,14 @@ class InputFieldModel {
       }
       this.isValid = false;
     }
+    return true;
   }
   setInputHandler() {
     const input = this.view.getInput().getHTML();
     input.addEventListener(EVENT_NAMES.INPUT, () => {
       this.inputHandler();
     });
+    return true;
   }
 }
 const LOGIN_INPUT_FIELD_PARAMS = {
@@ -770,8 +999,11 @@ const API_URL = "ws://127.0.0.1:4000";
 const API_TYPES = {
   USER_LOGIN: "USER_LOGIN",
   USER_LOGOUT: "USER_LOGOUT",
+  USER_ACTIVE: "USER_ACTIVE",
+  USER_INACTIVE: "USER_INACTIVE",
   ERROR: "ERROR"
 };
+const CHECK_INTERVAL = 5e3;
 const isKeyOfUser = (context, key) => Object.hasOwnProperty.call(context, key);
 class LoginFormModel {
   constructor() {
@@ -783,7 +1015,7 @@ class LoginFormModel {
     });
     __publicField(this, "inputFields", []);
     __publicField(this, "isValidInputFields", {});
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     this.init();
   }
   getHTML() {
@@ -802,6 +1034,7 @@ class LoginFormModel {
       this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
       this.switchSubmitFormButtonAccess();
     });
+    return true;
   }
   switchSubmitFormButtonAccess() {
     if (Object.values(this.isValidInputFields).every((value) => value)) {
@@ -809,6 +1042,7 @@ class LoginFormModel {
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
+    return true;
   }
   getFormData() {
     this.inputFields.forEach((inputField) => {
@@ -834,6 +1068,7 @@ class LoginFormModel {
       }
     };
     this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
+    return true;
   }
   setSubmitFormButtonHandler() {
     const submitFormButton = this.view.getSubmitFormButton().getHTML();
@@ -841,11 +1076,13 @@ class LoginFormModel {
       EVENT_NAMES.CLICK,
       this.submitFormButtonHandler.bind(this)
     );
+    return true;
   }
   setPreventDefaultToForm() {
     this.getHTML().addEventListener(EVENT_NAMES.SUBMIT, (event) => {
       event.preventDefault();
     });
+    return true;
   }
   init() {
     this.inputFields = this.view.getInputFields();
@@ -854,33 +1091,20 @@ class LoginFormModel {
     );
     this.setSubmitFormButtonHandler();
     this.setPreventDefaultToForm();
+    return true;
   }
 }
-const isFromServerMessage = (message) => {
-  const isValidMessage = (msg) => typeof msg === "object" && msg !== null && "type" in msg && "id" in msg && "payload" in msg;
-  if (isValidMessage(message)) {
-    return message;
-  }
-  return null;
+const STORE_KEYS = {
+  SS_NAME: "b3413f43-40a4-440c-80c0-6aa64b9b1240",
+  CURRENT_USER: "currentUser"
 };
-const ACTIONS = {
-  SET_CURRENT_USER: "setCurrentUser",
-  SET_CURRENT_AUTHORIZED_USERS: "setCurrentAuthorizedUsers",
-  SET_CURRENT_UNAUTHORIZED_USERS: "setCurrentUnauthorizedUsers",
-  SET_CURRENT_USER_DIALOGS: "setCurrentUserDialogs"
-};
-var STORE_KEYS = /* @__PURE__ */ ((STORE_KEYS2) => {
-  STORE_KEYS2["SS_NAME"] = "kleostro";
-  STORE_KEYS2["CURRENT_USER"] = "currentUser";
-  return STORE_KEYS2;
-})(STORE_KEYS || {});
 const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 class LoginPageModel {
   constructor(parent, router, storage) {
     __publicField(this, "loginPageView");
     __publicField(this, "router");
     __publicField(this, "storage");
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     __publicField(this, "loginFormModel", new LoginFormModel());
     this.loginPageView = new LoginPageView2(parent);
     this.router = router;
@@ -892,9 +1116,11 @@ class LoginPageModel {
   }
   show() {
     this.loginPageView.getHTML().classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
   }
   hide() {
     this.loginPageView.getHTML().classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
   }
   checkAuthorizedUser() {
     const currentUser = this.storage.get(STORE_KEYS.CURRENT_USER);
@@ -906,10 +1132,7 @@ class LoginPageModel {
           user: currentUser
         }
       };
-      StoreModel.dispatch({
-        type: ACTIONS.SET_CURRENT_USER,
-        payload: currentUser
-      });
+      StoreModel.dispatch(setCurrentUser(currentUser));
       this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
       return currentUser;
     }
@@ -923,37 +1146,49 @@ class LoginPageModel {
       } else {
         this.show();
       }
+    } else {
+      this.hide();
     }
     return true;
   }
   handleSuccessMessage() {
     const userData = this.loginFormModel.getUserData();
-    StoreModel.dispatch({
-      type: ACTIONS.SET_CURRENT_USER,
-      payload: userData
-    });
+    StoreModel.dispatch(setCurrentUser(userData));
     this.storage.add(STORE_KEYS.CURRENT_USER, JSON.stringify(userData));
     this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
     this.hide();
+    return true;
   }
-  // private handleErrorMessage(checkedMessage: Message): void {
-  //   console.error(checkedMessage?.payload?.error);
-  // }
+  showErrorMessage(error) {
+    const authenticationWrapper2 = this.loginPageView.getShowAuthenticationWrapper();
+    this.loginPageView.getShowAuthenticationMessage().textContent = error;
+    authenticationWrapper2.animate(AUTHENTICATION_ANIMATE_DETAILS.params, {
+      duration: AUTHENTICATION_ANIMATE_DETAILS.duration,
+      easing: AUTHENTICATION_ANIMATE_DETAILS.easing
+    });
+    return true;
+  }
+  handleErrorMessage(checkedMessage) {
+    var _a, _b;
+    if ((_a = checkedMessage == null ? void 0 : checkedMessage.payload) == null ? void 0 : _a.error) {
+      this.showErrorMessage((_b = checkedMessage == null ? void 0 : checkedMessage.payload) == null ? void 0 : _b.error);
+    }
+    return true;
+  }
   handleMessageFromServer(checkedMessage) {
     const savedUser = this.storage.get(STORE_KEYS.CURRENT_USER);
     if (savedUser && isUser(savedUser)) {
-      StoreModel.dispatch({
-        type: ACTIONS.SET_CURRENT_USER,
-        payload: savedUser
-      });
+      StoreModel.dispatch(setCurrentUser(savedUser));
       this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
       this.hide();
-      return;
+      return true;
     }
     if ((checkedMessage == null ? void 0 : checkedMessage.type) !== API_TYPES.ERROR) {
       this.handleSuccessMessage();
-    } else if ((checkedMessage == null ? void 0 : checkedMessage.id) === this.loginFormModel.getMessageID())
-      ;
+    } else if ((checkedMessage == null ? void 0 : checkedMessage.id) === this.loginFormModel.getMessageID()) {
+      this.handleErrorMessage(checkedMessage);
+    }
+    return true;
   }
   subscribeToMediator() {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
@@ -965,6 +1200,7 @@ class LoginPageModel {
         this.handleMessageFromServer(checkedMessage);
       }
     });
+    return true;
   }
   initPage() {
     this.checkAuthorizedUser();
@@ -972,6 +1208,7 @@ class LoginPageModel {
     this.hide();
     const loginFormHTML = this.loginFormModel.getHTML();
     this.getHTML().append(loginFormHTML);
+    return true;
   }
 }
 const ROUTER_DETAILS = {
@@ -983,12 +1220,12 @@ const ROUTER_DETAILS = {
 class RouterModel {
   constructor() {
     __publicField(this, "pages", /* @__PURE__ */ new Map());
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
       const currentPath = window.location.pathname.split(ROUTER_DETAILS.DEFAULT_SEGMENT).slice(
         ROUTER_DETAILS.PATH_SEGMENTS_TO_KEEP + ROUTER_DETAILS.NEXT_SEGMENT
       ).join(ROUTER_DETAILS.DEFAULT_SEGMENT);
-      this.navigateTo(currentPath);
+      this.handleRequest(currentPath);
       this.eventMediator.notify(
         MEDIATOR_EVENTS.CHANGE_PAGE,
         currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join()
@@ -1027,7 +1264,10 @@ class RouterModel {
     this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join());
   }
 }
-const APP_STYLES = {};
+const siteWrapper = "_siteWrapper_wr5jx_1";
+const APP_STYLES = {
+  siteWrapper
+};
 class AppView {
   constructor() {
     __publicField(this, "pagesContainer");
@@ -1039,31 +1279,36 @@ class AppView {
   createHTML() {
     this.pagesContainer = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [APP_STYLES["site-wrapper"]]
+      cssClasses: [APP_STYLES.siteWrapper]
     });
     return this.pagesContainer;
   }
 }
 const APP_NAME = "Fun Chat";
 const LOGOUT_BUTTON_TEXT = "Logout";
-const header = "_header_u0nmf_1";
-const nameApp = "_nameApp_u0nmf_13";
-const userLogin = "_userLogin_u0nmf_19";
-const logoutButton = "_logoutButton_u0nmf_25";
+const ABOUT_BUTTON_TEXT = "About";
+const header = "_header_lfj9q_1";
+const nameApp = "_nameApp_lfj9q_12";
+const userLogin = "_userLogin_lfj9q_20";
+const logoutButton = "_logoutButton_lfj9q_28";
+const aboutButton = "_aboutButton_lfj9q_29";
 const HEADER_STYLES = {
   header,
   nameApp,
   userLogin,
-  logoutButton
+  logoutButton,
+  aboutButton
 };
 class HeaderView {
   constructor() {
     __publicField(this, "nameApp");
     __publicField(this, "userLogin");
+    __publicField(this, "aboutButton");
     __publicField(this, "logoutButton");
     __publicField(this, "header");
     this.nameApp = this.createNameApp();
     this.userLogin = this.createUserLogin();
+    this.aboutButton = this.createAboutButton();
     this.logoutButton = this.createLogoutButton();
     this.header = this.createHTML();
   }
@@ -1075,6 +1320,9 @@ class HeaderView {
   }
   getLogoutButton() {
     return this.logoutButton;
+  }
+  getAboutButton() {
+    return this.aboutButton;
   }
   createNameApp() {
     this.nameApp = createBaseElement({
@@ -1090,6 +1338,13 @@ class HeaderView {
       cssClasses: [HEADER_STYLES.userLogin]
     });
     return this.userLogin;
+  }
+  createAboutButton() {
+    this.aboutButton = new ButtonModel({
+      classes: [HEADER_STYLES.aboutButton],
+      text: ABOUT_BUTTON_TEXT
+    });
+    return this.aboutButton;
   }
   createLogoutButton() {
     this.logoutButton = new ButtonModel({
@@ -1107,6 +1362,7 @@ class HeaderView {
     this.header.append(
       this.nameApp,
       this.userLogin,
+      this.aboutButton.getHTML(),
       this.logoutButton.getHTML()
     );
     return this.header;
@@ -1115,7 +1371,7 @@ class HeaderView {
 class HeaderModel {
   constructor(router, storage) {
     __publicField(this, "view", new HeaderView());
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     __publicField(this, "router");
     __publicField(this, "storage");
     this.router = router;
@@ -1139,22 +1395,30 @@ class HeaderModel {
     };
     this.eventMediator.notify(MEDIATOR_EVENTS.LOG_OUT, logOutData);
     this.storage.remove(STORE_KEYS.CURRENT_USER);
-    StoreModel.dispatch({ type: ACTIONS.SET_CURRENT_USER, payload: null });
+    StoreModel.dispatch(setCurrentUser(null));
     this.view.getLogoutButton().setDisabled();
     this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
+    return true;
   }
   setLogoutButtonHandler() {
     const logoutButton2 = this.view.getLogoutButton().getHTML();
+    const aboutButton2 = this.view.getAboutButton().getHTML();
     logoutButton2.addEventListener(
       EVENT_NAMES.CLICK,
       this.logoutButtonHandler.bind(this)
     );
+    aboutButton2.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.router.navigateTo.bind(this.router, PAGES_IDS.ABOUT_PAGE)
+    );
+    return true;
   }
   changeCurrentUserLogin() {
     var _a;
     const userLogin2 = this.view.getUserLogin();
     userLogin2.textContent = ((_a = StoreModel.getState().currentUser) == null ? void 0 : _a.login) || "";
     this.view.getLogoutButton().setEnabled();
+    return true;
   }
   init() {
     this.setLogoutButtonHandler();
@@ -1162,13 +1426,14 @@ class HeaderModel {
       STATE_FIELDS.CURRENT_USER,
       this.changeCurrentUserLogin.bind(this)
     );
+    return true;
   }
 }
 class ClientApiModel {
   constructor(webSocket, isOpen) {
     __publicField(this, "webSocket");
     __publicField(this, "isOpen");
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     this.webSocket = webSocket;
     this.isOpen = isOpen;
     this.subscribeToEventMediator();
@@ -1177,22 +1442,37 @@ class ClientApiModel {
     return this.isOpen;
   }
   sendMessage(message) {
-    if (!this.isOpen) {
-      return false;
-    }
     this.webSocket.send(JSON.stringify(message));
     return true;
   }
   subscribeToEventMediator() {
-    if (!this.isOpen) {
-      return false;
-    }
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.CREATE_NEW_USER, (message) => {
+    const createNewUserListener = (message) => {
       this.sendMessage(message);
-    });
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT, (message) => {
-      this.sendMessage(message);
-    });
+    };
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      createNewUserListener
+    );
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.LOG_OUT,
+      createNewUserListener
+    );
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
+      createNewUserListener
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      createNewUserListener
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_OUT,
+      createNewUserListener
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
+      createNewUserListener
+    );
     return true;
   }
 }
@@ -1200,7 +1480,7 @@ class ServerApiModel {
   constructor(webSocket, isOpen) {
     __publicField(this, "webSocket");
     __publicField(this, "isOpen");
-    __publicField(this, "eventMediator", MediatorModel.getInstance());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     this.webSocket = webSocket;
     this.isOpen = isOpen;
     this.getMessage();
@@ -1209,9 +1489,6 @@ class ServerApiModel {
     return this.isOpen;
   }
   getMessage() {
-    if (!this.isOpen) {
-      return false;
-    }
     this.webSocket.addEventListener(EVENT_NAMES.MESSAGE, ({ data }) => {
       const message = JSON.parse(String(data));
       const checkedMessage = isFromServerMessage(message);
@@ -1231,6 +1508,13 @@ class ServerApiModel {
         this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
         return false;
       }
+      case API_TYPES.USER_ACTIVE: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
+          message
+        );
+        return true;
+      }
       default: {
         return null;
       }
@@ -1240,34 +1524,64 @@ class ServerApiModel {
 class SocketModel {
   constructor() {
     __publicField(this, "webSocket", new WebSocket(API_URL));
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     __publicField(this, "isOpen", false);
-  }
-  open() {
-    return new Promise((resolve) => {
-      this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
-        this.isOpen = true;
-        this.init();
-        resolve(true);
-      });
-    });
+    this.connectWebSocket();
   }
   isWorks() {
     return this.isOpen;
   }
-  close() {
+  connectWebSocket() {
+    let reconnectTimeout;
+    this.webSocket = new WebSocket(API_URL);
+    const reconnect = () => {
+      reconnectTimeout = setTimeout(() => {
+        this.connectWebSocket();
+      }, CHECK_INTERVAL);
+    };
+    this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
+      var _a, _b;
+      this.isOpen = true;
+      this.init();
+      clearTimeout(reconnectTimeout);
+      const authUserLogin = (_a = StoreModel.getState().currentUser) == null ? void 0 : _a.login;
+      const authUserPassword = (_b = StoreModel.getState().currentUser) == null ? void 0 : _b.password;
+      if (authUserLogin && authUserPassword) {
+        const userData = {
+          id: null,
+          type: API_TYPES.USER_LOGIN,
+          payload: {
+            user: {
+              login: authUserLogin,
+              password: authUserPassword
+            }
+          }
+        };
+        this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
+      }
+      this.eventMediator.notify(MEDIATOR_EVENTS.SOCKET_CONNECT, null);
+    });
     this.webSocket.addEventListener(EVENT_NAMES.CLOSE, () => {
       this.isOpen = false;
+      this.eventMediator.notify(MEDIATOR_EVENTS.SOCKET_DISCONNECT, null);
+      reconnect();
     });
     return this.isOpen;
   }
   init() {
-    const serverApi = new ServerApiModel(this.webSocket, this.isOpen);
     const clientApi = new ClientApiModel(this.webSocket, this.isOpen);
+    const serverApi = new ServerApiModel(this.webSocket, this.isOpen);
     clientApi.isWorks();
     serverApi.isWorks();
     return this.isOpen;
   }
 }
+const isSessionStorageData = (data) => {
+  if (typeof data === "object" && data !== null) {
+    return true;
+  }
+  return false;
+};
 class SessionStorageModel {
   constructor() {
     __publicField(this, "storage");
@@ -1275,7 +1589,8 @@ class SessionStorageModel {
   }
   get(key) {
     if (key in this.storage) {
-      const result = JSON.parse(this.storage[key]);
+      const data = this.storage[key];
+      const result = JSON.parse(data);
       return result;
     }
     return null;
@@ -1306,7 +1621,10 @@ class SessionStorageModel {
   init() {
     const storedData = sessionStorage.getItem(STORE_KEYS.SS_NAME);
     if (storedData) {
-      this.storage = JSON.parse(storedData);
+      const parsedData = JSON.parse(storedData);
+      if (isSessionStorageData(parsedData)) {
+        this.storage = parsedData;
+      }
     } else {
       sessionStorage.setItem(STORE_KEYS.SS_NAME, "{}");
       this.storage = this.init();
@@ -1314,15 +1632,212 @@ class SessionStorageModel {
     return this.storage;
   }
 }
+const createSVGUse = (id) => {
+  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", `#${id}`);
+  return use;
+};
+const LINK_ATTRIBUTES = {
+  TARGET_BLANK: "_blank",
+  RS_HREF: "https://rs.school/",
+  GITHUB_HREF: "https://github.com/kleostro"
+};
+const FOOTER_SVG_DETAILS = {
+  SVG_URL: "http://www.w3.org/2000/svg",
+  RS_ID: "rsLogo",
+  GITHUB_ID: "githubLogo"
+};
+const FOOTER_YEAR = "2024";
+const footer = "_footer_16ynr_1";
+const rsLink = "_rsLink_16ynr_13";
+const githubLink = "_githubLink_16ynr_14";
+const appYear = "_appYear_16ynr_59";
+const FOOTER_STYLES = {
+  footer,
+  rsLink,
+  githubLink,
+  appYear
+};
+class FooterView {
+  constructor() {
+    __publicField(this, "appYear");
+    __publicField(this, "githubLogo");
+    __publicField(this, "githubLink");
+    __publicField(this, "rsLogo");
+    __publicField(this, "rsLink");
+    __publicField(this, "footer");
+    this.appYear = this.createAppYear();
+    this.githubLogo = this.createGithubLogo();
+    this.githubLink = this.createGithubLink();
+    this.rsLogo = this.createRSLogo();
+    this.rsLink = this.createRSLink();
+    this.footer = this.createHTML();
+  }
+  getHTML() {
+    return this.footer;
+  }
+  createAppYear() {
+    this.appYear = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [FOOTER_STYLES.appYear],
+      innerContent: FOOTER_YEAR
+    });
+    return this.appYear;
+  }
+  createGithubLogo() {
+    this.githubLogo = document.createElementNS(
+      FOOTER_SVG_DETAILS.SVG_URL,
+      TAG_NAMES.SVG
+    );
+    this.githubLogo.append(createSVGUse(FOOTER_SVG_DETAILS.GITHUB_ID));
+    return this.githubLogo;
+  }
+  createGithubLink() {
+    this.githubLink = createBaseElement({
+      tag: TAG_NAMES.A,
+      cssClasses: [FOOTER_STYLES.githubLink],
+      attributes: {
+        href: LINK_ATTRIBUTES.GITHUB_HREF,
+        target: LINK_ATTRIBUTES.TARGET_BLANK
+      }
+    });
+    this.githubLink.append(this.githubLogo);
+    return this.githubLink;
+  }
+  createRSLogo() {
+    this.rsLogo = document.createElementNS(
+      FOOTER_SVG_DETAILS.SVG_URL,
+      TAG_NAMES.SVG
+    );
+    this.rsLogo.append(createSVGUse(FOOTER_SVG_DETAILS.RS_ID));
+    return this.rsLogo;
+  }
+  createRSLink() {
+    this.rsLink = createBaseElement({
+      tag: TAG_NAMES.A,
+      cssClasses: [FOOTER_STYLES.rsLink],
+      attributes: {
+        href: LINK_ATTRIBUTES.RS_HREF,
+        target: LINK_ATTRIBUTES.TARGET_BLANK
+      }
+    });
+    this.rsLink.append(this.rsLogo);
+    return this.rsLink;
+  }
+  createHTML() {
+    this.footer = createBaseElement({
+      tag: TAG_NAMES.FOOTER,
+      cssClasses: [FOOTER_STYLES.footer]
+    });
+    this.footer.append(this.rsLink, this.githubLink, this.appYear);
+    return this.footer;
+  }
+}
+class FooterModel {
+  constructor() {
+    __publicField(this, "view", new FooterView());
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+}
+const modal = "_modal_vwm8q_1";
+const modal_hidden = "_modal_hidden_vwm8q_11";
+const modalOverlay = "_modalOverlay_vwm8q_16";
+const modalOverlay_hidden = "_modalOverlay_hidden_vwm8q_27";
+const modalContent = "_modalContent_vwm8q_32";
+const modalContent_hidden = "_modalContent_hidden_vwm8q_48";
+const MODAL_STYLES = {
+  modal,
+  modal_hidden,
+  modalOverlay,
+  modalOverlay_hidden,
+  modalContent,
+  modalContent_hidden
+};
+class ModalView {
+  constructor() {
+    __publicField(this, "modalContent");
+    __publicField(this, "modalOverlay");
+    __publicField(this, "modal");
+    this.modalContent = this.createModalContent();
+    this.modalOverlay = this.createModalOverlay();
+    this.modal = this.createHTML();
+  }
+  getHTML() {
+    return this.modal;
+  }
+  getModalOverlay() {
+    return this.modalOverlay;
+  }
+  getModalContent() {
+    return this.modalContent;
+  }
+  createModalContent() {
+    this.modalContent = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [MODAL_STYLES.modalContent]
+    });
+    return this.modalContent;
+  }
+  createModalOverlay() {
+    this.modalOverlay = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [MODAL_STYLES.modalOverlay]
+    });
+    return this.modalOverlay;
+  }
+  createHTML() {
+    this.modal = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [MODAL_STYLES.modal, MODAL_STYLES.modal_hidden]
+    });
+    this.modalOverlay.append(this.modalContent);
+    this.modal.append(this.modalOverlay);
+    return this.modal;
+  }
+}
+class ModalModel {
+  constructor() {
+    __publicField(this, "view", new ModalView());
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+  setModalText(text) {
+    this.view.getModalContent().textContent = text;
+  }
+  show() {
+    const modal2 = this.getHTML();
+    const modalOverlay2 = this.view.getModalOverlay();
+    const modalContent2 = this.view.getModalContent();
+    modal2.classList.remove(MODAL_STYLES.modal_hidden);
+    modalOverlay2.classList.remove(MODAL_STYLES.modalOverlay_hidden);
+    modalContent2.classList.remove(MODAL_STYLES.modalContent_hidden);
+    document.body.classList.add("stop-scroll");
+  }
+  hide() {
+    const modal2 = this.getHTML();
+    const modalOverlay2 = this.view.getModalOverlay();
+    const modalContent2 = this.view.getModalContent();
+    modal2.classList.add(MODAL_STYLES.modal_hidden);
+    modalOverlay2.classList.add(MODAL_STYLES.modalOverlay_hidden);
+    modalContent2.classList.add(MODAL_STYLES.modalContent_hidden);
+    document.body.classList.remove("stop-scroll");
+  }
+}
+const SOCKET_MESSAGE = "Connecting to the server...";
 class AppModel {
   constructor() {
     __publicField(this, "appView", new AppView());
     __publicField(this, "storage", new SessionStorageModel());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     __publicField(this, "serverApi", new SocketModel());
     __publicField(this, "router", new RouterModel());
+    __publicField(this, "modal", new ModalModel());
     this.router.setPages(this.initPages());
-    this.serverApi.open().catch(() => {
-    });
+    this.subscribeToEvents();
+    this.serverApi.isWorks();
   }
   getHTML() {
     return this.appView.getHTML();
@@ -1331,20 +1846,28 @@ class AppModel {
     const root = this.getHTML();
     root.prepend(new HeaderModel(this.router, this.storage).getHTML());
     const loginPage2 = new LoginPageModel(root, this.router, this.storage);
-    const mainPage2 = new MainPageModel(root, this.router);
-    const aboutPage2 = new AboutPageModel(root);
     const pages = new Map(
       Object.entries({
         [PAGES_IDS.DEFAULT_PAGE]: loginPage2,
         [PAGES_IDS.LOGIN_PAGE]: loginPage2,
-        [PAGES_IDS.MAIN_PAGE]: mainPage2,
-        [PAGES_IDS.ABOUT_PAGE]: aboutPage2
+        [PAGES_IDS.MAIN_PAGE]: new MainPageModel(root, this.router),
+        [PAGES_IDS.ABOUT_PAGE]: new AboutPageModel(root, this.router)
       })
     );
+    root.append(new FooterModel().getHTML(), this.modal.getHTML());
     return pages;
+  }
+  subscribeToEvents() {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_CONNECT, () => {
+      this.modal.hide();
+    });
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_DISCONNECT, () => {
+      this.modal.show();
+      this.modal.setModalText(SOCKET_MESSAGE);
+    });
   }
 }
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-497fd511.js.map
+//# sourceMappingURL=main-da4bdb94.js.map
