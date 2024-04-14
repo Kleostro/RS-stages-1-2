@@ -1,12 +1,12 @@
-import MEDIATOR_EVENTS from '../../../Mediator/types/enums.ts';
-import MediatorModel from '../../../Mediator/model/MediatorModel.ts';
+import MEDIATOR_EVENTS from '../../../EventMediator/types/enums.ts';
+import EventMediatorModel from '../../../EventMediator/model/EventMediatorModel.ts';
 
 class ClientApiModel {
   private webSocket: WebSocket;
 
   private isOpen: boolean;
 
-  private eventMediator = MediatorModel.getInstance();
+  private eventMediator = EventMediatorModel.getInstance();
 
   constructor(webSocket: WebSocket, isOpen: boolean) {
     this.webSocket = webSocket;
@@ -19,26 +19,35 @@ class ClientApiModel {
   }
 
   private sendMessage(message: unknown): boolean {
-    if (!this.isOpen) {
-      return false;
-    }
-
     this.webSocket.send(JSON.stringify(message));
     return true;
   }
 
   private subscribeToEventMediator(): boolean {
-    if (!this.isOpen) {
-      return false;
-    }
-
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.CREATE_NEW_USER, (message) => {
+    const createNewUserListener = (message: unknown): void => {
       this.sendMessage(message);
-    });
+    };
 
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT, (message) => {
-      this.sendMessage(message);
-    });
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      createNewUserListener,
+    );
+
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.LOG_OUT,
+      createNewUserListener,
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      createNewUserListener,
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_OUT,
+      createNewUserListener,
+    );
+
     return true;
   }
 }

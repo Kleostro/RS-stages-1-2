@@ -1,5 +1,5 @@
-import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
-import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
+import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
+import MediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import MainPageView from '../view/MainPageView.ts';
 import MAIN_PAGE_STYLES from '../view/mainPage.module.scss';

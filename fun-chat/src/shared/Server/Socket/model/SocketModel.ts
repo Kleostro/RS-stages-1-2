@@ -1,31 +1,41 @@
+import MEDIATOR_EVENTS from '../../../EventMediator/types/enums.ts';
+import EventMediatorModel from '../../../EventMediator/model/EventMediatorModel.ts';
 import { EVENT_NAMES } from '../../../types/enums.ts';
 import ClientApiModel from '../../ClientApi/model/ClientApiModel.ts';
 import ServerApiModel from '../../ServerApi/model/ServerApiModel.ts';
-import API_URL from '../../ServerApi/types/enums.ts';
+import API_URL, { CHECK_INTERVAL } from '../../ServerApi/types/enums.ts';
 
 class SocketModel {
   private webSocket = new WebSocket(API_URL);
 
+  private eventMediator = EventMediatorModel.getInstance();
+
   private isOpen = false;
 
-  public open(): boolean {
-    this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
-      this.isOpen = true;
-      this.init();
-    });
-    return this.isOpen;
+  constructor() {
+    this.connectWebSocket();
   }
 
   public isWorks(): boolean {
     return this.isOpen;
   }
 
-  public close(): boolean {
-    this.webSocket.addEventListener(EVENT_NAMES.CLOSE, () => {
-      this.isOpen = false;
+  private connectWebSocket(): void {
+    this.webSocket = new WebSocket(API_URL);
+
+    this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
+      this.isOpen = true;
+      this.init();
+      this.eventMediator.notify(MEDIATOR_EVENTS.SOCKET_CONNECT, null);
     });
 
-    return this.isOpen;
+    this.webSocket.addEventListener(EVENT_NAMES.CLOSE, () => {
+      this.isOpen = false;
+      this.eventMediator.notify(MEDIATOR_EVENTS.SOCKET_DISCONNECT, null);
+      setTimeout(() => {
+        this.connectWebSocket();
+      }, CHECK_INTERVAL);
+    });
   }
 
   private init(): boolean {

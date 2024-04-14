@@ -5,6 +5,8 @@ const MEDIATOR_EVENTS = {
   NEW_MESSAGE: 'newMessage',
   LOG_IN: 'logIn',
   LOG_OUT: 'logOut',
+  SOCKET_CONNECT: 'socketConnect',
+  SOCKET_DISCONNECT: 'socketDisconnect',
 } as const;
 
 export default MEDIATOR_EVENTS;

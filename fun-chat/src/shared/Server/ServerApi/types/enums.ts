@@ -6,4 +6,6 @@ export const API_TYPES = {
   ERROR: 'ERROR',
 } as const;
 
+export const CHECK_INTERVAL = 5000;
+
 export default API_URL;

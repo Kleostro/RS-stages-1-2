@@ -1,8 +1,8 @@
-import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
+import MediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import AboutPageView from '../view/AboutPageView.ts';
 import ABOUT_PAGE_STYLES from '../view/aboutPage.module.scss';
-import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
+import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 import PAGES_IDS from '../../types/enums.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import type RouterModel from '../../../app/Router/model/RouterModel.ts';

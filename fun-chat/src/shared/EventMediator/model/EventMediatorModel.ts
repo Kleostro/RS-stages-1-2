@@ -1,12 +1,12 @@
 import type ListenerCallback from '../types/types.ts';
 
-class MediatorModel<T> {
-  private static mediator = new MediatorModel();
+class EventMediatorModel<T> {
+  private static mediator = new EventMediatorModel();
 
   private listeners: Map<string, Array<ListenerCallback<T>>> = new Map();
 
-  public static getInstance(): MediatorModel<unknown> {
-    return MediatorModel.mediator;
+  public static getInstance(): EventMediatorModel<unknown> {
+    return EventMediatorModel.mediator;
   }
 
   public subscribe(eventName: string, listener: ListenerCallback<T>): void {
@@ -30,13 +30,19 @@ class MediatorModel<T> {
   public unsubscribe(eventName: string, listener: ListenerCallback<T>): void {
     if (this.listeners.has(eventName)) {
       const listeners = this.listeners.get(eventName);
-      const index = listeners?.indexOf(listener);
+      const index = listeners?.findIndex(
+        (l) => l.toString() === listener.toString(),
+      );
 
-      if (index && index !== -1) {
+      if (index !== undefined && index !== -1) {
         listeners?.splice(index, 1);
+
+        if (listeners) {
+          this.listeners.set(eventName, listeners);
+        }
       }
     }
   }
 }
 
-export default MediatorModel;
+export default EventMediatorModel;

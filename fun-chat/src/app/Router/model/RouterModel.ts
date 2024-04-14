@@ -2,8 +2,8 @@ import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import PAGES_IDS from '../../../pages/types/enums.ts';
 import type PageInterface from '../../../pages/types/interfaces.ts';
 import ROUTER_DETAILS from '../types/enums.ts';
-import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
-import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
+import MediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
+import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 
 class RouterModel {
   private pages: Map<string, PageInterface> = new Map();

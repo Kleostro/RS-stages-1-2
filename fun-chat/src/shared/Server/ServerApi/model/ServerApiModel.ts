@@ -1,5 +1,5 @@
-import MEDIATOR_EVENTS from '../../../Mediator/types/enums.ts';
-import MediatorModel from '../../../Mediator/model/MediatorModel.ts';
+import MEDIATOR_EVENTS from '../../../EventMediator/types/enums.ts';
+import EventMediatorModel from '../../../EventMediator/model/EventMediatorModel.ts';
 import { EVENT_NAMES } from '../../../types/enums.ts';
 import { API_TYPES } from '../types/enums.ts';
 import type { Message } from '../../../../utils/isFromServerMessage.ts';
@@ -10,7 +10,7 @@ class ServerApiModel {
 
   private isOpen: boolean;
 
-  private eventMediator = MediatorModel.getInstance();
+  private eventMediator = EventMediatorModel.getInstance();
 
   constructor(webSocket: WebSocket, isOpen: boolean) {
     this.webSocket = webSocket;
@@ -23,10 +23,6 @@ class ServerApiModel {
   }
 
   private getMessage(): boolean {
-    if (!this.isOpen) {
-      return false;
-    }
-
     this.webSocket.addEventListener(EVENT_NAMES.MESSAGE, ({ data }) => {
       const message: unknown = JSON.parse(String(data));
       const checkedMessage = isFromServerMessage(message);

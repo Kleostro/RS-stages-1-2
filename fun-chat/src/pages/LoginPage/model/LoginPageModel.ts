@@ -1,6 +1,5 @@
-import MEDIATOR_EVENTS from '../../../shared/Mediator/types/enums.ts';
-import MediatorModel from '../../../shared/Mediator/model/MediatorModel.ts';
-
+import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
+import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import LoginPageView from '../view/LoginPageView.ts';
 import LOGIN_PAGE_STYLES from '../view/loginPage.module.scss';
@@ -13,12 +12,12 @@ import type RouterModel from '../../../app/Router/model/RouterModel.ts';
 import type { Message } from '../../../utils/isFromServerMessage.ts';
 import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
-import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 import type SessionStorageModel from '../../../shared/SessionStorage/model/SessionStorage.ts';
 import STORE_KEYS from '../../../shared/SessionStorage/types/enums.ts';
 import isUser from '../../../utils/isUser.ts';
 import type { User } from '../../../shared/Store/initialData.ts';
 import type LoginUser from '../../../shared/Server/ServerApi/types/interfaces.ts';
+import { setCurrentUser } from '../../../shared/Store/actions/actions.ts';
 
 class LoginPageModel implements PageInterface {
   private loginPageView: LoginPageView;
@@ -27,7 +26,7 @@ class LoginPageModel implements PageInterface {
 
   private storage: SessionStorageModel;
 
-  private eventMediator = MediatorModel.getInstance();
+  private eventMediator = EventMediatorModel.getInstance();
 
   private loginFormModel = new LoginFormModel();
 
@@ -70,10 +69,7 @@ class LoginPageModel implements PageInterface {
         },
       };
 
-      StoreModel.dispatch({
-        type: ACTIONS.SET_CURRENT_USER,
-        payload: currentUser,
-      });
+      StoreModel.dispatch(setCurrentUser(currentUser));
       this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
       return currentUser;
     }
@@ -98,10 +94,7 @@ class LoginPageModel implements PageInterface {
 
   private handleSuccessMessage(): void {
     const userData = this.loginFormModel.getUserData();
-    StoreModel.dispatch({
-      type: ACTIONS.SET_CURRENT_USER,
-      payload: userData,
-    });
+    StoreModel.dispatch(setCurrentUser(userData));
     this.storage.add(STORE_KEYS.CURRENT_USER, JSON.stringify(userData));
     this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
     this.hide();
@@ -126,10 +119,7 @@ class LoginPageModel implements PageInterface {
   private handleMessageFromServer(checkedMessage: Message): void {
     const savedUser = this.storage.get(STORE_KEYS.CURRENT_USER);
     if (savedUser && isUser(savedUser)) {
-      StoreModel.dispatch({
-        type: ACTIONS.SET_CURRENT_USER,
-        payload: savedUser,
-      });
+      StoreModel.dispatch(setCurrentUser(savedUser));
       this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
       this.hide();
       return;
