@@ -240,12 +240,6 @@ const ABOUT_INFO_TEXT = {
   text: "This project was created for educational purposes.",
   backButtonText: "Go back"
 };
-const STATE_FIELDS = {
-  CURRENT_USER: "currentUser",
-  CURRENT_AUTHORIZED_USERS: "currentAuthorizedUsers",
-  CURRENT_UNAUTHORIZED_USERS: "currentUnauthorizedUsers",
-  CURRENT_USER_DIALOGS: "currentUserDialogs"
-};
 const INITIAL_STATE = {
   currentUser: null,
   currentAuthorizedUsers: [],
@@ -282,8 +276,10 @@ const _StoreModel = class _StoreModel {
   static dispatch(action) {
     _StoreModel.state = _StoreModel.rootReducer(_StoreModel.state, action);
     _StoreModel.listeners.forEach((_, key) => {
-      if (key in _StoreModel.state) {
+      console.log(action, key);
+      if (key === action.type) {
         const currentListener = _StoreModel.listeners.get(key);
+        console.log(currentListener);
         if (currentListener) {
           currentListener();
         }
@@ -1423,7 +1419,7 @@ class HeaderModel {
   init() {
     this.setLogoutButtonHandler();
     StoreModel.subscribe(
-      STATE_FIELDS.CURRENT_USER,
+      ACTIONS.SET_CURRENT_USER,
       this.changeCurrentUserLogin.bind(this)
     );
     return true;
@@ -1870,4 +1866,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-da4bdb94.js.map
+//# sourceMappingURL=main-4bd3962a.js.map
