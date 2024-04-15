@@ -2,7 +2,7 @@ import LoginFormView from '../view/LoginFormView.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import type InputFieldModel from '../../../entities/InputField/model/InputFieldModel.ts';
 import type { User } from '../../../shared/Store/initialData.ts';
-import MediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
+import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 import type LoginUser from '../../../shared/Server/ServerApi/types/interfaces.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
@@ -16,13 +16,14 @@ class LoginFormModel {
   private userData: User = {
     login: '',
     password: '',
+    isLogined: '',
   };
 
   private inputFields: InputFieldModel[] = [];
 
   private isValidInputFields: Record<string, boolean> = {};
 
-  private eventMediator = MediatorModel.getInstance();
+  private eventMediator = EventMediatorModel.getInstance();
 
   constructor() {
     this.init();
@@ -40,21 +41,24 @@ class LoginFormModel {
     return this.userData;
   }
 
-  private setInputFieldHandlers(inputField: InputFieldModel): void {
+  private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
     this.isValidInputFields[inputHTML.id] = false;
     inputHTML.addEventListener(EVENT_NAMES.INPUT, () => {
       this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
       this.switchSubmitFormButtonAccess();
     });
+    return true;
   }
 
-  private switchSubmitFormButtonAccess(): void {
+  private switchSubmitFormButtonAccess(): boolean {
     if (Object.values(this.isValidInputFields).every((value) => value)) {
       this.view.getSubmitFormButton().setEnabled();
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
+
+    return true;
   }
 
   private getFormData(): User {
@@ -75,7 +79,7 @@ class LoginFormModel {
     return this.userData;
   }
 
-  private submitFormButtonHandler(): void {
+  private submitFormButtonHandler(): boolean {
     this.messageID = crypto.randomUUID();
     const userData: LoginUser = {
       id: this.messageID,
@@ -85,30 +89,37 @@ class LoginFormModel {
       },
     };
 
-    this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
+    this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_REQUEST, userData);
+    return true;
   }
 
-  private setSubmitFormButtonHandler(): void {
+  private setSubmitFormButtonHandler(): boolean {
     const submitFormButton = this.view.getSubmitFormButton().getHTML();
     submitFormButton.addEventListener(
       EVENT_NAMES.CLICK,
       this.submitFormButtonHandler.bind(this),
     );
+
+    return true;
   }
 
-  private setPreventDefaultToForm(): void {
+  private setPreventDefaultToForm(): boolean {
     this.getHTML().addEventListener(EVENT_NAMES.SUBMIT, (event) => {
       event.preventDefault();
     });
+
+    return true;
   }
 
-  private init(): void {
+  private init(): boolean {
     this.inputFields = this.view.getInputFields();
     this.inputFields.forEach((inputField) =>
       this.setInputFieldHandlers(inputField),
     );
     this.setSubmitFormButtonHandler();
     this.setPreventDefaultToForm();
+
+    return true;
   }
 }
 

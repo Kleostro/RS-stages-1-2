@@ -2,6 +2,7 @@ import { INITIAL_STATE } from '../initialData.ts';
 import type { State } from '../initialData.ts';
 import type { Action, Reducer } from '../reducer/types/types.ts';
 import { rootReducer } from '../reducer/rootReducer.ts';
+import type ACTIONS from '../actions/types/enums.ts';
 
 class StoreModel {
   private static listeners: Map<string, VoidFunction> = new Map();
@@ -14,7 +15,7 @@ class StoreModel {
     StoreModel.state = StoreModel.rootReducer(StoreModel.state, action);
 
     StoreModel.listeners.forEach((_, key) => {
-      if (key in StoreModel.state) {
+      if (key === action.type) {
         const currentListener = StoreModel.listeners.get(key);
         if (currentListener) {
           currentListener();
@@ -30,7 +31,7 @@ class StoreModel {
   }
 
   public static subscribe(
-    key: keyof State,
+    key: (typeof ACTIONS)[keyof typeof ACTIONS],
     listener: VoidFunction,
   ): VoidFunction {
     StoreModel.listeners.set(key, listener);

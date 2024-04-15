@@ -29,22 +29,42 @@ class ClientApiModel {
     };
 
     this.eventMediator.unsubscribe(
-      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      MEDIATOR_EVENTS.LOG_IN_REQUEST,
       createNewUserListener,
     );
 
     this.eventMediator.unsubscribe(
-      MEDIATOR_EVENTS.LOG_OUT,
+      MEDIATOR_EVENTS.LOG_OUT_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
       createNewUserListener,
     );
 
     this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      MEDIATOR_EVENTS.LOG_IN_REQUEST,
       createNewUserListener,
     );
 
     this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.LOG_OUT,
+      MEDIATOR_EVENTS.LOG_OUT_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
       createNewUserListener,
     );
 

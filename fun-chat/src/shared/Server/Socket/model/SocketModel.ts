@@ -20,27 +20,36 @@ class SocketModel {
     return this.isOpen;
   }
 
-  private connectWebSocket(): void {
+  private connectWebSocket(): boolean {
+    let reconnectTimeout: NodeJS.Timeout;
+
     this.webSocket = new WebSocket(API_URL);
+
+    const reconnect = (): void => {
+      reconnectTimeout = setTimeout(() => {
+        this.connectWebSocket();
+      }, CHECK_INTERVAL);
+    };
 
     this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
       this.isOpen = true;
       this.init();
+      clearTimeout(reconnectTimeout);
       this.eventMediator.notify(MEDIATOR_EVENTS.SOCKET_CONNECT, null);
     });
 
     this.webSocket.addEventListener(EVENT_NAMES.CLOSE, () => {
       this.isOpen = false;
       this.eventMediator.notify(MEDIATOR_EVENTS.SOCKET_DISCONNECT, null);
-      setTimeout(() => {
-        this.connectWebSocket();
-      }, CHECK_INTERVAL);
+      reconnect();
     });
+
+    return this.isOpen;
   }
 
   private init(): boolean {
-    const serverApi = new ServerApiModel(this.webSocket, this.isOpen);
     const clientApi = new ClientApiModel(this.webSocket, this.isOpen);
+    const serverApi = new ServerApiModel(this.webSocket, this.isOpen);
     clientApi.isWorks();
     serverApi.isWorks();
     return this.isOpen;

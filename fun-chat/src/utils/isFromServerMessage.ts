@@ -1,8 +1,11 @@
+import type { User } from '../shared/Store/initialData.ts';
+
 export interface Message {
   type: string;
   id: string | null;
   payload: {
     error: string | null;
+    users: User[] | [];
   };
 }
 

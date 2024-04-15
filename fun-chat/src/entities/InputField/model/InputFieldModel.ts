@@ -31,7 +31,7 @@ class InputFieldModel {
     return this.isValid;
   }
 
-  private inputHandler(): void {
+  private inputHandler(): boolean {
     const errorField = this.view.getErrorField();
     const errors = this.validator?.validate(this.view.getValue());
     if (errors === true) {
@@ -46,13 +46,17 @@ class InputFieldModel {
       }
       this.isValid = false;
     }
+
+    return true;
   }
 
-  private setInputHandler(): void {
+  private setInputHandler(): boolean {
     const input = this.view.getInput().getHTML();
     input.addEventListener(EVENT_NAMES.INPUT, () => {
       this.inputHandler();
     });
+
+    return true;
   }
 }
 

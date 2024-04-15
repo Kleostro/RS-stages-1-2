@@ -1,4 +1,4 @@
-import MediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
+import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import AboutPageView from '../view/AboutPageView.ts';
 import ABOUT_PAGE_STYLES from '../view/aboutPage.module.scss';
@@ -9,7 +9,7 @@ import type RouterModel from '../../../app/Router/model/RouterModel.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 
 class AboutPageModel implements PageInterface {
-  private eventMediator = MediatorModel.getInstance();
+  private eventMediator = EventMediatorModel.getInstance();
 
   private router: RouterModel;
 
@@ -25,15 +25,17 @@ class AboutPageModel implements PageInterface {
     return this.view.getHTML();
   }
 
-  private show(): void {
+  private show(): boolean {
     this.view.getHTML().classList.remove(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
   }
 
-  private hide(): void {
+  private hide(): boolean {
     this.view.getHTML().classList.add(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
   }
 
-  private subscribeToMediator(): void {
+  private subscribeToMediator(): boolean {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       if (params === PAGES_IDS.ABOUT_PAGE) {
         this.show();
@@ -41,29 +43,33 @@ class AboutPageModel implements PageInterface {
         this.hide();
       }
     });
+    return true;
   }
 
-  private backButtonHandler(): void {
+  private backButtonHandler(): boolean {
     if (StoreModel.getState().currentUser) {
       this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
     } else {
       this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
     }
     this.hide();
+    return true;
   }
 
-  private setBackButtonHandler(): void {
+  private setBackButtonHandler(): boolean {
     const backButton = this.view.getBackButton().getHTML();
 
     backButton.addEventListener(
       EVENT_NAMES.CLICK,
       this.backButtonHandler.bind(this),
     );
+    return true;
   }
 
-  private init(): void {
+  private init(): boolean {
     this.subscribeToMediator();
     this.setBackButtonHandler();
+    return true;
   }
 }
 

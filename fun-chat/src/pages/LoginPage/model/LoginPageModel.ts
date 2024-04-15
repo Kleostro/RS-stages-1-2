@@ -45,16 +45,18 @@ class LoginPageModel implements PageInterface {
     return this.loginPageView.getHTML();
   }
 
-  private show(): void {
+  private show(): boolean {
     this.loginPageView
       .getHTML()
       .classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
   }
 
-  private hide(): void {
+  private hide(): boolean {
     this.loginPageView
       .getHTML()
       .classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
   }
 
   private checkAuthorizedUser(): User | null {
@@ -69,8 +71,7 @@ class LoginPageModel implements PageInterface {
         },
       };
 
-      StoreModel.dispatch(setCurrentUser(currentUser));
-      this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
+      this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_REQUEST, userData);
       return currentUser;
     }
 
@@ -92,15 +93,16 @@ class LoginPageModel implements PageInterface {
     return true;
   }
 
-  private handleSuccessMessage(): void {
+  private handleSuccessMessage(): boolean {
     const userData = this.loginFormModel.getUserData();
     StoreModel.dispatch(setCurrentUser(userData));
     this.storage.add(STORE_KEYS.CURRENT_USER, JSON.stringify(userData));
     this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
     this.hide();
+    return true;
   }
 
-  private showErrorMessage(error: string): void {
+  private showErrorMessage(error: string): boolean {
     const authenticationWrapper =
       this.loginPageView.getShowAuthenticationWrapper();
     this.loginPageView.getShowAuthenticationMessage().textContent = error;
@@ -108,21 +110,23 @@ class LoginPageModel implements PageInterface {
       duration: AUTHENTICATION_ANIMATE_DETAILS.duration,
       easing: AUTHENTICATION_ANIMATE_DETAILS.easing,
     });
+    return true;
   }
 
-  private handleErrorMessage(checkedMessage: Message): void {
+  private handleErrorMessage(checkedMessage: Message): boolean {
     if (checkedMessage?.payload?.error) {
       this.showErrorMessage(checkedMessage?.payload?.error);
     }
+    return true;
   }
 
-  private handleMessageFromServer(checkedMessage: Message): void {
+  private handleMessageFromServer(checkedMessage: Message): boolean {
     const savedUser = this.storage.get(STORE_KEYS.CURRENT_USER);
     if (savedUser && isUser(savedUser)) {
       StoreModel.dispatch(setCurrentUser(savedUser));
       this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
       this.hide();
-      return;
+      return true;
     }
 
     if (checkedMessage?.type !== API_TYPES.ERROR) {
@@ -130,27 +134,33 @@ class LoginPageModel implements PageInterface {
     } else if (checkedMessage?.id === this.loginFormModel.getMessageID()) {
       this.handleErrorMessage(checkedMessage);
     }
+    return true;
   }
 
-  private subscribeToMediator(): void {
+  private subscribeToMediator(): boolean {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       this.switchPage(String(params));
     });
 
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.SET_NEW_USER, (message) => {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_CONNECT, () => {
+      this.checkAuthorizedUser();
+    });
+
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_IN_RESPONSE, (message) => {
       const checkedMessage = isFromServerMessage(message);
       if (checkedMessage) {
         this.handleMessageFromServer(checkedMessage);
       }
     });
+    return true;
   }
 
-  private initPage(): void {
-    this.checkAuthorizedUser();
+  private initPage(): boolean {
     this.subscribeToMediator();
     this.hide();
     const loginFormHTML = this.loginFormModel.getHTML();
     this.getHTML().append(loginFormHTML);
+    return true;
   }
 }
 

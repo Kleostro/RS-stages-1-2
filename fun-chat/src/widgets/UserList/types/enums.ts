@@ -1,0 +1,3 @@
+const SEARCH_INPUT_PLACEHOLDER = 'Search...';
+
+export default SEARCH_INPUT_PLACEHOLDER;

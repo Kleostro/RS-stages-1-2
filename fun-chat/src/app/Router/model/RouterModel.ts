@@ -2,13 +2,13 @@ import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import PAGES_IDS from '../../../pages/types/enums.ts';
 import type PageInterface from '../../../pages/types/interfaces.ts';
 import ROUTER_DETAILS from '../types/enums.ts';
-import MediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
+import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 
 class RouterModel {
   private pages: Map<string, PageInterface> = new Map();
 
-  private eventMediator = MediatorModel.getInstance();
+  private eventMediator = EventMediatorModel.getInstance();
 
   constructor() {
     document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
@@ -18,7 +18,7 @@ class RouterModel {
           ROUTER_DETAILS.PATH_SEGMENTS_TO_KEEP + ROUTER_DETAILS.NEXT_SEGMENT,
         )
         .join(ROUTER_DETAILS.DEFAULT_SEGMENT);
-      this.navigateTo(currentPath);
+      this.handleRequest(currentPath);
       this.eventMediator.notify(
         MEDIATOR_EVENTS.CHANGE_PAGE,
         currentPath.split(ROUTER_DETAILS.DEFAULT_SEGMENT).join(),

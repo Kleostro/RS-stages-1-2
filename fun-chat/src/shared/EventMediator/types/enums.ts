@@ -2,11 +2,18 @@ const MEDIATOR_EVENTS = {
   CHANGE_PAGE: 'changePage',
   CREATE_NEW_USER: 'createNewUser',
   SET_NEW_USER: 'setNewUser',
-  NEW_MESSAGE: 'newMessage',
-  LOG_IN: 'logIn',
-  LOG_OUT: 'logOut',
+  LOG_IN_REQUEST: 'logInRequest',
+  LOG_IN_RESPONSE: 'logInResponse',
+  LOG_OUT_REQUEST: 'logOutRequest',
+  LOG_OUT_RESPONSE: 'logOutResponse',
   SOCKET_CONNECT: 'socketConnect',
   SOCKET_DISCONNECT: 'socketDisconnect',
+  GET_ALL_AUTHENTICATED_USERS_REQUEST: 'getAllAuthenticatedUsersRequest',
+  GET_ALL_AUTHENTICATED_USERS_RESPONSE: 'getAllAuthenticatedUsersResponse',
+  GET_ALL_UNAUTHENTICATED_USERS_REQUEST: 'getAllUnauthenticatedUsersRequest',
+  GET_ALL_UNAUTHENTICATED_USERS_RESPONSE: 'getAllUnauthenticatedUsersResponse',
+  EXTERNAL_LOGIN_RESPONSE: 'externalLoginResponse',
+  EXTERNAL_LOGOUT_RESPONSE: 'externalLogoutResponse',
 } as const;
 
 export default MEDIATOR_EVENTS;

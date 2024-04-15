@@ -7,6 +7,7 @@ interface Status {
 export interface User {
   login: string;
   password: string;
+  isLogined: boolean | string;
 }
 
 interface Message {

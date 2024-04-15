@@ -3,13 +3,13 @@ import type RouterModel from '../../../app/Router/model/RouterModel.ts';
 import HeaderView from '../view/HeaderView.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
-import { STATE_FIELDS } from '../../../shared/Store/initialData.ts';
 import STORE_KEYS from '../../../shared/SessionStorage/types/enums.ts';
 import type SessionStorageModel from '../../../shared/SessionStorage/model/SessionStorage.ts';
 import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
 import { setCurrentUser } from '../../../shared/Store/actions/actions.ts';
+import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
 
 class HeaderModel {
   private view: HeaderView = new HeaderView();
@@ -30,25 +30,33 @@ class HeaderModel {
     return this.view.getHTML();
   }
 
-  private logoutButtonHandler(): void {
+  private logoutButtonHandler(): boolean {
+    const { currentUser } = StoreModel.getState();
+    if (!currentUser) {
+      return false;
+    }
+
     const logOutData = {
       id: null,
       type: API_TYPES.USER_LOGOUT,
       payload: {
         user: {
-          login: StoreModel.getState().currentUser?.login,
-          password: StoreModel.getState().currentUser?.password,
+          login: currentUser.login,
+          password: currentUser.password,
         },
       },
     };
-    this.eventMediator.notify(MEDIATOR_EVENTS.LOG_OUT, logOutData);
+
+    this.eventMediator.notify(MEDIATOR_EVENTS.LOG_OUT_REQUEST, logOutData);
     this.storage.remove(STORE_KEYS.CURRENT_USER);
     StoreModel.dispatch(setCurrentUser(null));
     this.view.getLogoutButton().setDisabled();
     this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
+
+    return true;
   }
 
-  private setLogoutButtonHandler(): void {
+  private setLogoutButtonHandler(): boolean {
     const logoutButton = this.view.getLogoutButton().getHTML();
     const aboutButton = this.view.getAboutButton().getHTML();
 
@@ -61,21 +69,26 @@ class HeaderModel {
       EVENT_NAMES.CLICK,
       this.router.navigateTo.bind(this.router, PAGES_IDS.ABOUT_PAGE),
     );
+
+    return true;
   }
 
-  private changeCurrentUserLogin(): void {
+  private changeCurrentUserLogin(): boolean {
     const userLogin = this.view.getUserLogin();
     userLogin.textContent = StoreModel.getState().currentUser?.login || '';
     this.view.getLogoutButton().setEnabled();
+    return true;
   }
 
-  private init(): void {
+  private init(): boolean {
     this.setLogoutButtonHandler();
 
     StoreModel.subscribe(
-      STATE_FIELDS.CURRENT_USER,
+      ACTIONS.SET_CURRENT_USER,
       this.changeCurrentUserLogin.bind(this),
     );
+
+    return true;
   }
 }
 

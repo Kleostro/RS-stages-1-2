@@ -1,16 +1,17 @@
 import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
-import MediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
+import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import MainPageView from '../view/MainPageView.ts';
 import MAIN_PAGE_STYLES from '../view/mainPage.module.scss';
 import PAGES_IDS from '../../types/enums.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type RouterModel from '../../../app/Router/model/RouterModel.ts';
+import UserListModel from '../../../widgets/UserList/model/UserListModel.ts';
 
 class MainPageModel implements PageInterface {
   private router: RouterModel;
 
-  private eventMediator = MediatorModel.getInstance();
+  private eventMediator = EventMediatorModel.getInstance();
 
   private mainPageView: MainPageView;
 
@@ -24,14 +25,16 @@ class MainPageModel implements PageInterface {
     return this.mainPageView.getHTML();
   }
 
-  private show(): void {
+  private show(): boolean {
     this.mainPageView
       .getHTML()
       .classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
   }
 
-  private hide(): void {
+  private hide(): boolean {
     this.mainPageView.getHTML().classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
   }
 
   private switchPage(params: string): boolean {
@@ -47,16 +50,19 @@ class MainPageModel implements PageInterface {
     return true;
   }
 
-  private subscribeToMediator(): void {
+  private subscribeToMediator(): boolean {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       this.hide();
       this.switchPage(String(params));
     });
+    return true;
   }
 
-  private init(): void {
+  private init(): boolean {
     this.hide();
     this.subscribeToMediator();
+    this.getHTML().append(new UserListModel().getHTML());
+    return true;
   }
 }
 

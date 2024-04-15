@@ -1,0 +1,115 @@
+.userList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  border: 3px solid var(--noble-black-300);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  width: 20%;
+  max-height: 502px;
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--noble-black-300);
+  background-color: var(--noble-black-800);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-left: 2px solid var(--noble-black-300);
+    border-radius: var(--border-radius);
+    background: var(--noble-black-500);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--border-radius);
+    background-color: var(--steam-green-500);
+    cursor: pointer;
+  }
+}
+
+.userListEmpty {
+  padding: calc(var(--little-offset)) var(--medium-offset);
+}
+
+.userListSearchInput {
+  border: 3px solid var(--noble-black-300);
+  border-bottom: unset;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  padding: calc(var(--little-offset) / 1.2) var(--little-offset);
+  width: 20%;
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--noble-black-800);
+  transition: background-color 0.3s;
+
+  &::placeholder {
+    font: var(--small-font);
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--noble-black-300);
+    transition: color 0.3s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--noble-black-600);
+
+      &::placeholder {
+        color: var(--steam-green-400);
+      }
+    }
+  }
+}
+
+.user {
+  position: relative;
+  border: 3px solid transparent;
+  border-radius: var(--border-radius);
+  padding: calc(var(--little-offset)) var(--medium-offset);
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--noble-black-300);
+  transition:
+    background-color 0.3s,
+    outline 0.1s,
+    color 0.3s;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    outline: 3px solid var(--noble-black-300);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      outline: 3px solid var(--noble-black-300);
+      color: var(--steam-green-400);
+      background-color: var(--noble-black-600);
+    }
+  }
+}
+
+.userActive {
+  &::before {
+    background-color: var(--steam-green-700);
+  }
+}
+
+.userInactive {
+  &::before {
+    background-color: var(--red-power-600);
+  }
+}

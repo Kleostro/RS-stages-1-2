@@ -27,21 +27,71 @@ class ServerApiModel {
       const message: unknown = JSON.parse(String(data));
       const checkedMessage = isFromServerMessage(message);
       if (checkedMessage) {
-        this.handleMessageType(checkedMessage);
+        this.handleAuthentication(checkedMessage);
       }
     });
     return true;
   }
 
-  private handleMessageType(message: Message): null | boolean {
+  private handleAuthentication(message: Message): null | boolean {
     switch (message.type) {
       case API_TYPES.USER_LOGIN: {
-        this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
+        this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_RESPONSE, message);
         return true;
       }
       case API_TYPES.ERROR: {
-        this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
+        this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_RESPONSE, message);
         return false;
+      }
+      case API_TYPES.USER_LOGOUT: {
+        this.eventMediator.notify(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, message);
+        return true;
+      }
+      default: {
+        this.handleUserState(message);
+        return null;
+      }
+    }
+  }
+
+  private handleUserState(message: Message): null | boolean {
+    switch (message.type) {
+      case API_TYPES.USER_ACTIVE: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
+          message,
+        );
+        return true;
+      }
+      case API_TYPES.USER_INACTIVE: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_RESPONSE,
+          message,
+        );
+        return true;
+      }
+      default: {
+        this.handlerUserExternal(message);
+        return null;
+      }
+    }
+  }
+
+  private handlerUserExternal(message: Message): null | boolean {
+    switch (message.type) {
+      case API_TYPES.USER_EXTERNAL_LOGIN: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
+          message,
+        );
+        return true;
+      }
+      case API_TYPES.USER_EXTERNAL_LOGOUT: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.EXTERNAL_LOGOUT_RESPONSE,
+          message,
+        );
+        return true;
       }
       default: {
         return null;
