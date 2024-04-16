@@ -20,6 +20,7 @@ class SendMessageFormView {
     this.submitFormButton = this.createSubmitFormButton();
     this.inputField = this.createInputField();
     this.form = this.createHTML();
+    this.hideForm();
   }
 
   public getHTML(): HTMLFormElement {
@@ -32,6 +33,14 @@ class SendMessageFormView {
 
   public getSubmitFormButton(): ButtonModel {
     return this.submitFormButton;
+  }
+
+  public hideForm(): void {
+    this.form.classList.add(SEND_MESSAGE_FORM_STYLES.hidden);
+  }
+
+  public showForm(): void {
+    this.form.classList.remove(SEND_MESSAGE_FORM_STYLES.hidden);
   }
 
   private createInputField(): HTMLTextAreaElement {

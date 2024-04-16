@@ -57,6 +57,14 @@ class UserListView {
     this.userList.classList.add(USER_LIST_STYLES.userListEmpty);
   }
 
+  public selectUser(target: HTMLLIElement): void {
+    const users = this.userList.children;
+    Array.from(users).forEach((user) => {
+      user.classList.remove(USER_LIST_STYLES.userSelected);
+    });
+    target.classList.add(USER_LIST_STYLES.userSelected);
+  }
+
   private createSearchInput(): InputModel {
     this.searchInput = new InputModel({
       placeholder: SEARCH_INPUT_PLACEHOLDER,

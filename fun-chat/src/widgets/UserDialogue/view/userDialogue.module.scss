@@ -55,3 +55,20 @@
     }
   }
 }
+
+.messagesWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--noble-black-300);
+  background-color: var(--noble-black-800);
+}
+
+.hidden {
+  display: none;
+}

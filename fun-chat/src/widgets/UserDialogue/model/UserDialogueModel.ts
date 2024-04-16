@@ -26,7 +26,12 @@ class UserDialogueModel {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.OPEN_USER_DIALOGUE, (data) => {
       if (isSavedUser(data)) {
         this.view.setCurrentUserInfo(data);
+        this.view.showDialogue();
       }
+    });
+
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, () => {
+      this.view.hideDialogue();
     });
   }
 

@@ -86,6 +86,7 @@ class UserListModel {
   private userListHandler(event: Event): void {
     const { target } = event;
     if (target instanceof HTMLLIElement) {
+      this.view.selectUser(target);
       const allUsers = [
         ...StoreModel.getState().currentAuthorizedUsers,
         ...StoreModel.getState().currentUnauthorizedUsers,

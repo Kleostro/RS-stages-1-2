@@ -1,7 +1,11 @@
+import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import SendMessageFormView from '../view/SendMessageFormView.ts';
+import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 
 class SendMessageFormModel {
+  private eventMediator = EventMediatorModel.getInstance();
+
   private view = new SendMessageFormView();
 
   constructor() {
@@ -70,7 +74,18 @@ class SendMessageFormModel {
       .addEventListener(EVENT_NAMES.CLICK, this.formSubmitHandler.bind(this));
   }
 
+  private subscribeToEventMediator(): void {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.OPEN_USER_DIALOGUE, () =>
+      this.view.showForm(),
+    );
+
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, () => {
+      this.view.hideForm();
+    });
+  }
+
   private init(): void {
+    this.subscribeToEventMediator();
     this.setPreventDefaultToForm();
     this.setInputFieldHandlers();
     this.setSubmitButtonHandler();
