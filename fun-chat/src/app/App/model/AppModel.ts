@@ -29,7 +29,6 @@ class AppModel {
 
   constructor() {
     this.router.setPages(this.initPages());
-
     this.subscribeToEvents();
     this.serverApi.isWorks();
   }

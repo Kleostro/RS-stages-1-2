@@ -1,3 +1,3 @@
-const SEARCH_INPUT_PLACEHOLDER = 'Search...';
+export const SEARCH_INPUT_PLACEHOLDER = 'Search...';
 
-export default SEARCH_INPUT_PLACEHOLDER;
+export const EMPTY_USERS_LIST = 'There are no users in the list';

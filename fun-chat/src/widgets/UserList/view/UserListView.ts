@@ -4,7 +4,7 @@ import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import USER_LIST_STYLES from './userList.module.scss';
 import INPUT_TYPES from '../../../shared/Input/types/enums.ts';
-import SEARCH_INPUT_PLACEHOLDER from '../types/enums.ts';
+import { SEARCH_INPUT_PLACEHOLDER, EMPTY_USERS_LIST } from '../types/enums.ts';
 
 class UserListView {
   private searchInput: InputModel;
@@ -48,15 +48,19 @@ class UserListView {
     this.userList.innerHTML = '';
   }
 
+  public getUserList(): HTMLUListElement {
+    return this.userList;
+  }
+
   public emptyUserList(): void {
-    this.userList.innerHTML = 'User not found';
+    this.userList.innerHTML = EMPTY_USERS_LIST;
     this.userList.classList.add(USER_LIST_STYLES.userListEmpty);
   }
 
   private createSearchInput(): InputModel {
     this.searchInput = new InputModel({
       placeholder: SEARCH_INPUT_PLACEHOLDER,
-      type: INPUT_TYPES.TEXT,
+      type: INPUT_TYPES.SEARCH,
     });
 
     this.searchInput

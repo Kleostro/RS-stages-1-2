@@ -14,6 +14,7 @@ const MEDIATOR_EVENTS = {
   GET_ALL_UNAUTHENTICATED_USERS_RESPONSE: 'getAllUnauthenticatedUsersResponse',
   EXTERNAL_LOGIN_RESPONSE: 'externalLoginResponse',
   EXTERNAL_LOGOUT_RESPONSE: 'externalLogoutResponse',
+  OPEN_USER_DIALOGUE: 'openUserDialogue',
 } as const;
 
 export default MEDIATOR_EVENTS;

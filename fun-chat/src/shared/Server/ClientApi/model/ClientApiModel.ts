@@ -11,6 +11,7 @@ class ClientApiModel {
   constructor(webSocket: WebSocket, isOpen: boolean) {
     this.webSocket = webSocket;
     this.isOpen = isOpen;
+    this.unsubscribeToEventMediator();
     this.subscribeToEventMediator();
   }
 
@@ -23,7 +24,7 @@ class ClientApiModel {
     return true;
   }
 
-  private subscribeToEventMediator(): boolean {
+  private unsubscribeToEventMediator(): boolean {
     const createNewUserListener = (message: unknown): void => {
       this.sendMessage(message);
     };
@@ -47,6 +48,14 @@ class ClientApiModel {
       MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
       createNewUserListener,
     );
+
+    return true;
+  }
+
+  private subscribeToEventMediator(): boolean {
+    const createNewUserListener = (message: unknown): void => {
+      this.sendMessage(message);
+    };
 
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.LOG_IN_REQUEST,

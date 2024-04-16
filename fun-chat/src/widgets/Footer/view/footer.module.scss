@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: auto;
+  margin-top: var(--medium-offset);
   border-top: 4px solid var(--noble-black-300);
   border-radius: calc(var(--border-radius) * 2);
   padding: var(--little-offset) var(--small-offset);

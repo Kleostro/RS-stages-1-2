@@ -8,6 +8,7 @@ import {
   setCurrentUnauthorizedUsers,
 } from '../../../shared/Store/actions/actions.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
+import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
 
 class UserListModel {
   private view: UserListView = new UserListView();
@@ -15,8 +16,7 @@ class UserListModel {
   private eventMediator = EventMediatorModel.getInstance();
 
   constructor() {
-    this.subscribeToEventMediator();
-    this.setSearchInputHandler();
+    this.init();
   }
 
   public getHTML(): HTMLDivElement {
@@ -26,7 +26,7 @@ class UserListModel {
   private getActiveUsers(): void {
     const requestMessage = {
       id: '',
-      type: 'USER_ACTIVE',
+      type: API_TYPES.USER_ACTIVE,
       payload: null,
     };
     this.eventMediator.notify(
@@ -38,7 +38,7 @@ class UserListModel {
   private getInactiveUsers(): void {
     const requestMessage = {
       id: '',
-      type: 'USER_INACTIVE',
+      type: API_TYPES.USER_INACTIVE,
       payload: null,
     };
     this.eventMediator.notify(
@@ -47,101 +47,20 @@ class UserListModel {
     );
   }
 
+  private getAllUsers(): void {
+    this.getActiveUsers();
+    this.getInactiveUsers();
+  }
+
   private drawUsers(): void {
     this.view.clearUserList();
-    const allUsers = [
-      ...StoreModel.getState().currentAuthorizedUsers,
-      ...StoreModel.getState().currentUnauthorizedUsers,
-    ];
-    const currentAuthUserLogin = StoreModel.getState().currentUser?.login;
-    const currentUsers = allUsers.filter(
-      (user) => user.login !== currentAuthUserLogin,
-    );
-    currentUsers.forEach((user) => {
-      this.view.drawUser(user);
-    });
-  }
+    const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser } =
+      StoreModel.getState();
 
-  private getAllAuthenticatedUsersHandler(message: unknown): void {
-    const checkedMessage = isFromServerMessage(message);
-    if (checkedMessage) {
-      StoreModel.dispatch(
-        setCurrentAuthorizedUsers(checkedMessage.payload.users),
-      );
-      this.drawUsers();
-    }
-  }
-
-  private getAllUnauthenticatedUsersHandler(message: unknown): void {
-    const checkedMessage = isFromServerMessage(message);
-    if (checkedMessage) {
-      StoreModel.dispatch(
-        setCurrentUnauthorizedUsers(checkedMessage.payload.users),
-      );
-      this.drawUsers();
-    }
-  }
-
-  private subscribeToEventMediator(): boolean {
-    this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
-      (message) => {
-        this.getAllAuthenticatedUsersHandler(message);
-      },
-    );
-
-    this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_RESPONSE,
-      (message) => {
-        this.getAllUnauthenticatedUsersHandler(message);
-      },
-    );
-
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, () => {
-      this.getActiveUsers();
-      this.getInactiveUsers();
-    });
-
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_IN_RESPONSE, () => {
-      this.getActiveUsers();
-      this.getInactiveUsers();
-    });
-
-    this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
-      () => {
-        this.getActiveUsers();
-        this.getInactiveUsers();
-      },
-    );
-
-    this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.EXTERNAL_LOGOUT_RESPONSE,
-      () => {
-        this.getActiveUsers();
-        this.getInactiveUsers();
-      },
-    );
-
-    return true;
-  }
-
-  private searchInputHandler(): void {
-    const allUsers = [
-      ...StoreModel.getState().currentAuthorizedUsers,
-      ...StoreModel.getState().currentUnauthorizedUsers,
-    ];
-
-    const input = this.view.getSearchInput().getHTML();
-    const inputValue = input.value.toLowerCase();
-    const filteredUsers = allUsers.filter((user) =>
-      user.login.toLowerCase().includes(inputValue),
-    );
-    this.view.clearUserList();
-    const currentAuthUserLogin = StoreModel.getState().currentUser?.login;
-    const currentUsers = filteredUsers.filter(
-      (user) => user.login !== currentAuthUserLogin,
-    );
+    const currentUsers = [
+      ...currentAuthorizedUsers,
+      ...currentUnauthorizedUsers,
+    ].filter((user) => user.login !== currentUser?.login);
 
     if (!currentUsers.length) {
       this.view.emptyUserList();
@@ -152,11 +71,119 @@ class UserListModel {
     });
   }
 
+  private getAllUsersHandler(message: unknown): void {
+    const checkedMessage = isFromServerMessage(message);
+    if (checkedMessage) {
+      const action =
+        checkedMessage.type === API_TYPES.USER_ACTIVE
+          ? setCurrentAuthorizedUsers
+          : setCurrentUnauthorizedUsers;
+      StoreModel.dispatch(action(checkedMessage.payload.users));
+      this.drawUsers();
+    }
+  }
+
+  private userListHandler(event: Event): void {
+    const { target } = event;
+    if (target instanceof HTMLLIElement) {
+      const allUsers = [
+        ...StoreModel.getState().currentAuthorizedUsers,
+        ...StoreModel.getState().currentUnauthorizedUsers,
+      ];
+      const currentUserInfo = allUsers.find(
+        (user) => user.login === target.textContent,
+      );
+
+      this.eventMediator.notify(
+        MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
+        currentUserInfo,
+      );
+    }
+  }
+
+  private setUserListHandler(): boolean {
+    this.view.getUserList().addEventListener(EVENT_NAMES.CLICK, (event) => {
+      this.userListHandler(event);
+    });
+    return true;
+  }
+
+  private subscribeToEventMediator(): boolean {
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
+      (message) => {
+        this.getAllUsersHandler(message);
+      },
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_RESPONSE,
+      (message) => {
+        this.getAllUsersHandler(message);
+      },
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
+      this.getAllUsers.bind(this),
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_IN_RESPONSE,
+      this.getAllUsers.bind(this),
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
+      this.getAllUsers.bind(this),
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.EXTERNAL_LOGOUT_RESPONSE,
+      this.getAllUsers.bind(this),
+    );
+
+    return true;
+  }
+
+  private searchInputHandler(): void {
+    const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser } =
+      StoreModel.getState();
+    const allUsers = [...currentAuthorizedUsers, ...currentUnauthorizedUsers];
+
+    const inputValue = this.view
+      .getSearchInput()
+      .getHTML()
+      .value.toLowerCase()
+      .trim();
+    const filteredUsers = allUsers.filter((user) =>
+      user.login.toLowerCase().includes(inputValue),
+    );
+
+    this.view.clearUserList();
+
+    const currentUsers = filteredUsers.filter(
+      (user) => user.login !== currentUser?.login,
+    );
+
+    if (!currentUsers.length) {
+      this.view.emptyUserList();
+    }
+
+    currentUsers.forEach((user) => this.view.drawUser(user));
+  }
+
   private setSearchInputHandler(): void {
     this.view
       .getSearchInput()
       .getHTML()
       .addEventListener(EVENT_NAMES.INPUT, this.searchInputHandler.bind(this));
+  }
+
+  private init(): void {
+    this.setUserListHandler();
+    this.setSearchInputHandler();
+    this.subscribeToEventMediator();
   }
 }
 

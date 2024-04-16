@@ -7,33 +7,32 @@ import PAGES_IDS from '../../types/enums.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type RouterModel from '../../../app/Router/model/RouterModel.ts';
 import UserListModel from '../../../widgets/UserList/model/UserListModel.ts';
+import UserDialogueModel from '../../../widgets/UserDialogue/model/UserDialogueModel.ts';
 
 class MainPageModel implements PageInterface {
   private router: RouterModel;
 
   private eventMediator = EventMediatorModel.getInstance();
 
-  private mainPageView: MainPageView;
+  private view: MainPageView;
 
   constructor(parent: HTMLDivElement, router: RouterModel) {
     this.router = router;
-    this.mainPageView = new MainPageView(parent);
+    this.view = new MainPageView(parent);
     this.init();
   }
 
   public getHTML(): HTMLDivElement {
-    return this.mainPageView.getHTML();
+    return this.view.getHTML();
   }
 
   private show(): boolean {
-    this.mainPageView
-      .getHTML()
-      .classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
+    this.view.getHTML().classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
     return true;
   }
 
   private hide(): boolean {
-    this.mainPageView.getHTML().classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
+    this.view.getHTML().classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
     return true;
   }
 
@@ -61,7 +60,9 @@ class MainPageModel implements PageInterface {
   private init(): boolean {
     this.hide();
     this.subscribeToMediator();
-    this.getHTML().append(new UserListModel().getHTML());
+    this.view
+      .getChatWrapper()
+      .append(new UserListModel().getHTML(), new UserDialogueModel().getHTML());
     return true;
   }
 }

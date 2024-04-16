@@ -1,11 +1,19 @@
+.wrapper {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  width: 100%;
+  max-width: 40%;
+}
+
 .userList {
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
   border: 3px solid var(--noble-black-300);
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
-  width: 20%;
-  max-height: 502px;
+  border-right: unset;
+  border-radius: 0 0 0 var(--border-radius);
+  width: 100%;
+  min-height: 626px;
+  max-height: 626px;
   font: var(--small-font);
   font-weight: 600;
   letter-spacing: 1px;
@@ -19,7 +27,6 @@
 
   &::-webkit-scrollbar-track {
     border-left: 2px solid var(--noble-black-300);
-    border-radius: var(--border-radius);
     background: var(--noble-black-500);
   }
 
@@ -36,16 +43,28 @@
 
 .userListSearchInput {
   border: 3px solid var(--noble-black-300);
+  border-right: unset;
   border-bottom: unset;
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-radius: var(--border-radius) 0 0;
   padding: calc(var(--little-offset) / 1.2) var(--little-offset);
-  width: 20%;
+  width: 100%;
   font: var(--small-font);
   font-weight: 600;
   letter-spacing: 1px;
   color: var(--white);
   background-color: var(--noble-black-800);
   transition: background-color 0.3s;
+
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    position: relative;
+    width: 16px;
+    height: 16px;
+    background-image: url('../../../img/close.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
 
   &::placeholder {
     font: var(--small-font);
@@ -80,6 +99,7 @@
     outline 0.1s,
     color 0.3s;
   cursor: pointer;
+  user-select: none;
 
   &::before {
     content: '';
@@ -96,19 +116,22 @@
   @media (hover: hover) {
     &:hover {
       outline: 3px solid var(--noble-black-300);
-      color: var(--steam-green-400);
       background-color: var(--noble-black-600);
     }
   }
 }
 
 .userActive {
+  color: var(--steam-green-400);
+
   &::before {
     background-color: var(--steam-green-700);
   }
 }
 
 .userInactive {
+  color: var(--red-power-600);
+
   &::before {
     background-color: var(--red-power-600);
   }

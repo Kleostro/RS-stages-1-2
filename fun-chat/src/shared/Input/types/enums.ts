@@ -6,6 +6,7 @@ const INPUT_TYPES = {
   RANGE: 'range',
   DATE: 'date',
   COLOR: 'color',
+  SEARCH: 'search',
 } as const;
 
 export default INPUT_TYPES;
