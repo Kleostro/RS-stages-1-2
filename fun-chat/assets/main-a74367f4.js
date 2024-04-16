@@ -49,13 +49,19 @@ const MEDIATOR_EVENTS = {
   CHANGE_PAGE: "changePage",
   CREATE_NEW_USER: "createNewUser",
   SET_NEW_USER: "setNewUser",
-  NEW_MESSAGE: "newMessage",
-  LOG_IN: "logIn",
-  LOG_OUT: "logOut",
+  LOG_IN_REQUEST: "logInRequest",
+  LOG_IN_RESPONSE: "logInResponse",
+  LOG_OUT_REQUEST: "logOutRequest",
+  LOG_OUT_RESPONSE: "logOutResponse",
   SOCKET_CONNECT: "socketConnect",
   SOCKET_DISCONNECT: "socketDisconnect",
   GET_ALL_AUTHENTICATED_USERS_REQUEST: "getAllAuthenticatedUsersRequest",
-  GET_ALL_AUTHENTICATED_USERS_RESPONSE: "getAllAuthenticatedUsersResponse"
+  GET_ALL_AUTHENTICATED_USERS_RESPONSE: "getAllAuthenticatedUsersResponse",
+  GET_ALL_UNAUTHENTICATED_USERS_REQUEST: "getAllUnauthenticatedUsersRequest",
+  GET_ALL_UNAUTHENTICATED_USERS_RESPONSE: "getAllUnauthenticatedUsersResponse",
+  EXTERNAL_LOGIN_RESPONSE: "externalLoginResponse",
+  EXTERNAL_LOGOUT_RESPONSE: "externalLogoutResponse",
+  OPEN_USER_DIALOGUE: "openUserDialogue"
 };
 const _EventMediatorModel = class _EventMediatorModel {
   constructor() {
@@ -192,27 +198,42 @@ const createBaseElement = ({
   elem.innerHTML = innerContent;
   return elem;
 };
-const mainPage = "_mainPage_1uy5k_1";
-const mainPage_hidden = "_mainPage_hidden_1uy5k_5";
+const mainPage = "_mainPage_1s168_1";
+const mainPage_hidden = "_mainPage_hidden_1s168_7";
+const chatWrapper = "_chatWrapper_1s168_11";
 const MAIN_PAGE_STYLES = {
   mainPage,
-  mainPage_hidden
+  mainPage_hidden,
+  chatWrapper
 };
 class MainPageView {
   constructor(parent) {
     __publicField(this, "parent");
+    __publicField(this, "chatWrapper");
     __publicField(this, "page");
     this.parent = parent;
+    this.chatWrapper = this.createChatWrapper();
     this.page = this.createHTML();
   }
   getHTML() {
     return this.page;
+  }
+  getChatWrapper() {
+    return this.chatWrapper;
+  }
+  createChatWrapper() {
+    this.chatWrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [MAIN_PAGE_STYLES.chatWrapper]
+    });
+    return this.chatWrapper;
   }
   createHTML() {
     this.page = createBaseElement({
       tag: TAG_NAMES.DIV,
       cssClasses: [MAIN_PAGE_STYLES.mainPage]
     });
+    this.page.append(this.chatWrapper);
     this.parent.append(this.page);
     return this.page;
   }
@@ -276,10 +297,8 @@ const _StoreModel = class _StoreModel {
   static dispatch(action) {
     _StoreModel.state = _StoreModel.rootReducer(_StoreModel.state, action);
     _StoreModel.listeners.forEach((_, key) => {
-      console.log(action, key);
       if (key === action.type) {
         const currentListener = _StoreModel.listeners.get(key);
-        console.log(currentListener);
         if (currentListener) {
           currentListener();
         }
@@ -301,27 +320,117 @@ __publicField(_StoreModel, "listeners", /* @__PURE__ */ new Map());
 __publicField(_StoreModel, "rootReducer", rootReducer);
 __publicField(_StoreModel, "state", INITIAL_STATE);
 let StoreModel = _StoreModel;
-const USER_LIST_STYLES = {};
+class InputView {
+  constructor(attrs) {
+    __publicField(this, "input");
+    this.input = this.createHTML(attrs);
+  }
+  getHTML() {
+    return this.input;
+  }
+  createHTML(attrs) {
+    this.input = createBaseElement({
+      tag: TAG_NAMES.INPUT,
+      attributes: attrs
+    });
+    return this.input;
+  }
+}
+class InputModel {
+  constructor(attrs) {
+    __publicField(this, "view");
+    this.view = new InputView(attrs);
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+  getValue() {
+    return this.view.getHTML().value;
+  }
+  setDisabled() {
+    this.view.getHTML().disabled = IS_DISABLED.DISABLED;
+  }
+  setEnabled() {
+    this.view.getHTML().disabled = IS_DISABLED.ENABLED;
+  }
+  clear() {
+    this.view.getHTML().value = "";
+  }
+}
+const wrapper = "_wrapper_1oswd_1";
+const userList = "_userList_1oswd_7";
+const userListEmpty = "_userListEmpty_1oswd_37";
+const userListSearchInput = "_userListSearchInput_1oswd_41";
+const user = "_user_1oswd_7";
+const userActive = "_userActive_1oswd_113";
+const userInactive = "_userInactive_1oswd_120";
+const USER_LIST_STYLES = {
+  wrapper,
+  userList,
+  userListEmpty,
+  userListSearchInput,
+  user,
+  userActive,
+  userInactive
+};
+const INPUT_TYPES = {
+  TEXT: "text",
+  NUMBER: "number",
+  EMAIL: "email",
+  PASSWORD: "password",
+  RANGE: "range",
+  DATE: "date",
+  COLOR: "color",
+  SEARCH: "search"
+};
+const SEARCH_INPUT_PLACEHOLDER = "Search...";
+const EMPTY_USERS_LIST = "There are no users in the list";
 class UserListView {
   constructor() {
+    __publicField(this, "searchInput");
     __publicField(this, "userList");
     __publicField(this, "wrapper");
+    this.searchInput = this.createSearchInput();
     this.userList = this.createUserList();
     this.wrapper = this.createHTML();
   }
   getHTML() {
     return this.wrapper;
   }
+  getSearchInput() {
+    return this.searchInput;
+  }
   drawUser(userInfo) {
-    const user = createBaseElement({
+    this.userList.classList.remove(USER_LIST_STYLES.userListEmpty);
+    const user2 = createBaseElement({
       tag: TAG_NAMES.LI,
       cssClasses: [USER_LIST_STYLES.user],
       innerContent: userInfo.login
     });
-    this.userList.append(user);
+    if (userInfo.isLogined) {
+      user2.classList.add(USER_LIST_STYLES.userActive);
+    } else {
+      user2.classList.add(USER_LIST_STYLES.userInactive);
+    }
+    this.userList.append(user2);
   }
   clearUserList() {
     this.userList.innerHTML = "";
+  }
+  getUserList() {
+    return this.userList;
+  }
+  emptyUserList() {
+    this.userList.innerHTML = EMPTY_USERS_LIST;
+    this.userList.classList.add(USER_LIST_STYLES.userListEmpty);
+  }
+  createSearchInput() {
+    this.searchInput = new InputModel({
+      placeholder: SEARCH_INPUT_PLACEHOLDER,
+      type: INPUT_TYPES.SEARCH
+    });
+    this.searchInput.getHTML().classList.add(USER_LIST_STYLES.userListSearchInput);
+    return this.searchInput;
   }
   createUserList() {
     this.userList = createBaseElement({
@@ -335,7 +444,7 @@ class UserListView {
       tag: TAG_NAMES.DIV,
       cssClasses: [USER_LIST_STYLES.wrapper]
     });
-    this.wrapper.append(this.userList);
+    this.wrapper.append(this.searchInput.getHTML(), this.userList);
     return this.wrapper;
   }
 }
@@ -360,11 +469,26 @@ const setCurrentAuthorizedUsers = (value) => ({
   payload: value,
   type: ACTIONS.SET_CURRENT_AUTHORIZED_USERS
 });
+const setCurrentUnauthorizedUsers = (value) => ({
+  payload: value,
+  type: ACTIONS.SET_CURRENT_UNAUTHORIZED_USERS
+});
+const API_URL = "ws://127.0.0.1:4000";
+const API_TYPES = {
+  USER_LOGIN: "USER_LOGIN",
+  USER_LOGOUT: "USER_LOGOUT",
+  USER_ACTIVE: "USER_ACTIVE",
+  USER_INACTIVE: "USER_INACTIVE",
+  USER_EXTERNAL_LOGIN: "USER_EXTERNAL_LOGIN",
+  USER_EXTERNAL_LOGOUT: "USER_EXTERNAL_LOGOUT",
+  ERROR: "ERROR"
+};
+const CHECK_INTERVAL = 5e3;
 class UserListModel {
   constructor() {
     __publicField(this, "view", new UserListView());
     __publicField(this, "eventMediator", EventMediatorModel.getInstance());
-    this.subscribeToEventMediator();
+    this.init();
   }
   getHTML() {
     return this.view.getHTML();
@@ -372,7 +496,7 @@ class UserListModel {
   getActiveUsers() {
     const requestMessage = {
       id: "",
-      type: "USER_ACTIVE",
+      type: API_TYPES.USER_ACTIVE,
       payload: null
     };
     this.eventMediator.notify(
@@ -380,87 +504,137 @@ class UserListModel {
       requestMessage
     );
   }
-  drawActiveUsers(users) {
-    console.log(users);
+  getInactiveUsers() {
+    const requestMessage = {
+      id: "",
+      type: API_TYPES.USER_INACTIVE,
+      payload: null
+    };
+    this.eventMediator.notify(
+      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
+      requestMessage
+    );
+  }
+  getAllUsers() {
+    this.getActiveUsers();
+    this.getInactiveUsers();
+  }
+  drawUsers() {
     this.view.clearUserList();
-    users.forEach((user) => {
-      this.view.drawUser(user);
+    const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser } = StoreModel.getState();
+    const currentUsers = [
+      ...currentAuthorizedUsers,
+      ...currentUnauthorizedUsers
+    ].filter((user2) => user2.login !== (currentUser == null ? void 0 : currentUser.login));
+    if (!currentUsers.length) {
+      this.view.emptyUserList();
+    }
+    currentUsers.forEach((user2) => {
+      this.view.drawUser(user2);
     });
   }
-  saveCurrentActiveUsers(users) {
-    var _a;
-    const currentAuthUserLogin = (_a = StoreModel.getState().currentUser) == null ? void 0 : _a.login;
-    console.log(users, currentAuthUserLogin);
-    const copyUsers = [...users];
-    const currentUsers = copyUsers.filter(
-      (user) => user.login !== currentAuthUserLogin
-    );
-    StoreModel.dispatch(setCurrentAuthorizedUsers(currentUsers));
-    console.log(StoreModel.getState().currentAuthorizedUsers, currentUsers);
-    this.drawActiveUsers(currentUsers);
+  getAllUsersHandler(message) {
+    const checkedMessage = isFromServerMessage(message);
+    if (checkedMessage) {
+      const action = checkedMessage.type === API_TYPES.USER_ACTIVE ? setCurrentAuthorizedUsers : setCurrentUnauthorizedUsers;
+      StoreModel.dispatch(action(checkedMessage.payload.users));
+      this.drawUsers();
+    }
+  }
+  userListHandler(event) {
+    const { target } = event;
+    if (target instanceof HTMLLIElement) {
+      const allUsers = [
+        ...StoreModel.getState().currentAuthorizedUsers,
+        ...StoreModel.getState().currentUnauthorizedUsers
+      ];
+      const currentUserInfo2 = allUsers.find(
+        (user2) => user2.login === target.textContent
+      );
+      this.eventMediator.notify(
+        MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
+        currentUserInfo2
+      );
+    }
+  }
+  setUserListHandler() {
+    this.view.getUserList().addEventListener(EVENT_NAMES.CLICK, (event) => {
+      this.userListHandler(event);
+    });
+    return true;
   }
   subscribeToEventMediator() {
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
       (message) => {
-        const checkedMessage = isFromServerMessage(message);
-        if (checkedMessage) {
-          this.saveCurrentActiveUsers(checkedMessage.payload.users);
-        }
+        this.getAllUsersHandler(message);
       }
     );
     this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.SET_NEW_USER,
-      this.getActiveUsers.bind(this)
+      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_RESPONSE,
+      (message) => {
+        this.getAllUsersHandler(message);
+      }
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
+      this.getAllUsers.bind(this)
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_IN_RESPONSE,
+      this.getAllUsers.bind(this)
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
+      this.getAllUsers.bind(this)
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.EXTERNAL_LOGOUT_RESPONSE,
+      this.getAllUsers.bind(this)
     );
     return true;
   }
-}
-class MainPageModel {
-  constructor(parent, router) {
-    __publicField(this, "router");
-    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
-    __publicField(this, "mainPageView");
-    this.router = router;
-    this.mainPageView = new MainPageView(parent);
-    this.init();
-  }
-  getHTML() {
-    return this.mainPageView.getHTML();
-  }
-  show() {
-    this.mainPageView.getHTML().classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
-    return true;
-  }
-  hide() {
-    this.mainPageView.getHTML().classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
-    return true;
-  }
-  switchPage(params) {
-    if (params === PAGES_IDS.MAIN_PAGE) {
-      if (StoreModel.getState().currentUser) {
-        this.show();
-      } else {
-        this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
-        this.hide();
-      }
+  searchInputHandler() {
+    const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser } = StoreModel.getState();
+    const allUsers = [...currentAuthorizedUsers, ...currentUnauthorizedUsers];
+    const inputValue = this.view.getSearchInput().getHTML().value.toLowerCase().trim();
+    const filteredUsers = allUsers.filter(
+      (user2) => user2.login.toLowerCase().includes(inputValue)
+    );
+    this.view.clearUserList();
+    const currentUsers = filteredUsers.filter(
+      (user2) => user2.login !== (currentUser == null ? void 0 : currentUser.login)
+    );
+    if (!currentUsers.length) {
+      this.view.emptyUserList();
     }
-    return true;
+    currentUsers.forEach((user2) => this.view.drawUser(user2));
   }
-  subscribeToMediator() {
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
-      this.hide();
-      this.switchPage(String(params));
-    });
-    return true;
+  setSearchInputHandler() {
+    this.view.getSearchInput().getHTML().addEventListener(EVENT_NAMES.INPUT, this.searchInputHandler.bind(this));
   }
   init() {
-    this.hide();
-    this.subscribeToMediator();
-    this.getHTML().append(new UserListModel().getHTML());
-    return true;
+    this.setUserListHandler();
+    this.setSearchInputHandler();
+    this.subscribeToEventMediator();
   }
 }
+const SEND_MESSAGE_INPUT_FIELD_PARAMS = {
+  placeholder: "Send message",
+  autocomplete: "off"
+};
+const SEND_MESSAGE_FORM_SVG_DETAILS = {
+  SVG_URL: "http://www.w3.org/2000/svg",
+  SEND_ID: "send"
+};
+const form = "_form_xoglp_1";
+const inputField = "_inputField_xoglp_14";
+const submitFormButton = "_submitFormButton_xoglp_40";
+const SEND_MESSAGE_FORM_STYLES = {
+  form,
+  inputField,
+  submitFormButton
+};
 class ButtonView {
   constructor(params) {
     __publicField(this, "button");
@@ -495,6 +669,267 @@ class ButtonModel {
   }
   setEnabled() {
     this.view.getHTML().disabled = IS_DISABLED.ENABLED;
+  }
+}
+const BUTTON_TYPES = {
+  SUBMIT: "submit",
+  RESET: "reset",
+  BUTTON: "button"
+};
+const createSVGUse = (id) => {
+  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", `#${id}`);
+  return use;
+};
+class SendMessageFormView {
+  constructor() {
+    __publicField(this, "submitFormButton");
+    __publicField(this, "inputField");
+    __publicField(this, "form");
+    this.submitFormButton = this.createSubmitFormButton();
+    this.inputField = this.createInputField();
+    this.form = this.createHTML();
+  }
+  getHTML() {
+    return this.form;
+  }
+  getInputField() {
+    return this.inputField;
+  }
+  getSubmitFormButton() {
+    return this.submitFormButton;
+  }
+  createInputField() {
+    this.inputField = createBaseElement({
+      tag: TAG_NAMES.TEXTAREA,
+      cssClasses: [SEND_MESSAGE_FORM_STYLES.inputField],
+      attributes: {
+        placeholder: SEND_MESSAGE_INPUT_FIELD_PARAMS.placeholder,
+        autocomplete: SEND_MESSAGE_INPUT_FIELD_PARAMS.autocomplete
+      }
+    });
+    return this.inputField;
+  }
+  createSubmitFormButton() {
+    this.submitFormButton = new ButtonModel({
+      classes: [SEND_MESSAGE_FORM_STYLES.submitFormButton],
+      attrs: {
+        type: BUTTON_TYPES.SUBMIT
+      }
+    });
+    const svg = document.createElementNS(
+      SEND_MESSAGE_FORM_SVG_DETAILS.SVG_URL,
+      TAG_NAMES.SVG
+    );
+    svg.append(createSVGUse(SEND_MESSAGE_FORM_SVG_DETAILS.SEND_ID));
+    this.submitFormButton.getHTML().append(svg);
+    this.submitFormButton.setDisabled();
+    return this.submitFormButton;
+  }
+  createHTML() {
+    this.form = createBaseElement({
+      tag: TAG_NAMES.FORM,
+      cssClasses: [SEND_MESSAGE_FORM_STYLES.form]
+    });
+    this.form.append(this.inputField, this.submitFormButton.getHTML());
+    return this.form;
+  }
+}
+class SendMessageFormModel {
+  constructor() {
+    __publicField(this, "view", new SendMessageFormView());
+    this.init();
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+  inputFieldHandler() {
+    const inputField2 = this.view.getInputField();
+    const submitFormButton2 = this.view.getSubmitFormButton();
+    if (inputField2.value) {
+      submitFormButton2.setEnabled();
+    } else {
+      submitFormButton2.setDisabled();
+    }
+  }
+  setInputFieldHandlers() {
+    const inputField2 = this.view.getInputField();
+    const ENTER_KEY = "Enter";
+    inputField2.addEventListener(
+      EVENT_NAMES.INPUT,
+      this.inputFieldHandler.bind(this)
+    );
+    inputField2.addEventListener(EVENT_NAMES.KEYDOWN, (event) => {
+      if (event.key === ENTER_KEY && event.shiftKey) {
+        event.preventDefault();
+        const currentValue = inputField2.value;
+        inputField2.value = `${currentValue}
+`;
+        inputField2.scrollTop = inputField2.scrollHeight;
+      } else if (event.key === ENTER_KEY && !event.shiftKey) {
+        event.preventDefault();
+        if (inputField2.value) {
+          this.formSubmitHandler();
+        }
+      }
+    });
+  }
+  setPreventDefaultToForm() {
+    this.getHTML().addEventListener(EVENT_NAMES.SUBMIT, (event) => {
+      event.preventDefault();
+    });
+    return true;
+  }
+  formSubmitHandler() {
+    const inputField2 = this.view.getInputField();
+    const submitFormButton2 = this.view.getSubmitFormButton();
+    const inputFieldValue = inputField2.value;
+    console.log(inputFieldValue);
+    inputField2.value = "";
+    submitFormButton2.setDisabled();
+  }
+  setSubmitButtonHandler() {
+    const submitFormButton2 = this.view.getSubmitFormButton();
+    submitFormButton2.getHTML().addEventListener(EVENT_NAMES.CLICK, this.formSubmitHandler.bind(this));
+  }
+  init() {
+    this.setPreventDefaultToForm();
+    this.setInputFieldHandlers();
+    this.setSubmitButtonHandler();
+  }
+}
+const dialogWrapper = "_dialogWrapper_13d5w_1";
+const currentUserInfo = "_currentUserInfo_13d5w_10";
+const active = "_active_13d5w_39";
+const inactive = "_inactive_13d5w_46";
+const USER_DIALOGUE_STYLES = {
+  dialogWrapper,
+  currentUserInfo,
+  active,
+  inactive
+};
+class UserDialogueView {
+  constructor() {
+    __publicField(this, "currentUserInfo");
+    __publicField(this, "dialogWrapper");
+    this.currentUserInfo = this.createCurrentUserInfo();
+    this.dialogWrapper = this.createHTML();
+  }
+  getHTML() {
+    return this.dialogWrapper;
+  }
+  getCurrentUserInfo() {
+    return this.currentUserInfo;
+  }
+  setCurrentUserInfo(userInfo) {
+    this.currentUserInfo.textContent = userInfo.login;
+    if (userInfo.isLogined) {
+      this.currentUserInfo.classList.remove(USER_DIALOGUE_STYLES.inactive);
+      this.currentUserInfo.classList.add(USER_DIALOGUE_STYLES.active);
+    } else {
+      this.currentUserInfo.classList.remove(USER_DIALOGUE_STYLES.active);
+      this.currentUserInfo.classList.add(USER_DIALOGUE_STYLES.inactive);
+    }
+  }
+  createCurrentUserInfo() {
+    this.currentUserInfo = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [USER_DIALOGUE_STYLES.currentUserInfo]
+    });
+    return this.currentUserInfo;
+  }
+  createHTML() {
+    this.dialogWrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [USER_DIALOGUE_STYLES.dialogWrapper]
+    });
+    this.dialogWrapper.append(this.currentUserInfo);
+    return this.dialogWrapper;
+  }
+}
+const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
+const isSavedUser = (data) => typeof data === "object" && data !== null && "login" in data && "isLogined" in data;
+class UserDialogueModel {
+  constructor() {
+    __publicField(this, "view", new UserDialogueView());
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
+    __publicField(this, "sendMessageForm", new SendMessageFormModel());
+    this.init();
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+  subscribeToEventMediator() {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.OPEN_USER_DIALOGUE, (data) => {
+      if (isSavedUser(data)) {
+        this.view.setCurrentUserInfo(data);
+      }
+    });
+  }
+  updateStatusCurrentUser(users) {
+    const currentUser = users.filter(
+      (user2) => user2.login === this.view.getCurrentUserInfo().textContent
+    );
+    if (currentUser.length) {
+      this.view.setCurrentUserInfo(currentUser[0]);
+    }
+  }
+  init() {
+    this.subscribeToEventMediator();
+    this.view.getHTML().append(this.sendMessageForm.getHTML());
+    StoreModel.subscribe(ACTIONS.SET_CURRENT_AUTHORIZED_USERS, () => {
+      const { currentAuthorizedUsers } = StoreModel.getState();
+      this.updateStatusCurrentUser(currentAuthorizedUsers);
+    });
+    StoreModel.subscribe(ACTIONS.SET_CURRENT_UNAUTHORIZED_USERS, () => {
+      const { currentUnauthorizedUsers } = StoreModel.getState();
+      this.updateStatusCurrentUser(currentUnauthorizedUsers);
+    });
+  }
+}
+class MainPageModel {
+  constructor(parent, router) {
+    __publicField(this, "router");
+    __publicField(this, "eventMediator", EventMediatorModel.getInstance());
+    __publicField(this, "view");
+    this.router = router;
+    this.view = new MainPageView(parent);
+    this.init();
+  }
+  getHTML() {
+    return this.view.getHTML();
+  }
+  show() {
+    this.view.getHTML().classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
+  }
+  hide() {
+    this.view.getHTML().classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
+  }
+  switchPage(params) {
+    if (params === PAGES_IDS.MAIN_PAGE) {
+      if (StoreModel.getState().currentUser) {
+        this.show();
+      } else {
+        this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
+        this.hide();
+      }
+    }
+    return true;
+  }
+  subscribeToMediator() {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
+      this.hide();
+      this.switchPage(String(params));
+    });
+    return true;
+  }
+  init() {
+    this.hide();
+    this.subscribeToMediator();
+    this.view.getChatWrapper().append(new UserListModel().getHTML(), new UserDialogueModel().getHTML());
+    return true;
   }
 }
 const aboutPage = "_aboutPage_1eieo_1";
@@ -657,11 +1092,6 @@ class LoginPageView2 {
     return this.page;
   }
 }
-const BUTTON_TYPES = {
-  SUBMIT: "submit",
-  RESET: "reset",
-  BUTTON: "button"
-};
 class InputFieldValidatorModel {
   constructor(validParams, isValid) {
     __publicField(this, "validParams");
@@ -723,43 +1153,6 @@ class InputFieldValidatorModel {
       return errorMessage;
     }
     return true;
-  }
-}
-class InputView {
-  constructor(attrs) {
-    __publicField(this, "input");
-    this.input = this.createHTML(attrs);
-  }
-  getHTML() {
-    return this.input;
-  }
-  createHTML(attrs) {
-    this.input = createBaseElement({
-      tag: TAG_NAMES.INPUT,
-      attributes: attrs
-    });
-    return this.input;
-  }
-}
-class InputModel {
-  constructor(attrs) {
-    __publicField(this, "view");
-    this.view = new InputView(attrs);
-  }
-  getHTML() {
-    return this.view.getHTML();
-  }
-  getValue() {
-    return this.view.getHTML().value;
-  }
-  setDisabled() {
-    this.view.getHTML().disabled = IS_DISABLED.DISABLED;
-  }
-  setEnabled() {
-    this.view.getHTML().disabled = IS_DISABLED.ENABLED;
-  }
-  clear() {
-    this.view.getHTML().value = "";
   }
 }
 class InputFieldView {
@@ -963,11 +1356,11 @@ class LoginFormView {
         (validParams) => validParams.key === inputFieldParams.inputParams.id
       );
       if (currentValidateParams) {
-        const inputField = new InputFieldModel(
+        const inputField2 = new InputFieldModel(
           inputFieldParams,
           currentValidateParams
         );
-        this.inputFields.push(inputField);
+        this.inputFields.push(inputField2);
       } else {
         this.inputFields.push(new InputFieldModel(inputFieldParams, null));
       }
@@ -979,8 +1372,8 @@ class LoginFormView {
       tag: TAG_NAMES.FORM,
       cssClasses: [LOGIN_FORM_STYLES.loginForm]
     });
-    this.inputFields.forEach((inputField) => {
-      const inputFieldElement = inputField.getView().getHTML();
+    this.inputFields.forEach((inputField2) => {
+      const inputFieldElement = inputField2.getView().getHTML();
       if (inputFieldElement instanceof HTMLLabelElement) {
         this.form.append(inputFieldElement);
       } else {
@@ -991,15 +1384,6 @@ class LoginFormView {
     return this.form;
   }
 }
-const API_URL = "ws://127.0.0.1:4000";
-const API_TYPES = {
-  USER_LOGIN: "USER_LOGIN",
-  USER_LOGOUT: "USER_LOGOUT",
-  USER_ACTIVE: "USER_ACTIVE",
-  USER_INACTIVE: "USER_INACTIVE",
-  ERROR: "ERROR"
-};
-const CHECK_INTERVAL = 5e3;
 const isKeyOfUser = (context, key) => Object.hasOwnProperty.call(context, key);
 class LoginFormModel {
   constructor() {
@@ -1007,7 +1391,8 @@ class LoginFormModel {
     __publicField(this, "messageID", "");
     __publicField(this, "userData", {
       login: "",
-      password: ""
+      password: "",
+      isLogined: ""
     });
     __publicField(this, "inputFields", []);
     __publicField(this, "isValidInputFields", {});
@@ -1023,11 +1408,11 @@ class LoginFormModel {
   getUserData() {
     return this.userData;
   }
-  setInputFieldHandlers(inputField) {
-    const inputHTML = inputField.getView().getInput().getHTML();
+  setInputFieldHandlers(inputField2) {
+    const inputHTML = inputField2.getView().getInput().getHTML();
     this.isValidInputFields[inputHTML.id] = false;
     inputHTML.addEventListener(EVENT_NAMES.INPUT, () => {
-      this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
+      this.isValidInputFields[inputHTML.id] = inputField2.getIsValid();
       this.switchSubmitFormButtonAccess();
     });
     return true;
@@ -1041,8 +1426,8 @@ class LoginFormModel {
     return true;
   }
   getFormData() {
-    this.inputFields.forEach((inputField) => {
-      const input = inputField.getView().getInput();
+    this.inputFields.forEach((inputField2) => {
+      const input = inputField2.getView().getInput();
       const inputHTML = input.getHTML();
       const inputValue = input.getValue();
       if (isKeyOfUser(this.userData, inputHTML.id)) {
@@ -1063,12 +1448,12 @@ class LoginFormModel {
         user: this.getFormData()
       }
     };
-    this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
+    this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_REQUEST, userData);
     return true;
   }
   setSubmitFormButtonHandler() {
-    const submitFormButton = this.view.getSubmitFormButton().getHTML();
-    submitFormButton.addEventListener(
+    const submitFormButton2 = this.view.getSubmitFormButton().getHTML();
+    submitFormButton2.addEventListener(
       EVENT_NAMES.CLICK,
       this.submitFormButtonHandler.bind(this)
     );
@@ -1083,7 +1468,7 @@ class LoginFormModel {
   init() {
     this.inputFields = this.view.getInputFields();
     this.inputFields.forEach(
-      (inputField) => this.setInputFieldHandlers(inputField)
+      (inputField2) => this.setInputFieldHandlers(inputField2)
     );
     this.setSubmitFormButtonHandler();
     this.setPreventDefaultToForm();
@@ -1094,7 +1479,6 @@ const STORE_KEYS = {
   SS_NAME: "b3413f43-40a4-440c-80c0-6aa64b9b1240",
   CURRENT_USER: "currentUser"
 };
-const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 class LoginPageModel {
   constructor(parent, router, storage) {
     __publicField(this, "loginPageView");
@@ -1128,8 +1512,7 @@ class LoginPageModel {
           user: currentUser
         }
       };
-      StoreModel.dispatch(setCurrentUser(currentUser));
-      this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
+      this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_REQUEST, userData);
       return currentUser;
     }
     return null;
@@ -1190,7 +1573,10 @@ class LoginPageModel {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       this.switchPage(String(params));
     });
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.SET_NEW_USER, (message) => {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_CONNECT, () => {
+      this.checkAuthorizedUser();
+    });
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_IN_RESPONSE, (message) => {
       const checkedMessage = isFromServerMessage(message);
       if (checkedMessage) {
         this.handleMessageFromServer(checkedMessage);
@@ -1199,7 +1585,6 @@ class LoginPageModel {
     return true;
   }
   initPage() {
-    this.checkAuthorizedUser();
     this.subscribeToMediator();
     this.hide();
     const loginFormHTML = this.loginFormModel.getHTML();
@@ -1260,7 +1645,7 @@ class RouterModel {
     this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join());
   }
 }
-const siteWrapper = "_siteWrapper_wr5jx_1";
+const siteWrapper = "_siteWrapper_1h3d3_1";
 const APP_STYLES = {
   siteWrapper
 };
@@ -1283,11 +1668,11 @@ class AppView {
 const APP_NAME = "Fun Chat";
 const LOGOUT_BUTTON_TEXT = "Logout";
 const ABOUT_BUTTON_TEXT = "About";
-const header = "_header_lfj9q_1";
-const nameApp = "_nameApp_lfj9q_12";
-const userLogin = "_userLogin_lfj9q_20";
-const logoutButton = "_logoutButton_lfj9q_28";
-const aboutButton = "_aboutButton_lfj9q_29";
+const header = "_header_uazn4_1";
+const nameApp = "_nameApp_uazn4_12";
+const userLogin = "_userLogin_uazn4_20";
+const logoutButton = "_logoutButton_uazn4_28";
+const aboutButton = "_aboutButton_uazn4_29";
 const HEADER_STYLES = {
   header,
   nameApp,
@@ -1378,18 +1763,21 @@ class HeaderModel {
     return this.view.getHTML();
   }
   logoutButtonHandler() {
-    var _a, _b;
+    const { currentUser } = StoreModel.getState();
+    if (!currentUser) {
+      return false;
+    }
     const logOutData = {
       id: null,
       type: API_TYPES.USER_LOGOUT,
       payload: {
         user: {
-          login: (_a = StoreModel.getState().currentUser) == null ? void 0 : _a.login,
-          password: (_b = StoreModel.getState().currentUser) == null ? void 0 : _b.password
+          login: currentUser.login,
+          password: currentUser.password
         }
       }
     };
-    this.eventMediator.notify(MEDIATOR_EVENTS.LOG_OUT, logOutData);
+    this.eventMediator.notify(MEDIATOR_EVENTS.LOG_OUT_REQUEST, logOutData);
     this.storage.remove(STORE_KEYS.CURRENT_USER);
     StoreModel.dispatch(setCurrentUser(null));
     this.view.getLogoutButton().setDisabled();
@@ -1432,6 +1820,7 @@ class ClientApiModel {
     __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     this.webSocket = webSocket;
     this.isOpen = isOpen;
+    this.unsubscribeToEventMediator();
     this.subscribeToEventMediator();
   }
   isWorks() {
@@ -1441,32 +1830,46 @@ class ClientApiModel {
     this.webSocket.send(JSON.stringify(message));
     return true;
   }
-  subscribeToEventMediator() {
+  unsubscribeToEventMediator() {
     const createNewUserListener = (message) => {
       this.sendMessage(message);
     };
     this.eventMediator.unsubscribe(
-      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      MEDIATOR_EVENTS.LOG_IN_REQUEST,
       createNewUserListener
     );
     this.eventMediator.unsubscribe(
-      MEDIATOR_EVENTS.LOG_OUT,
+      MEDIATOR_EVENTS.LOG_OUT_REQUEST,
       createNewUserListener
     );
     this.eventMediator.unsubscribe(
       MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
       createNewUserListener
     );
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
+      createNewUserListener
+    );
+    return true;
+  }
+  subscribeToEventMediator() {
+    const createNewUserListener = (message) => {
+      this.sendMessage(message);
+    };
     this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.CREATE_NEW_USER,
+      MEDIATOR_EVENTS.LOG_IN_REQUEST,
       createNewUserListener
     );
     this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.LOG_OUT,
+      MEDIATOR_EVENTS.LOG_OUT_REQUEST,
       createNewUserListener
     );
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
+      createNewUserListener
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
       createNewUserListener
     );
     return true;
@@ -1489,24 +1892,65 @@ class ServerApiModel {
       const message = JSON.parse(String(data));
       const checkedMessage = isFromServerMessage(message);
       if (checkedMessage) {
-        this.handleMessageType(checkedMessage);
+        this.handleAuthentication(checkedMessage);
       }
     });
     return true;
   }
-  handleMessageType(message) {
+  handleAuthentication(message) {
     switch (message.type) {
       case API_TYPES.USER_LOGIN: {
-        this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
+        this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_RESPONSE, message);
         return true;
       }
       case API_TYPES.ERROR: {
-        this.eventMediator.notify(MEDIATOR_EVENTS.SET_NEW_USER, message);
+        this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_RESPONSE, message);
         return false;
       }
+      case API_TYPES.USER_LOGOUT: {
+        this.eventMediator.notify(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, message);
+        return true;
+      }
+      default: {
+        this.handleUserState(message);
+        return null;
+      }
+    }
+  }
+  handleUserState(message) {
+    switch (message.type) {
       case API_TYPES.USER_ACTIVE: {
         this.eventMediator.notify(
           MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
+          message
+        );
+        return true;
+      }
+      case API_TYPES.USER_INACTIVE: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_RESPONSE,
+          message
+        );
+        return true;
+      }
+      default: {
+        this.handlerUserExternal(message);
+        return null;
+      }
+    }
+  }
+  handlerUserExternal(message) {
+    switch (message.type) {
+      case API_TYPES.USER_EXTERNAL_LOGIN: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
+          message
+        );
+        return true;
+      }
+      case API_TYPES.USER_EXTERNAL_LOGOUT: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.EXTERNAL_LOGOUT_RESPONSE,
           message
         );
         return true;
@@ -1536,25 +1980,9 @@ class SocketModel {
       }, CHECK_INTERVAL);
     };
     this.webSocket.addEventListener(EVENT_NAMES.OPEN, () => {
-      var _a, _b;
       this.isOpen = true;
       this.init();
       clearTimeout(reconnectTimeout);
-      const authUserLogin = (_a = StoreModel.getState().currentUser) == null ? void 0 : _a.login;
-      const authUserPassword = (_b = StoreModel.getState().currentUser) == null ? void 0 : _b.password;
-      if (authUserLogin && authUserPassword) {
-        const userData = {
-          id: null,
-          type: API_TYPES.USER_LOGIN,
-          payload: {
-            user: {
-              login: authUserLogin,
-              password: authUserPassword
-            }
-          }
-        };
-        this.eventMediator.notify(MEDIATOR_EVENTS.CREATE_NEW_USER, userData);
-      }
       this.eventMediator.notify(MEDIATOR_EVENTS.SOCKET_CONNECT, null);
     });
     this.webSocket.addEventListener(EVENT_NAMES.CLOSE, () => {
@@ -1628,11 +2056,6 @@ class SessionStorageModel {
     return this.storage;
   }
 }
-const createSVGUse = (id) => {
-  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-  use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", `#${id}`);
-  return use;
-};
 const LINK_ATTRIBUTES = {
   TARGET_BLANK: "_blank",
   RS_HREF: "https://rs.school/",
@@ -1644,10 +2067,10 @@ const FOOTER_SVG_DETAILS = {
   GITHUB_ID: "githubLogo"
 };
 const FOOTER_YEAR = "2024";
-const footer = "_footer_16ynr_1";
-const rsLink = "_rsLink_16ynr_13";
-const githubLink = "_githubLink_16ynr_14";
-const appYear = "_appYear_16ynr_59";
+const footer = "_footer_u9db1_1";
+const rsLink = "_rsLink_u9db1_13";
+const githubLink = "_githubLink_u9db1_14";
+const appYear = "_appYear_u9db1_59";
 const FOOTER_STYLES = {
   footer,
   rsLink,
@@ -1842,12 +2265,14 @@ class AppModel {
     const root = this.getHTML();
     root.prepend(new HeaderModel(this.router, this.storage).getHTML());
     const loginPage2 = new LoginPageModel(root, this.router, this.storage);
+    const mainPage2 = new MainPageModel(root, this.router);
+    const aboutPage2 = new AboutPageModel(root, this.router);
     const pages = new Map(
       Object.entries({
         [PAGES_IDS.DEFAULT_PAGE]: loginPage2,
         [PAGES_IDS.LOGIN_PAGE]: loginPage2,
-        [PAGES_IDS.MAIN_PAGE]: new MainPageModel(root, this.router),
-        [PAGES_IDS.ABOUT_PAGE]: new AboutPageModel(root, this.router)
+        [PAGES_IDS.MAIN_PAGE]: mainPage2,
+        [PAGES_IDS.ABOUT_PAGE]: aboutPage2
       })
     );
     root.append(new FooterModel().getHTML(), this.modal.getHTML());
@@ -1866,4 +2291,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-4bd3962a.js.map
+//# sourceMappingURL=main-a74367f4.js.map
