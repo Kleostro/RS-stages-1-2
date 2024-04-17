@@ -37,6 +37,23 @@
   }
 }
 
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  border: 2px solid var(--noble-black-300);
+  border-radius: 50%;
+  padding: 4px 8px;
+  font: var(--small-font);
+  text-align: center;
+  color: var(--noble-black-300);
+  background-color: var(--noble-black-800);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
 .userListEmpty {
   padding: calc(var(--little-offset)) var(--medium-offset);
 }
@@ -101,6 +118,8 @@
 
 .user {
   position: relative;
+  display: flex;
+  align-items: center;
   border-bottom: 3px solid var(--noble-black-300);
   padding: calc(var(--little-offset)) var(--medium-offset);
   font: var(--small-font);
@@ -132,6 +151,11 @@
   @media (hover: hover) {
     &:hover {
       background-color: var(--noble-black-600);
+
+      .counter {
+        color: var(--noble-black-800);
+        background-color: var(--noble-black-300);
+      }
     }
   }
 }
@@ -154,4 +178,9 @@
 
 .userSelected {
   background-color: var(--noble-black-600);
+
+  .counter {
+    color: var(--noble-black-800);
+    background-color: var(--noble-black-300);
+  }
 }

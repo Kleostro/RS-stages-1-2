@@ -4,6 +4,7 @@ import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import MESSAGE_STYLES from './message.module.scss';
 import messageDateFormatting from '../../../utils/messageDateFormatting.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
+import MESSAGE_STATE from '../types/enums.ts';
 
 class MessageView {
   private messageParams: Message;
@@ -32,7 +33,7 @@ class MessageView {
   }
 
   public deliveredMessage(): void {
-    this.messageStatus.innerHTML = '&#10003&#10003';
+    this.messageStatus.innerHTML = MESSAGE_STATE.DELIVERED;
   }
 
   private createMessageText(): HTMLSpanElement {
@@ -67,12 +68,12 @@ class MessageView {
 
   private createMessageStatus(): HTMLSpanElement {
     const { isDelivered } = this.messageParams.status;
-    const sended = '&#10003';
-    const delivered = '&#10003&#10003';
     this.messageStatus = createBaseElement({
       tag: TAG_NAMES.SPAN,
       cssClasses: [MESSAGE_STYLES.status],
-      innerContent: isDelivered ? delivered : sended,
+      innerContent: isDelivered
+        ? MESSAGE_STATE.DELIVERED
+        : MESSAGE_STATE.SENDED,
     });
 
     return this.messageStatus;

@@ -14,6 +14,10 @@ const MEDIATOR_EVENTS = {
   GET_ALL_UNAUTHENTICATED_USERS_RESPONSE: 'getAllUnauthenticatedUsersResponse',
   GET_HISTORY_MESSAGES_REQUEST: 'getHistoryMessagesRequest',
   GET_HISTORY_MESSAGES_RESPONSE: 'getHistoryMessagesResponse',
+  GET_ALL_HISTORY_MESSAGE_FOR_CURRENT_USER_REQUEST:
+    'getAllHistoryMessageForCurrentUserRequest',
+  GET_ALL_HISTORY_MESSAGE_FOR_CURRENT_USER_RESPONSE:
+    'getAllHistoryMessageForCurrentUserResponse',
   SEND_MESSAGE_REQUEST: 'sendMessageRequest',
   SEND_MESSAGE_RESPONSE: 'sendMessageResponse',
   DELIVERED_MESSAGE_RESPONSE: 'deliveredMessageResponse',

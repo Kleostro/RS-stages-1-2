@@ -1,5 +1,5 @@
 import InputModel from '../../../shared/Input/model/InputModel.ts';
-import type { User } from '../../../shared/Store/initialData.ts';
+import type { Message, User } from '../../../shared/Store/initialData.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import USER_LIST_STYLES from './userList.module.scss';
@@ -33,6 +33,9 @@ class UserListView {
     const user = createBaseElement({
       tag: TAG_NAMES.LI,
       cssClasses: [USER_LIST_STYLES.user],
+      attributes: {
+        id: userInfo.login,
+      },
       innerContent: userInfo.login,
     });
 
@@ -57,12 +60,38 @@ class UserListView {
     this.userList.classList.add(USER_LIST_STYLES.userListEmpty);
   }
 
-  public selectUser(target: HTMLLIElement): void {
+  public selectUser(target: EventTarget | null): void {
+    if (target instanceof HTMLLIElement || target instanceof HTMLSpanElement) {
+      const users = this.userList.children;
+      Array.from(users).forEach((user) => {
+        user.classList.remove(USER_LIST_STYLES.userSelected);
+      });
+      target.classList.add(USER_LIST_STYLES.userSelected);
+    }
+  }
+
+  public drawUnreadMessagesCount(messages: Message[]): void {
     const users = this.userList.children;
-    Array.from(users).forEach((user) => {
-      user.classList.remove(USER_LIST_STYLES.userSelected);
+    Array.from(users).forEach((item) => {
+      if (item.id === messages[messages.length - 1].from) {
+        const currentUser = item;
+        const currentUserLogin = item.id;
+        const unreadMessages = messages.filter(
+          (message) => message.from === currentUserLogin,
+        );
+        currentUser.innerHTML = '';
+        currentUser.textContent = currentUserLogin;
+        if (unreadMessages.length) {
+          const counter = createBaseElement({
+            tag: TAG_NAMES.SPAN,
+            cssClasses: [USER_LIST_STYLES.counter],
+            innerContent: unreadMessages.length.toString(),
+          });
+
+          item.append(counter);
+        }
+      }
     });
-    target.classList.add(USER_LIST_STYLES.userSelected);
   }
 
   private createSearchInput(): InputModel {

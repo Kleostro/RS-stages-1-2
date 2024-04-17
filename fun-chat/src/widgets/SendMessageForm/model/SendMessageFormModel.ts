@@ -43,16 +43,20 @@ class SendMessageFormModel {
     );
 
     inputField.addEventListener(EVENT_NAMES.KEYDOWN, (event: KeyboardEvent) => {
-      if (event.key === ENTER_KEY && event.shiftKey) {
+      if (event.key === ENTER_KEY) {
         event.preventDefault();
+      }
+
+      if (event.key === ENTER_KEY && event.shiftKey) {
         const currentValue = inputField.value;
         inputField.value = `${currentValue}\n`;
         inputField.scrollTop = inputField.scrollHeight;
-      } else if (event.key === ENTER_KEY && !event.shiftKey) {
-        event.preventDefault();
-        if (inputField.value) {
-          this.formSubmitHandler();
-        }
+      } else if (
+        event.key === ENTER_KEY &&
+        !event.shiftKey &&
+        inputField.value
+      ) {
+        this.formSubmitHandler();
       }
     });
   }

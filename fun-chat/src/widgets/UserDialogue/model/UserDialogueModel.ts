@@ -17,6 +17,8 @@ class UserDialogueModel {
 
   private sendMessageForm = new SendMessageFormModel();
 
+  private messageID = '';
+
   constructor() {
     this.init();
   }
@@ -27,7 +29,11 @@ class UserDialogueModel {
 
   private retrieveMessagesWithCurrentUser(data: unknown): void {
     const checkedData = isFromServerMessage(data);
-    if (checkedData) {
+    if (
+      checkedData &&
+      checkedData.id === this.messageID &&
+      checkedData.id !== ''
+    ) {
       this.hasMessages(checkedData.payload.messages);
     }
   }
@@ -36,7 +42,7 @@ class UserDialogueModel {
     this.view.clearMessagesWrapper();
     const messageWrapper = this.view.getMessagesWrapper();
     messages.forEach((message) => {
-      const messageModel = new MessageModel(message);
+      const messageModel = new MessageModel(message, message.id);
       messageWrapper.append(messageModel.getHTML());
     });
 
@@ -52,8 +58,9 @@ class UserDialogueModel {
   }
 
   private requestMessagesWithCurrentUser(userLogin: string): void {
+    this.messageID = crypto.randomUUID();
     const message = {
-      id: '',
+      id: this.messageID,
       type: API_TYPES.MSG_FROM_USER,
       payload: {
         user: {

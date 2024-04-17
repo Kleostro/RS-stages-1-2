@@ -6,6 +6,10 @@
   padding: calc(var(--little-offset) / 4);
   background-color: var(--steam-green-400);
 
+  &:first-of-type {
+    margin-top: auto;
+  }
+
   &:not(:last-child) {
     margin-bottom: var(--little-offset);
   }
@@ -43,8 +47,26 @@
 }
 
 .currentUser {
+  position: relative;
   align-self: end;
+  border-radius: var(--border-radius) var(--border-radius) 0;
   background-color: var(--steam-green-400);
+
+  &::before {
+    content: '';
+    position: absolute;
+    right: -23px;
+    bottom: 0;
+    display: block;
+    width: 24px;
+    height: 30px;
+    background: radial-gradient(
+        60px at top right,
+        transparent 49%,
+        var(--steam-green-400) 51%
+      )
+      no-repeat left bottom;
+  }
 
   .date,
   .status {
@@ -57,8 +79,27 @@
 }
 
 .otherUser {
+  position: relative;
   align-self: start;
+  border-radius: var(--border-radius) var(--border-radius) var(--border-radius)
+    0;
   background-color: var(--white);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    bottom: 0;
+    display: block;
+    width: 24px;
+    height: 30px;
+    background: radial-gradient(
+        60px at top left,
+        transparent 49%,
+        var(--white) 51%
+      )
+      no-repeat right bottom;
+  }
 
   .date {
     grid-column: 2;

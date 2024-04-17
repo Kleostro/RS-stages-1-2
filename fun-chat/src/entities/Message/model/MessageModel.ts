@@ -2,13 +2,17 @@ import EventMediatorModel from '../../../shared/EventMediator/model/EventMediato
 import type { Message } from '../../../shared/Store/initialData.ts';
 import MessageView from '../view/MessageView.ts';
 import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
+import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
 
 class MessageModel {
   private view: MessageView;
 
   private eventMediator = EventMediatorModel.getInstance();
 
-  constructor(messageParams: Message) {
+  private messageID = '';
+
+  constructor(messageParams: Message, messageID: string) {
+    this.messageID = messageID;
     this.view = new MessageView(messageParams);
     this.init();
   }
@@ -20,7 +24,13 @@ class MessageModel {
   private subscribeToEvents(): void {
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.DELIVERED_MESSAGE_RESPONSE,
-      () => this.view.deliveredMessage(),
+      (message) => {
+        const checkedMessage = isFromServerMessage(message);
+
+        if (checkedMessage?.payload.message.id === this.messageID) {
+          this.view.deliveredMessage();
+        }
+      },
     );
   }
 

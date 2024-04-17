@@ -53,6 +53,35 @@ class UserListModel {
     this.getInactiveUsers();
   }
 
+  private getUnreadMessages(login: string): void {
+    const requestMessage = {
+      id: '',
+      type: API_TYPES.MSG_FROM_USER,
+      payload: {
+        user: {
+          login,
+        },
+      },
+    };
+    this.eventMediator.notify(
+      MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
+      requestMessage,
+    );
+  }
+
+  private drawUnreadMessages(data: unknown): void {
+    const checkedData = isFromServerMessage(data);
+    if (checkedData) {
+      const unreadMessages = checkedData.payload.messages.filter(
+        (message) => !message.status.isReaded,
+      );
+
+      if (unreadMessages.length) {
+        this.view.drawUnreadMessagesCount(unreadMessages);
+      }
+    }
+  }
+
   private drawUsers(): void {
     this.view.clearUserList();
     const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser } =
@@ -69,6 +98,10 @@ class UserListModel {
 
     currentUsers.forEach((user) => {
       this.view.drawUser(user);
+
+      if (currentUser?.login) {
+        this.getUnreadMessages(user.login);
+      }
     });
   }
 
@@ -80,31 +113,36 @@ class UserListModel {
           ? setCurrentAuthorizedUsers
           : setCurrentUnauthorizedUsers;
       StoreModel.dispatch(action(checkedMessage.payload.users));
+
       this.drawUsers();
     }
   }
 
   private userListHandler(event: Event): void {
     const { target } = event;
-    if (target instanceof HTMLLIElement) {
-      this.view.selectUser(target);
-      const allUsers = [
-        ...StoreModel.getState().currentAuthorizedUsers,
-        ...StoreModel.getState().currentUnauthorizedUsers,
-      ];
-      const currentUserInfo = allUsers.find(
-        (user) => user.login === target.textContent,
-      );
+    this.view.selectUser(target);
+    const allUsers = [
+      ...StoreModel.getState().currentAuthorizedUsers,
+      ...StoreModel.getState().currentUnauthorizedUsers,
+    ];
 
-      if (currentUserInfo) {
-        StoreModel.dispatch(setSelectedUser(currentUserInfo));
-      }
-
-      this.eventMediator.notify(
-        MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
-        currentUserInfo,
+    let currentUserInfo = null;
+    if (target instanceof HTMLSpanElement) {
+      currentUserInfo = allUsers.find(
+        (user) => user.login === target.parentElement?.id,
       );
+    } else if (target instanceof HTMLLIElement) {
+      currentUserInfo = allUsers.find((user) => user.login === target.id);
     }
+
+    if (currentUserInfo) {
+      StoreModel.dispatch(setSelectedUser(currentUserInfo));
+    }
+
+    this.eventMediator.notify(
+      MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
+      currentUserInfo,
+    );
   }
 
   private setUserListHandler(): boolean {
@@ -149,6 +187,22 @@ class UserListModel {
       this.getAllUsers.bind(this),
     );
 
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_RESPONSE,
+      (message) => {
+        this.drawUnreadMessages(message);
+      },
+    );
+
+    return true;
+  }
+
+  private subscribeToEventMediator2(): boolean {
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE, () => {
+      StoreModel.getState().currentAuthorizedUsers.forEach((user) => {
+        this.getUnreadMessages(user.login);
+      });
+    });
     return true;
   }
 
@@ -176,7 +230,10 @@ class UserListModel {
       this.view.emptyUserList();
     }
 
-    currentUsers.forEach((user) => this.view.drawUser(user));
+    currentUsers.forEach((user) => {
+      this.getUnreadMessages(user.login);
+      this.view.drawUser(user);
+    });
   }
 
   private setSearchInputHandler(): void {
@@ -190,6 +247,7 @@ class UserListModel {
     this.setUserListHandler();
     this.setSearchInputHandler();
     this.subscribeToEventMediator();
+    this.subscribeToEventMediator2();
   }
 }
 
