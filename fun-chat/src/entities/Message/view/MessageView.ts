@@ -1,0 +1,110 @@
+import createBaseElement from '../../../utils/createBaseElement.ts';
+import type { Message } from '../../../shared/Store/initialData.ts';
+import { TAG_NAMES } from '../../../shared/types/enums.ts';
+import MESSAGE_STYLES from './message.module.scss';
+import messageDateFormatting from '../../../utils/messageDateFormatting.ts';
+import StoreModel from '../../../shared/Store/model/StoreModel.ts';
+
+class MessageView {
+  private messageParams: Message;
+
+  private messageText: HTMLSpanElement;
+
+  private messageDate: HTMLSpanElement;
+
+  private messageLogin: HTMLSpanElement;
+
+  private messageStatus: HTMLSpanElement;
+
+  private message: HTMLDivElement;
+
+  constructor(messageParams: Message) {
+    this.messageParams = messageParams;
+    this.messageText = this.createMessageText();
+    this.messageDate = this.createMessageDate();
+    this.messageLogin = this.createMessageLogin();
+    this.messageStatus = this.createMessageStatus();
+    this.message = this.createHTML();
+  }
+
+  public getHTML(): HTMLDivElement {
+    return this.message;
+  }
+
+  public deliveredMessage(): void {
+    this.messageStatus.innerHTML = '&#10003&#10003';
+  }
+
+  private createMessageText(): HTMLSpanElement {
+    this.messageText = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [MESSAGE_STYLES.text],
+      innerContent: this.messageParams.text,
+    });
+
+    return this.messageText;
+  }
+
+  private createMessageLogin(): HTMLSpanElement {
+    this.messageLogin = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [MESSAGE_STYLES.login],
+      innerContent: this.messageParams.from,
+    });
+
+    return this.messageLogin;
+  }
+
+  private createMessageDate(): HTMLSpanElement {
+    this.messageDate = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [MESSAGE_STYLES.date],
+      innerContent: messageDateFormatting(this.messageParams.datetime),
+    });
+
+    return this.messageDate;
+  }
+
+  private createMessageStatus(): HTMLSpanElement {
+    const { isDelivered } = this.messageParams.status;
+    const sended = '&#10003';
+    const delivered = '&#10003&#10003';
+    this.messageStatus = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [MESSAGE_STYLES.status],
+      innerContent: isDelivered ? delivered : sended,
+    });
+
+    return this.messageStatus;
+  }
+
+  private wasSentByCurrentUser(): boolean {
+    return this.messageParams.from === StoreModel.getState().currentUser?.login;
+  }
+
+  private createHTML(): HTMLDivElement {
+    this.message = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [MESSAGE_STYLES.message],
+    });
+
+    this.message.append(
+      this.messageText,
+      this.messageDate,
+      this.messageLogin,
+      this.messageStatus,
+    );
+
+    if (this.wasSentByCurrentUser()) {
+      this.message.classList.add(MESSAGE_STYLES.currentUser);
+      this.messageLogin.textContent = 'You';
+    } else {
+      this.message.classList.add(MESSAGE_STYLES.otherUser);
+      this.messageStatus.textContent = '';
+    }
+
+    return this.message;
+  }
+}
+
+export default MessageView;

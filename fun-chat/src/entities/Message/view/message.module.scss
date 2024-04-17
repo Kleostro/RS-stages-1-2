@@ -1,0 +1,66 @@
+.message {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  grid-template-rows: repeat(3, max-content);
+  border-radius: var(--border-radius);
+  padding: calc(var(--little-offset) / 4);
+  background-color: var(--steam-green-400);
+
+  &:not(:last-child) {
+    margin-bottom: var(--little-offset);
+  }
+}
+
+.text {
+  grid-column: 1 span;
+  grid-row: 2;
+  margin: calc(var(--little-offset) / 3) 0 calc(var(--little-offset) / 4);
+  max-width: 25dvw;
+  font: var(--small-font);
+  word-break: break-all;
+  color: var(--noble-black-800);
+}
+
+.login {
+  grid-column: 2 span;
+  grid-row: 1;
+  font: var(--little-font);
+  text-align: right;
+  text-decoration: underline;
+  color: var(--noble-black-800);
+}
+
+.status,
+.date {
+  grid-column: 2;
+  grid-row: 3;
+  font: var(--little-font);
+  text-align: right;
+}
+
+.date {
+  grid-column: 1;
+}
+
+.currentUser {
+  align-self: end;
+  background-color: var(--steam-green-400);
+
+  .date,
+  .status {
+    color: var(--steam-green-800);
+  }
+
+  .date {
+    margin-right: 5px;
+  }
+}
+
+.otherUser {
+  align-self: start;
+  background-color: var(--white);
+
+  .date {
+    grid-column: 2;
+  }
+}
