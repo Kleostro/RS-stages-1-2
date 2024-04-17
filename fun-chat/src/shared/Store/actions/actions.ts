@@ -15,6 +15,13 @@ export const setCurrentUser = (
   type: ACTIONS.SET_CURRENT_USER,
 });
 
+export const setSelectedUser = (
+  value: User | null,
+): ActionWithPayload<User | null, typeof ACTIONS.SET_SELECTED_USER> => ({
+  payload: value,
+  type: ACTIONS.SET_SELECTED_USER,
+});
+
 export const setCurrentAuthorizedUsers = (
   value: User[],
 ): ActionWithPayload<User[], typeof ACTIONS.SET_CURRENT_AUTHORIZED_USERS> => ({

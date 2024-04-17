@@ -49,6 +49,16 @@ class ClientApiModel {
       createNewUserListener,
     );
 
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.SEND_MESSAGE_REQUEST,
+      createNewUserListener,
+    );
+
     return true;
   }
 
@@ -74,6 +84,16 @@ class ClientApiModel {
 
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.SEND_MESSAGE_REQUEST,
       createNewUserListener,
     );
 

@@ -2,7 +2,7 @@ import MEDIATOR_EVENTS from '../../../EventMediator/types/enums.ts';
 import EventMediatorModel from '../../../EventMediator/model/EventMediatorModel.ts';
 import { EVENT_NAMES } from '../../../types/enums.ts';
 import { API_TYPES } from '../types/enums.ts';
-import type { Message } from '../../../../utils/isFromServerMessage.ts';
+import type { MessageFromServer } from '../../../../utils/isFromServerMessage.ts';
 import { isFromServerMessage } from '../../../../utils/isFromServerMessage.ts';
 
 class ServerApiModel {
@@ -33,7 +33,7 @@ class ServerApiModel {
     return true;
   }
 
-  private handleAuthentication(message: Message): null | boolean {
+  private handleAuthentication(message: MessageFromServer): null | boolean {
     switch (message.type) {
       case API_TYPES.USER_LOGIN: {
         this.eventMediator.notify(MEDIATOR_EVENTS.LOG_IN_RESPONSE, message);
@@ -54,7 +54,7 @@ class ServerApiModel {
     }
   }
 
-  private handleUserState(message: Message): null | boolean {
+  private handleUserState(message: MessageFromServer): null | boolean {
     switch (message.type) {
       case API_TYPES.USER_ACTIVE: {
         this.eventMediator.notify(
@@ -77,7 +77,7 @@ class ServerApiModel {
     }
   }
 
-  private handlerUserExternal(message: Message): null | boolean {
+  private handlerUserExternal(message: MessageFromServer): null | boolean {
     switch (message.type) {
       case API_TYPES.USER_EXTERNAL_LOGIN: {
         this.eventMediator.notify(
@@ -89,6 +89,45 @@ class ServerApiModel {
       case API_TYPES.USER_EXTERNAL_LOGOUT: {
         this.eventMediator.notify(
           MEDIATOR_EVENTS.EXTERNAL_LOGOUT_RESPONSE,
+          message,
+        );
+        return true;
+      }
+      default: {
+        this.handlerHistoryMessages(message);
+        return null;
+      }
+    }
+  }
+
+  private handlerHistoryMessages(message: MessageFromServer): null | boolean {
+    switch (message.type) {
+      case API_TYPES.MSG_FROM_USER: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_RESPONSE,
+          message,
+        );
+        return true;
+      }
+      default: {
+        this.handlerMessages(message);
+        return null;
+      }
+    }
+  }
+
+  private handlerMessages(message: MessageFromServer): null | boolean {
+    switch (message.type) {
+      case API_TYPES.MSG_SEND: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE,
+          message,
+        );
+        return true;
+      }
+      case API_TYPES.MSG_DELIVER: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.DELIVERED_MESSAGE_RESPONSE,
           message,
         );
         return true;

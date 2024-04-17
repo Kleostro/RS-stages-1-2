@@ -6,6 +6,7 @@ import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import {
   setCurrentAuthorizedUsers,
   setCurrentUnauthorizedUsers,
+  setSelectedUser,
 } from '../../../shared/Store/actions/actions.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
@@ -94,6 +95,10 @@ class UserListModel {
       const currentUserInfo = allUsers.find(
         (user) => user.login === target.textContent,
       );
+
+      if (currentUserInfo) {
+        StoreModel.dispatch(setSelectedUser(currentUserInfo));
+      }
 
       this.eventMediator.notify(
         MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,

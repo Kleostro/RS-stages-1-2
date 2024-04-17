@@ -10,6 +10,8 @@ import BUTTON_TYPES from '../../../shared/Button/types/enums.ts';
 import createSVGUse from '../../../utils/createSVGUse.ts';
 
 class SendMessageFormView {
+  private emojiButton: ButtonModel;
+
   private submitFormButton: ButtonModel;
 
   private inputField: HTMLTextAreaElement;
@@ -17,6 +19,7 @@ class SendMessageFormView {
   private form: HTMLFormElement;
 
   constructor() {
+    this.emojiButton = this.createEmojiButton();
     this.submitFormButton = this.createSubmitFormButton();
     this.inputField = this.createInputField();
     this.form = this.createHTML();
@@ -35,12 +38,25 @@ class SendMessageFormView {
     return this.submitFormButton;
   }
 
+  public getEmojiButton(): ButtonModel {
+    return this.emojiButton;
+  }
+
   public hideForm(): void {
     this.form.classList.add(SEND_MESSAGE_FORM_STYLES.hidden);
   }
 
   public showForm(): void {
     this.form.classList.remove(SEND_MESSAGE_FORM_STYLES.hidden);
+  }
+
+  private createEmojiButton(): ButtonModel {
+    this.emojiButton = new ButtonModel({
+      text: '😀',
+      classes: [SEND_MESSAGE_FORM_STYLES.emojiButton],
+    });
+
+    return this.emojiButton;
   }
 
   private createInputField(): HTMLTextAreaElement {
@@ -83,7 +99,11 @@ class SendMessageFormView {
       cssClasses: [SEND_MESSAGE_FORM_STYLES.form],
     });
 
-    this.form.append(this.inputField, this.submitFormButton.getHTML());
+    this.form.append(
+      this.inputField,
+      this.emojiButton.getHTML(),
+      this.submitFormButton.getHTML(),
+    );
     return this.form;
   }
 }

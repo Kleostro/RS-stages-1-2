@@ -58,12 +58,18 @@
   &::-webkit-search-cancel-button {
     -webkit-appearance: none;
     position: relative;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     background-image: url('../../../img/close.svg');
     background-position: center;
+    background-size: 80%;
     background-repeat: no-repeat;
+    transition: opacity 0.3s;
     cursor: pointer;
+
+    &:hover {
+      opacity: 0.6;
+    }
   }
 
   &::placeholder {
@@ -72,6 +78,14 @@
     letter-spacing: 1px;
     color: var(--noble-black-300);
     transition: color 0.3s;
+  }
+
+  &:focus {
+    background-color: var(--noble-black-600);
+
+    &::placeholder {
+      color: var(--steam-green-400);
+    }
   }
 
   @media (hover: hover) {
@@ -87,8 +101,7 @@
 
 .user {
   position: relative;
-  border: 3px solid transparent;
-  border-radius: var(--border-radius);
+  border-bottom: 3px solid var(--noble-black-300);
   padding: calc(var(--little-offset)) var(--medium-offset);
   font: var(--small-font);
   font-weight: 600;
@@ -96,7 +109,6 @@
   color: var(--noble-black-300);
   transition:
     background-color 0.3s,
-    outline 0.1s,
     color 0.3s;
   cursor: pointer;
   user-select: none;
@@ -113,9 +125,12 @@
     transform: translateY(-50%);
   }
 
+  &:first-child {
+    border-top: unset;
+  }
+
   @media (hover: hover) {
     &:hover {
-      outline: 3px solid var(--noble-black-300);
       background-color: var(--noble-black-600);
     }
   }
@@ -138,6 +153,5 @@
 }
 
 .userSelected {
-  outline: 3px solid var(--noble-black-300);
   background-color: var(--noble-black-600);
 }

@@ -1,4 +1,4 @@
-interface Status {
+export interface Status {
   isDelivered: boolean;
   isEdited: boolean;
   isReaded: boolean;
@@ -10,7 +10,7 @@ export interface User {
   isLogined: boolean | string;
 }
 
-interface Message {
+export interface Message {
   id: string;
   from: string;
   to: string;
@@ -33,6 +33,7 @@ export interface Dialog {
 // state field typing
 export interface State {
   currentUser: User | null;
+  selectedUser: User | null;
   currentAuthorizedUsers: User[];
   currentUnauthorizedUsers: User[];
   currentUserDialogs: Dialog[];
@@ -41,6 +42,7 @@ export interface State {
 // enumeration of state fields
 export const STATE_FIELDS = {
   CURRENT_USER: 'currentUser',
+  SELECTED_USER: 'selectedUser',
   CURRENT_AUTHORIZED_USERS: 'currentAuthorizedUsers',
   CURRENT_UNAUTHORIZED_USERS: 'currentUnauthorizedUsers',
   CURRENT_USER_DIALOGS: 'currentUserDialogs',
@@ -49,6 +51,7 @@ export const STATE_FIELDS = {
 // initial state values
 export const INITIAL_STATE: State = {
   currentUser: null,
+  selectedUser: null,
   currentAuthorizedUsers: [],
   currentUnauthorizedUsers: [],
   currentUserDialogs: [],

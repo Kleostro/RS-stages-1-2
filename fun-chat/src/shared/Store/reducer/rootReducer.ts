@@ -11,6 +11,11 @@ export const rootReducer: Reducer<State, Action> = (
         ...state,
         currentUser: action.payload,
       };
+    case 'setSelectedUser':
+      return {
+        ...state,
+        selectedUser: action.payload,
+      };
     case 'setCurrentAuthorizedUsers':
       return {
         ...state,

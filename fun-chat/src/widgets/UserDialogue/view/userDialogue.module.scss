@@ -59,14 +59,21 @@
 .messagesWrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+  overflow-y: scroll;
+  padding: calc(var(--little-offset) / 2) var(--little-offset);
+  height: 550px;
   font: var(--small-font);
   font-weight: 600;
   letter-spacing: 1px;
   color: var(--noble-black-300);
   background-color: var(--noble-black-800);
+  scroll-behavior: smooth;
+}
+
+.emptyList {
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .hidden {

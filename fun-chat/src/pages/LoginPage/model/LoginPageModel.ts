@@ -9,7 +9,7 @@ import PAGES_IDS, {
 import LoginFormModel from '../../../widgets/LoginForm/model/LoginFormModel.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import type RouterModel from '../../../app/Router/model/RouterModel.ts';
-import type { Message } from '../../../utils/isFromServerMessage.ts';
+import type { MessageFromServer } from '../../../utils/isFromServerMessage.ts';
 import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
 import type SessionStorageModel from '../../../shared/SessionStorage/model/SessionStorage.ts';
@@ -113,14 +113,14 @@ class LoginPageModel implements PageInterface {
     return true;
   }
 
-  private handleErrorMessage(checkedMessage: Message): boolean {
+  private handleErrorMessage(checkedMessage: MessageFromServer): boolean {
     if (checkedMessage?.payload?.error) {
       this.showErrorMessage(checkedMessage?.payload?.error);
     }
     return true;
   }
 
-  private handleMessageFromServer(checkedMessage: Message): boolean {
+  private handleMessageFromServer(checkedMessage: MessageFromServer): boolean {
     const savedUser = this.storage.get(STORE_KEYS.CURRENT_USER);
     if (savedUser && isUser(savedUser)) {
       StoreModel.dispatch(setCurrentUser(savedUser));

@@ -1,4 +1,5 @@
 .form {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,6 +14,7 @@
 }
 
 .inputField {
+  margin-right: calc(var(--little-offset) / 2);
   border-radius: var(--border-radius);
   padding-top: calc(var(--little-offset) / 1.5);
   padding-left: calc(var(--little-offset) / 2);
@@ -41,12 +43,21 @@
   }
 }
 
+.emojiButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5%;
+  height: 46px;
+}
+
 .submitFormButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 10%;
+  width: 5%;
   height: 46px;
+  min-width: 46px;
 
   svg {
     margin-left: 5px;

@@ -75,6 +75,8 @@ export const EVENT_NAMES = {
   OPEN: 'open',
   CLOSE: 'close',
   MESSAGE: 'message',
+  MOUSEENTER: 'mouseenter',
+  MOUSELEAVE: 'mouseleave',
 } as const;
 
 export const IS_DISABLED = {
