@@ -1,3 +1,5 @@
+import type { Message } from '../../utils/isMessage.ts';
+
 export interface Status {
   isDelivered: boolean;
   isEdited: boolean;
@@ -10,48 +12,26 @@ export interface User {
   isLogined: boolean | string;
 }
 
-export interface Message {
-  id: string;
-  from: string;
-  to: string;
-  text: string;
-  datetime: number;
-  status: Status;
-}
-
-interface FetchHistoryWithUser {
-  id: string;
-  payload: Message[];
-  type: 'MSG_FROM_USER';
-}
-
 export interface Dialog {
-  history: FetchHistoryWithUser[];
   login: string;
+  messages: Message[];
 }
 
 // state field typing
 export interface State {
   currentUser: User | null;
   selectedUser: User | null;
+  allUsers: User[];
   currentAuthorizedUsers: User[];
   currentUnauthorizedUsers: User[];
   currentUserDialogs: Dialog[];
 }
 
-// enumeration of state fields
-export const STATE_FIELDS = {
-  CURRENT_USER: 'currentUser',
-  SELECTED_USER: 'selectedUser',
-  CURRENT_AUTHORIZED_USERS: 'currentAuthorizedUsers',
-  CURRENT_UNAUTHORIZED_USERS: 'currentUnauthorizedUsers',
-  CURRENT_USER_DIALOGS: 'currentUserDialogs',
-} as const;
-
 // initial state values
 export const INITIAL_STATE: State = {
   currentUser: null,
   selectedUser: null,
+  allUsers: [],
   currentAuthorizedUsers: [],
   currentUnauthorizedUsers: [],
   currentUserDialogs: [],

@@ -42,9 +42,8 @@ class UserDialogueView {
   }
 
   public showDialogue(): void {
-    this.messagesWrapper.innerHTML = '';
+    this.clearMessagesWrapper();
     this.currentUserInfo.classList.remove(USER_DIALOGUE_STYLES.hidden);
-    this.messagesWrapper.classList.remove(USER_DIALOGUE_STYLES.emptyList);
   }
 
   public showEmptyDialogue(): void {

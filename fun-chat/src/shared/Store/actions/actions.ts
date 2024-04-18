@@ -1,4 +1,4 @@
-import type { User, Dialog } from '../initialData.ts';
+import type { Dialog, User } from '../initialData.ts';
 import ACTIONS from './types/enums.ts';
 
 type ActionType = (typeof ACTIONS)[keyof typeof ACTIONS];
@@ -27,6 +27,13 @@ export const setCurrentAuthorizedUsers = (
 ): ActionWithPayload<User[], typeof ACTIONS.SET_CURRENT_AUTHORIZED_USERS> => ({
   payload: value,
   type: ACTIONS.SET_CURRENT_AUTHORIZED_USERS,
+});
+
+export const setAllUsers = (
+  value: User[],
+): ActionWithPayload<User[], typeof ACTIONS.SET_ALL_USERS> => ({
+  payload: value,
+  type: ACTIONS.SET_ALL_USERS,
 });
 
 export const setCurrentUnauthorizedUsers = (

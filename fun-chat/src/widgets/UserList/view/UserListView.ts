@@ -1,10 +1,11 @@
 import InputModel from '../../../shared/Input/model/InputModel.ts';
-import type { Message, User } from '../../../shared/Store/initialData.ts';
+import type { User } from '../../../shared/Store/initialData.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import createBaseElement from '../../../utils/createBaseElement.ts';
 import USER_LIST_STYLES from './userList.module.scss';
 import INPUT_TYPES from '../../../shared/Input/types/enums.ts';
 import { SEARCH_INPUT_PLACEHOLDER, EMPTY_USERS_LIST } from '../types/enums.ts';
+import type { Message } from '../../../utils/isMessage.ts';
 
 class UserListView {
   private searchInput: InputModel;
@@ -70,10 +71,10 @@ class UserListView {
     }
   }
 
-  public drawUnreadMessagesCount(messages: Message[]): void {
+  public drawUnreadMessagesCount(login: string, messages: Message[]): void {
     const users = this.userList.children;
     Array.from(users).forEach((item) => {
-      if (item.id === messages[messages.length - 1].from) {
+      if (item.id === login) {
         const currentUser = item;
         const currentUserLogin = item.id;
         const unreadMessages = messages.filter(

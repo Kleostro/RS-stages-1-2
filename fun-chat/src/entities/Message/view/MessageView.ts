@@ -1,10 +1,10 @@
 import createBaseElement from '../../../utils/createBaseElement.ts';
-import type { Message } from '../../../shared/Store/initialData.ts';
 import { TAG_NAMES } from '../../../shared/types/enums.ts';
 import MESSAGE_STYLES from './message.module.scss';
 import messageDateFormatting from '../../../utils/messageDateFormatting.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import MESSAGE_STATE from '../types/enums.ts';
+import type { Message } from '../../../utils/isMessage.ts';
 
 class MessageView {
   private messageParams: Message;

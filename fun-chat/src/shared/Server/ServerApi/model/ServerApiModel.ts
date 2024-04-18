@@ -132,6 +132,13 @@ class ServerApiModel {
         );
         return true;
       }
+      case API_TYPES.MSG_DELETE: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.DELETE_MESSAGE_RESPONSE,
+          message,
+        );
+        return true;
+      }
       default: {
         return null;
       }

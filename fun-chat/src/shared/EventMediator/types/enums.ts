@@ -20,6 +20,8 @@ const MEDIATOR_EVENTS = {
     'getAllHistoryMessageForCurrentUserResponse',
   SEND_MESSAGE_REQUEST: 'sendMessageRequest',
   SEND_MESSAGE_RESPONSE: 'sendMessageResponse',
+  DELETE_MESSAGE_REQUEST: 'deleteMessageRequest',
+  DELETE_MESSAGE_RESPONSE: 'deleteMessageResponse',
   DELIVERED_MESSAGE_RESPONSE: 'deliveredMessageResponse',
   EXTERNAL_LOGIN_RESPONSE: 'externalLoginResponse',
   EXTERNAL_LOGOUT_RESPONSE: 'externalLogoutResponse',

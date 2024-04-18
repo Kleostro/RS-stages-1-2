@@ -5,7 +5,7 @@ import { rootReducer } from '../reducer/rootReducer.ts';
 import type ACTIONS from '../actions/types/enums.ts';
 
 class StoreModel {
-  private static listeners: Map<string, VoidFunction> = new Map();
+  private static listeners: Map<string, VoidFunction[]> = new Map();
 
   private static rootReducer: Reducer<State, Action> = rootReducer;
 
@@ -16,9 +16,9 @@ class StoreModel {
 
     StoreModel.listeners.forEach((_, key) => {
       if (key === action.type) {
-        const currentListener = StoreModel.listeners.get(key);
-        if (currentListener) {
-          currentListener();
+        const currentListeners = StoreModel.listeners.get(key);
+        if (currentListeners) {
+          currentListeners.forEach((currentListener) => currentListener());
         }
       }
     });
@@ -34,7 +34,10 @@ class StoreModel {
     key: (typeof ACTIONS)[keyof typeof ACTIONS],
     listener: VoidFunction,
   ): VoidFunction {
-    StoreModel.listeners.set(key, listener);
+    const currentListeners = StoreModel.listeners.get(key) || [];
+    currentListeners.push(listener);
+
+    StoreModel.listeners.set(key, currentListeners);
 
     return () => {
       StoreModel.listeners.delete(key);

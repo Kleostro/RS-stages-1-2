@@ -10,6 +10,7 @@ export const API_TYPES = {
   ERROR: 'ERROR',
   MSG_FROM_USER: 'MSG_FROM_USER',
   MSG_SEND: 'MSG_SEND',
+  MSG_DELETE: 'MSG_DELETE',
   MSG_DELIVER: 'MSG_DELIVER',
 } as const;
 

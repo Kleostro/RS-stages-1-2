@@ -5,10 +5,11 @@ import UserDialogueView from '../view/UserDialogueView.ts';
 import { isSavedUser } from '../../../utils/isUser.ts';
 import StoreModel from '../../../shared/Store/model/StoreModel.ts';
 import ACTIONS from '../../../shared/Store/actions/types/enums.ts';
-import type { Message, User } from '../../../shared/Store/initialData.ts';
+import type { User } from '../../../shared/Store/initialData.ts';
 import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
 import MessageModel from '../../../entities/Message/model/MessageModel.ts';
+import type { Message } from '../../../utils/isMessage.ts';
 
 class UserDialogueModel {
   private view = new UserDialogueView();
@@ -52,7 +53,7 @@ class UserDialogueModel {
   private hasMessages(messages: Message[]): void {
     if (messages.length) {
       this.drawMessagesWithCurrentUser(messages);
-    } else {
+    } else if (StoreModel.getState().selectedUser) {
       this.view.showEmptyDialogue();
     }
   }
@@ -102,11 +103,11 @@ class UserDialogueModel {
   }
 
   private updateStatusCurrentUser(users: User[]): void {
-    const currentUser = users.filter(
+    const currentUser = users.find(
       (user) => user.login === this.view.getCurrentUserInfo().textContent,
     );
-    if (currentUser.length) {
-      this.view.setCurrentUserInfo(currentUser[0]);
+    if (currentUser) {
+      this.view.setCurrentUserInfo(currentUser);
     }
   }
 
@@ -114,14 +115,17 @@ class UserDialogueModel {
     this.subscribeToEventMediator();
     this.view.getHTML().append(this.sendMessageForm.getHTML());
 
-    StoreModel.subscribe(ACTIONS.SET_CURRENT_AUTHORIZED_USERS, () => {
-      const { currentAuthorizedUsers } = StoreModel.getState();
-      this.updateStatusCurrentUser(currentAuthorizedUsers);
+    StoreModel.subscribe(ACTIONS.SET_ALL_USERS, () => {
+      const { allUsers } = StoreModel.getState();
+      this.updateStatusCurrentUser(allUsers);
     });
 
-    StoreModel.subscribe(ACTIONS.SET_CURRENT_UNAUTHORIZED_USERS, () => {
-      const { currentUnauthorizedUsers } = StoreModel.getState();
-      this.updateStatusCurrentUser(currentUnauthorizedUsers);
+    StoreModel.subscribe(ACTIONS.SET_CURRENT_USER_DIALOGS, () => {
+      const { currentUserDialogs, selectedUser } = StoreModel.getState();
+      const currentDialog = currentUserDialogs.find(
+        (dialog) => dialog.login === selectedUser?.login,
+      );
+      this.hasMessages(currentDialog?.messages || []);
     });
   }
 }

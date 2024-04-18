@@ -59,6 +59,11 @@ class ClientApiModel {
       createNewUserListener,
     );
 
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST,
+      createNewUserListener,
+    );
+
     return true;
   }
 
@@ -94,6 +99,11 @@ class ClientApiModel {
 
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.SEND_MESSAGE_REQUEST,
+      createNewUserListener,
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST,
       createNewUserListener,
     );
 

@@ -1,8 +1,10 @@
 import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
-import type { Message } from '../../../shared/Store/initialData.ts';
 import MessageView from '../view/MessageView.ts';
 import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
+import type { Message } from '../../../utils/isMessage.ts';
+import { EVENT_NAMES } from '../../../shared/types/enums.ts';
+import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
 
 class MessageModel {
   private view: MessageView;
@@ -21,7 +23,20 @@ class MessageModel {
     return this.view.getHTML();
   }
 
-  private subscribeToEvents(): void {
+  private deleteMessageHandler(): void {
+    const message = {
+      id: this.messageID,
+      type: API_TYPES.MSG_DELETE,
+      payload: {
+        message: {
+          id: this.messageID,
+        },
+      },
+    };
+    this.eventMediator.notify(MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST, message);
+  }
+
+  private subscribeToEventMediator(): void {
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.DELIVERED_MESSAGE_RESPONSE,
       (message) => {
@@ -35,7 +50,12 @@ class MessageModel {
   }
 
   private init(): void {
-    this.subscribeToEvents();
+    this.subscribeToEventMediator();
+
+    this.getHTML().addEventListener(EVENT_NAMES.CONTEXTMENU, (event) => {
+      event.preventDefault();
+      this.deleteMessageHandler();
+    });
   }
 }
 

@@ -44,8 +44,8 @@
   margin-left: auto;
   border: 2px solid var(--noble-black-300);
   border-radius: 50%;
-  padding: 4px 8px;
-  font: var(--small-font);
+  padding: 3px 6px;
+  font: var(--little-font);
   text-align: center;
   color: var(--noble-black-300);
   background-color: var(--noble-black-800);
@@ -121,7 +121,8 @@
   display: flex;
   align-items: center;
   border-bottom: 3px solid var(--noble-black-300);
-  padding: calc(var(--little-offset)) var(--medium-offset);
+  padding: var(--little-offset) var(--medium-offset);
+  padding-right: calc(var(--little-offset) / 2);
   font: var(--small-font);
   font-weight: 600;
   letter-spacing: 1px;

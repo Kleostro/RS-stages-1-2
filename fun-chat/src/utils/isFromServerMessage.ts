@@ -1,4 +1,5 @@
-import type { Message, User } from '../shared/Store/initialData.ts';
+import type { User } from '../shared/Store/initialData.ts';
+import type { Message } from './isMessage.ts';
 
 export interface MessageFromServer {
   type: string;
