@@ -963,14 +963,14 @@ class SendMessageFormView {
     return this.form;
   }
 }
-const emojiWrapper = "_emojiWrapper_3nx7e_1";
-const contentWrapper = "_contentWrapper_3nx7e_18";
-const categoryList = "_categoryList_3nx7e_22";
-const category = "_category_3nx7e_22";
-const emojiList = "_emojiList_3nx7e_53";
-const sectionTitle = "_sectionTitle_3nx7e_60";
-const emojiItem = "_emojiItem_3nx7e_73";
-const hidden$1 = "_hidden_3nx7e_79";
+const emojiWrapper = "_emojiWrapper_poadq_1";
+const contentWrapper = "_contentWrapper_poadq_18";
+const categoryList = "_categoryList_poadq_22";
+const category = "_category_poadq_22";
+const emojiList = "_emojiList_poadq_54";
+const sectionTitle = "_sectionTitle_poadq_61";
+const emojiItem = "_emojiItem_poadq_74";
+const hidden$1 = "_hidden_poadq_80";
 const EMOJI_STYLES = {
   emojiWrapper,
   contentWrapper,
@@ -3095,4 +3095,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-fc374ea5.js.map
+//# sourceMappingURL=main-d387a1f1.js.map
