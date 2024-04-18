@@ -61,8 +61,12 @@ const MEDIATOR_EVENTS = {
   GET_ALL_UNAUTHENTICATED_USERS_RESPONSE: "getAllUnauthenticatedUsersResponse",
   GET_HISTORY_MESSAGES_REQUEST: "getHistoryMessagesRequest",
   GET_HISTORY_MESSAGES_RESPONSE: "getHistoryMessagesResponse",
+  GET_ALL_HISTORY_MESSAGE_FOR_CURRENT_USER_REQUEST: "getAllHistoryMessageForCurrentUserRequest",
+  GET_ALL_HISTORY_MESSAGE_FOR_CURRENT_USER_RESPONSE: "getAllHistoryMessageForCurrentUserResponse",
   SEND_MESSAGE_REQUEST: "sendMessageRequest",
   SEND_MESSAGE_RESPONSE: "sendMessageResponse",
+  DELETE_MESSAGE_REQUEST: "deleteMessageRequest",
+  DELETE_MESSAGE_RESPONSE: "deleteMessageResponse",
   DELIVERED_MESSAGE_RESPONSE: "deliveredMessageResponse",
   EXTERNAL_LOGIN_RESPONSE: "externalLoginResponse",
   EXTERNAL_LOGOUT_RESPONSE: "externalLogoutResponse",
@@ -271,6 +275,7 @@ const ABOUT_INFO_TEXT = {
 const INITIAL_STATE = {
   currentUser: null,
   selectedUser: null,
+  allUsers: [],
   currentAuthorizedUsers: [],
   currentUnauthorizedUsers: [],
   currentUserDialogs: []
@@ -286,6 +291,11 @@ const rootReducer = (state, action) => {
       return {
         ...state,
         selectedUser: action.payload
+      };
+    case "setAllUsers":
+      return {
+        ...state,
+        allUsers: action.payload
       };
     case "setCurrentAuthorizedUsers":
       return {
@@ -311,9 +321,9 @@ const _StoreModel = class _StoreModel {
     _StoreModel.state = _StoreModel.rootReducer(_StoreModel.state, action);
     _StoreModel.listeners.forEach((_, key) => {
       if (key === action.type) {
-        const currentListener = _StoreModel.listeners.get(key);
-        if (currentListener) {
-          currentListener();
+        const currentListeners = _StoreModel.listeners.get(key);
+        if (currentListeners) {
+          currentListeners.forEach((currentListener) => currentListener());
         }
       }
     });
@@ -323,7 +333,9 @@ const _StoreModel = class _StoreModel {
     return structuredClone(_StoreModel.state);
   }
   static subscribe(key, listener) {
-    _StoreModel.listeners.set(key, listener);
+    const currentListeners = _StoreModel.listeners.get(key) || [];
+    currentListeners.push(listener);
+    _StoreModel.listeners.set(key, currentListeners);
     return () => {
       _StoreModel.listeners.delete(key);
     };
@@ -370,17 +382,19 @@ class InputModel {
     this.view.getHTML().value = "";
   }
 }
-const wrapper = "_wrapper_1emge_1";
-const userList = "_userList_1emge_7";
-const userListEmpty = "_userListEmpty_1emge_37";
-const userListSearchInput = "_userListSearchInput_1emge_41";
-const user = "_user_1emge_7";
-const userActive = "_userActive_1emge_124";
-const userInactive = "_userInactive_1emge_131";
-const userSelected = "_userSelected_1emge_138";
+const wrapper = "_wrapper_14equ_1";
+const userList = "_userList_14equ_7";
+const counter = "_counter_14equ_37";
+const userListEmpty = "_userListEmpty_14equ_52";
+const userListSearchInput = "_userListSearchInput_14equ_56";
+const user = "_user_14equ_7";
+const userActive = "_userActive_14equ_146";
+const userInactive = "_userInactive_14equ_153";
+const userSelected = "_userSelected_14equ_160";
 const USER_LIST_STYLES = {
   wrapper,
   userList,
+  counter,
   userListEmpty,
   userListSearchInput,
   user,
@@ -420,6 +434,9 @@ class UserListView {
     const user2 = createBaseElement({
       tag: TAG_NAMES.LI,
       cssClasses: [USER_LIST_STYLES.user],
+      attributes: {
+        id: userInfo.login
+      },
       innerContent: userInfo.login
     });
     if (userInfo.isLogined) {
@@ -440,11 +457,35 @@ class UserListView {
     this.userList.classList.add(USER_LIST_STYLES.userListEmpty);
   }
   selectUser(target) {
+    if (target instanceof HTMLLIElement || target instanceof HTMLSpanElement) {
+      const users = this.userList.children;
+      Array.from(users).forEach((user2) => {
+        user2.classList.remove(USER_LIST_STYLES.userSelected);
+      });
+      target.classList.add(USER_LIST_STYLES.userSelected);
+    }
+  }
+  drawUnreadMessagesCount(login2, messages) {
     const users = this.userList.children;
-    Array.from(users).forEach((user2) => {
-      user2.classList.remove(USER_LIST_STYLES.userSelected);
+    Array.from(users).forEach((item) => {
+      if (item.id === login2) {
+        const currentUser2 = item;
+        const currentUserLogin = item.id;
+        const unreadMessages = messages.filter(
+          (message2) => message2.from === currentUserLogin
+        );
+        currentUser2.innerHTML = "";
+        currentUser2.textContent = currentUserLogin;
+        if (unreadMessages.length) {
+          const counter2 = createBaseElement({
+            tag: TAG_NAMES.SPAN,
+            cssClasses: [USER_LIST_STYLES.counter],
+            innerContent: unreadMessages.length.toString()
+          });
+          item.append(counter2);
+        }
+      }
     });
-    target.classList.add(USER_LIST_STYLES.userSelected);
   }
   createSearchInput() {
     this.searchInput = new InputModel({
@@ -480,6 +521,7 @@ const isFromServerMessage = (message2) => {
 const ACTIONS = {
   SET_CURRENT_USER: "setCurrentUser",
   SET_SELECTED_USER: "setSelectedUser",
+  SET_ALL_USERS: "setAllUsers",
   SET_CURRENT_AUTHORIZED_USERS: "setCurrentAuthorizedUsers",
   SET_CURRENT_UNAUTHORIZED_USERS: "setCurrentUnauthorizedUsers",
   SET_CURRENT_USER_DIALOGS: "setCurrentUserDialogs"
@@ -496,9 +538,17 @@ const setCurrentAuthorizedUsers = (value) => ({
   payload: value,
   type: ACTIONS.SET_CURRENT_AUTHORIZED_USERS
 });
+const setAllUsers = (value) => ({
+  payload: value,
+  type: ACTIONS.SET_ALL_USERS
+});
 const setCurrentUnauthorizedUsers = (value) => ({
   payload: value,
   type: ACTIONS.SET_CURRENT_UNAUTHORIZED_USERS
+});
+const setCurrentUserDialogs = (value) => ({
+  payload: value,
+  type: ACTIONS.SET_CURRENT_USER_DIALOGS
 });
 const API_URL = "ws://127.0.0.1:4000";
 const API_TYPES = {
@@ -511,9 +561,11 @@ const API_TYPES = {
   ERROR: "ERROR",
   MSG_FROM_USER: "MSG_FROM_USER",
   MSG_SEND: "MSG_SEND",
+  MSG_DELETE: "MSG_DELETE",
   MSG_DELIVER: "MSG_DELIVER"
 };
 const CHECK_INTERVAL = 5e3;
+const isMessage = (value) => typeof value === "object" && value !== null && "from" in value && "to" in value && "text" in value && "datetime" in value && "status" in value;
 class UserListModel {
   constructor() {
     __publicField(this, "view", new UserListView());
@@ -549,17 +601,25 @@ class UserListModel {
     this.getActiveUsers();
     this.getInactiveUsers();
   }
+  drawUnreadMessages() {
+    const { currentUserDialogs } = StoreModel.getState();
+    if (!currentUserDialogs.length) {
+      return;
+    }
+    currentUserDialogs.forEach((dialog) => {
+      const unReadMessages = dialog.messages.filter(
+        (message2) => !message2.status.isReaded
+      );
+      this.view.drawUnreadMessagesCount(dialog.login, unReadMessages);
+    });
+  }
   drawUsers() {
     this.view.clearUserList();
-    const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser: currentUser2 } = StoreModel.getState();
-    const currentUsers = [
-      ...currentAuthorizedUsers,
-      ...currentUnauthorizedUsers
-    ].filter((user2) => user2.login !== (currentUser2 == null ? void 0 : currentUser2.login));
-    if (!currentUsers.length) {
+    const { allUsers } = StoreModel.getState();
+    if (!allUsers.length) {
       this.view.emptyUserList();
     }
-    currentUsers.forEach((user2) => {
+    allUsers.forEach((user2) => {
       this.view.drawUser(user2);
     });
   }
@@ -568,32 +628,115 @@ class UserListModel {
     if (checkedMessage) {
       const action = checkedMessage.type === API_TYPES.USER_ACTIVE ? setCurrentAuthorizedUsers : setCurrentUnauthorizedUsers;
       StoreModel.dispatch(action(checkedMessage.payload.users));
+      const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser: currentUser2 } = StoreModel.getState();
+      const allUsers = [
+        ...currentAuthorizedUsers,
+        ...currentUnauthorizedUsers
+      ].filter((user2) => user2.login !== (currentUser2 == null ? void 0 : currentUser2.login));
+      StoreModel.dispatch(setAllUsers(allUsers));
+      if (currentUser2) {
+        allUsers.forEach((user2) => {
+          this.getAllMessages(user2.login);
+        });
+      }
       this.drawUsers();
     }
   }
+  getAllMessages(login2) {
+    const requestMessage = {
+      id: "",
+      type: API_TYPES.MSG_FROM_USER,
+      payload: {
+        user: {
+          login: login2
+        }
+      }
+    };
+    this.eventMediator.notify(
+      MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
+      requestMessage
+    );
+  }
+  saveMessages(messages) {
+    const checkedMessage = isFromServerMessage(messages);
+    const { currentUserDialogs, currentUser: currentUser2 } = StoreModel.getState();
+    let from = "";
+    let to = "";
+    let currentMessages = [];
+    if (checkedMessage == null ? void 0 : checkedMessage.payload.message) {
+      const newMessage = checkedMessage.payload.message;
+      if (isMessage(newMessage)) {
+        currentMessages = [newMessage];
+        from = newMessage.from;
+        to = newMessage.to;
+      }
+    } else {
+      if (!(checkedMessage == null ? void 0 : checkedMessage.payload.messages.length)) {
+        return;
+      }
+      currentMessages = checkedMessage.payload.messages;
+      from = currentMessages[0].from;
+      to = currentMessages[0].to;
+    }
+    const userLogin2 = from === (currentUser2 == null ? void 0 : currentUser2.login) ? to : from;
+    const currentDialog = currentUserDialogs == null ? void 0 : currentUserDialogs.find(
+      (dialog) => dialog.login === userLogin2
+    );
+    if (currentDialog) {
+      currentDialog.messages = checkedMessage.payload.message ? [...currentDialog.messages, ...currentMessages] : currentMessages;
+    } else {
+      currentUserDialogs == null ? void 0 : currentUserDialogs.push({
+        login: userLogin2,
+        messages: currentMessages
+      });
+    }
+    StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
+    this.drawUnreadMessages();
+  }
   userListHandler(event) {
     const { target } = event;
-    if (target instanceof HTMLLIElement) {
-      this.view.selectUser(target);
-      const allUsers = [
-        ...StoreModel.getState().currentAuthorizedUsers,
-        ...StoreModel.getState().currentUnauthorizedUsers
-      ];
-      const currentUserInfo2 = allUsers.find(
-        (user2) => user2.login === target.textContent
+    this.view.selectUser(target);
+    const { allUsers } = StoreModel.getState();
+    let currentUserInfo2 = null;
+    if (target instanceof HTMLSpanElement) {
+      currentUserInfo2 = allUsers.find(
+        (user2) => {
+          var _a;
+          return user2.login === ((_a = target.parentElement) == null ? void 0 : _a.id);
+        }
       );
-      if (currentUserInfo2) {
-        StoreModel.dispatch(setSelectedUser(currentUserInfo2));
-      }
-      this.eventMediator.notify(
-        MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
-        currentUserInfo2
-      );
+    } else if (target instanceof HTMLLIElement) {
+      currentUserInfo2 = allUsers.find((user2) => user2.login === target.id);
     }
+    if (currentUserInfo2) {
+      StoreModel.dispatch(setSelectedUser(currentUserInfo2));
+    }
+    this.eventMediator.notify(
+      MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
+      currentUserInfo2
+    );
   }
   setUserListHandler() {
     this.view.getUserList().addEventListener(EVENT_NAMES.CLICK, (event) => {
       this.userListHandler(event);
+    });
+    return true;
+  }
+  redrawUnreadMessagesHandler(message2) {
+    const checkedMessage = isFromServerMessage(message2);
+    const { currentUserDialogs } = StoreModel.getState();
+    currentUserDialogs.forEach((dialog) => {
+      const deletedMessage = dialog.messages.find(
+        (msg) => msg.id === (checkedMessage == null ? void 0 : checkedMessage.payload.message.id)
+      );
+      if (deletedMessage) {
+        const currentDialog = dialog;
+        currentDialog.messages = dialog.messages.filter(
+          (msg) => msg.id !== deletedMessage.id
+        );
+        StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
+        this.drawUnreadMessages();
+      }
     });
     return true;
   }
@@ -614,10 +757,9 @@ class UserListModel {
       MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
       this.getAllUsers.bind(this)
     );
-    this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.LOG_IN_RESPONSE,
-      this.getAllUsers.bind(this)
-    );
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_IN_RESPONSE, () => {
+      this.getAllUsers();
+    });
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
       this.getAllUsers.bind(this)
@@ -625,6 +767,27 @@ class UserListModel {
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.EXTERNAL_LOGOUT_RESPONSE,
       this.getAllUsers.bind(this)
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_RESPONSE,
+      (message2) => {
+        this.saveMessages(message2);
+      }
+    );
+    return true;
+  }
+  subscribeToEventMediator2() {
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE,
+      (message2) => {
+        this.saveMessages(message2);
+      }
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.DELETE_MESSAGE_RESPONSE,
+      (message2) => {
+        this.redrawUnreadMessagesHandler(message2);
+      }
     );
     return true;
   }
@@ -642,7 +805,10 @@ class UserListModel {
     if (!currentUsers.length) {
       this.view.emptyUserList();
     }
-    currentUsers.forEach((user2) => this.view.drawUser(user2));
+    currentUsers.forEach((user2) => {
+      this.view.drawUser(user2);
+    });
+    this.drawUnreadMessages();
   }
   setSearchInputHandler() {
     this.view.getSearchInput().getHTML().addEventListener(EVENT_NAMES.INPUT, this.searchInputHandler.bind(this));
@@ -651,6 +817,7 @@ class UserListModel {
     this.setUserListHandler();
     this.setSearchInputHandler();
     this.subscribeToEventMediator();
+    this.subscribeToEventMediator2();
   }
 }
 const SEND_MESSAGE_INPUT_FIELD_PARAMS = {
@@ -994,17 +1161,16 @@ class SendMessageFormModel {
       this.inputFieldHandler.bind(this)
     );
     inputField2.addEventListener(EVENT_NAMES.KEYDOWN, (event) => {
-      if (event.key === ENTER_KEY && event.shiftKey) {
+      if (event.key === ENTER_KEY) {
         event.preventDefault();
+      }
+      if (event.key === ENTER_KEY && event.shiftKey) {
         const currentValue = inputField2.value;
         inputField2.value = `${currentValue}
 `;
         inputField2.scrollTop = inputField2.scrollHeight;
-      } else if (event.key === ENTER_KEY && !event.shiftKey) {
-        event.preventDefault();
-        if (inputField2.value) {
-          this.formSubmitHandler();
-        }
+      } else if (event.key === ENTER_KEY && !event.shiftKey && inputField2.value) {
+        this.formSubmitHandler();
       }
     });
   }
@@ -1139,9 +1305,8 @@ class UserDialogueView {
     this.currentUserInfo.classList.add(USER_DIALOGUE_STYLES.hidden);
   }
   showDialogue() {
-    this.messagesWrapper.innerHTML = "";
+    this.clearMessagesWrapper();
     this.currentUserInfo.classList.remove(USER_DIALOGUE_STYLES.hidden);
-    this.messagesWrapper.classList.remove(USER_DIALOGUE_STYLES.emptyList);
   }
   showEmptyDialogue() {
     this.messagesWrapper.classList.add(USER_DIALOGUE_STYLES.emptyList);
@@ -1178,13 +1343,13 @@ class UserDialogueView {
 }
 const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 const isSavedUser = (data) => typeof data === "object" && data !== null && "login" in data && "isLogined" in data;
-const message = "_message_caxc0_1";
-const text = "_text_caxc0_13";
-const login = "_login_caxc0_23";
-const status = "_status_caxc0_32";
-const date = "_date_caxc0_33";
-const currentUser = "_currentUser_caxc0_44";
-const otherUser = "_otherUser_caxc0_68";
+const message = "_message_drvjb_1";
+const text = "_text_drvjb_16";
+const login = "_login_drvjb_26";
+const status = "_status_drvjb_35";
+const date = "_date_drvjb_36";
+const currentUser = "_currentUser_drvjb_47";
+const otherUser = "_otherUser_drvjb_71";
 const MESSAGE_STYLES = {
   message,
   text,
@@ -1200,15 +1365,29 @@ const messageDateFormatting = (date2) => {
   const minutes = newDate.getMinutes().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
 };
+const MESSAGE_STATE = {
+  SENDED: "&#10003",
+  DELIVERED: "&#10003&#10003"
+};
+const MESSAGE_BUTTONS_TEXT = {
+  DELETE: "&#128686;",
+  EDIT: "&#9997;"
+};
 class MessageView {
   constructor(messageParams) {
     __publicField(this, "messageParams");
+    __publicField(this, "editButton");
+    __publicField(this, "deleteButton");
+    __publicField(this, "editWrapper");
     __publicField(this, "messageText");
     __publicField(this, "messageDate");
     __publicField(this, "messageLogin");
     __publicField(this, "messageStatus");
     __publicField(this, "message");
     this.messageParams = messageParams;
+    this.editButton = this.createEditButton();
+    this.deleteButton = this.createDeleteButton();
+    this.editWrapper = this.createEditWrapper();
     this.messageText = this.createMessageText();
     this.messageDate = this.createMessageDate();
     this.messageLogin = this.createMessageLogin();
@@ -1219,7 +1398,32 @@ class MessageView {
     return this.message;
   }
   deliveredMessage() {
-    this.messageStatus.innerHTML = "&#10003&#10003";
+    this.messageStatus.innerHTML = MESSAGE_STATE.DELIVERED;
+  }
+  createEditButton() {
+    this.editButton = new ButtonModel({
+      text: MESSAGE_BUTTONS_TEXT.EDIT,
+      classes: [MESSAGE_STYLES.editButton]
+    });
+    return this.editButton;
+  }
+  createDeleteButton() {
+    this.deleteButton = new ButtonModel({
+      text: MESSAGE_BUTTONS_TEXT.DELETE,
+      classes: [MESSAGE_STYLES.deleteButton]
+    });
+    return this.deleteButton;
+  }
+  createEditWrapper() {
+    this.editWrapper = createBaseElement({
+      tag: TAG_NAMES.DIV,
+      cssClasses: [MESSAGE_STYLES.editWrapper]
+    });
+    this.editWrapper.append(
+      this.editButton.getHTML(),
+      this.deleteButton.getHTML()
+    );
+    return this.editWrapper;
   }
   createMessageText() {
     this.messageText = createBaseElement({
@@ -1247,12 +1451,10 @@ class MessageView {
   }
   createMessageStatus() {
     const { isDelivered } = this.messageParams.status;
-    const sended = "&#10003";
-    const delivered = "&#10003&#10003";
     this.messageStatus = createBaseElement({
       tag: TAG_NAMES.SPAN,
       cssClasses: [MESSAGE_STYLES.status],
-      innerContent: isDelivered ? delivered : sended
+      innerContent: isDelivered ? MESSAGE_STATE.DELIVERED : MESSAGE_STATE.SENDED
     });
     return this.messageStatus;
   }
@@ -1274,6 +1476,7 @@ class MessageView {
     if (this.wasSentByCurrentUser()) {
       this.message.classList.add(MESSAGE_STYLES.currentUser);
       this.messageLogin.textContent = "You";
+      this.message.append(this.editWrapper);
     } else {
       this.message.classList.add(MESSAGE_STYLES.otherUser);
       this.messageStatus.textContent = "";
@@ -1282,23 +1485,46 @@ class MessageView {
   }
 }
 class MessageModel {
-  constructor(messageParams) {
+  constructor(messageParams, messageID) {
     __publicField(this, "view");
     __publicField(this, "eventMediator", EventMediatorModel.getInstance());
+    __publicField(this, "messageID", "");
+    this.messageID = messageID;
     this.view = new MessageView(messageParams);
     this.init();
   }
   getHTML() {
     return this.view.getHTML();
   }
-  subscribeToEvents() {
+  deleteMessageHandler() {
+    const message2 = {
+      id: this.messageID,
+      type: API_TYPES.MSG_DELETE,
+      payload: {
+        message: {
+          id: this.messageID
+        }
+      }
+    };
+    this.eventMediator.notify(MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST, message2);
+  }
+  subscribeToEventMediator() {
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.DELIVERED_MESSAGE_RESPONSE,
-      () => this.view.deliveredMessage()
+      (message2) => {
+        const checkedMessage = isFromServerMessage(message2);
+        if ((checkedMessage == null ? void 0 : checkedMessage.payload.message.id) === this.messageID) {
+          this.view.deliveredMessage();
+        }
+      }
     );
   }
   init() {
-    this.subscribeToEvents();
+    this.subscribeToEventMediator();
+    this.getHTML().addEventListener(EVENT_NAMES.CONTEXTMENU, (event) => {
+      event.preventDefault();
+      this.deleteMessageHandler();
+    });
   }
 }
 class UserDialogueModel {
@@ -1306,6 +1532,7 @@ class UserDialogueModel {
     __publicField(this, "view", new UserDialogueView());
     __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     __publicField(this, "sendMessageForm", new SendMessageFormModel());
+    __publicField(this, "messageID", "");
     this.init();
   }
   getHTML() {
@@ -1313,7 +1540,7 @@ class UserDialogueModel {
   }
   retrieveMessagesWithCurrentUser(data) {
     const checkedData = isFromServerMessage(data);
-    if (checkedData) {
+    if (checkedData && checkedData.id === this.messageID && checkedData.id !== "") {
       this.hasMessages(checkedData.payload.messages);
     }
   }
@@ -1321,7 +1548,7 @@ class UserDialogueModel {
     this.view.clearMessagesWrapper();
     const messageWrapper = this.view.getMessagesWrapper();
     messages.forEach((message2) => {
-      const messageModel = new MessageModel(message2);
+      const messageModel = new MessageModel(message2, message2.id);
       messageWrapper.append(messageModel.getHTML());
     });
     messageWrapper.scrollTop = messageWrapper.scrollHeight;
@@ -1329,13 +1556,14 @@ class UserDialogueModel {
   hasMessages(messages) {
     if (messages.length) {
       this.drawMessagesWithCurrentUser(messages);
-    } else {
+    } else if (StoreModel.getState().selectedUser) {
       this.view.showEmptyDialogue();
     }
   }
   requestMessagesWithCurrentUser(userLogin2) {
+    this.messageID = crypto.randomUUID();
     const message2 = {
-      id: "",
+      id: this.messageID,
       type: API_TYPES.MSG_FROM_USER,
       payload: {
         user: {
@@ -1372,23 +1600,26 @@ class UserDialogueModel {
     });
   }
   updateStatusCurrentUser(users) {
-    const currentUser2 = users.filter(
+    const currentUser2 = users.find(
       (user2) => user2.login === this.view.getCurrentUserInfo().textContent
     );
-    if (currentUser2.length) {
-      this.view.setCurrentUserInfo(currentUser2[0]);
+    if (currentUser2) {
+      this.view.setCurrentUserInfo(currentUser2);
     }
   }
   init() {
     this.subscribeToEventMediator();
     this.view.getHTML().append(this.sendMessageForm.getHTML());
-    StoreModel.subscribe(ACTIONS.SET_CURRENT_AUTHORIZED_USERS, () => {
-      const { currentAuthorizedUsers } = StoreModel.getState();
-      this.updateStatusCurrentUser(currentAuthorizedUsers);
+    StoreModel.subscribe(ACTIONS.SET_ALL_USERS, () => {
+      const { allUsers } = StoreModel.getState();
+      this.updateStatusCurrentUser(allUsers);
     });
-    StoreModel.subscribe(ACTIONS.SET_CURRENT_UNAUTHORIZED_USERS, () => {
-      const { currentUnauthorizedUsers } = StoreModel.getState();
-      this.updateStatusCurrentUser(currentUnauthorizedUsers);
+    StoreModel.subscribe(ACTIONS.SET_CURRENT_USER_DIALOGS, () => {
+      const { currentUserDialogs, selectedUser } = StoreModel.getState();
+      const currentDialog = currentUserDialogs.find(
+        (dialog) => dialog.login === (selectedUser == null ? void 0 : selectedUser.login)
+      );
+      this.hasMessages((currentDialog == null ? void 0 : currentDialog.messages) || []);
     });
   }
 }
@@ -2363,6 +2594,10 @@ class ClientApiModel {
       MEDIATOR_EVENTS.SEND_MESSAGE_REQUEST,
       createNewUserListener
     );
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST,
+      createNewUserListener
+    );
     return true;
   }
   subscribeToEventMediator() {
@@ -2391,6 +2626,10 @@ class ClientApiModel {
     );
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.SEND_MESSAGE_REQUEST,
+      createNewUserListener
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST,
       createNewUserListener
     );
     return true;
@@ -2509,6 +2748,13 @@ class ServerApiModel {
       case API_TYPES.MSG_DELIVER: {
         this.eventMediator.notify(
           MEDIATOR_EVENTS.DELIVERED_MESSAGE_RESPONSE,
+          message2
+        );
+        return true;
+      }
+      case API_TYPES.MSG_DELETE: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.DELETE_MESSAGE_RESPONSE,
           message2
         );
         return true;
@@ -2849,4 +3095,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-128bc9aa.js.map
+//# sourceMappingURL=main-fc374ea5.js.map
