@@ -382,15 +382,15 @@ class InputModel {
     this.view.getHTML().value = "";
   }
 }
-const wrapper = "_wrapper_14equ_1";
-const userList = "_userList_14equ_7";
-const counter = "_counter_14equ_37";
-const userListEmpty = "_userListEmpty_14equ_52";
-const userListSearchInput = "_userListSearchInput_14equ_56";
-const user = "_user_14equ_7";
-const userActive = "_userActive_14equ_146";
-const userInactive = "_userInactive_14equ_153";
-const userSelected = "_userSelected_14equ_160";
+const wrapper = "_wrapper_x3r5v_1";
+const userList = "_userList_x3r5v_7";
+const counter = "_counter_x3r5v_37";
+const userListEmpty = "_userListEmpty_x3r5v_52";
+const userListSearchInput = "_userListSearchInput_x3r5v_56";
+const user = "_user_x3r5v_7";
+const userActive = "_userActive_x3r5v_146";
+const userInactive = "_userInactive_x3r5v_153";
+const userSelected = "_userSelected_x3r5v_160";
 const USER_LIST_STYLES = {
   wrapper,
   userList,
@@ -963,14 +963,14 @@ class SendMessageFormView {
     return this.form;
   }
 }
-const emojiWrapper = "_emojiWrapper_1weyg_1";
-const contentWrapper = "_contentWrapper_1weyg_17";
-const categoryList = "_categoryList_1weyg_23";
-const category = "_category_1weyg_23";
-const emojiList = "_emojiList_1weyg_55";
-const sectionTitle = "_sectionTitle_1weyg_62";
-const emojiItem = "_emojiItem_1weyg_71";
-const hidden$1 = "_hidden_1weyg_77";
+const emojiWrapper = "_emojiWrapper_1dej8_1";
+const contentWrapper = "_contentWrapper_1dej8_17";
+const categoryList = "_categoryList_1dej8_34";
+const category = "_category_1dej8_34";
+const emojiList = "_emojiList_1dej8_74";
+const sectionTitle = "_sectionTitle_1dej8_81";
+const emojiItem = "_emojiItem_1dej8_90";
+const hidden$1 = "_hidden_1dej8_96";
 const EMOJI_STYLES = {
   emojiWrapper,
   contentWrapper,
@@ -1260,13 +1260,13 @@ const MESSAGES_WRAPPER_CONTENT = {
   EMPTY: "This is the start of your great conversation, say hello!",
   NO_USER_SELECT: "Select user to start messaging"
 };
-const dialogWrapper = "_dialogWrapper_pi0n6_1";
-const currentUserInfo = "_currentUserInfo_pi0n6_10";
-const active = "_active_pi0n6_39";
-const inactive = "_inactive_pi0n6_46";
-const messagesWrapper = "_messagesWrapper_pi0n6_54";
-const emptyList = "_emptyList_pi0n6_68";
-const hidden = "_hidden_pi0n6_74";
+const dialogWrapper = "_dialogWrapper_ayzv8_1";
+const currentUserInfo = "_currentUserInfo_ayzv8_10";
+const active = "_active_ayzv8_39";
+const inactive = "_inactive_ayzv8_46";
+const messagesWrapper = "_messagesWrapper_ayzv8_54";
+const emptyList = "_emptyList_ayzv8_79";
+const hidden = "_hidden_ayzv8_85";
 const USER_DIALOGUE_STYLES = {
   dialogWrapper,
   currentUserInfo,
@@ -3095,4 +3095,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-bea1e1cb.js.map
+//# sourceMappingURL=main-6b6fecb6.js.map
