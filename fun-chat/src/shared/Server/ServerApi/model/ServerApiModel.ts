@@ -139,9 +139,25 @@ class ServerApiModel {
         );
         return true;
       }
+      default: {
+        this.handlerMessageState(message);
+        return null;
+      }
+    }
+  }
+
+  private handlerMessageState(message: MessageFromServer): null | boolean {
+    switch (message.type) {
       case API_TYPES.MSG_EDIT: {
         this.eventMediator.notify(
           MEDIATOR_EVENTS.EDIT_MESSAGE_RESPONSE,
+          message,
+        );
+        return true;
+      }
+      case API_TYPES.MSG_READ: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.READ_MESSAGE_RESPONSE,
           message,
         );
         return true;

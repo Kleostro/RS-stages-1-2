@@ -1,4 +1,5 @@
 .dialogWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   border: 3px solid var(--noble-black-300);
@@ -8,7 +9,8 @@
 }
 
 .currentUserInfo {
-  position: relative;
+  position: absolute;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: start;
@@ -61,7 +63,8 @@
   flex-direction: column;
   overflow: hidden scroll;
   padding: calc(var(--little-offset) / 2) var(--little-offset);
-  height: 550px;
+  padding-top: 60px;
+  height: 603px;
   font: var(--small-font);
   font-weight: 600;
   letter-spacing: 1px;

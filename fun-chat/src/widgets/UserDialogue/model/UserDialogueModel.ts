@@ -10,6 +10,7 @@ import { isFromServerMessage } from '../../../utils/isFromServerMessage.ts';
 import { API_TYPES } from '../../../shared/Server/ServerApi/types/enums.ts';
 import MessageModel from '../../../entities/Message/model/MessageModel.ts';
 import type { Message } from '../../../utils/isMessage.ts';
+import { EVENT_NAMES } from '../../../shared/types/enums.ts';
 
 class UserDialogueModel {
   private view = new UserDialogueView();
@@ -41,11 +42,9 @@ class UserDialogueModel {
     this.view.clearMessagesWrapper();
     const messageWrapper = this.view.getMessagesWrapper();
     messages.forEach((message) => {
-      const newMessage = new MessageModel(message, message.id);
+      const newMessage = new MessageModel(message);
       messageWrapper.append(newMessage.getHTML());
     });
-
-    messageWrapper.scrollTop = messageWrapper.scrollHeight;
 
     return true;
   }
@@ -119,6 +118,41 @@ class UserDialogueModel {
     return true;
   }
 
+  private messageScrollHandler(): boolean {
+    const { currentUserDialogs, selectedUser } = StoreModel.getState();
+    const currentDialog = currentUserDialogs.find(
+      (dialog) => dialog.login === selectedUser?.login,
+    );
+
+    if (currentDialog) {
+      const { messages } = currentDialog;
+      const unreadMessages = messages.filter(
+        (message) =>
+          !message.status.isReaded && message.from === selectedUser?.login,
+      );
+
+      if (unreadMessages.length) {
+        unreadMessages.forEach((message) => {
+          const messageFromServer = {
+            id: '',
+            type: API_TYPES.MSG_READ,
+            payload: {
+              message: {
+                id: message.id,
+              },
+            },
+          };
+          this.eventMediator.notify(
+            MEDIATOR_EVENTS.READ_MESSAGE_REQUEST,
+            messageFromServer,
+          );
+        });
+      }
+    }
+
+    return true;
+  }
+
   private init(): boolean {
     this.subscribeToEventMediator();
     this.view.getHTML().append(this.sendMessageForm.getHTML());
@@ -134,6 +168,21 @@ class UserDialogueModel {
         (dialog) => dialog.login === selectedUser?.login,
       );
       this.hasMessages(currentDialog?.messages || []);
+    });
+
+    const messageWrapper = this.view.getMessagesWrapper();
+
+    messageWrapper.addEventListener(EVENT_NAMES.SCROLL, () => {
+      this.messageScrollHandler();
+    });
+
+    messageWrapper.addEventListener(EVENT_NAMES.CLICK, () => {
+      this.messageScrollHandler();
+    });
+
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE, () => {
+      this.messageScrollHandler();
+      messageWrapper.scrollTop = messageWrapper.scrollHeight;
     });
 
     return true;

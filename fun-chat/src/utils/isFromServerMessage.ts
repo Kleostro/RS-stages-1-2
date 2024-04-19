@@ -13,6 +13,7 @@ export interface MessageFromServer {
       status: {
         isDelivered: boolean;
         isEdited: boolean;
+        isReaded: boolean;
       };
       text: string;
     };

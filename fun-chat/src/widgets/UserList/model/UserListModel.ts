@@ -239,6 +239,23 @@ class UserListModel {
     return true;
   }
 
+  private updateReadMessagesHandler(message: unknown): boolean {
+    const checkedMessage = isFromServerMessage(message);
+    const { currentUserDialogs } = StoreModel.getState();
+    currentUserDialogs.forEach((dialog) => {
+      const currentMessage = dialog.messages.find(
+        (msg) => msg.id === checkedMessage?.payload.message.id,
+      );
+      if (currentMessage && checkedMessage) {
+        currentMessage.status.isReaded =
+          checkedMessage.payload.message.status.isReaded;
+        StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
+        this.drawUnreadMessages();
+      }
+    });
+    return true;
+  }
+
   private subscribeToEventMediator(): boolean {
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
@@ -290,6 +307,13 @@ class UserListModel {
       MEDIATOR_EVENTS.DELETE_MESSAGE_RESPONSE,
       (message) => {
         this.redrawUnreadMessagesHandler(message);
+      },
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_RESPONSE,
+      (message) => {
+        this.updateReadMessagesHandler(message);
       },
     );
     return true;

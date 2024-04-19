@@ -88,6 +88,10 @@
     color: var(--steam-green-800);
   }
 
+  .readed {
+    color: var(--day-blue-900);
+  }
+
   .date {
     margin-right: 2px;
   }
@@ -125,6 +129,7 @@
   position: absolute;
   right: 0;
   bottom: 110%;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: start;

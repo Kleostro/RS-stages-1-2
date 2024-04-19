@@ -12,7 +12,9 @@ class ClientApiModel {
     this.webSocket = webSocket;
     this.isOpen = isOpen;
     this.unsubscribeToEventMediator();
+    this.unsubscribeToEventMediator2();
     this.subscribeToEventMediator();
+    this.subscribeToEventMediator2();
   }
 
   public isWorks(): boolean {
@@ -72,6 +74,19 @@ class ClientApiModel {
     return true;
   }
 
+  private unsubscribeToEventMediator2(): boolean {
+    const createNewUserListener = (message: unknown): void => {
+      this.sendMessage(message);
+    };
+
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_REQUEST,
+      createNewUserListener,
+    );
+
+    return true;
+  }
+
   private subscribeToEventMediator(): boolean {
     const createNewUserListener = (message: unknown): void => {
       this.sendMessage(message);
@@ -114,6 +129,19 @@ class ClientApiModel {
 
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.EDIT_MESSAGE_REQUEST,
+      createNewUserListener,
+    );
+
+    return true;
+  }
+
+  private subscribeToEventMediator2(): boolean {
+    const createNewUserListener = (message: unknown): void => {
+      this.sendMessage(message);
+    };
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_REQUEST,
       createNewUserListener,
     );
 

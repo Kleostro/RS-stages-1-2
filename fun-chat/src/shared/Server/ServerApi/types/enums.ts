@@ -13,6 +13,7 @@ export const API_TYPES = {
   MSG_DELETE: 'MSG_DELETE',
   MSG_EDIT: 'MSG_EDIT',
   MSG_DELIVER: 'MSG_DELIVER',
+  MSG_READ: 'MSG_READ',
 } as const;
 
 export const CHECK_INTERVAL = 5000;

@@ -55,6 +55,10 @@ class MessageView {
     this.messageText.textContent = checkedMessage?.payload?.message?.text;
   }
 
+  public readMessage(): void {
+    this.messageStatus.classList.add(MESSAGE_STYLES.readed);
+  }
+
   public getEditWrapper(): HTMLDivElement {
     return this.editWrapper;
   }
@@ -138,10 +142,12 @@ class MessageView {
   }
 
   private createMessageStatus(): HTMLSpanElement {
-    const { isDelivered } = this.messageParams.status;
+    const { isDelivered, isReaded } = this.messageParams.status;
     this.messageStatus = createBaseElement({
       tag: TAG_NAMES.SPAN,
-      cssClasses: [MESSAGE_STYLES.status],
+      cssClasses: isReaded
+        ? [MESSAGE_STYLES.status, MESSAGE_STYLES.readed]
+        : [MESSAGE_STYLES.status],
       innerContent: isDelivered
         ? MESSAGE_STATE.DELIVERED
         : MESSAGE_STATE.SENDED,

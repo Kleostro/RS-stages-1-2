@@ -16,8 +16,8 @@ class MessageModel {
 
   private messageID = '';
 
-  constructor(messageParams: Message, messageID: string) {
-    this.messageID = messageID;
+  constructor(messageParams: Message) {
+    this.messageID = messageParams.id;
     this.view = new MessageView(messageParams);
     this.init();
   }
@@ -76,6 +76,16 @@ class MessageModel {
         const checkedMessage = isFromServerMessage(message);
         if (checkedMessage?.payload.message.id === this.messageID) {
           this.editMessageHandler(checkedMessage);
+        }
+      },
+    );
+
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_RESPONSE,
+      (message) => {
+        const checkedMessage = isFromServerMessage(message);
+        if (checkedMessage?.payload.message.id === this.messageID) {
+          this.view.readMessage();
         }
       },
     );
