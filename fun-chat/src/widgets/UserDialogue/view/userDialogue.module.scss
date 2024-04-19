@@ -11,7 +11,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: start;
   border-bottom: 3px solid var(--noble-black-300);
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   padding: calc(var(--little-offset)) var(--medium-offset);
@@ -27,7 +27,7 @@
   &::before {
     content: '';
     position: absolute;
-    right: 4%;
+    left: 2%;
     top: 50%;
     display: none;
     outline: 3px solid var(--noble-black-300);
@@ -59,7 +59,7 @@
 .messagesWrapper {
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow: hidden scroll;
   padding: calc(var(--little-offset) / 2) var(--little-offset);
   height: 550px;
   font: var(--small-font);
@@ -68,6 +68,20 @@
   color: var(--noble-black-300);
   background-color: var(--noble-black-800);
   scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--noble-black-500);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--border-radius);
+    background-color: var(--steam-green-500);
+    cursor: pointer;
+  }
 }
 
 .emptyList {

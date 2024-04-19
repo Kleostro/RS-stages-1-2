@@ -28,6 +28,16 @@ class LoginPageView {
     return this.backButton;
   }
 
+  public show(): boolean {
+    this.page.classList.remove(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
+  }
+
+  public hide(): boolean {
+    this.page.classList.add(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
+  }
+
   private createAboutText(): HTMLSpanElement {
     this.aboutText = createBaseElement({
       tag: TAG_NAMES.SPAN,

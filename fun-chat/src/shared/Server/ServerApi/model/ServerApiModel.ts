@@ -139,6 +139,13 @@ class ServerApiModel {
         );
         return true;
       }
+      case API_TYPES.MSG_EDIT: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.EDIT_MESSAGE_RESPONSE,
+          message,
+        );
+        return true;
+      }
       default: {
         return null;
       }

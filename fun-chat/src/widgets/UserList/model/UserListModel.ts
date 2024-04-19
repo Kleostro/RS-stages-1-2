@@ -28,7 +28,7 @@ class UserListModel {
     return this.view.getHTML();
   }
 
-  private getActiveUsers(): void {
+  private getActiveUsers(): boolean {
     const requestMessage = {
       id: '',
       type: API_TYPES.USER_ACTIVE,
@@ -38,9 +38,11 @@ class UserListModel {
       MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
       requestMessage,
     );
+
+    return true;
   }
 
-  private getInactiveUsers(): void {
+  private getInactiveUsers(): boolean {
     const requestMessage = {
       id: '',
       type: API_TYPES.USER_INACTIVE,
@@ -50,17 +52,21 @@ class UserListModel {
       MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
       requestMessage,
     );
+
+    return true;
   }
 
-  private getAllUsers(): void {
+  private getAllUsers(): boolean {
     this.getActiveUsers();
     this.getInactiveUsers();
+
+    return true;
   }
 
-  private drawUnreadMessages(): void {
+  private drawUnreadMessages(): boolean {
     const { currentUserDialogs } = StoreModel.getState();
     if (!currentUserDialogs.length) {
-      return;
+      return false;
     }
 
     currentUserDialogs.forEach((dialog) => {
@@ -70,9 +76,11 @@ class UserListModel {
 
       this.view.drawUnreadMessagesCount(dialog.login, unReadMessages);
     });
+
+    return true;
   }
 
-  private drawUsers(): void {
+  private drawUsers(): boolean {
     this.view.clearUserList();
     const { allUsers } = StoreModel.getState();
 
@@ -83,9 +91,11 @@ class UserListModel {
     allUsers.forEach((user) => {
       this.view.drawUser(user);
     });
+
+    return true;
   }
 
-  private getAllUsersHandler(message: unknown): void {
+  private getAllUsersHandler(message: unknown): boolean {
     const checkedMessage = isFromServerMessage(message);
     if (checkedMessage) {
       const action =
@@ -100,16 +110,18 @@ class UserListModel {
         ...currentUnauthorizedUsers,
       ].filter((user) => user.login !== currentUser?.login);
       StoreModel.dispatch(setAllUsers(allUsers));
+
       if (currentUser) {
-        allUsers.forEach((user) => {
-          this.getAllMessages(user.login);
-        });
+        allUsers.forEach((user) => this.getAllMessages(user.login));
       }
+
       this.drawUsers();
     }
+
+    return true;
   }
 
-  private getAllMessages(login: string): void {
+  private getAllMessages(login: string): boolean {
     const requestMessage = {
       id: '',
       type: API_TYPES.MSG_FROM_USER,
@@ -123,9 +135,11 @@ class UserListModel {
       MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
       requestMessage,
     );
+
+    return true;
   }
 
-  private saveMessages(messages: unknown): void {
+  private saveMessages(messages: unknown): boolean {
     const checkedMessage = isFromServerMessage(messages);
 
     const { currentUserDialogs, currentUser } = StoreModel.getState();
@@ -142,7 +156,7 @@ class UserListModel {
       }
     } else {
       if (!checkedMessage?.payload.messages.length) {
-        return;
+        return false;
       }
       currentMessages = checkedMessage.payload.messages;
       from = currentMessages[0].from;
@@ -167,9 +181,11 @@ class UserListModel {
 
     StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
     this.drawUnreadMessages();
+
+    return true;
   }
 
-  private userListHandler(event: Event): void {
+  private userListHandler(event: Event): boolean {
     const { target } = event;
     this.view.selectUser(target);
     const { allUsers } = StoreModel.getState();
@@ -191,6 +207,8 @@ class UserListModel {
       MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
       currentUserInfo,
     );
+
+    return true;
   }
 
   private setUserListHandler(): boolean {
@@ -207,6 +225,7 @@ class UserListModel {
       const deletedMessage = dialog.messages.find(
         (msg) => msg.id === checkedMessage?.payload.message.id,
       );
+
       if (deletedMessage) {
         const currentDialog = dialog;
         currentDialog.messages = dialog.messages.filter(
@@ -235,14 +254,9 @@ class UserListModel {
       },
     );
 
-    this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
-      this.getAllUsers.bind(this),
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_IN_RESPONSE, () =>
+      this.getAllUsers(),
     );
-
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_IN_RESPONSE, () => {
-      this.getAllUsers();
-    });
 
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
@@ -281,49 +295,50 @@ class UserListModel {
     return true;
   }
 
-  private searchInputHandler(): void {
-    const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser } =
-      StoreModel.getState();
-    const allUsers = [...currentAuthorizedUsers, ...currentUnauthorizedUsers];
+  private searchInputHandler(): boolean {
+    const { allUsers } = StoreModel.getState();
 
     const inputValue = this.view
       .getSearchInput()
       .getHTML()
       .value.toLowerCase()
       .trim();
+
     const filteredUsers = allUsers.filter((user) =>
       user.login.toLowerCase().includes(inputValue),
     );
 
     this.view.clearUserList();
 
-    const currentUsers = filteredUsers.filter(
-      (user) => user.login !== currentUser?.login,
-    );
-
-    if (!currentUsers.length) {
+    if (!filteredUsers.length) {
       this.view.emptyUserList();
     }
 
-    currentUsers.forEach((user) => {
+    filteredUsers.forEach((user) => {
       this.view.drawUser(user);
     });
 
     this.drawUnreadMessages();
+
+    return true;
   }
 
-  private setSearchInputHandler(): void {
+  private setSearchInputHandler(): boolean {
     this.view
       .getSearchInput()
       .getHTML()
       .addEventListener(EVENT_NAMES.INPUT, this.searchInputHandler.bind(this));
+
+    return true;
   }
 
-  private init(): void {
+  private init(): boolean {
     this.setUserListHandler();
     this.setSearchInputHandler();
     this.subscribeToEventMediator();
     this.subscribeToEventMediator2();
+
+    return true;
   }
 }
 

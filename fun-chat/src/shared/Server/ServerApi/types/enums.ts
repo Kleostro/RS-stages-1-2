@@ -11,6 +11,7 @@ export const API_TYPES = {
   MSG_FROM_USER: 'MSG_FROM_USER',
   MSG_SEND: 'MSG_SEND',
   MSG_DELETE: 'MSG_DELETE',
+  MSG_EDIT: 'MSG_EDIT',
   MSG_DELIVER: 'MSG_DELIVER',
 } as const;
 

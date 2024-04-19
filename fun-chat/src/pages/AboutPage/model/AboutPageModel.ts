@@ -1,7 +1,6 @@
 import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import AboutPageView from '../view/AboutPageView.ts';
-import ABOUT_PAGE_STYLES from '../view/aboutPage.module.scss';
 import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 import PAGES_IDS from '../../types/enums.ts';
 import { EVENT_NAMES } from '../../../shared/types/enums.ts';
@@ -25,22 +24,12 @@ class AboutPageModel implements PageInterface {
     return this.view.getHTML();
   }
 
-  private show(): boolean {
-    this.view.getHTML().classList.remove(ABOUT_PAGE_STYLES.aboutPage_hidden);
-    return true;
-  }
-
-  private hide(): boolean {
-    this.view.getHTML().classList.add(ABOUT_PAGE_STYLES.aboutPage_hidden);
-    return true;
-  }
-
   private subscribeToMediator(): boolean {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       if (params === PAGES_IDS.ABOUT_PAGE) {
-        this.show();
+        this.view.show();
       } else {
-        this.hide();
+        this.view.hide();
       }
     });
     return true;
@@ -52,7 +41,7 @@ class AboutPageModel implements PageInterface {
     } else {
       this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
     }
-    this.hide();
+    this.view.hide();
     return true;
   }
 

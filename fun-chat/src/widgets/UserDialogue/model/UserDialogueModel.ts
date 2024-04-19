@@ -28,37 +28,39 @@ class UserDialogueModel {
     return this.view.getHTML();
   }
 
-  private retrieveMessagesWithCurrentUser(data: unknown): void {
+  private retrieveMessagesWithCurrentUser(data: unknown): boolean {
     const checkedData = isFromServerMessage(data);
-    if (
-      checkedData &&
-      checkedData.id === this.messageID &&
-      checkedData.id !== ''
-    ) {
+    if (checkedData?.id === this.messageID && checkedData.id !== '') {
       this.hasMessages(checkedData.payload.messages);
     }
+
+    return true;
   }
 
-  private drawMessagesWithCurrentUser(messages: Message[]): void {
+  private drawMessagesWithCurrentUser(messages: Message[]): boolean {
     this.view.clearMessagesWrapper();
     const messageWrapper = this.view.getMessagesWrapper();
     messages.forEach((message) => {
-      const messageModel = new MessageModel(message, message.id);
-      messageWrapper.append(messageModel.getHTML());
+      const newMessage = new MessageModel(message, message.id);
+      messageWrapper.append(newMessage.getHTML());
     });
 
     messageWrapper.scrollTop = messageWrapper.scrollHeight;
+
+    return true;
   }
 
-  private hasMessages(messages: Message[]): void {
+  private hasMessages(messages: Message[]): boolean {
     if (messages.length) {
       this.drawMessagesWithCurrentUser(messages);
     } else if (StoreModel.getState().selectedUser) {
       this.view.showEmptyDialogue();
     }
+
+    return true;
   }
 
-  private requestMessagesWithCurrentUser(userLogin: string): void {
+  private requestMessagesWithCurrentUser(userLogin: string): boolean {
     this.messageID = crypto.randomUUID();
     const message = {
       id: this.messageID,
@@ -74,9 +76,11 @@ class UserDialogueModel {
       MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
       message,
     );
+
+    return true;
   }
 
-  private subscribeToEventMediator(): void {
+  private subscribeToEventMediator(): boolean {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.OPEN_USER_DIALOGUE, (data) => {
       if (isSavedUser(data)) {
         this.view.setCurrentUserInfo(data);
@@ -100,18 +104,22 @@ class UserDialogueModel {
         this.requestMessagesWithCurrentUser(selectedUser?.login);
       }
     });
+
+    return true;
   }
 
-  private updateStatusCurrentUser(users: User[]): void {
+  private updateStatusCurrentUser(users: User[]): boolean {
     const currentUser = users.find(
       (user) => user.login === this.view.getCurrentUserInfo().textContent,
     );
     if (currentUser) {
       this.view.setCurrentUserInfo(currentUser);
     }
+
+    return true;
   }
 
-  private init(): void {
+  private init(): boolean {
     this.subscribeToEventMediator();
     this.view.getHTML().append(this.sendMessageForm.getHTML());
 
@@ -127,6 +135,8 @@ class UserDialogueModel {
       );
       this.hasMessages(currentDialog?.messages || []);
     });
+
+    return true;
   }
 }
 

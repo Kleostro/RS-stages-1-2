@@ -23,6 +23,16 @@ class MainPageView {
     return this.chatWrapper;
   }
 
+  public show(): boolean {
+    this.page.classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
+  }
+
+  public hide(): boolean {
+    this.page.classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
+  }
+
   private createChatWrapper(): HTMLDivElement {
     this.chatWrapper = createBaseElement({
       tag: TAG_NAMES.DIV,

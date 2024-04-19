@@ -2,7 +2,6 @@ import MEDIATOR_EVENTS from '../../../shared/EventMediator/types/enums.ts';
 import EventMediatorModel from '../../../shared/EventMediator/model/EventMediatorModel.ts';
 import type PageInterface from '../../types/interfaces.ts';
 import LoginPageView from '../view/LoginPageView.ts';
-import LOGIN_PAGE_STYLES from '../view/loginPage.module.scss';
 import PAGES_IDS, {
   AUTHENTICATION_ANIMATE_DETAILS,
 } from '../../types/enums.ts';
@@ -45,20 +44,6 @@ class LoginPageModel implements PageInterface {
     return this.loginPageView.getHTML();
   }
 
-  private show(): boolean {
-    this.loginPageView
-      .getHTML()
-      .classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
-    return true;
-  }
-
-  private hide(): boolean {
-    this.loginPageView
-      .getHTML()
-      .classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
-    return true;
-  }
-
   private checkAuthorizedUser(): User | null {
     const currentUser = this.storage.get(STORE_KEYS.CURRENT_USER);
 
@@ -82,12 +67,17 @@ class LoginPageModel implements PageInterface {
     if (params === PAGES_IDS.LOGIN_PAGE || params === PAGES_IDS.DEFAULT_PAGE) {
       if (StoreModel.getState().currentUser) {
         this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-        this.hide();
+        this.loginPageView.hide();
       } else {
-        this.show();
+        this.loginPageView.show();
+        const firstInputField = this.loginFormModel
+          .getFirstInputField()
+          .getView()
+          .getInput();
+        firstInputField.getHTML().focus();
       }
     } else {
-      this.hide();
+      this.loginPageView.hide();
     }
 
     return true;
@@ -98,7 +88,7 @@ class LoginPageModel implements PageInterface {
     StoreModel.dispatch(setCurrentUser(userData));
     this.storage.add(STORE_KEYS.CURRENT_USER, JSON.stringify(userData));
     this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-    this.hide();
+    this.loginPageView.hide();
     return true;
   }
 
@@ -125,13 +115,19 @@ class LoginPageModel implements PageInterface {
     if (savedUser && isUser(savedUser)) {
       StoreModel.dispatch(setCurrentUser(savedUser));
       this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-      this.hide();
+      this.loginPageView.hide();
       return true;
     }
 
     if (checkedMessage?.type !== API_TYPES.ERROR) {
       this.handleSuccessMessage();
     } else if (checkedMessage?.id === this.loginFormModel.getMessageID()) {
+      this.loginFormModel
+        .getFirstInputField()
+        .getView()
+        .getInput()
+        .getHTML()
+        .focus();
       this.handleErrorMessage(checkedMessage);
     }
     return true;
@@ -157,7 +153,7 @@ class LoginPageModel implements PageInterface {
 
   private initPage(): boolean {
     this.subscribeToMediator();
-    this.hide();
+    this.loginPageView.hide();
     const loginFormHTML = this.loginFormModel.getHTML();
     this.getHTML().append(loginFormHTML);
     return true;

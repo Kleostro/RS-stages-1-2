@@ -22,6 +22,16 @@ class LoginPageView {
     return this.page;
   }
 
+  public show(): boolean {
+    this.page.classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
+  }
+
+  public hide(): boolean {
+    this.page.classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
+  }
+
   public getShowAuthenticationMessage(): HTMLSpanElement {
     return this.authenticationMessage;
   }

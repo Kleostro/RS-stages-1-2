@@ -1,6 +1,7 @@
 .message {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(2, max-content);
+  grid-template-columns: repeat(3, max-content);
   grid-template-rows: repeat(3, max-content);
   border-radius: var(--border-radius);
   padding: calc(var(--little-offset) / 4);
@@ -36,14 +37,26 @@
 
 .status,
 .date {
-  grid-column: 2;
   grid-row: 3;
   font: var(--little-font);
   text-align: right;
 }
 
 .date {
+  grid-column: 2;
+}
+
+.status {
+  grid-column: 3;
+  margin-right: 2px;
+  letter-spacing: -2px;
+}
+
+.edited {
   grid-column: 1;
+  grid-row: 3;
+  margin-right: 2px;
+  font: var(--little-font);
 }
 
 .currentUser {
@@ -51,6 +64,7 @@
   align-self: end;
   border-radius: var(--border-radius) var(--border-radius) 0;
   background-color: var(--steam-green-400);
+  cursor: pointer;
 
   &::before {
     content: '';
@@ -69,12 +83,13 @@
   }
 
   .date,
-  .status {
+  .status,
+  .edited {
     color: var(--steam-green-800);
   }
 
   .date {
-    margin-right: 5px;
+    margin-right: 2px;
   }
 }
 
@@ -103,5 +118,40 @@
 
   .date {
     grid-column: 2;
+  }
+}
+
+.editWrapper {
+  position: absolute;
+  right: 0;
+  bottom: 110%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  border: 1px solid var(--noble-black-300);
+  border-radius: var(--border-radius);
+  padding: calc(var(--little-offset) / 4) calc(var(--little-offset) / 2);
+  background-color: var(--noble-black-700);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s visibility 0.5s;
+  gap: calc(var(--little-offset) / 6);
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.deleteButton,
+.editButton {
+  border-radius: 50%;
+  padding: 4px 6px;
+  transition: background-color 0.3s;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--noble-black-300);
+    }
   }
 }

@@ -33,6 +33,10 @@ class LoginFormModel {
     return this.view.getHTML();
   }
 
+  public getFirstInputField(): InputFieldModel {
+    return this.inputFields[0];
+  }
+
   public getMessageID(): string {
     return this.messageID;
   }

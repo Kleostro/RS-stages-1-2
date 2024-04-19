@@ -12,7 +12,9 @@ export interface MessageFromServer {
       id: string;
       status: {
         isDelivered: boolean;
+        isEdited: boolean;
       };
+      text: string;
     };
   };
 }

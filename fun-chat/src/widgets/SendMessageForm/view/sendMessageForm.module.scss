@@ -28,6 +28,20 @@
   transition: background-color 0.3s;
   resize: none;
 
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--noble-black-500);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--border-radius);
+    background-color: var(--steam-green-500);
+    cursor: pointer;
+  }
+
   &::placeholder {
     color: var(--noble-black-300);
   }
