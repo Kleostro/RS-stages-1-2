@@ -35,6 +35,11 @@
     background-color: var(--steam-green-500);
     cursor: pointer;
   }
+
+  @media (max-width: 768px) {
+    min-height: 500px;
+    max-height: 500px;
+  }
 }
 
 .counter {
@@ -143,6 +148,12 @@
     width: 16px;
     height: 16px;
     transform: translateY(-50%);
+
+    @media (max-width: 768px) {
+      outline: 1px solid var(--noble-black-300);
+      width: 8px;
+      height: 8px;
+    }
   }
 
   &:first-child {
@@ -158,6 +169,11 @@
         background-color: var(--noble-black-300);
       }
     }
+  }
+
+  @media (max-width: 768px) {
+    overflow-x: hidden;
+    font: var(--little-font);
   }
 }
 

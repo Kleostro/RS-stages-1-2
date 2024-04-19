@@ -1,5 +1,6 @@
 .header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin-bottom: var(--medium-offset);
   border-bottom: 4px solid var(--noble-black-300);

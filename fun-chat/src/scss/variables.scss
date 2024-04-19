@@ -5,6 +5,13 @@
   --medium-offset: 50px;
   --large-offset: 100px;
 
+  @media (max-width: 768px) {
+    --little-offset: 10px;
+    --small-offset: 20px;
+    --medium-offset: 30px;
+    --large-offset: 60px;
+  }
+
   // sizes
   --border-radius: 10px;
 
@@ -30,4 +37,13 @@
   --second-font: 600 25px 'Roboto', sans-serif;
   --big-font: 700 35px 'Roboto', sans-serif;
   --large-font: 700 45px 'Roboto', sans-serif;
+
+  @media (max-width: 768px) {
+    --little-font: 400 8px 'Roboto', sans-serif;
+    --small-font: 400 10px 'Roboto', sans-serif;
+    --medium-font: 400 16px 'Roboto', sans-serif;
+    --second-font: 600 20px 'Roboto', sans-serif;
+    --big-font: 700 25px 'Roboto', sans-serif;
+    --large-font: 700 35px 'Roboto', sans-serif;
+  }
 }

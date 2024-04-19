@@ -12,4 +12,8 @@
 .chatWrapper {
   display: flex;
   min-height: 626px;
+
+  @media (max-width: 768px) {
+    min-height: 500px;
+  }
 }

@@ -55,6 +55,10 @@
       background-color: var(--noble-black-600);
     }
   }
+
+  @media (max-width: 768px) {
+    height: 30px;
+  }
 }
 
 .emojiButton {
