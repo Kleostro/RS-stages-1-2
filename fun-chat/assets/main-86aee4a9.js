@@ -67,6 +67,12 @@ const MEDIATOR_EVENTS = {
   SEND_MESSAGE_RESPONSE: "sendMessageResponse",
   DELETE_MESSAGE_REQUEST: "deleteMessageRequest",
   DELETE_MESSAGE_RESPONSE: "deleteMessageResponse",
+  READ_MESSAGE_REQUEST: "readMessageRequest",
+  READ_MESSAGE_RESPONSE: "readMessageResponse",
+  UPDATE_READ_MESSAGE_STATUS: "updateReadMessageStatus",
+  EDIT_MESSAGE_REQUEST: "editMessageRequest",
+  EDIT_MESSAGE_RESPONSE: "editMessageResponse",
+  EDIT_MESSAGE_OPEN: "editMessageOpen",
   DELIVERED_MESSAGE_RESPONSE: "deliveredMessageResponse",
   EXTERNAL_LOGIN_RESPONSE: "externalLoginResponse",
   EXTERNAL_LOGOUT_RESPONSE: "externalLogoutResponse",
@@ -209,9 +215,9 @@ const createBaseElement = ({
   elem.innerHTML = innerContent;
   return elem;
 };
-const mainPage = "_mainPage_1s168_1";
-const mainPage_hidden = "_mainPage_hidden_1s168_7";
-const chatWrapper = "_chatWrapper_1s168_11";
+const mainPage = "_mainPage_ccva4_1";
+const mainPage_hidden = "_mainPage_hidden_ccva4_7";
+const chatWrapper = "_chatWrapper_ccva4_11";
 const MAIN_PAGE_STYLES = {
   mainPage,
   mainPage_hidden,
@@ -231,6 +237,14 @@ class MainPageView {
   }
   getChatWrapper() {
     return this.chatWrapper;
+  }
+  show() {
+    this.page.classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
+  }
+  hide() {
+    this.page.classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
+    return true;
   }
   createChatWrapper() {
     this.chatWrapper = createBaseElement({
@@ -382,15 +396,15 @@ class InputModel {
     this.view.getHTML().value = "";
   }
 }
-const wrapper = "_wrapper_x3r5v_1";
-const userList = "_userList_x3r5v_7";
-const counter = "_counter_x3r5v_37";
-const userListEmpty = "_userListEmpty_x3r5v_52";
-const userListSearchInput = "_userListSearchInput_x3r5v_56";
-const user = "_user_x3r5v_7";
-const userActive = "_userActive_x3r5v_146";
-const userInactive = "_userInactive_x3r5v_153";
-const userSelected = "_userSelected_x3r5v_160";
+const wrapper = "_wrapper_slomz_1";
+const userList = "_userList_slomz_7";
+const counter = "_counter_slomz_43";
+const userListEmpty = "_userListEmpty_slomz_58";
+const userListSearchInput = "_userListSearchInput_slomz_62";
+const user = "_user_slomz_7";
+const userActive = "_userActive_slomz_165";
+const userInactive = "_userInactive_slomz_172";
+const userSelected = "_userSelected_slomz_179";
 const USER_LIST_STYLES = {
   wrapper,
   userList,
@@ -562,7 +576,9 @@ const API_TYPES = {
   MSG_FROM_USER: "MSG_FROM_USER",
   MSG_SEND: "MSG_SEND",
   MSG_DELETE: "MSG_DELETE",
-  MSG_DELIVER: "MSG_DELIVER"
+  MSG_EDIT: "MSG_EDIT",
+  MSG_DELIVER: "MSG_DELIVER",
+  MSG_READ: "MSG_READ"
 };
 const CHECK_INTERVAL = 5e3;
 const isMessage = (value) => typeof value === "object" && value !== null && "from" in value && "to" in value && "text" in value && "datetime" in value && "status" in value;
@@ -585,6 +601,7 @@ class UserListModel {
       MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_REQUEST,
       requestMessage
     );
+    return true;
   }
   getInactiveUsers() {
     const requestMessage = {
@@ -596,15 +613,17 @@ class UserListModel {
       MEDIATOR_EVENTS.GET_ALL_UNAUTHENTICATED_USERS_REQUEST,
       requestMessage
     );
+    return true;
   }
   getAllUsers() {
     this.getActiveUsers();
     this.getInactiveUsers();
+    return true;
   }
   drawUnreadMessages() {
     const { currentUserDialogs } = StoreModel.getState();
     if (!currentUserDialogs.length) {
-      return;
+      return false;
     }
     currentUserDialogs.forEach((dialog) => {
       const unReadMessages = dialog.messages.filter(
@@ -612,6 +631,7 @@ class UserListModel {
       );
       this.view.drawUnreadMessagesCount(dialog.login, unReadMessages);
     });
+    return true;
   }
   drawUsers() {
     this.view.clearUserList();
@@ -622,6 +642,7 @@ class UserListModel {
     allUsers.forEach((user2) => {
       this.view.drawUser(user2);
     });
+    return true;
   }
   getAllUsersHandler(message2) {
     const checkedMessage = isFromServerMessage(message2);
@@ -635,12 +656,11 @@ class UserListModel {
       ].filter((user2) => user2.login !== (currentUser2 == null ? void 0 : currentUser2.login));
       StoreModel.dispatch(setAllUsers(allUsers));
       if (currentUser2) {
-        allUsers.forEach((user2) => {
-          this.getAllMessages(user2.login);
-        });
+        allUsers.forEach((user2) => this.getAllMessages(user2.login));
       }
       this.drawUsers();
     }
+    return true;
   }
   getAllMessages(login2) {
     const requestMessage = {
@@ -656,6 +676,7 @@ class UserListModel {
       MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
       requestMessage
     );
+    return true;
   }
   saveMessages(messages) {
     const checkedMessage = isFromServerMessage(messages);
@@ -672,7 +693,7 @@ class UserListModel {
       }
     } else {
       if (!(checkedMessage == null ? void 0 : checkedMessage.payload.messages.length)) {
-        return;
+        return false;
       }
       currentMessages = checkedMessage.payload.messages;
       from = currentMessages[0].from;
@@ -692,6 +713,7 @@ class UserListModel {
     }
     StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
     this.drawUnreadMessages();
+    return true;
   }
   userListHandler(event) {
     const { target } = event;
@@ -715,6 +737,7 @@ class UserListModel {
       MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
       currentUserInfo2
     );
+    return true;
   }
   setUserListHandler() {
     this.view.getUserList().addEventListener(EVENT_NAMES.CLICK, (event) => {
@@ -740,6 +763,21 @@ class UserListModel {
     });
     return true;
   }
+  updateReadMessagesHandler(message2) {
+    const checkedMessage = isFromServerMessage(message2);
+    const { currentUserDialogs } = StoreModel.getState();
+    currentUserDialogs.forEach((dialog) => {
+      const currentMessage = dialog.messages.find(
+        (msg) => msg.id === (checkedMessage == null ? void 0 : checkedMessage.payload.message.id)
+      );
+      if (currentMessage && checkedMessage) {
+        currentMessage.status.isReaded = checkedMessage.payload.message.status.isReaded;
+        StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
+        this.drawUnreadMessages();
+      }
+    });
+    return true;
+  }
   subscribeToEventMediator() {
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.GET_ALL_AUTHENTICATED_USERS_RESPONSE,
@@ -754,12 +792,9 @@ class UserListModel {
       }
     );
     this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
-      this.getAllUsers.bind(this)
+      MEDIATOR_EVENTS.LOG_IN_RESPONSE,
+      () => this.getAllUsers()
     );
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_IN_RESPONSE, () => {
-      this.getAllUsers();
-    });
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
       this.getAllUsers.bind(this)
@@ -789,35 +824,40 @@ class UserListModel {
         this.redrawUnreadMessagesHandler(message2);
       }
     );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_RESPONSE,
+      (message2) => {
+        this.updateReadMessagesHandler(message2);
+      }
+    );
     return true;
   }
   searchInputHandler() {
-    const { currentAuthorizedUsers, currentUnauthorizedUsers, currentUser: currentUser2 } = StoreModel.getState();
-    const allUsers = [...currentAuthorizedUsers, ...currentUnauthorizedUsers];
+    const { allUsers } = StoreModel.getState();
     const inputValue = this.view.getSearchInput().getHTML().value.toLowerCase().trim();
     const filteredUsers = allUsers.filter(
       (user2) => user2.login.toLowerCase().includes(inputValue)
     );
     this.view.clearUserList();
-    const currentUsers = filteredUsers.filter(
-      (user2) => user2.login !== (currentUser2 == null ? void 0 : currentUser2.login)
-    );
-    if (!currentUsers.length) {
+    if (!filteredUsers.length) {
       this.view.emptyUserList();
     }
-    currentUsers.forEach((user2) => {
+    filteredUsers.forEach((user2) => {
       this.view.drawUser(user2);
     });
     this.drawUnreadMessages();
+    return true;
   }
   setSearchInputHandler() {
     this.view.getSearchInput().getHTML().addEventListener(EVENT_NAMES.INPUT, this.searchInputHandler.bind(this));
+    return true;
   }
   init() {
     this.setUserListHandler();
     this.setSearchInputHandler();
     this.subscribeToEventMediator();
     this.subscribeToEventMediator2();
+    return true;
   }
 }
 const SEND_MESSAGE_INPUT_FIELD_PARAMS = {
@@ -828,17 +868,17 @@ const SEND_MESSAGE_FORM_SVG_DETAILS = {
   SVG_URL: "http://www.w3.org/2000/svg",
   SEND_ID: "send"
 };
-const form = "_form_1lrab_1";
-const inputField = "_inputField_1lrab_15";
-const emojiButton = "_emojiButton_1lrab_42";
-const submitFormButton = "_submitFormButton_1lrab_50";
-const hidden$2 = "_hidden_1lrab_77";
+const form = "_form_7ybe7_1";
+const inputField = "_inputField_7ybe7_15";
+const emojiButton = "_emojiButton_7ybe7_58";
+const submitFormButton = "_submitFormButton_7ybe7_66";
+const hidden$3 = "_hidden_7ybe7_93";
 const SEND_MESSAGE_FORM_STYLES = {
   form,
   inputField,
   emojiButton,
   submitFormButton,
-  hidden: hidden$2
+  hidden: hidden$3
 };
 class ButtonView {
   constructor(params) {
@@ -970,7 +1010,7 @@ const category = "_category_1dej8_34";
 const emojiList = "_emojiList_1dej8_74";
 const sectionTitle = "_sectionTitle_1dej8_81";
 const emojiItem = "_emojiItem_1dej8_90";
-const hidden$1 = "_hidden_1dej8_96";
+const hidden$2 = "_hidden_1dej8_96";
 const EMOJI_STYLES = {
   emojiWrapper,
   contentWrapper,
@@ -979,7 +1019,7 @@ const EMOJI_STYLES = {
   emojiList,
   sectionTitle,
   emojiItem,
-  hidden: hidden$1
+  hidden: hidden$2
 };
 class EmojiListView {
   constructor(emoji) {
@@ -1152,6 +1192,7 @@ class SendMessageFormModel {
     } else {
       submitFormButton2.setDisabled();
     }
+    return true;
   }
   setInputFieldHandlers() {
     const inputField2 = this.view.getInputField();
@@ -1173,6 +1214,7 @@ class SendMessageFormModel {
         this.formSubmitHandler();
       }
     });
+    return true;
   }
   setPreventDefaultToForm() {
     this.getHTML().addEventListener(EVENT_NAMES.SUBMIT, (event) => {
@@ -1183,9 +1225,15 @@ class SendMessageFormModel {
   formSubmitHandler() {
     const inputField2 = this.view.getInputField();
     const submitFormButton2 = this.view.getSubmitFormButton();
-    this.sendMessage(inputField2.value);
+    if (!inputField2.id) {
+      this.sendMessage(inputField2.value);
+    } else {
+      this.sendEditedMessage(inputField2.value, inputField2.id);
+      inputField2.id = "";
+    }
     inputField2.value = "";
     submitFormButton2.setDisabled();
+    return true;
   }
   sendMessage(text2) {
     const { selectedUser } = StoreModel.getState();
@@ -1200,15 +1248,32 @@ class SendMessageFormModel {
       }
     };
     this.eventMediator.notify(MEDIATOR_EVENTS.SEND_MESSAGE_REQUEST, message2);
+    return true;
+  }
+  sendEditedMessage(text2, messageID) {
+    const message2 = {
+      id: "",
+      type: API_TYPES.MSG_EDIT,
+      payload: {
+        message: {
+          id: messageID,
+          text: text2
+        }
+      }
+    };
+    this.eventMediator.notify(MEDIATOR_EVENTS.EDIT_MESSAGE_REQUEST, message2);
+    return true;
   }
   setSubmitButtonHandler() {
     const submitFormButton2 = this.view.getSubmitFormButton();
     submitFormButton2.getHTML().addEventListener(EVENT_NAMES.CLICK, this.formSubmitHandler.bind(this));
+    return true;
   }
   emojiButtonHandler() {
     var _a;
     const emojiListView = (_a = this.emojiList) == null ? void 0 : _a.getView();
     emojiListView == null ? void 0 : emojiListView.switchVisibility();
+    return true;
   }
   setEmojiButtonHandler() {
     const emojiButtonHTML = this.view.getEmojiButton().getHTML();
@@ -1216,6 +1281,7 @@ class SendMessageFormModel {
       EVENT_NAMES.MOUSEENTER,
       this.emojiButtonHandler.bind(this)
     );
+    return true;
   }
   setEmojiItemHandlers() {
     var _a, _b;
@@ -1229,15 +1295,35 @@ class SendMessageFormModel {
         }
       });
     });
+    return true;
+  }
+  getMessageToEdit(messageID) {
+    const { currentUserDialogs } = StoreModel.getState();
+    currentUserDialogs.forEach((dialog) => {
+      const message2 = dialog.messages.find((msg) => msg.id === messageID);
+      if (message2) {
+        const inputField2 = this.view.getInputField();
+        inputField2.value = message2.text;
+        inputField2.id = messageID;
+        inputField2.focus();
+      }
+    });
+    return true;
   }
   subscribeToEventMediator() {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.OPEN_USER_DIALOGUE, () => {
       this.view.showForm();
       this.view.getInputField().focus();
     });
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, () => {
-      this.view.hideForm();
-    });
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
+      () => this.view.hideForm()
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.EDIT_MESSAGE_OPEN,
+      (message2) => this.getMessageToEdit(String(message2))
+    );
+    return true;
   }
   init() {
     getEmojiData().then((data) => {
@@ -1254,19 +1340,20 @@ class SendMessageFormModel {
     this.setPreventDefaultToForm();
     this.setInputFieldHandlers();
     this.setSubmitButtonHandler();
+    return true;
   }
 }
 const MESSAGES_WRAPPER_CONTENT = {
   EMPTY: "This is the start of your great conversation, say hello!",
   NO_USER_SELECT: "Select user to start messaging"
 };
-const dialogWrapper = "_dialogWrapper_ayzv8_1";
-const currentUserInfo = "_currentUserInfo_ayzv8_10";
-const active = "_active_ayzv8_39";
-const inactive = "_inactive_ayzv8_46";
-const messagesWrapper = "_messagesWrapper_ayzv8_54";
-const emptyList = "_emptyList_ayzv8_79";
-const hidden = "_hidden_ayzv8_85";
+const dialogWrapper = "_dialogWrapper_9ez7w_1";
+const currentUserInfo = "_currentUserInfo_9ez7w_11";
+const active = "_active_9ez7w_48";
+const inactive = "_inactive_9ez7w_55";
+const messagesWrapper = "_messagesWrapper_9ez7w_68";
+const emptyList = "_emptyList_9ez7w_99";
+const hidden$1 = "_hidden_9ez7w_106";
 const USER_DIALOGUE_STYLES = {
   dialogWrapper,
   currentUserInfo,
@@ -1274,7 +1361,7 @@ const USER_DIALOGUE_STYLES = {
   inactive,
   messagesWrapper,
   emptyList,
-  hidden
+  hidden: hidden$1
 };
 class UserDialogueView {
   constructor() {
@@ -1343,21 +1430,33 @@ class UserDialogueView {
 }
 const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 const isSavedUser = (data) => typeof data === "object" && data !== null && "login" in data && "isLogined" in data;
-const message = "_message_drvjb_1";
-const text = "_text_drvjb_16";
-const login = "_login_drvjb_26";
-const status = "_status_drvjb_35";
-const date = "_date_drvjb_36";
-const currentUser = "_currentUser_drvjb_47";
-const otherUser = "_otherUser_drvjb_71";
+const message = "_message_oeouf_1";
+const text = "_text_oeouf_17";
+const login = "_login_oeouf_27";
+const status = "_status_oeouf_36";
+const date = "_date_oeouf_37";
+const edited = "_edited_oeouf_53";
+const currentUser = "_currentUser_oeouf_60";
+const readed = "_readed_oeouf_82";
+const otherUser = "_otherUser_oeouf_89";
+const editWrapper = "_editWrapper_oeouf_109";
+const hidden = "_hidden_oeouf_127";
+const deleteButton = "_deleteButton_oeouf_132";
+const editButton = "_editButton_oeouf_133";
 const MESSAGE_STYLES = {
   message,
   text,
   login,
   status,
   date,
+  edited,
   currentUser,
-  otherUser
+  readed,
+  otherUser,
+  editWrapper,
+  hidden,
+  deleteButton,
+  editButton
 };
 const messageDateFormatting = (date2) => {
   const newDate = new Date(date2);
@@ -1367,7 +1466,8 @@ const messageDateFormatting = (date2) => {
 };
 const MESSAGE_STATE = {
   SENDED: "&#10003",
-  DELIVERED: "&#10003&#10003"
+  DELIVERED: "&#10003/",
+  EDITED: "edited"
 };
 const MESSAGE_BUTTONS_TEXT = {
   DELETE: "&#128686;",
@@ -1383,6 +1483,7 @@ class MessageView {
     __publicField(this, "messageDate");
     __publicField(this, "messageLogin");
     __publicField(this, "messageStatus");
+    __publicField(this, "messageEdited");
     __publicField(this, "message");
     this.messageParams = messageParams;
     this.editButton = this.createEditButton();
@@ -1392,6 +1493,7 @@ class MessageView {
     this.messageDate = this.createMessageDate();
     this.messageLogin = this.createMessageLogin();
     this.messageStatus = this.createMessageStatus();
+    this.messageEdited = this.createMessageEdited();
     this.message = this.createHTML();
   }
   getHTML() {
@@ -1399,6 +1501,29 @@ class MessageView {
   }
   deliveredMessage() {
     this.messageStatus.innerHTML = MESSAGE_STATE.DELIVERED;
+  }
+  editedMessage(checkedMessage) {
+    var _a, _b;
+    this.messageEdited.textContent = MESSAGE_STATE.EDITED;
+    this.messageText.textContent = (_b = (_a = checkedMessage == null ? void 0 : checkedMessage.payload) == null ? void 0 : _a.message) == null ? void 0 : _b.text;
+  }
+  readMessage() {
+    this.messageStatus.classList.add(MESSAGE_STYLES.readed);
+  }
+  getEditWrapper() {
+    return this.editWrapper;
+  }
+  getDeleteButton() {
+    return this.deleteButton;
+  }
+  getEditButton() {
+    return this.editButton;
+  }
+  switchVisibleEditWrapper() {
+    this.editWrapper.classList.toggle(MESSAGE_STYLES.hidden);
+  }
+  hideEditWrapper() {
+    this.editWrapper.classList.add(MESSAGE_STYLES.hidden);
   }
   createEditButton() {
     this.editButton = new ButtonModel({
@@ -1417,7 +1542,7 @@ class MessageView {
   createEditWrapper() {
     this.editWrapper = createBaseElement({
       tag: TAG_NAMES.DIV,
-      cssClasses: [MESSAGE_STYLES.editWrapper]
+      cssClasses: [MESSAGE_STYLES.editWrapper, MESSAGE_STYLES.hidden]
     });
     this.editWrapper.append(
       this.editButton.getHTML(),
@@ -1450,13 +1575,22 @@ class MessageView {
     return this.messageDate;
   }
   createMessageStatus() {
-    const { isDelivered } = this.messageParams.status;
+    const { isDelivered, isReaded } = this.messageParams.status;
     this.messageStatus = createBaseElement({
       tag: TAG_NAMES.SPAN,
-      cssClasses: [MESSAGE_STYLES.status],
+      cssClasses: isReaded ? [MESSAGE_STYLES.status, MESSAGE_STYLES.readed] : [MESSAGE_STYLES.status],
       innerContent: isDelivered ? MESSAGE_STATE.DELIVERED : MESSAGE_STATE.SENDED
     });
     return this.messageStatus;
+  }
+  createMessageEdited() {
+    const { isEdited } = this.messageParams.status;
+    this.messageEdited = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [MESSAGE_STYLES.edited],
+      innerContent: isEdited ? MESSAGE_STATE.EDITED : ""
+    });
+    return this.messageEdited;
   }
   wasSentByCurrentUser() {
     var _a;
@@ -1471,12 +1605,13 @@ class MessageView {
       this.messageText,
       this.messageDate,
       this.messageLogin,
-      this.messageStatus
+      this.messageStatus,
+      this.messageEdited
     );
     if (this.wasSentByCurrentUser()) {
       this.message.classList.add(MESSAGE_STYLES.currentUser);
       this.messageLogin.textContent = "You";
-      this.message.append(this.editWrapper);
+      this.message.prepend(this.editWrapper);
     } else {
       this.message.classList.add(MESSAGE_STYLES.otherUser);
       this.messageStatus.textContent = "";
@@ -1485,11 +1620,11 @@ class MessageView {
   }
 }
 class MessageModel {
-  constructor(messageParams, messageID) {
+  constructor(messageParams) {
     __publicField(this, "view");
     __publicField(this, "eventMediator", EventMediatorModel.getInstance());
     __publicField(this, "messageID", "");
-    this.messageID = messageID;
+    this.messageID = messageParams.id;
     this.view = new MessageView(messageParams);
     this.init();
   }
@@ -1507,6 +1642,22 @@ class MessageModel {
       }
     };
     this.eventMediator.notify(MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST, message2);
+    return true;
+  }
+  editMessageHandler(checkedMessage) {
+    this.view.editedMessage(checkedMessage);
+    const { currentUserDialogs } = StoreModel.getState();
+    currentUserDialogs.forEach((dialog) => {
+      const currentMessage = dialog.messages.find(
+        (msg) => msg.id === this.messageID
+      );
+      if (currentMessage) {
+        currentMessage.status.isEdited = true;
+        currentMessage.text = checkedMessage == null ? void 0 : checkedMessage.payload.message.text;
+        StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
+      }
+    });
+    return true;
   }
   subscribeToEventMediator() {
     this.eventMediator.subscribe(
@@ -1518,13 +1669,56 @@ class MessageModel {
         }
       }
     );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.EDIT_MESSAGE_RESPONSE,
+      (message2) => {
+        const checkedMessage = isFromServerMessage(message2);
+        if ((checkedMessage == null ? void 0 : checkedMessage.payload.message.id) === this.messageID) {
+          this.editMessageHandler(checkedMessage);
+        }
+      }
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_RESPONSE,
+      (message2) => {
+        const checkedMessage = isFromServerMessage(message2);
+        if ((checkedMessage == null ? void 0 : checkedMessage.payload.message.id) === this.messageID) {
+          this.view.readMessage();
+        }
+      }
+    );
+    return true;
   }
   init() {
     this.subscribeToEventMediator();
-    this.getHTML().addEventListener(EVENT_NAMES.CONTEXTMENU, (event) => {
+    const message2 = this.getHTML();
+    const editWrapper2 = this.view.getEditWrapper();
+    const deleteButton2 = this.view.getDeleteButton().getHTML();
+    const editButton2 = this.view.getEditButton().getHTML();
+    message2.addEventListener(EVENT_NAMES.CLICK, (event) => {
       event.preventDefault();
-      this.deleteMessageHandler();
+      this.view.switchVisibleEditWrapper();
     });
+    message2.addEventListener(EVENT_NAMES.CONTEXTMENU, (event) => {
+      event.preventDefault();
+      this.view.switchVisibleEditWrapper();
+    });
+    editWrapper2.addEventListener(
+      EVENT_NAMES.MOUSELEAVE,
+      () => this.view.hideEditWrapper()
+    );
+    deleteButton2.addEventListener(
+      EVENT_NAMES.CLICK,
+      this.deleteMessageHandler.bind(this)
+    );
+    editButton2.addEventListener(
+      EVENT_NAMES.CLICK,
+      () => this.eventMediator.notify(
+        MEDIATOR_EVENTS.EDIT_MESSAGE_OPEN,
+        this.messageID
+      )
+    );
+    return true;
   }
 }
 class UserDialogueModel {
@@ -1540,18 +1734,19 @@ class UserDialogueModel {
   }
   retrieveMessagesWithCurrentUser(data) {
     const checkedData = isFromServerMessage(data);
-    if (checkedData && checkedData.id === this.messageID && checkedData.id !== "") {
+    if ((checkedData == null ? void 0 : checkedData.id) === this.messageID && checkedData.id !== "") {
       this.hasMessages(checkedData.payload.messages);
     }
+    return true;
   }
   drawMessagesWithCurrentUser(messages) {
     this.view.clearMessagesWrapper();
     const messageWrapper = this.view.getMessagesWrapper();
     messages.forEach((message2) => {
-      const messageModel = new MessageModel(message2, message2.id);
-      messageWrapper.append(messageModel.getHTML());
+      const newMessage = new MessageModel(message2);
+      messageWrapper.append(newMessage.getHTML());
     });
-    messageWrapper.scrollTop = messageWrapper.scrollHeight;
+    return true;
   }
   hasMessages(messages) {
     if (messages.length) {
@@ -1559,6 +1754,7 @@ class UserDialogueModel {
     } else if (StoreModel.getState().selectedUser) {
       this.view.showEmptyDialogue();
     }
+    return true;
   }
   requestMessagesWithCurrentUser(userLogin2) {
     this.messageID = crypto.randomUUID();
@@ -1575,6 +1771,7 @@ class UserDialogueModel {
       MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_REQUEST,
       message2
     );
+    return true;
   }
   subscribeToEventMediator() {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.OPEN_USER_DIALOGUE, (data) => {
@@ -1598,6 +1795,7 @@ class UserDialogueModel {
         this.requestMessagesWithCurrentUser(selectedUser == null ? void 0 : selectedUser.login);
       }
     });
+    return true;
   }
   updateStatusCurrentUser(users) {
     const currentUser2 = users.find(
@@ -1606,6 +1804,37 @@ class UserDialogueModel {
     if (currentUser2) {
       this.view.setCurrentUserInfo(currentUser2);
     }
+    return true;
+  }
+  messageScrollHandler() {
+    const { currentUserDialogs, selectedUser } = StoreModel.getState();
+    const currentDialog = currentUserDialogs.find(
+      (dialog) => dialog.login === (selectedUser == null ? void 0 : selectedUser.login)
+    );
+    if (currentDialog) {
+      const { messages } = currentDialog;
+      const unreadMessages = messages.filter(
+        (message2) => !message2.status.isReaded && message2.from === (selectedUser == null ? void 0 : selectedUser.login)
+      );
+      if (unreadMessages.length) {
+        unreadMessages.forEach((message2) => {
+          const messageFromServer = {
+            id: "",
+            type: API_TYPES.MSG_READ,
+            payload: {
+              message: {
+                id: message2.id
+              }
+            }
+          };
+          this.eventMediator.notify(
+            MEDIATOR_EVENTS.READ_MESSAGE_REQUEST,
+            messageFromServer
+          );
+        });
+      }
+    }
+    return true;
   }
   init() {
     this.subscribeToEventMediator();
@@ -1621,6 +1850,18 @@ class UserDialogueModel {
       );
       this.hasMessages((currentDialog == null ? void 0 : currentDialog.messages) || []);
     });
+    const messageWrapper = this.view.getMessagesWrapper();
+    messageWrapper.addEventListener(EVENT_NAMES.SCROLL, () => {
+      this.messageScrollHandler();
+    });
+    messageWrapper.addEventListener(EVENT_NAMES.CLICK, () => {
+      this.messageScrollHandler();
+    });
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE, () => {
+      this.messageScrollHandler();
+      messageWrapper.scrollTop = messageWrapper.scrollHeight;
+    });
+    return true;
   }
 }
 class MainPageModel {
@@ -1635,34 +1876,26 @@ class MainPageModel {
   getHTML() {
     return this.view.getHTML();
   }
-  show() {
-    this.view.getHTML().classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
-    return true;
-  }
-  hide() {
-    this.view.getHTML().classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
-    return true;
-  }
   switchPage(params) {
     if (params === PAGES_IDS.MAIN_PAGE) {
       if (StoreModel.getState().currentUser) {
-        this.show();
+        this.view.show();
       } else {
         this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
-        this.hide();
+        this.view.hide();
       }
     }
     return true;
   }
   subscribeToMediator() {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
-      this.hide();
+      this.view.hide();
       this.switchPage(String(params));
     });
     return true;
   }
   init() {
-    this.hide();
+    this.view.hide();
     this.subscribeToMediator();
     this.view.getChatWrapper().append(new UserListModel().getHTML(), new UserDialogueModel().getHTML());
     return true;
@@ -1694,6 +1927,14 @@ let LoginPageView$1 = class LoginPageView {
   }
   getBackButton() {
     return this.backButton;
+  }
+  show() {
+    this.page.classList.remove(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
+  }
+  hide() {
+    this.page.classList.add(ABOUT_PAGE_STYLES.aboutPage_hidden);
+    return true;
   }
   createAboutText() {
     this.aboutText = createBaseElement({
@@ -1732,20 +1973,12 @@ class AboutPageModel {
   getHTML() {
     return this.view.getHTML();
   }
-  show() {
-    this.view.getHTML().classList.remove(ABOUT_PAGE_STYLES.aboutPage_hidden);
-    return true;
-  }
-  hide() {
-    this.view.getHTML().classList.add(ABOUT_PAGE_STYLES.aboutPage_hidden);
-    return true;
-  }
   subscribeToMediator() {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (params) => {
       if (params === PAGES_IDS.ABOUT_PAGE) {
-        this.show();
+        this.view.show();
       } else {
-        this.hide();
+        this.view.hide();
       }
     });
     return true;
@@ -1756,7 +1989,7 @@ class AboutPageModel {
     } else {
       this.router.navigateTo(PAGES_IDS.LOGIN_PAGE);
     }
-    this.hide();
+    this.view.hide();
     return true;
   }
   setBackButtonHandler() {
@@ -1796,6 +2029,14 @@ class LoginPageView2 {
   }
   getHTML() {
     return this.page;
+  }
+  show() {
+    this.page.classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
+  }
+  hide() {
+    this.page.classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
+    return true;
   }
   getShowAuthenticationMessage() {
     return this.authenticationMessage;
@@ -2138,6 +2379,9 @@ class LoginFormModel {
   getHTML() {
     return this.view.getHTML();
   }
+  getFirstInputField() {
+    return this.inputFields[0];
+  }
   getMessageID() {
     return this.messageID;
   }
@@ -2230,14 +2474,6 @@ class LoginPageModel {
   getHTML() {
     return this.loginPageView.getHTML();
   }
-  show() {
-    this.loginPageView.getHTML().classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
-    return true;
-  }
-  hide() {
-    this.loginPageView.getHTML().classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
-    return true;
-  }
   checkAuthorizedUser() {
     const currentUser2 = this.storage.get(STORE_KEYS.CURRENT_USER);
     if (currentUser2 && isUser(currentUser2)) {
@@ -2257,12 +2493,14 @@ class LoginPageModel {
     if (params === PAGES_IDS.LOGIN_PAGE || params === PAGES_IDS.DEFAULT_PAGE) {
       if (StoreModel.getState().currentUser) {
         this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-        this.hide();
+        this.loginPageView.hide();
       } else {
-        this.show();
+        this.loginPageView.show();
+        const firstInputField = this.loginFormModel.getFirstInputField().getView().getInput();
+        firstInputField.getHTML().focus();
       }
     } else {
-      this.hide();
+      this.loginPageView.hide();
     }
     return true;
   }
@@ -2271,7 +2509,7 @@ class LoginPageModel {
     StoreModel.dispatch(setCurrentUser(userData));
     this.storage.add(STORE_KEYS.CURRENT_USER, JSON.stringify(userData));
     this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-    this.hide();
+    this.loginPageView.hide();
     return true;
   }
   showErrorMessage(error) {
@@ -2295,12 +2533,13 @@ class LoginPageModel {
     if (savedUser && isUser(savedUser)) {
       StoreModel.dispatch(setCurrentUser(savedUser));
       this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
-      this.hide();
+      this.loginPageView.hide();
       return true;
     }
     if ((checkedMessage == null ? void 0 : checkedMessage.type) !== API_TYPES.ERROR) {
       this.handleSuccessMessage();
     } else if ((checkedMessage == null ? void 0 : checkedMessage.id) === this.loginFormModel.getMessageID()) {
+      this.loginFormModel.getFirstInputField().getView().getInput().getHTML().focus();
       this.handleErrorMessage(checkedMessage);
     }
     return true;
@@ -2322,7 +2561,7 @@ class LoginPageModel {
   }
   initPage() {
     this.subscribeToMediator();
-    this.hide();
+    this.loginPageView.hide();
     const loginFormHTML = this.loginFormModel.getHTML();
     this.getHTML().append(loginFormHTML);
     return true;
@@ -2404,11 +2643,11 @@ class AppView {
 const APP_NAME = "Fun Chat";
 const LOGOUT_BUTTON_TEXT = "Logout";
 const ABOUT_BUTTON_TEXT = "About";
-const header = "_header_uazn4_1";
-const nameApp = "_nameApp_uazn4_12";
-const userLogin = "_userLogin_uazn4_20";
-const logoutButton = "_logoutButton_uazn4_28";
-const aboutButton = "_aboutButton_uazn4_29";
+const header = "_header_1tkz4_1";
+const nameApp = "_nameApp_1tkz4_13";
+const userLogin = "_userLogin_1tkz4_21";
+const logoutButton = "_logoutButton_1tkz4_29";
+const aboutButton = "_aboutButton_1tkz4_30";
 const HEADER_STYLES = {
   header,
   nameApp,
@@ -2557,7 +2796,9 @@ class ClientApiModel {
     this.webSocket = webSocket;
     this.isOpen = isOpen;
     this.unsubscribeToEventMediator();
+    this.unsubscribeToEventMediator2();
     this.subscribeToEventMediator();
+    this.subscribeToEventMediator2();
   }
   isWorks() {
     return this.isOpen;
@@ -2598,6 +2839,20 @@ class ClientApiModel {
       MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST,
       createNewUserListener
     );
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.EDIT_MESSAGE_REQUEST,
+      createNewUserListener
+    );
+    return true;
+  }
+  unsubscribeToEventMediator2() {
+    const createNewUserListener = (message2) => {
+      this.sendMessage(message2);
+    };
+    this.eventMediator.unsubscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_REQUEST,
+      createNewUserListener
+    );
     return true;
   }
   subscribeToEventMediator() {
@@ -2630,6 +2885,20 @@ class ClientApiModel {
     );
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.DELETE_MESSAGE_REQUEST,
+      createNewUserListener
+    );
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.EDIT_MESSAGE_REQUEST,
+      createNewUserListener
+    );
+    return true;
+  }
+  subscribeToEventMediator2() {
+    const createNewUserListener = (message2) => {
+      this.sendMessage(message2);
+    };
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.READ_MESSAGE_REQUEST,
       createNewUserListener
     );
     return true;
@@ -2755,6 +3024,28 @@ class ServerApiModel {
       case API_TYPES.MSG_DELETE: {
         this.eventMediator.notify(
           MEDIATOR_EVENTS.DELETE_MESSAGE_RESPONSE,
+          message2
+        );
+        return true;
+      }
+      default: {
+        this.handlerMessageState(message2);
+        return null;
+      }
+    }
+  }
+  handlerMessageState(message2) {
+    switch (message2.type) {
+      case API_TYPES.MSG_EDIT: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.EDIT_MESSAGE_RESPONSE,
+          message2
+        );
+        return true;
+      }
+      case API_TYPES.MSG_READ: {
+        this.eventMediator.notify(
+          MEDIATOR_EVENTS.READ_MESSAGE_RESPONSE,
           message2
         );
         return true;
@@ -3095,4 +3386,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-6b6fecb6.js.map
+//# sourceMappingURL=main-86aee4a9.js.map
