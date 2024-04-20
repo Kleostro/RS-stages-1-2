@@ -1349,14 +1349,14 @@ const MESSAGES_WRAPPER_CONTENT = {
   NO_USER_SELECT: "Select user to start messaging",
   NEW_MESSAGE: "New message"
 };
-const dialogWrapper = "_dialogWrapper_kng6x_1";
-const currentUserInfo = "_currentUserInfo_kng6x_11";
-const active = "_active_kng6x_48";
-const inactive = "_inactive_kng6x_55";
-const messagesWrapper = "_messagesWrapper_kng6x_68";
-const emptyList = "_emptyList_kng6x_98";
-const hidden$1 = "_hidden_kng6x_105";
-const unreadMessagesLine = "_unreadMessagesLine_kng6x_109";
+const dialogWrapper = "_dialogWrapper_1dxcv_1";
+const currentUserInfo = "_currentUserInfo_1dxcv_11";
+const active = "_active_1dxcv_48";
+const inactive = "_inactive_1dxcv_55";
+const messagesWrapper = "_messagesWrapper_1dxcv_68";
+const emptyList = "_emptyList_1dxcv_98";
+const hidden$1 = "_hidden_1dxcv_105";
+const unreadMessagesLine = "_unreadMessagesLine_1dxcv_109";
 const USER_DIALOGUE_STYLES = {
   dialogWrapper,
   currentUserInfo,
@@ -3423,4 +3423,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-e2f105a6.js.map
+//# sourceMappingURL=main-ff4a6da2.js.map
