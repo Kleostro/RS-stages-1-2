@@ -1225,11 +1225,12 @@ class SendMessageFormModel {
   }
   formSubmitHandler() {
     const inputField2 = this.view.getInputField();
+    const inputFieldValue = inputField2.value.replaceAll("\n", "<br>");
     const submitFormButton2 = this.view.getSubmitFormButton();
     if (!inputField2.id) {
-      this.sendMessage(inputField2.value);
+      this.sendMessage(inputFieldValue);
     } else {
-      this.sendEditedMessage(inputField2.value, inputField2.id);
+      this.sendEditedMessage(inputFieldValue, inputField2.id);
       inputField2.id = "";
     }
     inputField2.value = "";
@@ -1349,14 +1350,14 @@ const MESSAGES_WRAPPER_CONTENT = {
   NO_USER_SELECT: "Select user to start messaging",
   NEW_MESSAGE: "New message"
 };
-const dialogWrapper = "_dialogWrapper_1c57f_1";
-const currentUserInfo = "_currentUserInfo_1c57f_11";
-const active = "_active_1c57f_48";
-const inactive = "_inactive_1c57f_55";
-const messagesWrapper = "_messagesWrapper_1c57f_68";
-const emptyList = "_emptyList_1c57f_99";
-const hidden$1 = "_hidden_1c57f_106";
-const unreadMessagesLine = "_unreadMessagesLine_1c57f_110";
+const dialogWrapper = "_dialogWrapper_1el62_1";
+const currentUserInfo = "_currentUserInfo_1el62_11";
+const active = "_active_1el62_48";
+const inactive = "_inactive_1el62_55";
+const messagesWrapper = "_messagesWrapper_1el62_68";
+const emptyList = "_emptyList_1el62_98";
+const hidden$1 = "_hidden_1el62_105";
+const unreadMessagesLine = "_unreadMessagesLine_1el62_109";
 const USER_DIALOGUE_STYLES = {
   dialogWrapper,
   currentUserInfo,
@@ -1447,19 +1448,19 @@ class UserDialogueView {
 }
 const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 const isSavedUser = (data) => typeof data === "object" && data !== null && "login" in data && "isLogined" in data;
-const message = "_message_1ug1e_1";
-const text = "_text_1ug1e_14";
-const login = "_login_1ug1e_24";
-const status = "_status_1ug1e_33";
-const date = "_date_1ug1e_34";
-const edited = "_edited_1ug1e_50";
-const currentUser = "_currentUser_1ug1e_57";
-const readed = "_readed_1ug1e_79";
-const otherUser = "_otherUser_1ug1e_86";
-const editWrapper = "_editWrapper_1ug1e_106";
-const hidden = "_hidden_1ug1e_124";
-const deleteButton = "_deleteButton_1ug1e_129";
-const editButton = "_editButton_1ug1e_130";
+const message = "_message_1gndk_1";
+const text = "_text_1gndk_17";
+const login = "_login_1gndk_27";
+const status = "_status_1gndk_36";
+const date = "_date_1gndk_37";
+const edited = "_edited_1gndk_53";
+const currentUser = "_currentUser_1gndk_60";
+const readed = "_readed_1gndk_82";
+const otherUser = "_otherUser_1gndk_89";
+const editWrapper = "_editWrapper_1gndk_109";
+const hidden = "_hidden_1gndk_127";
+const deleteButton = "_deleteButton_1gndk_132";
+const editButton = "_editButton_1gndk_133";
 const MESSAGE_STYLES = {
   message,
   text,
@@ -3423,4 +3424,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-bbab2772.js.map
+//# sourceMappingURL=main-485cd75e.js.map
