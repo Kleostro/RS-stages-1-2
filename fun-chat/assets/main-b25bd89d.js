@@ -733,11 +733,11 @@ class UserListModel {
     }
     if (currentUserInfo2) {
       StoreModel.dispatch(setSelectedUser(currentUserInfo2));
+      this.eventMediator.notify(
+        MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
+        currentUserInfo2
+      );
     }
-    this.eventMediator.notify(
-      MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
-      currentUserInfo2
-    );
     return true;
   }
   setUserListHandler() {
@@ -3423,4 +3423,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-050e9ad3.js.map
+//# sourceMappingURL=main-b25bd89d.js.map
