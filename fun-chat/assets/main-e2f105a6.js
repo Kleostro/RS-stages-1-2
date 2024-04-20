@@ -1447,19 +1447,19 @@ class UserDialogueView {
 }
 const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 const isSavedUser = (data) => typeof data === "object" && data !== null && "login" in data && "isLogined" in data;
-const message = "_message_1k4k5_1";
-const text = "_text_1k4k5_17";
-const login = "_login_1k4k5_27";
-const status = "_status_1k4k5_36";
-const date = "_date_1k4k5_37";
-const edited = "_edited_1k4k5_53";
-const currentUser = "_currentUser_1k4k5_60";
-const readed = "_readed_1k4k5_82";
-const otherUser = "_otherUser_1k4k5_89";
-const editWrapper = "_editWrapper_1k4k5_109";
-const hidden = "_hidden_1k4k5_127";
-const deleteButton = "_deleteButton_1k4k5_132";
-const editButton = "_editButton_1k4k5_133";
+const message = "_message_1gndk_1";
+const text = "_text_1gndk_17";
+const login = "_login_1gndk_27";
+const status = "_status_1gndk_36";
+const date = "_date_1gndk_37";
+const edited = "_edited_1gndk_53";
+const currentUser = "_currentUser_1gndk_60";
+const readed = "_readed_1gndk_82";
+const otherUser = "_otherUser_1gndk_89";
+const editWrapper = "_editWrapper_1gndk_109";
+const hidden = "_hidden_1gndk_127";
+const deleteButton = "_deleteButton_1gndk_132";
+const editButton = "_editButton_1gndk_133";
 const MESSAGE_STYLES = {
   message,
   text,
@@ -3423,4 +3423,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-f7118055.js.map
+//# sourceMappingURL=main-e2f105a6.js.map
