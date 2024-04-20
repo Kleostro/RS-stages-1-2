@@ -177,6 +177,7 @@ const EVENT_NAMES = {
   KEYUP: "keyup",
   KEYDOWN: "keydown",
   SCROLL: "scroll",
+  MOUSEWHEEL: "mousewheel",
   RESIZE: "resize",
   FOCUS: "focus",
   BLUR: "blur",
@@ -772,10 +773,10 @@ class UserListModel {
       );
       if (currentMessage && checkedMessage) {
         currentMessage.status.isReaded = checkedMessage.payload.message.status.isReaded;
-        StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
-        this.drawUnreadMessages();
       }
     });
+    StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
+    this.drawUnreadMessages();
     return true;
   }
   subscribeToEventMediator() {
@@ -1345,15 +1346,17 @@ class SendMessageFormModel {
 }
 const MESSAGES_WRAPPER_CONTENT = {
   EMPTY: "This is the start of your great conversation, say hello!",
-  NO_USER_SELECT: "Select user to start messaging"
+  NO_USER_SELECT: "Select user to start messaging",
+  NEW_MESSAGE: "New message"
 };
-const dialogWrapper = "_dialogWrapper_9ez7w_1";
-const currentUserInfo = "_currentUserInfo_9ez7w_11";
-const active = "_active_9ez7w_48";
-const inactive = "_inactive_9ez7w_55";
-const messagesWrapper = "_messagesWrapper_9ez7w_68";
-const emptyList = "_emptyList_9ez7w_99";
-const hidden$1 = "_hidden_9ez7w_106";
+const dialogWrapper = "_dialogWrapper_kng6x_1";
+const currentUserInfo = "_currentUserInfo_kng6x_11";
+const active = "_active_kng6x_48";
+const inactive = "_inactive_kng6x_55";
+const messagesWrapper = "_messagesWrapper_kng6x_68";
+const emptyList = "_emptyList_kng6x_98";
+const hidden$1 = "_hidden_kng6x_105";
+const unreadMessagesLine = "_unreadMessagesLine_kng6x_109";
 const USER_DIALOGUE_STYLES = {
   dialogWrapper,
   currentUserInfo,
@@ -1361,14 +1364,17 @@ const USER_DIALOGUE_STYLES = {
   inactive,
   messagesWrapper,
   emptyList,
-  hidden: hidden$1
+  hidden: hidden$1,
+  unreadMessagesLine
 };
 class UserDialogueView {
   constructor() {
     __publicField(this, "currentUserInfo");
+    __publicField(this, "unreadMessagesLine");
     __publicField(this, "messagesWrapper");
     __publicField(this, "dialogWrapper");
     this.currentUserInfo = this.createCurrentUserInfo();
+    this.unreadMessagesLine = this.createUnreadMessagesLine();
     this.messagesWrapper = this.createMessagesWrapper();
     this.dialogWrapper = this.createHTML();
     this.hideDialogue();
@@ -1405,6 +1411,9 @@ class UserDialogueView {
     this.currentUserInfo.classList.toggle(inactive2, !userInfo.isLogined);
     this.currentUserInfo.classList.toggle(active2, !!userInfo.isLogined);
   }
+  getUnreadMessagesLine() {
+    return this.unreadMessagesLine;
+  }
   createCurrentUserInfo() {
     this.currentUserInfo = createBaseElement({
       tag: TAG_NAMES.SPAN,
@@ -1418,6 +1427,14 @@ class UserDialogueView {
       cssClasses: [USER_DIALOGUE_STYLES.messagesWrapper]
     });
     return this.messagesWrapper;
+  }
+  createUnreadMessagesLine() {
+    this.unreadMessagesLine = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [USER_DIALOGUE_STYLES.unreadMessagesLine],
+      innerContent: MESSAGES_WRAPPER_CONTENT.NEW_MESSAGE
+    });
+    return this.unreadMessagesLine;
   }
   createHTML() {
     this.dialogWrapper = createBaseElement({
@@ -1735,6 +1752,8 @@ class UserDialogueModel {
   retrieveMessagesWithCurrentUser(data) {
     const checkedData = isFromServerMessage(data);
     if ((checkedData == null ? void 0 : checkedData.id) === this.messageID && checkedData.id !== "") {
+      const messageWrapper = this.view.getMessagesWrapper();
+      messageWrapper.scrollTop = messageWrapper.scrollHeight;
       this.hasMessages(checkedData.payload.messages);
     }
     return true;
@@ -1742,10 +1761,23 @@ class UserDialogueModel {
   drawMessagesWithCurrentUser(messages) {
     this.view.clearMessagesWrapper();
     const messageWrapper = this.view.getMessagesWrapper();
+    const unreadMessagesLine2 = this.view.getUnreadMessagesLine();
+    const { currentUser: currentUser2 } = StoreModel.getState();
+    let firstUnreadMessage = null;
     messages.forEach((message2) => {
       const newMessage = new MessageModel(message2);
       messageWrapper.append(newMessage.getHTML());
+      if (!message2.status.isReaded && !firstUnreadMessage && message2.from !== (currentUser2 == null ? void 0 : currentUser2.login)) {
+        firstUnreadMessage = newMessage;
+      }
     });
+    if (firstUnreadMessage instanceof MessageModel && !messageWrapper.contains(unreadMessagesLine2)) {
+      firstUnreadMessage.getHTML().before(this.view.getUnreadMessagesLine());
+      messageWrapper.scrollBy(
+        0,
+        this.view.getUnreadMessagesLine().getBoundingClientRect().top - messageWrapper.clientHeight
+      );
+    }
     return true;
   }
   hasMessages(messages) {
@@ -1808,6 +1840,10 @@ class UserDialogueModel {
   }
   messageScrollHandler() {
     const { currentUserDialogs, selectedUser } = StoreModel.getState();
+    const unreadMessagesLine2 = this.view.getUnreadMessagesLine();
+    if (unreadMessagesLine2) {
+      unreadMessagesLine2.remove();
+    }
     const currentDialog = currentUserDialogs.find(
       (dialog) => dialog.login === (selectedUser == null ? void 0 : selectedUser.login)
     );
@@ -1843,6 +1879,7 @@ class UserDialogueModel {
       const { allUsers } = StoreModel.getState();
       this.updateStatusCurrentUser(allUsers);
     });
+    const messageWrapper = this.view.getMessagesWrapper();
     StoreModel.subscribe(ACTIONS.SET_CURRENT_USER_DIALOGS, () => {
       const { currentUserDialogs, selectedUser } = StoreModel.getState();
       const currentDialog = currentUserDialogs.find(
@@ -1850,8 +1887,7 @@ class UserDialogueModel {
       );
       this.hasMessages((currentDialog == null ? void 0 : currentDialog.messages) || []);
     });
-    const messageWrapper = this.view.getMessagesWrapper();
-    messageWrapper.addEventListener(EVENT_NAMES.SCROLL, () => {
+    messageWrapper.addEventListener(EVENT_NAMES.MOUSEWHEEL, () => {
       this.messageScrollHandler();
     });
     messageWrapper.addEventListener(EVENT_NAMES.CLICK, () => {
@@ -3374,9 +3410,10 @@ class AppModel {
     return pages;
   }
   subscribeToEvents() {
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_CONNECT, () => {
-      this.modal.hide();
-    });
+    this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.SOCKET_CONNECT,
+      () => this.modal.hide()
+    );
     this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_DISCONNECT, () => {
       this.modal.show();
       this.modal.setModalText(SOCKET_MESSAGE);
@@ -3386,4 +3423,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-86aee4a9.js.map
+//# sourceMappingURL=main-050e9ad3.js.map
