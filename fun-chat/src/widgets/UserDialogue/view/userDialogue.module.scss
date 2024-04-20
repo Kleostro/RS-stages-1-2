@@ -80,7 +80,6 @@
   letter-spacing: 1px;
   color: var(--noble-black-300);
   background-color: var(--noble-black-800);
-  scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -110,4 +109,41 @@
 
 .hidden {
   display: none;
+}
+
+.unreadMessagesLine {
+  position: relative;
+  display: block;
+  margin-bottom: calc(var(--little-offset) / 2);
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--steam-green-500);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    display: block;
+    border-radius: 50%;
+    width: 40%;
+    height: 2px;
+    background-color: var(--steam-green-500);
+    transform: translate(0, -50%);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    display: block;
+    border-radius: 50%;
+    width: 40%;
+    height: 2px;
+    background-color: var(--steam-green-500);
+    transform: translate(0, -50%);
+  }
 }

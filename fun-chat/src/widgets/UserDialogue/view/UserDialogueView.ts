@@ -7,12 +7,15 @@ import USER_DIALOGUE_STYLES from './userDialogue.module.scss';
 class UserDialogueView {
   private currentUserInfo: HTMLSpanElement;
 
+  private unreadMessagesLine: HTMLSpanElement;
+
   private messagesWrapper: HTMLDivElement;
 
   private dialogWrapper: HTMLDivElement;
 
   constructor() {
     this.currentUserInfo = this.createCurrentUserInfo();
+    this.unreadMessagesLine = this.createUnreadMessagesLine();
     this.messagesWrapper = this.createMessagesWrapper();
     this.dialogWrapper = this.createHTML();
     this.hideDialogue();
@@ -58,6 +61,10 @@ class UserDialogueView {
     this.currentUserInfo.classList.toggle(active, !!userInfo.isLogined);
   }
 
+  public getUnreadMessagesLine(): HTMLSpanElement {
+    return this.unreadMessagesLine;
+  }
+
   private createCurrentUserInfo(): HTMLSpanElement {
     this.currentUserInfo = createBaseElement({
       tag: TAG_NAMES.SPAN,
@@ -74,6 +81,16 @@ class UserDialogueView {
     });
 
     return this.messagesWrapper;
+  }
+
+  private createUnreadMessagesLine(): HTMLSpanElement {
+    this.unreadMessagesLine = createBaseElement({
+      tag: TAG_NAMES.SPAN,
+      cssClasses: [USER_DIALOGUE_STYLES.unreadMessagesLine],
+      innerContent: MESSAGES_WRAPPER_CONTENT.NEW_MESSAGE,
+    });
+
+    return this.unreadMessagesLine;
   }
 
   private createHTML(): HTMLDivElement {

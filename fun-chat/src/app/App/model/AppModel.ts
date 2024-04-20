@@ -56,9 +56,9 @@ class AppModel {
   }
 
   private subscribeToEvents(): void {
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_CONNECT, () => {
-      this.modal.hide();
-    });
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_CONNECT, () =>
+      this.modal.hide(),
+    );
 
     this.eventMediator.subscribe(MEDIATOR_EVENTS.SOCKET_DISCONNECT, () => {
       this.modal.show();

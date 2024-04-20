@@ -249,10 +249,10 @@ class UserListModel {
       if (currentMessage && checkedMessage) {
         currentMessage.status.isReaded =
           checkedMessage.payload.message.status.isReaded;
-        StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
-        this.drawUnreadMessages();
       }
     });
+    StoreModel.dispatch(setCurrentUserDialogs(currentUserDialogs));
+    this.drawUnreadMessages();
     return true;
   }
 

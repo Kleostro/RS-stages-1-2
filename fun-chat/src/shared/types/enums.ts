@@ -58,6 +58,7 @@ export const EVENT_NAMES = {
   KEYUP: 'keyup',
   KEYDOWN: 'keydown',
   SCROLL: 'scroll',
+  MOUSEWHEEL: 'mousewheel',
   RESIZE: 'resize',
   FOCUS: 'focus',
   BLUR: 'blur',

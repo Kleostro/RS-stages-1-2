@@ -32,6 +32,8 @@ class UserDialogueModel {
   private retrieveMessagesWithCurrentUser(data: unknown): boolean {
     const checkedData = isFromServerMessage(data);
     if (checkedData?.id === this.messageID && checkedData.id !== '') {
+      const messageWrapper = this.view.getMessagesWrapper();
+      messageWrapper.scrollTop = messageWrapper.scrollHeight;
       this.hasMessages(checkedData.payload.messages);
     }
 
@@ -41,10 +43,34 @@ class UserDialogueModel {
   private drawMessagesWithCurrentUser(messages: Message[]): boolean {
     this.view.clearMessagesWrapper();
     const messageWrapper = this.view.getMessagesWrapper();
+    const unreadMessagesLine = this.view.getUnreadMessagesLine();
+    const { currentUser } = StoreModel.getState();
+    let firstUnreadMessage: unknown = null;
+
     messages.forEach((message) => {
       const newMessage = new MessageModel(message);
       messageWrapper.append(newMessage.getHTML());
+
+      if (
+        !message.status.isReaded &&
+        !firstUnreadMessage &&
+        message.from !== currentUser?.login
+      ) {
+        firstUnreadMessage = newMessage;
+      }
     });
+
+    if (
+      firstUnreadMessage instanceof MessageModel &&
+      !messageWrapper.contains(unreadMessagesLine)
+    ) {
+      firstUnreadMessage.getHTML().before(this.view.getUnreadMessagesLine());
+      messageWrapper.scrollBy(
+        0,
+        this.view.getUnreadMessagesLine().getBoundingClientRect().top -
+          messageWrapper.clientHeight,
+      );
+    }
 
     return true;
   }
@@ -120,6 +146,11 @@ class UserDialogueModel {
 
   private messageScrollHandler(): boolean {
     const { currentUserDialogs, selectedUser } = StoreModel.getState();
+    const unreadMessagesLine = this.view.getUnreadMessagesLine();
+    if (unreadMessagesLine) {
+      unreadMessagesLine.remove();
+    }
+
     const currentDialog = currentUserDialogs.find(
       (dialog) => dialog.login === selectedUser?.login,
     );
@@ -161,6 +192,7 @@ class UserDialogueModel {
       const { allUsers } = StoreModel.getState();
       this.updateStatusCurrentUser(allUsers);
     });
+    const messageWrapper = this.view.getMessagesWrapper();
 
     StoreModel.subscribe(ACTIONS.SET_CURRENT_USER_DIALOGS, () => {
       const { currentUserDialogs, selectedUser } = StoreModel.getState();
@@ -170,9 +202,7 @@ class UserDialogueModel {
       this.hasMessages(currentDialog?.messages || []);
     });
 
-    const messageWrapper = this.view.getMessagesWrapper();
-
-    messageWrapper.addEventListener(EVENT_NAMES.SCROLL, () => {
+    messageWrapper.addEventListener(EVENT_NAMES.MOUSEWHEEL, () => {
       this.messageScrollHandler();
     });
 
