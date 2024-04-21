@@ -869,11 +869,11 @@ const SEND_MESSAGE_FORM_SVG_DETAILS = {
   SVG_URL: "http://www.w3.org/2000/svg",
   SEND_ID: "send"
 };
-const form = "_form_7ybe7_1";
-const inputField = "_inputField_7ybe7_15";
-const emojiButton = "_emojiButton_7ybe7_58";
-const submitFormButton = "_submitFormButton_7ybe7_66";
-const hidden$3 = "_hidden_7ybe7_93";
+const form = "_form_1bn03_1";
+const inputField = "_inputField_1bn03_15";
+const emojiButton = "_emojiButton_1bn03_59";
+const submitFormButton = "_submitFormButton_1bn03_72";
+const hidden$3 = "_hidden_1bn03_103";
 const SEND_MESSAGE_FORM_STYLES = {
   form,
   inputField,
@@ -1004,14 +1004,14 @@ class SendMessageFormView {
     return this.form;
   }
 }
-const emojiWrapper = "_emojiWrapper_1dej8_1";
-const contentWrapper = "_contentWrapper_1dej8_17";
-const categoryList = "_categoryList_1dej8_34";
-const category = "_category_1dej8_34";
-const emojiList = "_emojiList_1dej8_74";
-const sectionTitle = "_sectionTitle_1dej8_81";
-const emojiItem = "_emojiItem_1dej8_90";
-const hidden$2 = "_hidden_1dej8_96";
+const emojiWrapper = "_emojiWrapper_2w0l6_1";
+const contentWrapper = "_contentWrapper_2w0l6_17";
+const categoryList = "_categoryList_2w0l6_34";
+const category = "_category_2w0l6_34";
+const emojiList = "_emojiList_2w0l6_75";
+const sectionTitle = "_sectionTitle_2w0l6_82";
+const emojiItem = "_emojiItem_2w0l6_91";
+const hidden$2 = "_hidden_2w0l6_98";
 const EMOJI_STYLES = {
   emojiWrapper,
   contentWrapper,
@@ -3424,4 +3424,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-485cd75e.js.map
+//# sourceMappingURL=main-a95836ed.js.map
