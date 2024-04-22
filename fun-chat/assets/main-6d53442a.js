@@ -869,11 +869,11 @@ const SEND_MESSAGE_FORM_SVG_DETAILS = {
   SVG_URL: "http://www.w3.org/2000/svg",
   SEND_ID: "send"
 };
-const form = "_form_17d4p_1";
-const inputField = "_inputField_17d4p_15";
-const emojiButton = "_emojiButton_17d4p_59";
-const submitFormButton = "_submitFormButton_17d4p_72";
-const hidden$3 = "_hidden_17d4p_103";
+const form = "_form_v3zk3_1";
+const inputField = "_inputField_v3zk3_15";
+const emojiButton = "_emojiButton_v3zk3_59";
+const submitFormButton = "_submitFormButton_v3zk3_72";
+const hidden$3 = "_hidden_v3zk3_113";
 const SEND_MESSAGE_FORM_STYLES = {
   form,
   inputField,
@@ -1349,14 +1349,14 @@ const MESSAGES_WRAPPER_CONTENT = {
   NO_USER_SELECT: "Select user to start messaging",
   NEW_MESSAGE: "New message"
 };
-const dialogWrapper = "_dialogWrapper_1fqcd_1";
-const currentUserInfo = "_currentUserInfo_1fqcd_11";
-const active = "_active_1fqcd_40";
-const inactive = "_inactive_1fqcd_47";
-const messagesWrapper = "_messagesWrapper_1fqcd_60";
-const emptyList = "_emptyList_1fqcd_90";
-const hidden$1 = "_hidden_1fqcd_97";
-const unreadMessagesLine = "_unreadMessagesLine_1fqcd_101";
+const dialogWrapper = "_dialogWrapper_1f8yi_1";
+const currentUserInfo = "_currentUserInfo_1f8yi_11";
+const active = "_active_1f8yi_40";
+const inactive = "_inactive_1f8yi_47";
+const messagesWrapper = "_messagesWrapper_1f8yi_61";
+const emptyList = "_emptyList_1f8yi_91";
+const hidden$1 = "_hidden_1f8yi_98";
+const unreadMessagesLine = "_unreadMessagesLine_1f8yi_102";
 const USER_DIALOGUE_STYLES = {
   dialogWrapper,
   currentUserInfo,
@@ -1447,19 +1447,19 @@ class UserDialogueView {
 }
 const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 const isSavedUser = (data) => typeof data === "object" && data !== null && "login" in data && "isLogined" in data;
-const message = "_message_5mwzx_1";
-const text = "_text_5mwzx_21";
-const login = "_login_5mwzx_31";
-const status = "_status_5mwzx_40";
-const date = "_date_5mwzx_41";
-const edited = "_edited_5mwzx_57";
-const currentUser = "_currentUser_5mwzx_64";
-const readed = "_readed_5mwzx_86";
-const otherUser = "_otherUser_5mwzx_93";
-const editWrapper = "_editWrapper_5mwzx_113";
-const hidden = "_hidden_5mwzx_136";
-const deleteButton = "_deleteButton_5mwzx_141";
-const editButton = "_editButton_5mwzx_142";
+const message = "_message_1n61e_1";
+const text = "_text_1n61e_18";
+const login = "_login_1n61e_28";
+const status = "_status_1n61e_37";
+const date = "_date_1n61e_38";
+const edited = "_edited_1n61e_54";
+const currentUser = "_currentUser_1n61e_61";
+const readed = "_readed_1n61e_83";
+const otherUser = "_otherUser_1n61e_93";
+const editWrapper = "_editWrapper_1n61e_113";
+const hidden = "_hidden_1n61e_136";
+const deleteButton = "_deleteButton_1n61e_141";
+const editButton = "_editButton_1n61e_142";
 const MESSAGE_STYLES = {
   message,
   text,
@@ -3420,4 +3420,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-53065b99.js.map
+//# sourceMappingURL=main-6d53442a.js.map
