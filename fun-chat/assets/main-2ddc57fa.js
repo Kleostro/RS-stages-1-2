@@ -797,6 +797,10 @@ class UserListModel {
       () => this.getAllUsers()
     );
     this.eventMediator.subscribe(
+      MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
+      () => this.getAllUsers()
+    );
+    this.eventMediator.subscribe(
       MEDIATOR_EVENTS.EXTERNAL_LOGIN_RESPONSE,
       this.getAllUsers.bind(this)
     );
@@ -1813,10 +1817,11 @@ class UserDialogueModel {
         this.requestMessagesWithCurrentUser(data.login);
       }
     });
-    this.eventMediator.subscribe(
-      MEDIATOR_EVENTS.LOG_OUT_RESPONSE,
-      () => this.view.hideDialogue()
-    );
+    this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, () => {
+      this.view.hideDialogue();
+      this.hasMessages([]);
+      StoreModel.dispatch(setSelectedUser(null));
+    });
     this.eventMediator.subscribe(
       MEDIATOR_EVENTS.GET_HISTORY_MESSAGES_RESPONSE,
       (data) => this.retrieveMessagesWithCurrentUser(data)
@@ -3420,4 +3425,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-6d53442a.js.map
+//# sourceMappingURL=main-2ddc57fa.js.map
