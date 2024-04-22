@@ -126,7 +126,7 @@
   display: flex;
   align-items: center;
   border-bottom: 3px solid var(--noble-black-300);
-  padding: var(--little-offset) var(--medium-offset);
+  padding: var(--little-offset) var(--small-offset);
   padding-right: calc(var(--little-offset) / 2);
   font: var(--small-font);
   font-weight: 600;
@@ -143,16 +143,13 @@
     position: absolute;
     left: 10px;
     top: 50%;
-    outline: 3px solid var(--noble-black-300);
     border-radius: 50%;
-    width: 16px;
-    height: 16px;
+    width: 8px;
+    height: 8px;
     transform: translateY(-50%);
 
     @media (max-width: 768px) {
-      outline: 1px solid var(--noble-black-300);
-      width: 8px;
-      height: 8px;
+      left: 5px;
     }
   }
 

@@ -8,6 +8,13 @@
   padding: var(--little-offset) var(--small-offset);
   box-shadow: 0 10px 23px 0 var(--noble-black-800);
   background-color: var(--noble-black-700);
+
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, max-content);
+    gap: var(--small-offset);
+  }
 }
 
 .nameApp {
@@ -16,6 +23,13 @@
   letter-spacing: 2px;
   text-shadow: -10px 10px 20px;
   color: var(--white);
+
+  @media (max-width: 768px) {
+    grid-column: 2 span;
+    grid-row: 1;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .userLogin {
@@ -24,6 +38,13 @@
   letter-spacing: 2px;
   text-shadow: -10px 10px 20px;
   color: var(--steam-green-500);
+
+  @media (max-width: 768px) {
+    grid-column: 2 span;
+    grid-row: 2;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .logoutButton,
@@ -49,6 +70,11 @@
     color: var(--noble-black-300);
     background-color: var(--noble-black-500);
     pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    grid-column: 1 span;
+    grid-row: 3;
   }
 }
 

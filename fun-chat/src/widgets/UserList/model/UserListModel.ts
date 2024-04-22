@@ -201,12 +201,11 @@ class UserListModel {
 
     if (currentUserInfo) {
       StoreModel.dispatch(setSelectedUser(currentUserInfo));
+      this.eventMediator.notify(
+        MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
+        currentUserInfo,
+      );
     }
-
-    this.eventMediator.notify(
-      MEDIATOR_EVENTS.OPEN_USER_DIALOGUE,
-      currentUserInfo,
-    );
 
     return true;
   }

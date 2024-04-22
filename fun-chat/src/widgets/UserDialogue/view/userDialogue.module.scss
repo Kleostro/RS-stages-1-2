@@ -29,20 +29,13 @@
   &::before {
     content: '';
     position: absolute;
-    left: 2%;
+    left: 3%;
     top: 50%;
     display: none;
-    outline: 3px solid var(--noble-black-300);
     border-radius: 50%;
-    width: 16px;
-    height: 16px;
+    width: 8px;
+    height: 8px;
     transform: translate(50%, -50%);
-
-    @media (max-width: 768px) {
-      outline: 1px solid var(--noble-black-300);
-      width: 8px;
-      height: 8px;
-    }
   }
 
   &.active {
@@ -114,12 +107,13 @@
 .unreadMessagesLine {
   position: relative;
   display: block;
+  margin-top: auto;
   margin-bottom: calc(var(--little-offset) / 2);
   font: var(--small-font);
   font-weight: 600;
   letter-spacing: 1px;
   text-align: center;
-  color: var(--steam-green-500);
+  color: var(--noble-black-300);
 
   &::before {
     content: '';
@@ -130,7 +124,7 @@
     border-radius: 50%;
     width: 40%;
     height: 2px;
-    background-color: var(--steam-green-500);
+    background-color: var(--noble-black-300);
     transform: translate(0, -50%);
   }
 
@@ -143,7 +137,7 @@
     border-radius: 50%;
     width: 40%;
     height: 2px;
-    background-color: var(--steam-green-500);
+    background-color: var(--noble-black-300);
     transform: translate(0, -50%);
   }
 }

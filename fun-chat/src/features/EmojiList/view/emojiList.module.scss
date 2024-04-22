@@ -71,10 +71,12 @@
   padding: calc(var(--little-offset) / 4) calc(var(--little-offset) / 3);
   width: 22px;
   height: 22px;
+  font-size: 20px;
   transition: background-color 0.3s;
 
   @media (hover: hover) {
     &:hover {
+      box-shadow: 0 0 10px 0 var(--noble-black-300);
       background-color: var(--noble-black-500);
     }
   }
@@ -99,6 +101,7 @@
 .emojiItem {
   width: 25px;
   height: 25px;
+  font-size: 20px;
   cursor: pointer;
 }
 

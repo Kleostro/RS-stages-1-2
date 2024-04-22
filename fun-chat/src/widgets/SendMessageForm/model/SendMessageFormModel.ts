@@ -75,11 +75,12 @@ class SendMessageFormModel {
 
   private formSubmitHandler(): boolean {
     const inputField = this.view.getInputField();
+    const inputFieldValue = inputField.value.replaceAll('\n', '<br>');
     const submitFormButton = this.view.getSubmitFormButton();
     if (!inputField.id) {
-      this.sendMessage(inputField.value);
+      this.sendMessage(inputFieldValue);
     } else {
-      this.sendEditedMessage(inputField.value, inputField.id);
+      this.sendEditedMessage(inputFieldValue, inputField.id);
       inputField.id = '';
     }
     inputField.value = '';

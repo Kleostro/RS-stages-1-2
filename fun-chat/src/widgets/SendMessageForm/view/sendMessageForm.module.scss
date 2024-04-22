@@ -14,11 +14,12 @@
 }
 
 .inputField {
-  margin-right: calc(var(--little-offset) / 2);
+  margin-right: var(--little-offset);
   border-radius: var(--border-radius);
   padding-top: calc(var(--little-offset) / 1.5);
+  padding-right: 80px;
   padding-left: calc(var(--little-offset) / 2);
-  width: 90%;
+  width: 100%;
   height: 40px;
   font: var(--small-font);
   font-weight: 600;
@@ -62,20 +63,29 @@
 }
 
 .emojiButton {
+  position: absolute;
+  right: 20px;
+  top: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 5%;
+  width: 46px;
   height: 46px;
+  font-size: 20px;
+  transform: translateY(-50%);
 }
 
 .submitFormButton {
+  position: absolute;
+  right: 55px;
+  top: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 5%;
   height: 46px;
   min-width: 46px;
+  transform: translateY(-50%);
 
   svg {
     margin-left: 5px;

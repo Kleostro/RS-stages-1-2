@@ -124,10 +124,9 @@ class UserDialogueModel {
     );
 
     this.eventMediator.subscribe(MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE, () => {
-      const { selectedUser } = StoreModel.getState();
-      if (selectedUser) {
-        this.requestMessagesWithCurrentUser(selectedUser?.login);
-      }
+      this.messageScrollHandler();
+      const messagesWrapper = this.view.getMessagesWrapper();
+      messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
     });
 
     return true;
@@ -202,18 +201,13 @@ class UserDialogueModel {
       this.hasMessages(currentDialog?.messages || []);
     });
 
-    messageWrapper.addEventListener(EVENT_NAMES.MOUSEWHEEL, () => {
-      this.messageScrollHandler();
-    });
+    messageWrapper.addEventListener(EVENT_NAMES.MOUSEWHEEL, () =>
+      this.messageScrollHandler(),
+    );
 
-    messageWrapper.addEventListener(EVENT_NAMES.CLICK, () => {
-      this.messageScrollHandler();
-    });
-
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE, () => {
-      this.messageScrollHandler();
-      messageWrapper.scrollTop = messageWrapper.scrollHeight;
-    });
+    messageWrapper.addEventListener(EVENT_NAMES.CLICK, () =>
+      this.messageScrollHandler(),
+    );
 
     return true;
   }
