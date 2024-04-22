@@ -397,15 +397,15 @@ class InputModel {
     this.view.getHTML().value = "";
   }
 }
-const wrapper = "_wrapper_slomz_1";
-const userList = "_userList_slomz_7";
-const counter = "_counter_slomz_43";
-const userListEmpty = "_userListEmpty_slomz_58";
-const userListSearchInput = "_userListSearchInput_slomz_62";
-const user = "_user_slomz_7";
-const userActive = "_userActive_slomz_165";
-const userInactive = "_userInactive_slomz_172";
-const userSelected = "_userSelected_slomz_179";
+const wrapper = "_wrapper_1bb09_1";
+const userList = "_userList_1bb09_7";
+const counter = "_counter_1bb09_43";
+const userListEmpty = "_userListEmpty_1bb09_58";
+const userListSearchInput = "_userListSearchInput_1bb09_62";
+const user = "_user_1bb09_7";
+const userActive = "_userActive_1bb09_162";
+const userInactive = "_userInactive_1bb09_169";
+const userSelected = "_userSelected_1bb09_176";
 const USER_LIST_STYLES = {
   wrapper,
   userList,
@@ -869,11 +869,11 @@ const SEND_MESSAGE_FORM_SVG_DETAILS = {
   SVG_URL: "http://www.w3.org/2000/svg",
   SEND_ID: "send"
 };
-const form = "_form_1bn03_1";
-const inputField = "_inputField_1bn03_15";
-const emojiButton = "_emojiButton_1bn03_59";
-const submitFormButton = "_submitFormButton_1bn03_72";
-const hidden$3 = "_hidden_1bn03_103";
+const form = "_form_17d4p_1";
+const inputField = "_inputField_17d4p_15";
+const emojiButton = "_emojiButton_17d4p_59";
+const submitFormButton = "_submitFormButton_17d4p_72";
+const hidden$3 = "_hidden_17d4p_103";
 const SEND_MESSAGE_FORM_STYLES = {
   form,
   inputField,
@@ -1004,14 +1004,14 @@ class SendMessageFormView {
     return this.form;
   }
 }
-const emojiWrapper = "_emojiWrapper_2w0l6_1";
-const contentWrapper = "_contentWrapper_2w0l6_17";
-const categoryList = "_categoryList_2w0l6_34";
-const category = "_category_2w0l6_34";
-const emojiList = "_emojiList_2w0l6_75";
-const sectionTitle = "_sectionTitle_2w0l6_82";
-const emojiItem = "_emojiItem_2w0l6_91";
-const hidden$2 = "_hidden_2w0l6_98";
+const emojiWrapper = "_emojiWrapper_cp7jr_1";
+const contentWrapper = "_contentWrapper_cp7jr_17";
+const categoryList = "_categoryList_cp7jr_34";
+const category = "_category_cp7jr_34";
+const emojiList = "_emojiList_cp7jr_76";
+const sectionTitle = "_sectionTitle_cp7jr_83";
+const emojiItem = "_emojiItem_cp7jr_92";
+const hidden$2 = "_hidden_cp7jr_99";
 const EMOJI_STYLES = {
   emojiWrapper,
   contentWrapper,
@@ -1168,10 +1168,9 @@ class EmojiListModel {
   }
 }
 const isEmoji = (data) => Array.isArray(data) && data.every((item) => typeof item === "object");
+const EMOJI_URL = "https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json";
 const getEmojiData = async () => {
-  const response = await fetch(
-    "https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json"
-  );
+  const response = await fetch(EMOJI_URL);
   const data = await response.json();
   return data;
 };
@@ -1350,14 +1349,14 @@ const MESSAGES_WRAPPER_CONTENT = {
   NO_USER_SELECT: "Select user to start messaging",
   NEW_MESSAGE: "New message"
 };
-const dialogWrapper = "_dialogWrapper_1el62_1";
-const currentUserInfo = "_currentUserInfo_1el62_11";
-const active = "_active_1el62_48";
-const inactive = "_inactive_1el62_55";
-const messagesWrapper = "_messagesWrapper_1el62_68";
-const emptyList = "_emptyList_1el62_98";
-const hidden$1 = "_hidden_1el62_105";
-const unreadMessagesLine = "_unreadMessagesLine_1el62_109";
+const dialogWrapper = "_dialogWrapper_1fqcd_1";
+const currentUserInfo = "_currentUserInfo_1fqcd_11";
+const active = "_active_1fqcd_40";
+const inactive = "_inactive_1fqcd_47";
+const messagesWrapper = "_messagesWrapper_1fqcd_60";
+const emptyList = "_emptyList_1fqcd_90";
+const hidden$1 = "_hidden_1fqcd_97";
+const unreadMessagesLine = "_unreadMessagesLine_1fqcd_101";
 const USER_DIALOGUE_STYLES = {
   dialogWrapper,
   currentUserInfo,
@@ -1448,19 +1447,19 @@ class UserDialogueView {
 }
 const isUser = (data) => typeof data === "object" && data !== null && "login" in data && "password" in data;
 const isSavedUser = (data) => typeof data === "object" && data !== null && "login" in data && "isLogined" in data;
-const message = "_message_1gndk_1";
-const text = "_text_1gndk_17";
-const login = "_login_1gndk_27";
-const status = "_status_1gndk_36";
-const date = "_date_1gndk_37";
-const edited = "_edited_1gndk_53";
-const currentUser = "_currentUser_1gndk_60";
-const readed = "_readed_1gndk_82";
-const otherUser = "_otherUser_1gndk_89";
-const editWrapper = "_editWrapper_1gndk_109";
-const hidden = "_hidden_1gndk_127";
-const deleteButton = "_deleteButton_1gndk_132";
-const editButton = "_editButton_1gndk_133";
+const message = "_message_5mwzx_1";
+const text = "_text_5mwzx_21";
+const login = "_login_5mwzx_31";
+const status = "_status_5mwzx_40";
+const date = "_date_5mwzx_41";
+const edited = "_edited_5mwzx_57";
+const currentUser = "_currentUser_5mwzx_64";
+const readed = "_readed_5mwzx_86";
+const otherUser = "_otherUser_5mwzx_93";
+const editWrapper = "_editWrapper_5mwzx_113";
+const hidden = "_hidden_5mwzx_136";
+const deleteButton = "_deleteButton_5mwzx_141";
+const editButton = "_editButton_5mwzx_142";
 const MESSAGE_STYLES = {
   message,
   text,
@@ -1823,10 +1822,9 @@ class UserDialogueModel {
       (data) => this.retrieveMessagesWithCurrentUser(data)
     );
     this.eventMediator.subscribe(MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE, () => {
-      const { selectedUser } = StoreModel.getState();
-      if (selectedUser) {
-        this.requestMessagesWithCurrentUser(selectedUser == null ? void 0 : selectedUser.login);
-      }
+      this.messageScrollHandler();
+      const messagesWrapper2 = this.view.getMessagesWrapper();
+      messagesWrapper2.scrollTop = messagesWrapper2.scrollHeight;
     });
     return true;
   }
@@ -1888,16 +1886,14 @@ class UserDialogueModel {
       );
       this.hasMessages((currentDialog == null ? void 0 : currentDialog.messages) || []);
     });
-    messageWrapper.addEventListener(EVENT_NAMES.MOUSEWHEEL, () => {
-      this.messageScrollHandler();
-    });
-    messageWrapper.addEventListener(EVENT_NAMES.CLICK, () => {
-      this.messageScrollHandler();
-    });
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.SEND_MESSAGE_RESPONSE, () => {
-      this.messageScrollHandler();
-      messageWrapper.scrollTop = messageWrapper.scrollHeight;
-    });
+    messageWrapper.addEventListener(
+      EVENT_NAMES.MOUSEWHEEL,
+      () => this.messageScrollHandler()
+    );
+    messageWrapper.addEventListener(
+      EVENT_NAMES.CLICK,
+      () => this.messageScrollHandler()
+    );
     return true;
   }
 }
@@ -2680,11 +2676,11 @@ class AppView {
 const APP_NAME = "Fun Chat";
 const LOGOUT_BUTTON_TEXT = "Logout";
 const ABOUT_BUTTON_TEXT = "About";
-const header = "_header_1tkz4_1";
-const nameApp = "_nameApp_1tkz4_13";
-const userLogin = "_userLogin_1tkz4_21";
-const logoutButton = "_logoutButton_1tkz4_29";
-const aboutButton = "_aboutButton_1tkz4_30";
+const header = "_header_wxxw8_1";
+const nameApp = "_nameApp_wxxw8_21";
+const userLogin = "_userLogin_wxxw8_37";
+const logoutButton = "_logoutButton_wxxw8_53";
+const aboutButton = "_aboutButton_wxxw8_54";
 const HEADER_STYLES = {
   header,
   nameApp,
@@ -3424,4 +3420,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-a95836ed.js.map
+//# sourceMappingURL=main-53065b99.js.map
