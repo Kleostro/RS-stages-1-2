@@ -1819,7 +1819,6 @@ class UserDialogueModel {
     });
     this.eventMediator.subscribe(MEDIATOR_EVENTS.LOG_OUT_RESPONSE, () => {
       this.view.hideDialogue();
-      this.hasMessages([]);
       StoreModel.dispatch(setSelectedUser(null));
     });
     this.eventMediator.subscribe(
@@ -3425,4 +3424,4 @@ class AppModel {
 const index = "";
 const myApp = new AppModel();
 document.body.append(myApp.getHTML());
-//# sourceMappingURL=main-2ddc57fa.js.map
+//# sourceMappingURL=main-1f7750bc.js.map
