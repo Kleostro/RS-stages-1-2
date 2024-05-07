@@ -8,6 +8,8 @@ import type { Message } from '../../../utils/isMessage.ts';
 import ButtonModel from '../../../shared/Button/model/ButtonModel.ts';
 import type { MessageFromServer } from '../../../utils/isFromServerMessage.ts';
 
+const SENDER_NAME_YOU = 'You';
+
 class MessageView {
   private messageParams: Message;
 
@@ -187,7 +189,7 @@ class MessageView {
 
     if (this.wasSentByCurrentUser()) {
       this.message.classList.add(MESSAGE_STYLES.currentUser);
-      this.messageLogin.textContent = 'You';
+      this.messageLogin.textContent = SENDER_NAME_YOU;
       this.message.prepend(this.editWrapper);
     } else {
       this.message.classList.add(MESSAGE_STYLES.otherUser);
