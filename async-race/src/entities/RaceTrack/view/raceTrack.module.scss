@@ -1,0 +1,113 @@
+.race-track {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--small-offset) / 2);
+
+  &__top-wrapper {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--small-offset) / 4);
+  }
+
+  &__bottom-wrapper {
+    position: relative;
+    display: flex;
+    border-bottom: 3px solid var(--white);
+    border-bottom-style: dashed;
+    gap: calc(var(--small-offset) / 4);
+  }
+
+  &__car-svg-wrapper {
+    position: relative;
+    display: flex;
+    max-width: 100px;
+    max-height: 40px;
+  }
+
+  &_car-button {
+    position: relative;
+    border-radius: 4px;
+    padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
+    color: var(--car-button-color);
+    background-color: var(--car-button-bg);
+    transition:
+      color 0.3s,
+      background-color 0.3s,
+      opacity 0.3s;
+
+    &:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--car-button-color-hover);
+        background-color: var(--car-button-bg-hover);
+      }
+    }
+  }
+
+  &_engine-button {
+    position: relative;
+    border-radius: 4px;
+    padding: calc(var(--small-offset) / 6) calc(var(--small-offset) / 4);
+    height: max-content;
+    color: var(--engine-button-color);
+    background-color: var(--engine-button-bg);
+    transition:
+      color 0.3s,
+      background-color 0.3s,
+      opacity 0.3s;
+
+    &:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--engine-button-color-hover);
+        background-color: var(--engine-button-bg-hover);
+      }
+    }
+  }
+
+  &__name-car {
+    overflow: hidden;
+    max-width: 200px;
+    font: var(--small-font);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    text-align: center;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    color: var(--car-name-color);
+  }
+
+  &__flag-img {
+    position: absolute;
+    right: 5%;
+    bottom: 0;
+    width: 50px;
+    height: 50px;
+
+    @media (max-width: (1000px)) {
+      right: 14%;
+    }
+  }
+
+  &__fire-img {
+    position: absolute;
+    right: 0;
+    top: -40%;
+    width: 35px;
+    height: 35px;
+    opacity: 0;
+    transition: opacity 0.3s;
+
+    &--active {
+      opacity: 1;
+    }
+  }
+}

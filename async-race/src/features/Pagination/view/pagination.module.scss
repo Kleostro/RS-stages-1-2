@@ -1,0 +1,42 @@
+.pagination {
+  &_wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    grid-row: 2;
+    width: 100%;
+    min-height: 30px;
+    gap: calc(var(--small-offset) / 4);
+  }
+
+  &_current_page {
+    font: var(--second-font);
+    letter-spacing: 1px;
+    color: var(--title-color);
+  }
+
+  &_button {
+    border-radius: var(--border-radius);
+    padding: calc(var(--small-offset) / 4) calc(var(--small-offset) / 2);
+    width: max-content;
+    height: max-content;
+    color: var(--car-button-color);
+    background-color: var(--car-button-bg);
+    transition:
+      color 0.3s,
+      background-color 0.3s,
+      opacity 0.3s;
+
+    &:disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--car-button-color-hover);
+        background-color: var(--car-button-bg-hover);
+      }
+    }
+  }
+}

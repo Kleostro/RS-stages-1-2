@@ -1,0 +1,46 @@
+:root {
+  // offsets
+  --little-offset: 20px;
+  --small-offset: 30px;
+  --medium-offset: 50px;
+  --large-offset: 100px;
+
+  // sizes
+  --border-radius: 10px;
+
+  // colors
+  --white: #fff;
+  --black: #000;
+  --body-bg: #454545;
+  --header-bg: #2b2b2b;
+  --button-bg: #416440;
+  --button-bg-hover: #3e803c;
+  --button-color: #f3ffbd;
+  --title-color: #e2e8c3e0;
+  --car-button-bg: #ffe8bc;
+  --car-button-bg-hover: #a9720e;
+  --car-button-color: #8e4200;
+  --car-button-color-hover: #ffdfbd;
+  --car-name-color: #cdc5fb;
+  --engine-button-bg: #abeab0;
+  --engine-button-bg-hover: #336b38;
+  --engine-button-color: #6b3201;
+  --engine-button-color-hover: #daa577;
+  --form-bg: #9a94bcbd;
+  --form-input-bg: #c9c2ede1;
+  --form-input-color: #416440;
+  --form-input-bg-hover: #9e8cdf;
+  --load-bg: #416440;
+  --load-bg--accent: #f3ffbd;
+  --winners-table-bg: #ffdfbd;
+  --winners-table-head-color: #0d6f39;
+  --winners-table-head-tr--accent: #d69860;
+  --winners-table-border: #b34a13;
+  --winners-table-body-bg: #e1be85b8;
+  --winners-table-body-tr-bg: #daab5db8;
+
+  // fonts
+  --small-font: 400 14px 'Roboto', sans-serif;
+  --medium-font: 400 20px 'Roboto', sans-serif;
+  --second-font: 600 25px 'Roboto', sans-serif;
+}

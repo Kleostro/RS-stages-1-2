@@ -1,0 +1,38 @@
+/* stylelint-disable order/order */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--small-offset);
+  padding: var(--small-offset);
+  background-color: var(--header-bg);
+  gap: var(--small-offset);
+}
+
+.header__garage-button,
+.header__winners-button {
+  border-radius: var(--border-radius);
+  padding: calc(var(--little-offset) / 2) var(--little-offset);
+  width: max-content;
+  font: var(--small-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--button-color);
+  background-color: var(--button-bg);
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    opacity 0.3s;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--white);
+      background-color: var(--button-bg-hover);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.2;
+    pointer-events: none;
+  }
+}
