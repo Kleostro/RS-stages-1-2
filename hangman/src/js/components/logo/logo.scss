@@ -1,0 +1,13 @@
+@import "../../../scss/mixins/breakpoint";
+
+.logo {
+  img {
+    width: 200px;
+    height: 60px;
+
+    @include tablet {
+      width: 100px;
+      height: 60px;
+    }
+  }
+}

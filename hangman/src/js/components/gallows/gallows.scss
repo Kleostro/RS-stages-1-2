@@ -1,0 +1,33 @@
+.gallows {
+  position: relative;
+  height: 237px;
+  min-width: 200px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.man-part {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 237px;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity 0.3s ease-out;
+  animation: rotate 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-1deg);
+  }
+
+  50% {
+    transform: rotate(1deg);
+  }
+
+  100% {
+    transform: rotate(-1deg);
+  }
+}

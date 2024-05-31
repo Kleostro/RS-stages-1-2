@@ -1,0 +1,41 @@
+@import "../../../scss/mixins/breakpoint";
+
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 360px;
+  gap: 10px;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 1px solid #914405;
+    border-radius: 4px;
+    padding: 10px;
+    color: #000;
+    background-color: #b5d085;
+    transition: opacity 0.3s ease-out, background-color 0.3s ease-out;
+
+    &:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: #d5eab0;
+      }
+    }
+
+    /* stylelint-disable-next-line order/order */
+    &:active {
+      background-color: #7da240;
+    }
+
+    @include mobile {
+      padding: 7px;
+    }
+  }
+}

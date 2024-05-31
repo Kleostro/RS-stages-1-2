@@ -1,0 +1,16 @@
+@import "../../../scss/mixins/breakpoint";
+
+.header__title {
+  font-size: 32px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e6d4c1;
+
+  @include tablet {
+    font-size: 24px;
+  }
+
+  @include mobile {
+    font-size: 16px;
+  }
+}
