@@ -1,0 +1,19 @@
+.mainPage {
+  display: block;
+  margin: auto 0;
+  padding: 0 var(--small-offset);
+  min-height: 65%;
+
+  &_hidden {
+    display: none;
+  }
+}
+
+.chatWrapper {
+  display: flex;
+  min-height: 626px;
+
+  @media (max-width: 768px) {
+    min-height: 500px;
+  }
+}

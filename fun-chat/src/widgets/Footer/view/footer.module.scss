@@ -1,0 +1,67 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--medium-offset);
+  border-top: 4px solid var(--noble-black-300);
+  border-radius: calc(var(--border-radius) * 2);
+  padding: var(--little-offset) var(--small-offset);
+  box-shadow: 0 10px 23px 0 var(--noble-black-800);
+  background-color: var(--noble-black-700);
+}
+
+.rsLink,
+.githubLink {
+  display: block;
+  width: 100px;
+  height: 40px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--white);
+    transition: fill 0.3s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      &::after {
+        color: var(--steam-green-500);
+      }
+
+      svg {
+        fill: var(--steam-green-500);
+      }
+    }
+  }
+}
+
+.githubLink {
+  position: relative;
+  width: 140px;
+
+  &::after {
+    content: 'by kleostro';
+    position: absolute;
+    left: 30%;
+    top: 50%;
+    font: var(--small-font);
+    letter-spacing: 2px;
+    white-space: nowrap;
+    color: var(--white);
+    transform: translate(0, -50%);
+    transition: color 0.3s;
+  }
+
+  svg {
+    position: absolute;
+    left: 0;
+    width: 40px;
+  }
+}
+
+.appYear {
+  font: var(--small-font);
+  letter-spacing: 2px;
+  color: var(--white);
+}

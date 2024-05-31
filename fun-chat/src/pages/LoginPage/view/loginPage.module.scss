@@ -1,0 +1,30 @@
+.loginPage {
+  position: relative;
+  display: block;
+  padding: 0 var(--small-offset);
+
+  &_hidden {
+    display: none;
+  }
+}
+
+.authenticationWrapper {
+  position: fixed;
+  right: 0;
+  border: 2px solid var(--red-power-600);
+  border-radius: var(--border-radius);
+  padding: calc(var(--small-offset) / 2) var(--little-offset);
+  box-shadow: 10px 6px 20px 0;
+  font: var(--small-font);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  color: var(--red-power-600);
+  background-color: #2e2e2e30;
+  transform: translateX(110%);
+}
+
+.authenticationMessage {
+  display: block;
+  max-width: 180px;
+}

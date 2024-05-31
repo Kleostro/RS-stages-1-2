@@ -1,0 +1,37 @@
+.aboutPage {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--small-offset);
+  gap: var(--small-offset);
+
+  &_hidden {
+    display: none;
+  }
+}
+
+.aboutText {
+  font: var(--small-font);
+  letter-spacing: 2px;
+  text-align: center;
+  color: var(--noble-black-300);
+}
+
+.backButton {
+  align-self: center;
+  border-radius: var(--border-radius);
+  padding: calc(var(--little-offset) / 2) var(--small-offset);
+  width: max-content;
+  font: var(--small-font);
+  letter-spacing: 1px;
+  color: var(--day-blue-900);
+  background-color: var(--steam-green-500);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-400);
+    }
+  }
+}

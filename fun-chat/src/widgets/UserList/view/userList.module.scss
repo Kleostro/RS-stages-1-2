@@ -1,0 +1,200 @@
+.wrapper {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  width: 100%;
+  max-width: 40%;
+}
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  border: 3px solid var(--noble-black-300);
+  border-right: unset;
+  border-radius: 0 0 0 var(--border-radius);
+  width: 100%;
+  min-height: 626px;
+  max-height: 626px;
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--noble-black-300);
+  background-color: var(--noble-black-800);
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-left: 2px solid var(--noble-black-300);
+    background: var(--noble-black-500);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--border-radius);
+    background-color: var(--steam-green-500);
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    min-height: 500px;
+    max-height: 500px;
+  }
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  border: 2px solid var(--noble-black-300);
+  border-radius: 50%;
+  padding: 3px 6px;
+  font: var(--little-font);
+  text-align: center;
+  color: var(--noble-black-300);
+  background-color: var(--noble-black-800);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.userListEmpty {
+  padding: calc(var(--little-offset)) var(--medium-offset);
+}
+
+.userListSearchInput {
+  border: 3px solid var(--noble-black-300);
+  border-right: unset;
+  border-bottom: unset;
+  border-radius: var(--border-radius) 0 0;
+  padding: calc(var(--little-offset) / 1.2) var(--little-offset);
+  width: 100%;
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--noble-black-800);
+  transition: background-color 0.3s;
+
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    background-image: url('../../../img/close.svg');
+    background-position: center;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    transition: opacity 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+
+  &::placeholder {
+    font: var(--small-font);
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--noble-black-300);
+    transition: color 0.3s;
+  }
+
+  &:focus {
+    background-color: var(--noble-black-600);
+
+    &::placeholder {
+      color: var(--steam-green-400);
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--noble-black-600);
+
+      &::placeholder {
+        color: var(--steam-green-400);
+      }
+    }
+  }
+}
+
+.user {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid var(--noble-black-300);
+  padding: var(--little-offset) var(--small-offset);
+  padding-right: calc(var(--little-offset) / 2);
+  font: var(--small-font);
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--noble-black-300);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+  cursor: pointer;
+  user-select: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    transform: translateY(-50%);
+
+    @media (max-width: 768px) {
+      left: 5px;
+    }
+  }
+
+  &:first-child {
+    border-top: unset;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--noble-black-600);
+
+      .counter {
+        color: var(--noble-black-800);
+        background-color: var(--noble-black-300);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    overflow-x: hidden;
+    font: var(--little-font);
+  }
+}
+
+.userActive {
+  color: var(--steam-green-400);
+
+  &::before {
+    background-color: var(--steam-green-700);
+  }
+}
+
+.userInactive {
+  color: var(--red-power-600);
+
+  &::before {
+    background-color: var(--red-power-600);
+  }
+}
+
+.userSelected {
+  background-color: var(--noble-black-600);
+
+  .counter {
+    color: var(--noble-black-800);
+    background-color: var(--noble-black-300);
+  }
+}
