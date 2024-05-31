@@ -1,0 +1,44 @@
+.puzzle_wrapper {
+  display: flex;
+}
+
+.puzzle {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: 2px solid #807080;
+  height: auto;
+  max-width: 100%;
+  box-shadow: inset -4px -7px 9px 0 #0d0d0d85;
+  text-shadow: 1px 2px 7px #000;
+  color: #00ff04;
+  background-repeat: no-repeat;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+
+  &_placeholder {
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      background-color: #cfa966;
+      inset: 0;
+    }
+  }
+
+  &_completed {
+    outline: none;
+    box-shadow: none;
+    font-size: 0;
+    background-color: transparent;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: #cfa966;
+      opacity: 0.5;
+    }
+  }
+}

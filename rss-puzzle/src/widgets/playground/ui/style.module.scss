@@ -1,0 +1,250 @@
+.playground {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, max-content);
+  width: 70%;
+  gap: 2dvw;
+}
+
+.translate_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  grid-column: 2 span;
+  grid-row: 1;
+  min-height: 80px;
+  gap: 10px;
+}
+
+.game_board_subtitle {
+  grid-column: 2 span;
+  grid-row: 2;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #f5deb3;
+}
+
+.translate_sentence {
+  display: flex;
+  justify-content: center;
+  width: 90%;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #f5deb3;
+  transition: opacity 0.3s ease-in-out;
+
+  &_hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.translate_btn {
+  border: 2px solid #403b40;
+  border-radius: 50%;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  transition:
+    border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out,
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+
+  svg {
+    stroke: #f5deb3;
+  }
+
+  &_active {
+    border: 2px solid #81df62;
+    background-color: #f1daadb3;
+    animation: zoom 1s ease-in-out infinite;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      border: 0.2dvw solid #ccdfbe;
+      transform: scale(1.05);
+    }
+  }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    border: 0.2dvw solid #ccdfbe;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.translate_word {
+  color: #153048;
+
+  &.open {
+    color: #29b946;
+  }
+}
+
+.source_data,
+.game_board {
+  display: flex;
+  grid-column: 2 span;
+  border: 2px solid #403b40;
+}
+
+.source_data {
+  display: grid;
+  grid-row: 4;
+  height: max-content;
+  min-height: 40px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.game_board {
+  position: relative;
+  display: grid;
+  grid-row: 3;
+  margin-bottom: 20px;
+  height: max-content;
+  max-width: 768px;
+  transition:
+    opacity 0.5s ease-in-out,
+    background-color 0.5s ease-in-out,
+    padding-bottom 0.5s ease-in-out;
+
+  &.game_board__complete {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+    background-color: #faebd7;
+    gap: 20px;
+  }
+}
+
+.line {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  height: 10%;
+  transition:
+    background-color 0.2s ease-in-out,
+    backdrop-filter 0.5s ease-in-out,
+    border-bottom 0.5s ease-in-out;
+  backdrop-filter: grayscale(1);
+
+  &:not(:last-child) {
+    border-bottom: 2px solid #659d7a;
+  }
+
+  &_complete {
+    backdrop-filter: grayscale(0);
+
+    &:not(:last-child) {
+      border-bottom: none;
+    }
+  }
+
+  .copy_puzzle__error {
+    outline: 2px solid #f00;
+  }
+
+  .copy_puzzle__success {
+    outline: 2px solid #0f0;
+  }
+}
+
+.line_hovered {
+  background-color: #ffd0006e;
+}
+
+.no_drop {
+  pointer-events: none;
+}
+
+.continue_btn,
+.check_btn,
+.autocomplete_btn,
+.nextRound_btn,
+.statistics_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-row: 5;
+  margin: 0 auto;
+  border: 2px solid #403b40;
+  border-radius: 10px;
+  padding: 10px 20px;
+  width: 120px;
+  font-size: 14px;
+  color: #fff397;
+  background-color: #005f00;
+  transition:
+    color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out,
+    opacity 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: #fff;
+      background-color: #009500;
+    }
+  }
+}
+
+.btn__hidden {
+  display: none;
+}
+
+.translate_listen_hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.game_board_title {
+  font-size: 25px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.game_board_description {
+  padding: 0 20px;
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.game_board_wrapper {
+  img {
+    width: 100%;
+    aspect-ratio: auto;
+  }
+}
+
+.game_board__image {
+  pointer-events: none;
+  aspect-ratio: auto;
+}

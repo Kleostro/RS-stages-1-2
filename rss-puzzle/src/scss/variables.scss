@@ -1,0 +1,17 @@
+@import './breakpoints';
+
+:root {
+  // offsets
+  --little-offset: 5px;
+  --small-offset: 10px;
+  --medium-offset: 30px;
+  --large-offset: 100px;
+
+  // colors
+  --white: #fff;
+  --black: #000;
+  --body-bg: #181818;
+  --login-form-bg: #4d4d4da8;
+  --error: #650505;
+  --success: #00ff34;
+}
