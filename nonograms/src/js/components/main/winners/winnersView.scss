@@ -1,0 +1,163 @@
+@import '../../../../scss/breakpoints';
+
+.winners-modal {
+  position: absolute;
+  z-index: 5;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease-in-out,
+    visibility 0.3s ease-in-out;
+
+  &__overlay {
+    position: fixed;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--modal-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease-in-out,
+      visibility 0.3s ease-in-out;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    inset: 0;
+
+    &.hidden {
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity 0.3s ease-in-out,
+        visibility 0.3s ease-in-out;
+    }
+  }
+
+  &__content {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 var(--small-offset);
+    border-radius: var(--border-radius);
+    padding: var(--medium-offset) var(--small-offset);
+    width: 100%;
+    max-width: 460px;
+    background-color: var(--modal-content-bg);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+    transition:
+      opacity 0.3s ease-in-out,
+      visibility 0.3s ease-in-out,
+      transform 0.3s ease-in-out;
+    cursor: auto;
+    gap: var(--small-offset);
+
+    &.hidden {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity 0.3s ease-in-out,
+        visibility 0.3s ease-in-out,
+        transform 0.3s ease-in-out;
+    }
+  }
+
+  &__close-btn {
+    position: absolute;
+    right: var(--small-offset);
+    top: var(--small-offset);
+    width: var(--modal-close-btn-size);
+    height: var(--modal-close-btn-size);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: var(--small-offset);
+      width: var(--modal-close-btn-size);
+      height: 2px;
+      background-color: var(--modal-close-btn-color);
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: var(--small-offset);
+      width: var(--modal-close-btn-size);
+      height: 2px;
+      background-color: var(--modal-close-btn-color);
+      transform: rotate(-45deg);
+    }
+  }
+
+  &__title {
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-align: center;
+    color: var(--modal-title-color);
+
+    &--accent {
+      color: var(--modal-title-color--accent);
+    }
+  }
+
+  &__list {
+    display: grid;
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+    color: var(--modal-winners-color--item);
+
+    &-header {
+      grid-column: auto;
+      grid-row: 1;
+      margin-bottom: var(--small-offset);
+      border-bottom: 1px solid;
+      font-weight: 600;
+      text-align: center;
+      color: var(--modal-winners-color--accent);
+    }
+
+    &-item {
+      display: flex;
+      justify-content: space-around;
+      grid-column: 4 span;
+      border-top: 1px solid;
+      border-bottom: 1px solid;
+      padding: var(--little-offset);
+      width: 100%;
+      font-weight: 300;
+      font-size: 16px;
+      color: var(--modal-winners-color--item);
+
+      &:not(:last-child) {
+        margin-bottom: var(--small-offset);
+      }
+    }
+
+    &-title {
+      overflow: hidden;
+      max-width: 84px;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+    }
+  }
+
+  &.hidden {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.3s ease-in-out,
+      visibility 0.3s ease-in-out;
+  }
+}

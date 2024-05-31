@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0 auto;
+  min-width: 320px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  background-color: var(--body-bg);
+  scroll-behavior: smooth;
+}
+
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+.stop-scroll {
+  overflow: hidden;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 var(--small-offset);
+  max-width: 1440px;
+}
